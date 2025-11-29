@@ -1,0 +1,5 @@
+{
+  "CodeGPT.apiKey": "Gemini CLI",
+  "chatgpt.openOnStartup": true,
+  "chatgpt.commentCodeLensEnabled": false
+}

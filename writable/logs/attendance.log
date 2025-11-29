@@ -1,0 +1,545 @@
+nohup: ignoring input
+
+CodeIgniter v4.6.0 Command Line Tool - Server Time: 2025-05-02 15:02:12 UTC+00:00
+
+Starting employee processing
+Chunk Size : 25
+Month      : 2025-04
+Employee ID: All
+Processing batch #1
+→ Employee ID: 1 - Processing...
+✅ Success: MANU GROVER
+→ Done in 3.9455 seconds
+
+→ Employee ID: 2 - Processing...
+✅ Success: USHAKANT TIWARI
+→ Done in 3.8872 seconds
+
+→ Employee ID: 3 - Processing...
+✅ Success: MUNCHUN KUMAR
+→ Done in 4.1404 seconds
+
+→ Employee ID: 4 - Processing...
+✅ Success: TEJNARAYAN MANDAL
+→ Done in 4.0766 seconds
+
+→ Employee ID: 6 - Processing...
+✅ Success: MANOJ KUMAR
+→ Done in 3.7886 seconds
+
+→ Employee ID: 7 - Processing...
+✅ Success: SANTOSH KUMAR MANDAL
+→ Done in 4.0151 seconds
+
+→ Employee ID: 10 - Processing...
+✅ Success: RAJESH KUMAR GOND
+→ Done in 3.8846 seconds
+
+→ Employee ID: 11 - Processing...
+✅ Success: ASIT GIRI
+→ Done in 3.8669 seconds
+
+→ Employee ID: 12 - Processing...
+✅ Success: SUNIL KUMAR
+→ Done in 3.5171 seconds
+
+→ Employee ID: 13 - Processing...
+✅ Success: SAURABH DUBEY
+→ Done in 3.9903 seconds
+
+→ Employee ID: 14 - Processing...
+✅ Success: BIPIN KUMAR
+→ Done in 3.6564 seconds
+
+→ Employee ID: 16 - Processing...
+✅ Success: GANESH KUMAR
+→ Done in 3.815 seconds
+
+→ Employee ID: 18 - Processing...
+✅ Success: GUNJAN KUMAR RAI
+→ Done in 4.7327 seconds
+
+→ Employee ID: 19 - Processing...
+✅ Success: TAHIR GHANI
+→ Done in 4.1832 seconds
+
+→ Employee ID: 20 - Processing...
+✅ Success: ATHAR ALI
+→ Done in 4.0312 seconds
+
+→ Employee ID: 22 - Processing...
+✅ Success: MD MUSHTAQUE AHMAD
+→ Done in 4.2245 seconds
+
+→ Employee ID: 23 - Processing...
+✅ Success: RAVINDRA SINGH BISHT
+→ Done in 3.9533 seconds
+
+→ Employee ID: 25 - Processing...
+✅ Success: DAMAN SINGH BEDI
+→ Done in 3.8669 seconds
+
+→ Employee ID: 27 - Processing...
+✅ Success: SHAMSHER KHAN
+→ Done in 3.9673 seconds
+
+→ Employee ID: 30 - Processing...
+✅ Success: PRAMOD KUMAR PANDEY
+→ Done in 3.8919 seconds
+
+→ Employee ID: 31 - Processing...
+✅ Success: AFAQ AHMAD
+→ Done in 4.2494 seconds
+
+→ Employee ID: 32 - Processing...
+✅ Success: VIJENDRA SINGH
+→ Done in 3.6661 seconds
+
+→ Employee ID: 33 - Processing...
+✅ Success: RAIS KHAN
+→ Done in 3.8612 seconds
+
+→ Employee ID: 34 - Processing...
+✅ Success: DEBASISH SIKDAR
+→ Done in 3.9881 seconds
+
+→ Employee ID: 36 - Processing...
+✅ Success: GYAN SINGH
+→ Done in 3.9847 seconds
+
+Completed batch #1
+Processing batch #2
+→ Employee ID: 37 - Processing...
+✅ Success: MITHILESH KUMAR
+→ Done in 3.8437 seconds
+
+→ Employee ID: 40 - Processing...
+✅ Success: MD NAZRUL ISLAM
+→ Done in 3.777 seconds
+
+→ Employee ID: 41 - Processing...
+✅ Success: ARIHANT GAUR
+→ Done in 4.8098 seconds
+
+→ Employee ID: 42 - Processing...
+✅ Success: PRAVEEN KUMAR
+→ Done in 5.3639 seconds
+
+→ Employee ID: 44 - Processing...
+✅ Success: HASEEN AHMED
+→ Done in 4.605 seconds
+
+→ Employee ID: 45 - Processing...
+✅ Success: AMAR NATH SINGH
+→ Done in 4.5452 seconds
+
+→ Employee ID: 48 - Processing...
+✅ Success: SUMAN KUMAR SAH
+→ Done in 4.0289 seconds
+
+→ Employee ID: 49 - Processing...
+✅ Success: SONU KUMARI
+→ Done in 4.2839 seconds
+
+→ Employee ID: 50 - Processing...
+✅ Success: SANDEEP KUMAR
+→ Done in 4.122 seconds
+
+→ Employee ID: 52 - Processing...
+✅ Success: RAHUL PRASAD SHARMA
+→ Done in 3.6344 seconds
+
+→ Employee ID: 54 - Processing...
+✅ Success: ARYAN GROVER
+→ Done in 4.039 seconds
+
+→ Employee ID: 55 - Processing...
+✅ Success: Dharmendra Kumar Mandal
+→ Done in 4.2609 seconds
+
+→ Employee ID: 57 - Processing...
+✅ Success: KARAN KUMAR
+→ Done in 3.6623 seconds
+
+→ Employee ID: 58 - Processing...
+✅ Success: JAI SHANKAR THAKUR
+→ Done in 4.3951 seconds
+
+→ Employee ID: 59 - Processing...
+✅ Success: KAMAL RAM
+→ Done in 4.1276 seconds
+
+→ Employee ID: 61 - Processing...
+✅ Success: ASHOK KUMAR
+→ Done in 3.6403 seconds
+
+→ Employee ID: 62 - Processing...
+✅ Success: ASHOK KUMAR
+→ Done in 4.9896 seconds
+
+→ Employee ID: 64 - Processing...
+✅ Success: SACHIN KUMAR
+→ Done in 4.9983 seconds
+
+→ Employee ID: 65 - Processing...
+✅ Success: ASHU KUMAR
+→ Done in 3.8659 seconds
+
+→ Employee ID: 66 - Processing...
+✅ Success: RAGHVENDRA S/O HARI SHANKAR
+→ Done in 3.7627 seconds
+
+→ Employee ID: 67 - Processing...
+✅ Success: ABDUL REHMAN
+→ Done in 3.6661 seconds
+
+→ Employee ID: 68 - Processing...
+✅ Success: HITESH KUMAR
+→ Done in 3.5619 seconds
+
+→ Employee ID: 76 - Processing...
+✅ Success: MANU KOCHHAR
+→ Done in 3.6253 seconds
+
+→ Employee ID: 79 - Processing...
+✅ Success: SANJEEV KUMAR JHA
+→ Done in 3.8768 seconds
+
+→ Employee ID: 86 - Processing...
+✅ Success: JOGRAJ SINGH
+→ Done in 3.8355 seconds
+
+Completed batch #2
+Processing batch #3
+→ Employee ID: 87 - Processing...
+✅ Success: SUNDER GIRI
+→ Done in 3.8685 seconds
+
+→ Employee ID: 92 - Processing...
+✅ Success: WALI AHMAD
+→ Done in 3.681 seconds
+
+→ Employee ID: 93 - Processing...
+✅ Success: SANTURAM GURUNG
+→ Done in 3.7572 seconds
+
+→ Employee ID: 94 - Processing...
+✅ Success: Sanjeev Kumar
+→ Done in 3.8513 seconds
+
+→ Employee ID: 101 - Processing...
+✅ Success: DINESH KUMAR RAJAK
+→ Done in 2.7939 seconds
+
+→ Employee ID: 102 - Processing...
+✅ Success: SAPNA NISHA
+→ Done in 3.8228 seconds
+
+→ Employee ID: 104 - Processing...
+✅ Success: Rahul S/O SHANTINIKETAN
+→ Done in 3.6528 seconds
+
+→ Employee ID: 107 - Processing...
+✅ Success: Loveesh Jain
+→ Done in 5.0779 seconds
+
+→ Employee ID: 108 - Processing...
+✅ Success: PRATUL KUMAR SINGH
+→ Done in 4.6541 seconds
+
+→ Employee ID: 114 - Processing...
+✅ Success: PRABHU NATH PRASAD
+→ Done in 3.7767 seconds
+
+→ Employee ID: 115 - Processing...
+✅ Success: ANAND MANDAL
+→ Done in 4.0591 seconds
+
+→ Employee ID: 118 - Processing...
+✅ Success: VIJAY KUMAR
+→ Done in 3.8739 seconds
+
+→ Employee ID: 134 - Processing...
+✅ Success: Raju S/o Dinesh
+→ Done in 3.5348 seconds
+
+→ Employee ID: 139 - Processing...
+✅ Success: KAMLESH KUMAR GUPTA
+→ Done in 3.8345 seconds
+
+→ Employee ID: 145 - Processing...
+✅ Success: Aditya Kumar Urf Avdhesh Kumar
+→ Done in 4.0419 seconds
+
+→ Employee ID: 146 - Processing...
+✅ Success: Ajay Kumar
+→ Done in 3.8122 seconds
+
+→ Employee ID: 148 - Processing...
+✅ Success: Amarpal
+→ Done in 3.7788 seconds
+
+→ Employee ID: 152 - Processing...
+✅ Success: Anil Bhati
+→ Done in 3.8043 seconds
+
+→ Employee ID: 153 - Processing...
+✅ Success: Anjani Kumar
+→ Done in 4.3541 seconds
+
+→ Employee ID: 154 - Processing...
+✅ Success: Anshul Kumar
+→ Done in 4.2498 seconds
+
+→ Employee ID: 158 - Processing...
+✅ Success: Birendra Kumar
+→ Done in 3.7288 seconds
+
+→ Employee ID: 160 - Processing...
+✅ Success: Devendra Kumar Gupta
+→ Done in 4.0101 seconds
+
+→ Employee ID: 161 - Processing...
+✅ Success: Dinesh Kumar
+→ Done in 4.3559 seconds
+
+→ Employee ID: 162 - Processing...
+✅ Success: Dinesh Chndr
+→ Done in 4.2319 seconds
+
+→ Employee ID: 163 - Processing...
+✅ Success: Girjesh Kumar
+→ Done in 3.8859 seconds
+
+Completed batch #3
+Processing batch #4
+→ Employee ID: 164 - Processing...
+✅ Success: Gopal Kumar
+→ Done in 3.7685 seconds
+
+→ Employee ID: 165 - Processing...
+✅ Success: Gyanendra Mishra
+→ Done in 3.6867 seconds
+
+→ Employee ID: 167 - Processing...
+✅ Success: Jagroop Kumar
+→ Done in 4.0645 seconds
+
+→ Employee ID: 168 - Processing...
+✅ Success: Jitendra Kumar Rajak
+→ Done in 4.089 seconds
+
+→ Employee ID: 171 - Processing...
+✅ Success: Khalid
+→ Done in 4.5438 seconds
+
+→ Employee ID: 175 - Processing...
+✅ Success: Mahesh Chand Singh
+→ Done in 4.2557 seconds
+
+→ Employee ID: 176 - Processing...
+✅ Success: Manik Das
+→ Done in 4.2893 seconds
+
+→ Employee ID: 178 - Processing...
+✅ Success: Mohammad Umar
+→ Done in 4.1582 seconds
+
+→ Employee ID: 180 - Processing...
+✅ Success: Nanhe Lal
+→ Done in 4.4893 seconds
+
+→ Employee ID: 182 - Processing...
+✅ Success: Narendra Verma
+→ Done in 4.273 seconds
+
+→ Employee ID: 184 - Processing...
+✅ Success: Pappu Ahirwar
+→ Done in 4.5823 seconds
+
+→ Employee ID: 185 - Processing...
+✅ Success: Pradeep Tyagi
+→ Done in 5.4364 seconds
+
+→ Employee ID: 186 - Processing...
+✅ Success: Pradeep Kumar
+→ Done in 5.5259 seconds
+
+→ Employee ID: 189 - Processing...
+✅ Success: Ramsevak
+→ Done in 4.0979 seconds
+
+→ Employee ID: 191 - Processing...
+✅ Success: Shatinder Kumar
+→ Done in 4.1545 seconds
+
+→ Employee ID: 192 - Processing...
+✅ Success: Shiva Nandan
+→ Done in 4.15 seconds
+
+→ Employee ID: 193 - Processing...
+✅ Success: Shivam Kumar
+→ Done in 3.9521 seconds
+
+→ Employee ID: 194 - Processing...
+✅ Success: Shyam Lal
+→ Done in 4.0867 seconds
+
+→ Employee ID: 198 - Processing...
+✅ Success: Tilak Raj
+→ Done in 3.9628 seconds
+
+→ Employee ID: 200 - Processing...
+✅ Success: Vicky Kumar
+→ Done in 3.8018 seconds
+
+→ Employee ID: 202 - Processing...
+✅ Success: Vikram Singh
+→ Done in 3.7585 seconds
+
+→ Employee ID: 203 - Processing...
+✅ Success: Vinit Babu
+→ Done in 3.8245 seconds
+
+→ Employee ID: 205 - Processing...
+✅ Success: Yogendra Kumar Sharma
+→ Done in 4.0157 seconds
+
+→ Employee ID: 211 - Processing...
+✅ Success: GANESH KUMAR
+→ Done in 3.8469 seconds
+
+→ Employee ID: 212 - Processing...
+✅ Success: RAM DHARI
+→ Done in 4.3614 seconds
+
+Completed batch #4
+Processing batch #5
+→ Employee ID: 214 - Processing...
+✅ Success: POORANMASY
+→ Done in 4.7495 seconds
+
+→ Employee ID: 218 - Processing...
+✅ Success: SARAT KUMAR MOHANTY
+→ Done in 5.2335 seconds
+
+→ Employee ID: 221 - Processing...
+✅ Success: Honey Aggarwal
+→ Done in 4.2972 seconds
+
+→ Employee ID: 244 - Processing...
+✅ Success: Sunil Kumar
+→ Done in 3.9092 seconds
+
+→ Employee ID: 247 - Processing...
+✅ Success: Vipin Kumar
+→ Done in 4.403 seconds
+
+→ Employee ID: 248 - Processing...
+✅ Success: Rahul Sinha
+→ Done in 3.8425 seconds
+
+→ Employee ID: 249 - Processing...
+✅ Success: Abdullah Ahmad Siddiquee
+→ Done in 4.2045 seconds
+
+→ Employee ID: 251 - Processing...
+✅ Success: Abhishek Aggarwal
+→ Done in 4.2728 seconds
+
+→ Employee ID: 252 - Processing...
+✅ Success: Amit Kumar
+→ Done in 4.0061 seconds
+
+→ Employee ID: 254 - Processing...
+✅ Success: Rajanish Kumar
+→ Done in 3.9159 seconds
+
+→ Employee ID: 257 - Processing...
+✅ Success: Nishant Rastogi
+→ Done in 4.2213 seconds
+
+→ Employee ID: 258 - Processing...
+✅ Success: Priyanka Gupta
+→ Done in 4.2182 seconds
+
+→ Employee ID: 260 - Processing...
+✅ Success: Anjali
+→ Done in 3.9528 seconds
+
+→ Employee ID: 262 - Processing...
+✅ Success: Dharmendra Kumar
+→ Done in 3.9152 seconds
+
+→ Employee ID: 267 - Processing...
+✅ Success: Ram Chandra
+→ Done in 4.8143 seconds
+
+→ Employee ID: 269 - Processing...
+✅ Success: Subham Priyadarshi
+→ Done in 6.0795 seconds
+
+→ Employee ID: 272 - Processing...
+[CodeIgniter\Database\Exceptions\DatabaseException]
+You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ')
+AND `date` IN ()' at line 3
+at SYSTEMPATH/Database/BaseConnection.php:692
+
+  Caused by:
+  [CodeIgniter\Database\Exceptions\DatabaseException]
+  You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ')
+AND `date` IN ()' at line 3
+  at SYSTEMPATH/Database/MySQLi/Connection.php:332
+
+  Caused by:
+  [mysqli_sql_exception]
+  You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ')
+AND `date` IN ()' at line 3
+  at SYSTEMPATH/Database/MySQLi/Connection.php:327
+
+Backtrace:
+  1    SYSTEMPATH/Database/MySQLi/Connection.php:327
+       mysqli()->query()
+
+  2    SYSTEMPATH/Database/BaseConnection.php:738
+       CodeIgniter\Database\MySQLi\Connection()->execute()
+
+  3    SYSTEMPATH/Database/BaseConnection.php:652
+       CodeIgniter\Database\BaseConnection()->simpleQuery()
+
+  4    SYSTEMPATH/Database/BaseBuilder.php:1649
+       CodeIgniter\Database\BaseConnection()->query()
+
+  5    SYSTEMPATH/Model.php:286
+       CodeIgniter\Database\BaseBuilder()->get()
+
+  6    SYSTEMPATH/BaseModel.php:675
+       CodeIgniter\Model()->doFindAll()
+
+  7    APPPATH/Libraries/AttendanceProcessor.php:162
+       CodeIgniter\BaseModel()->findAll()
+
+  8    APPPATH/Libraries/AttendanceProcessor.php:143
+       App\Libraries\AttendanceProcessor()->insertOrUpdateBatch()
+
+  9    APPPATH/Libraries/AttendanceProcessor.php:80
+       App\Libraries\AttendanceProcessor()->processEmployee()
+
+ 10    APPPATH/Commands/ProcessAttendance.php:91
+       App\Libraries\AttendanceProcessor()->processAll()
+
+ 11    SYSTEMPATH/CLI/Commands.php:70
+       App\Commands\ProcessAttendance()->run()
+
+ 12    SYSTEMPATH/CLI/Console.php:48
+       CodeIgniter\CLI\Commands()->run()
+
+ 13    SYSTEMPATH/Boot.php:360
+       CodeIgniter\CLI\Console()->run()
+
+ 14    SYSTEMPATH/Boot.php:104
+       CodeIgniter\Boot::runCommand()
+
+ 15    ROOTPATH/spark:84
+       CodeIgniter\Boot::bootSpark()
+

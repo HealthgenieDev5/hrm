@@ -1,0 +1,38 @@
+# ===================================================================
+# Add these lines to D:/LOCALHOST/hrm.healthgenie/.env
+# ===================================================================
+
+#--------------------------------------------------------------------
+# Attendance API Configuration
+#--------------------------------------------------------------------
+
+# Enable/Disable API usage (set to 'false' to use local processing)
+USE_ATTENDANCE_API = true
+
+# API Base URL
+ATTENDANCE_API_URL = http://localhost:8001/api/v1
+
+# API Authentication (get these from Laravel API .env after setup)
+ATTENDANCE_API_KEY = your_api_key_here_change_this
+ATTENDANCE_API_SECRET = your_secret_here_change_this
+
+# API Timeout (in seconds)
+ATTENDANCE_API_TIMEOUT = 30
+
+# Fallback to local processing if API is down
+ATTENDANCE_API_FALLBACK_TO_LOCAL = true
+
+#--------------------------------------------------------------------
+# API Database Connection (for syncing data)
+#--------------------------------------------------------------------
+
+database.api_database.hostname = localhost
+database.api_database.database = hrm_attendance_api
+database.api_database.username = root
+database.api_database.password = mysql
+database.api_database.DBDriver = MySQLi
+database.api_database.DBPort = 3306
+database.api_database.DBCollat = utf8_general_ci
+database.api_database.charset = utf8
+database.api_database.pConnect = false
+database.api_database.DBDebug = true

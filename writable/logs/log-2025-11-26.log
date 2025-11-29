@@ -1,0 +1,36 @@
+CRITICAL - 2025-11-26 06:28:40 --> ParseError: syntax error, unexpected token ";"
+[Method: POST, Route: ajax/hr/employee/get-one-year-anniversary-employees]
+in APPPATH\Controllers\Master\Employee\Edit.php on line 1327.
+ 1 VENDORPATH\composer\ClassLoader.php(427): Composer\Autoload\{closure}('D:\\LOCALHOST\\hrm.healthgenie\\vendor\\composer/../../app/Controllers/Master/Employee/Edit.php')
+ 2 [internal function]: Composer\Autoload\ClassLoader->loadClass('App\\Controllers\\Master\\Employee\\Edit')
+ 3 SYSTEMPATH\CodeIgniter.php(885): class_exists('\\App\\Controllers\\Master\\Employee\\Edit', true)
+ 4 SYSTEMPATH\CodeIgniter.php(494): CodeIgniter\CodeIgniter->startController()
+ 5 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 6 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 7 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 8 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ 9 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+CRITICAL - 2025-11-26 07:08:28 --> ParseError: syntax error, unexpected token ";"
+[Method: GET, Route: backend/master/employee/edit/id/329]
+in APPPATH\Controllers\Master\Employee\Edit.php on line 1327.
+ 1 VENDORPATH\composer\ClassLoader.php(427): Composer\Autoload\{closure}('D:\\LOCALHOST\\hrm.healthgenie\\vendor\\composer/../../app/Controllers/Master/Employee/Edit.php')
+ 2 [internal function]: Composer\Autoload\ClassLoader->loadClass('App\\Controllers\\Master\\Employee\\Edit')
+ 3 SYSTEMPATH\CodeIgniter.php(885): class_exists('\\App\\Controllers\\Master\\Employee\\Edit', true)
+ 4 SYSTEMPATH\CodeIgniter.php(494): CodeIgniter\CodeIgniter->startController()
+ 5 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 6 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 7 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 8 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ 9 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+CRITICAL - 2025-11-26 09:39:40 --> ParseError: syntax error, unexpected token ";"
+[Method: GET, Route: backend/master/employee/edit/id/176]
+in APPPATH\Controllers\Master\Employee\Edit.php on line 1327.
+ 1 VENDORPATH\composer\ClassLoader.php(427): Composer\Autoload\{closure}('D:\\LOCALHOST\\hrm.healthgenie\\vendor\\composer/../../app/Controllers/Master/Employee/Edit.php')
+ 2 [internal function]: Composer\Autoload\ClassLoader->loadClass('App\\Controllers\\Master\\Employee\\Edit')
+ 3 SYSTEMPATH\CodeIgniter.php(885): class_exists('\\App\\Controllers\\Master\\Employee\\Edit', true)
+ 4 SYSTEMPATH\CodeIgniter.php(494): CodeIgniter\CodeIgniter->startController()
+ 5 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 6 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 7 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 8 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ 9 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')

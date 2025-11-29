@@ -1,0 +1,100 @@
+# ===================================================================
+# Laravel API .env Configuration
+# Copy to D:/LOCALHOST/hrm-attendance-api/.env
+# ===================================================================
+
+APP_NAME="Attendance API"
+APP_ENV=local
+APP_KEY=base64:GENERATE_WITH_php_artisan_key:generate
+APP_DEBUG=true
+APP_TIMEZONE=Asia/Kolkata
+APP_URL=http://localhost:8001
+
+APP_LOCALE=en
+APP_FALLBACK_LOCALE=en
+APP_FAKER_LOCALE=en_US
+
+APP_MAINTENANCE_DRIVER=file
+APP_MAINTENANCE_STORE=database
+
+#--------------------------------------------------------------------
+# Database Configuration
+#--------------------------------------------------------------------
+
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=hrm_attendance_api
+DB_USERNAME=root
+DB_PASSWORD=mysql
+
+#--------------------------------------------------------------------
+# Cache Configuration
+#--------------------------------------------------------------------
+
+CACHE_STORE=file
+CACHE_PREFIX=
+
+#--------------------------------------------------------------------
+# Logging
+#--------------------------------------------------------------------
+
+LOG_CHANNEL=stack
+LOG_STACK=single
+LOG_DEPRECATIONS_CHANNEL=null
+LOG_LEVEL=debug
+
+#--------------------------------------------------------------------
+# eTime Office API Configuration - Delhi
+#--------------------------------------------------------------------
+
+ETIME_DEL_API_URL=https://api.etimeoffice.com/api/DownloadInOutPunchData
+ETIME_DEL_CORPORATE_ID=your_corporate_id
+ETIME_DEL_USERNAME=your_username
+ETIME_DEL_PASSWORD=your_password
+
+#--------------------------------------------------------------------
+# eTime Office API Configuration - Gurgaon
+#--------------------------------------------------------------------
+
+ETIME_GGN_API_URL=https://api.etimeoffice.com/api/DownloadInOutPunchData
+ETIME_GGN_CORPORATE_ID=your_corporate_id
+ETIME_GGN_USERNAME=your_username
+ETIME_GGN_PASSWORD=your_password
+
+#--------------------------------------------------------------------
+# eTime Office API Configuration - Noida/Heuer
+#--------------------------------------------------------------------
+
+ETIME_HN_API_URL=https://api.etimeoffice.com/api/DownloadInOutPunchData
+ETIME_HN_CORPORATE_ID=your_corporate_id
+ETIME_HN_USERNAME=your_username
+ETIME_HN_PASSWORD=your_password
+
+#--------------------------------------------------------------------
+# eTime Office API Configuration - Sikandrabad/Bangalore
+#--------------------------------------------------------------------
+
+ETIME_SKBD_API_URL=https://api.etimeoffice.com/api/DownloadInOutPunchData
+ETIME_SKBD_CORPORATE_ID=your_corporate_id
+ETIME_SKBD_USERNAME=your_username
+ETIME_SKBD_PASSWORD=your_password
+
+#--------------------------------------------------------------------
+# JWT Authentication
+#--------------------------------------------------------------------
+
+JWT_SECRET=GENERATE_WITH_php_artisan_jwt:secret
+JWT_TTL=3600
+
+#--------------------------------------------------------------------
+# API Keys (for HRM portal authentication)
+#--------------------------------------------------------------------
+
+# Generate secure random keys for production
+API_KEY_1=your_generated_api_key_here_min_32_chars
+API_SECRET_1=your_generated_secret_here_min_32_chars
+
+# You can add multiple API key/secret pairs for different clients
+# API_KEY_2=another_key
+# API_SECRET_2=another_secret

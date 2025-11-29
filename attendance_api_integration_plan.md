@@ -1,0 +1,2438 @@
+# API-Based Attendance Reduction Architecture Plan
+
+## Executive Summary
+
+This document outlines an **alternative architecture** where attendance reduction logic is handled via a **standalone API service**. The current HRM portal will call this API to retrieve processed attendance data with reduction already applied based on shift types (regular/reduce), preserving raw punch-in/punch-out data while providing adjusted work hours.
+
+---
+
+## 1. Architecture Overview
+
+### 1.1 Current System (Monolithic)
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                   HRM Portal (CodeIgniter 4)            │
+│  ┌───────────────────────────────────────────────────┐  │
+│  │  Attendance Processor (Pipeline)                  │  │
+│  │  ├─ Fetch Punching Data                           │  │
+│  │  ├─ Calculate Work Hours                          │  │
+│  │  ├─ Apply Reductions (NEW)                        │  │
+│  │  ├─ Determine Status (Present/Absent/Half-day)    │  │
+│  │  └─ Generate Reports                              │  │
+│  └───────────────────────────────────────────────────┘  │
+│                                                          │
+│  Database (MySQL): employees, shifts, punching_data     │
+└─────────────────────────────────────────────────────────┘
+```
+
+### 1.2 Proposed System (API-Based with Separate Databases + Data Sync)
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                    HRM Database (Existing)                              │
+│  ┌──────────────────────────────────────────────────────────────┐      │
+│  │  Tables:                                                     │      │
+│  │  - employees (full employee data)                            │      │
+│  │  - shifts (with shift_type, reduction_percentage)            │      │
+│  │  - raw_attendance (punching data from eTime Office)          │      │
+│  │  - shift_per_day                                             │      │
+│  │  - pre_final_paid_days                                       │      │
+│  │  - + all other HRM tables                                    │      │
+│  └──────────────────────────────────────────────────────────────┘      │
+└────────────┬────────────────────────────────────────────────────────────┘
+             │
+             │ Read/Write
+             │
+┌────────────┴────────────────────┐
+│  HRM Portal (CodeIgniter 4)     │
+│                                 │        Data Sync (Periodic)
+│  ┌───────────────────────────┐  │        ─────────────────────────>
+│  │  Attendance Processor     │  │
+│  │  eTime Office Sync        │  │        Syncs to API DB:
+│  └───────────────────────────┘  │        - employees (basic fields)
+│                                 │        - shifts
+│  Sends to API:                  │        - raw_attendance
+│  - employee_id                  │
+│  - shift_id                     │
+│  - date                         │
+│                                 │
+│  Receives from API:             │
+│  - Complete attendance data     │
+└─────────────────────────────────┘
+             │
+             │ HTTP REST API
+             ↓
+┌──────────────────────────────────────────────────────────────────────────┐
+│  Attendance API (Laravel)                                                │
+│                                                                          │
+│  POST /api/v1/attendance/process/single                                 │
+│                                                                          │
+│  ┌─────────────────────────────┐                                        │
+│  │ Input (minimal):            │                                        │
+│  │  - employee_id              │                                        │
+│  │  - shift_id                 │                                        │
+│  │  - date                     │                                        │
+│  │                             │                                        │
+│  │ Processing:                 │                                        │
+│  │  1. Fetch shift details     │────┐                                   │
+│  │  2. Fetch punching data     │    │                                   │
+│  │  3. Calculate hours         │    │                                   │
+│  │  4. Apply reduction         │    │                                   │
+│  │                             │    │                                   │
+│  │ Output (complete):          │    │                                   │
+│  │  - 18 fields (all HRM needs)│    │                                   │
+│  └─────────────────────────────┘    │                                   │
+│                                     │                                   │
+│  Cache (Redis - Optional)           │                                   │
+└─────────────────────────────────────┼───────────────────────────────────┘
+                                      │
+                                      │ Read Only
+                                      ↓
+┌──────────────────────────────────────────────────────────────────────────┐
+│                    API Database (Separate - Laravel)                     │
+│  ┌────────────────────────────────────────────────────────────────┐     │
+│  │  Tables (Synced from HRM):                                     │     │
+│  │  - employees (employee_id, name, joining_date, exit_date)      │     │
+│  │  - shifts (shift_id, shift_type, reduction_percentage, etc.)   │     │
+│  │  - raw_attendance (Empcode, INTime, OUTTime, DateString_2)     │     │
+│  │                                                                 │     │
+│  │  Note: Only essential fields needed for calculation            │     │
+│  └────────────────────────────────────────────────────────────────┘     │
+└──────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## 2. Benefits of API-Based Architecture
+
+### 2.1 Separation of Concerns
+
+- **HRM Portal**: Focuses on UI, user management, raw data storage
+- **API Service**: Focuses exclusively on attendance calculation and reduction logic
+- Easier to maintain, test, and update each component independently
+
+### 2.2 Scalability
+
+- API can be scaled horizontally (multiple instances behind load balancer)
+- Heavy attendance processing doesn't impact HRM portal performance
+- Can handle bulk processing for month-end reports efficiently
+
+### 2.3 Flexibility
+
+- API can be consumed by multiple clients (web portal, mobile app, reporting tools)
+- Easy to version (v1, v2) without breaking existing integrations
+- Can switch implementation technology (PHP → Node.js → Go) without affecting HRM portal
+
+### 2.4 Reusability
+
+- Same API can be used for:
+  - Real-time attendance display
+  - Bulk report generation
+  - Payroll integration
+  - Mobile app attendance views
+  - Third-party integrations
+
+### 2.5 Testing & Debugging
+
+- API can be tested independently with mock data
+- Easier to debug reduction logic in isolation
+- Can implement comprehensive logging without affecting main portal
+
+### 2.6 Data Integrity
+
+- Raw punching data remains untouched in HRM database
+- All calculations are stateless and reproducible
+- Easy to recalculate historical data with new rules
+
+---
+
+## 3. API Design Specification
+
+### 3.1 Base URL
+
+```
+Production:  https://api.healthgenie.in/attendance/v1
+Staging:     https://staging-api.healthgenie.in/attendance/v1
+Development: http://localhost:3000/api/v1
+```
+
+### 3.2 Authentication
+
+**Method**: API Key + JWT Token
+
+```http
+POST /api/v1/auth/token
+Content-Type: application/json
+
+{
+  "api_key": "your_api_key_here",
+  "secret": "your_secret_here"
+}
+
+Response:
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "expires_in": 3600
+}
+```
+
+All subsequent requests include:
+
+```http
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+```
+
+### 3.3 Core Endpoints
+
+#### 3.3.1 Process Single Day Attendance (Unified Endpoint - Minimal API)
+
+**Important**: This is a **single unified endpoint** that intelligently handles BOTH regular and reduce shift types. The API automatically fetches shift details from the shared database using `shift_id` and applies the appropriate logic.
+
+**Key Features:**
+
+- **Minimal Request**: Only send `employee_id`, `shift_id`, `date` (no punching data, no shift details)
+- **Complete Response**: Receive all data needed by HRM portal (no code changes required in HRM)
+- **API Fetches Everything**: Punching data, shift details, rules all fetched from shared database
+- **Auto-Detection**: API automatically detects shift type and applies reduction
+- **Zero HRM Changes**: Response format matches what HRM expects, just drop-in API integration
+
+##### Example 1: Regular Shift (No Reduction)
+
+```http
+POST /api/v1/attendance/process/single
+Content-Type: application/json
+Authorization: Bearer {token}
+
+Request Body (MINIMAL INPUT - Only 3 fields):
+{
+  "employee_id": 123,
+  "shift_id": 5,
+  "date": "2025-10-04"
+}
+
+Response (200 OK - COMPLETE OUTPUT with all necessary data):
+{
+  "employee_id": 123,
+  "shift_id": 5,
+  "date": "2025-10-04",
+
+  "punch_in_original": "09:00:00",
+  "punch_out_original": "19:00:00",
+  "punch_in_adjusted": "09:00:00",
+  "punch_out_adjusted": "19:00:00",
+
+  "work_minutes_original": 600,
+  "work_minutes_adjusted": 600,
+  "work_hours_original": "10:00",
+  "work_hours_adjusted": "10:00",
+
+  "reduction_applied": false,
+  "reduction_percentage": 100.00,
+  "minutes_reduced": 0,
+
+  "late_coming_minutes": 0,
+  "early_going_minutes": 0,
+  "deduction_minutes": 0,
+
+  "is_present": "yes",
+  "is_absent": "no",
+  "is_half_day": "no",
+  "absent_because_of_work_hours": "no",
+  "half_day_because_of_work_hours": "no"
+}
+```
+
+**What Happens Inside the API:**
+
+1. API receives `shift_id=5`, queries database: `SELECT * FROM shifts WHERE shift_id=5`
+2. Database returns: `shift_type='regular'`, `reduction_percentage=100.00`
+3. API fetches punching data: `SELECT * FROM raw_attendance WHERE Empcode=123 AND DateString='2025-10-04'`
+4. API calculates work minutes: `600 minutes`
+5. API sees `shift_type='regular'`, so NO reduction applied
+6. API returns: `work_minutes_adjusted=600` (same as original)
+
+##### Example 2: Reduce Shift (With Reduction)
+
+```http
+POST /api/v1/attendance/process/single
+Content-Type: application/json
+Authorization: Bearer {token}
+
+Request Body (MINIMAL INPUT - Only 3 fields):
+{
+  "employee_id": 124,
+  "shift_id": 6,
+  "date": "2025-10-04"
+}
+
+Response (200 OK - COMPLETE OUTPUT with all necessary data):
+{
+  "employee_id": 124,
+  "shift_id": 6,
+  "date": "2025-10-04",
+
+  "punch_in_original": "09:15:00",
+  "punch_out_original": "19:30:00",
+  "punch_in_adjusted": "09:15:00",
+  "punch_out_adjusted": "15:55:00",
+
+  "work_minutes_original": 600,
+  "work_minutes_adjusted": 400,
+  "work_hours_original": "10:00",
+  "work_hours_adjusted": "06:40",
+
+  "reduction_applied": true,
+  "reduction_percentage": 66.67,
+  "minutes_reduced": 200,
+
+  "late_coming_minutes": 15,
+  "early_going_minutes": 0,
+  "deduction_minutes": 0,
+
+  "is_present": "yes",
+  "is_absent": "no",
+  "is_half_day": "no",
+  "absent_because_of_work_hours": "no",
+  "half_day_because_of_work_hours": "no"
+}
+```
+
+**What Happens Inside the API:**
+
+1. API receives `shift_id=6`, queries database: `SELECT * FROM shifts WHERE shift_id=6`
+2. Database returns: `shift_type='reduce'`, `reduction_percentage=66.67`
+3. API fetches punching data: `SELECT * FROM raw_attendance WHERE Empcode=124 AND DateString='2025-10-04'`
+4. API calculates original work minutes: `600 minutes`
+5. API sees `shift_type='reduce'`, applies reduction: `600 × (66.67/100) = 400 minutes`
+6. API returns: `work_minutes_adjusted=400` (reduced from 600)
+
+##### Side-by-Side Comparison
+
+| Aspect                             | Regular Shift                       | Reduce Shift                        |
+| ---------------------------------- | ----------------------------------- | ----------------------------------- |
+| **Endpoint**                       | `/api/v1/attendance/process/single` | `/api/v1/attendance/process/single` |
+| **Request Size**                   | 3 fields only                       | 3 fields only                       |
+| **Request**                        | `{ employee_id, shift_id, date }`   | `{ employee_id, shift_id, date }`   |
+| **shift_type (from DB)**           | `"regular"` (fetched by API)        | `"reduce"` (fetched by API)         |
+| **reduction_percentage (from DB)** | `100.00` (fetched by API)           | `66.67` (fetched by API)            |
+| **work_minutes_adjusted**          | `600` (no reduction)                | `400` (reduced from 600)            |
+| **reduction_applied**              | `false`                             | `true`                              |
+| **Response Size**                  | 15+ fields (complete data)          | 15+ fields (complete data)          |
+| **Request Data Transfer**          | **95% less** input                  | **95% less** input                  |
+
+**Key Takeaways**:
+
+- **Minimal INPUT**: HRM portal sends only 3 fields: `employee_id`, `shift_id`, `date`
+- **Complete OUTPUT**: API returns all 18 fields needed by HRM (no HRM code changes)
+- **Auto-Detection**: API fetches shift_type from database using shift_id
+- **Unified Logic**: Same endpoint automatically handles both regular and reduce shifts
+- **Zero Changes**: HRM receives same data structure it currently expects
+
+**Complete Field Mapping** (API Output → HRM Variables):
+
+```php
+// Punch Times
+$punching_row['in_time'] = $apiResult['punch_in_adjusted'];
+$punching_row['out_time'] = $apiResult['punch_out_adjusted'];
+
+// Work Hours/Minutes
+$punching_row['work_minutes_between_shifts_including_od'] = $apiResult['work_minutes_adjusted'];
+$punching_row['work_hours_between_shifts_including_od'] = $apiResult['work_hours_adjusted'];
+
+// Deductions
+$punching_row['late_coming_minutes'] = $apiResult['late_coming_minutes'];
+$punching_row['early_going_minutes'] = $apiResult['early_going_minutes'];
+$punching_row['deduction_minutes'] = $apiResult['deduction_minutes'];
+
+// Reduction Metadata
+$punching_row['reduction_applied'] = $apiResult['reduction_applied'];
+$punching_row['reduction_percentage'] = $apiResult['reduction_percentage'];
+$punching_row['minutes_reduced'] = $apiResult['minutes_reduced'];
+
+// Status Flags
+$punching_row['is_present'] = $apiResult['is_present'];
+$punching_row['is_absent'] = $apiResult['is_absent'];
+$punching_row['is_half_day'] = $apiResult['is_half_day'];
+$punching_row['half_day_because_of_work_hours'] = $apiResult['half_day_because_of_work_hours'];
+$punching_row['absent_because_of_work_hours'] = $apiResult['absent_because_of_work_hours'];
+```
+
+#### 3.3.2 Process Date Range (Bulk)
+
+```http
+POST /api/v1/attendance/process/bulk
+Content-Type: application/json
+Authorization: Bearer {token}
+
+Request Body (MINIMAL INPUT):
+{
+  "employee_id": 123,
+  "date_from": "2025-10-01",
+  "date_to": "2025-10-31"
+}
+
+Response (200 OK - COMPLETE OUTPUT):
+{
+  "employee_id": 123,
+  "date_from": "2025-10-01",
+  "date_to": "2025-10-31",
+  "records": [
+    {
+      "date": "2025-10-01",
+      "shift_id": 6,
+      "work_minutes_original": 600,
+      "work_minutes_adjusted": 400,
+      "work_hours_original": "10:00",
+      "work_hours_adjusted": "06:40",
+      "reduction_applied": true,
+      "reduction_percentage": 66.67,
+      "minutes_reduced": 200,
+      "late_coming_minutes": 0,
+      "early_going_minutes": 0,
+      "deduction_minutes": 0,
+      "is_present": "yes",
+      "is_absent": "no",
+      "is_half_day": "no"
+    },
+    {
+      "date": "2025-10-02",
+      "shift_id": 6,
+      "work_minutes_original": 600,
+      "work_minutes_adjusted": 400,
+      // ... all fields same as above
+    }
+    // ... more daily records
+  ]
+}
+```
+
+**What the API Does:**
+
+1. Fetches all shifts for employee between date range from `shift_per_day` table
+2. For each day, fetches punching data from `raw_attendance`
+3. For each day, reads shift details (shift_type, reduction_percentage) from `shifts` table
+4. Calculates all required fields including deductions, status flags
+5. Returns array of complete records with all data HRM needs
+
+#### 3.3.3 Health Check
+
+```http
+GET /api/v1/health
+Response (200 OK):
+{
+  "status": "healthy",
+  "version": "1.0.0",
+  "uptime": 86400,
+  "database": "connected",
+  "cache": "connected"
+}
+```
+
+### 3.4 Error Responses (Minimal)
+
+```http
+400 Bad Request:
+{
+  "error": "Invalid date format"
+}
+
+401 Unauthorized:
+{
+  "error": "Invalid or expired token"
+}
+
+404 Not Found:
+{
+  "error": "Employee or shift not found"
+}
+
+500 Internal Server Error:
+{
+  "error": "Internal server error"
+}
+```
+
+**Note**: Minimal error responses with simple error messages. Detailed logging happens server-side only.
+
+---
+
+## 3.5 Database Architecture: Separate Databases with Data Sync
+
+### Overview
+
+You have **TWO separate databases**:
+
+1. **HRM Database** (Existing) - Your CodeIgniter portal database
+2. **API Database** (New) - Separate Laravel API database
+
+Data flows from HRM → API database via synchronization.
+
+### Data Flow
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  eTime Office Systems (4 Locations)                             │
+│  - Delhi (del)  - Gurgaon (ggn)  - Noida (hn)  - Bangalore (skbd)│
+└────────────┬────────────────────────────────────────────────────┘
+             │
+             │ ✅ NEW: API fetches from eTime Office (moved from HRM)
+             │ Laravel Cron Job / Scheduled Task
+             ↓
+┌─────────────────────────────────────────────────────────────────┐
+│  API Database (Laravel) - MASTER FOR ATTENDANCE                 │
+│  - employees (synced from HRM)                                  │
+│  - shifts (synced from HRM)                                     │
+│  - raw_attendance (fetched from eTime Office by API)            │
+│  Note: API owns the eTime Office integration now                │
+└────────────┬────────────────────────────────────────────────────┘
+             │
+             │ Read by API for processing
+             ↓
+┌─────────────────────────────────────────────────────────────────┐
+│  Laravel Attendance API                                         │
+│  - Fetches from eTime Office (NEW responsibility)               │
+│  - Stores in API Database                                       │
+│  - Reads from API Database                                      │
+│  - Calculates attendance with reduction                         │
+│  - Returns processed data to HRM                                │
+└─────────────────────────────────────────────────────────────────┘
+             │
+             │ HTTP Response (processed attendance data)
+             ↓
+┌─────────────────────────────────────────────────────────────────┐
+│  HRM Portal (CodeIgniter 4)                                     │
+│  - Manages employees and shifts                                 │
+│  - Calls API for attendance processing                          │
+│  - Receives processed attendance data                           │
+│  - Displays in UI                                               │
+└────────────┬────────────────────────────────────────────────────┘
+             │
+             │ Sync: HRM → API (employees, shifts only)
+             │ Cron job every 5 minutes
+             ↓
+┌─────────────────────────────────────────────────────────────────┐
+│  HRM Database (CodeIgniter) - MASTER FOR HR DATA                │
+│  - employees (full employee data)                               │
+│  - shifts (shift configurations)                                │
+│  - pre_final_paid_days (processed attendance from API)          │
+│  - payroll, leaves, etc.                                        │
+│  Note: NO raw_attendance table (moved to API)                   │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### Data Sync Strategy
+
+**Direction of Sync:**
+
+- **HRM → API**: Only `employees` and `shifts` tables (every 5 minutes)
+- **eTime Office → API**: Raw attendance data (API fetches directly)
+
+**What Changed:**
+
+- ❌ **REMOVED from HRM**: eTime Office integration (delete existing cron jobs)
+- ✅ **MOVED to API**: eTime Office integration (new Laravel code)
+- ✅ **HRM → API Sync**: Only employee and shift master data
+
+---
+
+## 3.6 eTime Office Integration in Laravel API (NEW)
+
+### Overview
+
+The **Laravel API** will now handle all eTime Office integration. Move the existing HRM eTime sync logic to Laravel.
+
+### Laravel Service for eTime Office Sync
+
+**File:** `app/Services/ETimeOfficeService.php`
+
+```php
+<?php
+
+namespace App\Services;
+
+use App\Models\RawAttendance;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+use Carbon\Carbon;
+
+class ETimeOfficeService
+{
+    private $locations = [
+        'del' => [
+            'url' => null,
+            'corporate_id' => null,
+            'username' => null,
+            'password' => null,
+        ],
+        'ggn' => [
+            'url' => null,
+            'corporate_id' => null,
+            'username' => null,
+            'password' => null,
+        ],
+        'hn' => [
+            'url' => null,
+            'corporate_id' => null,
+            'username' => null,
+            'password' => null,
+        ],
+        'skbd' => [
+            'url' => null,
+            'corporate_id' => null,
+            'username' => null,
+            'password' => null,
+        ],
+    ];
+
+    public function __construct()
+    {
+        // Load from .env
+        foreach (['del', 'ggn', 'hn', 'skbd'] as $location) {
+            $this->locations[$location] = [
+                'url' => env("ETIME_{$location}_API_URL"),
+                'corporate_id' => env("ETIME_{$location}_CORPORATE_ID"),
+                'username' => env("ETIME_{$location}_USERNAME"),
+                'password' => env("ETIME_{$location}_PASSWORD"),
+            ];
+        }
+    }
+
+    /**
+     * Fetch punching data from all eTime Office locations
+     */
+    public function syncAllLocations($employeeCode = 'ALL', $fromDate = null, $toDate = null)
+    {
+        $fromDate = $fromDate ?? Carbon::now()->startOfMonth()->format('d/m/Y');
+        $toDate = $toDate ?? Carbon::now()->format('d/m/Y');
+
+        $totalSynced = 0;
+
+        foreach (['del', 'ggn', 'hn', 'skbd'] as $location) {
+            Log::info("Syncing eTime Office data for location: {$location}");
+
+            $synced = $this->syncLocation($location, $employeeCode, $fromDate, $toDate);
+            $totalSynced += $synced;
+
+            Log::info("Synced {$synced} records from {$location}");
+        }
+
+        return $totalSynced;
+    }
+
+    /**
+     * Fetch punching data from specific location
+     */
+    private function syncLocation($location, $employeeCode, $fromDate, $toDate)
+    {
+        $config = $this->locations[$location];
+
+        if (!$config['url']) {
+            Log::warning("eTime Office config missing for location: {$location}");
+            return 0;
+        }
+
+        // Build authentication token
+        $authString = "{$config['corporate_id']}:{$config['username']}:{$config['password']}:true";
+        $authToken = base64_encode($authString);
+
+        // Call eTime Office API
+        $response = Http::withHeaders([
+            'Authorization' => 'Basic ' . $authToken,
+        ])->get($config['url'], [
+            'Empcode' => $employeeCode,
+            'FromDate' => $fromDate,
+            'ToDate' => $toDate,
+        ]);
+
+        if (!$response->successful()) {
+            Log::error("eTime Office API failed for {$location}: " . $response->body());
+            return 0;
+        }
+
+        $data = $response->json();
+
+        if (empty($data)) {
+            return 0;
+        }
+
+        // Save to database
+        return $this->savePunchingData($data, $location);
+    }
+
+    /**
+     * Save punching data to raw_attendance table
+     */
+    private function savePunchingData($records, $machine)
+    {
+        $savedCount = 0;
+
+        foreach ($records as $record) {
+            try {
+                // Convert DD/MM/YYYY to YYYY-MM-DD
+                $dateString2 = Carbon::createFromFormat('d/m/Y', $record['DateString'])->format('Y-m-d');
+
+                RawAttendance::updateOrCreate(
+                    [
+                        'Empcode' => $record['Empcode'],
+                        'DateString_2' => $dateString2,
+                    ],
+                    [
+                        'INTime' => $record['INTime'] ?? null,
+                        'OUTTime' => $record['OUTTime'] ?? null,
+                        'Remark' => $record['Remark'] ?? null,
+                        'DateString' => $record['DateString'],
+                        'machine' => $machine,
+                        'default_machine' => $machine,
+                        'override_machine' => null,
+                    ]
+                );
+
+                $savedCount++;
+            } catch (\Exception $e) {
+                Log::error("Failed to save punching record: " . $e->getMessage());
+            }
+        }
+
+        return $savedCount;
+    }
+
+    /**
+     * Sync today's data for all employees
+     */
+    public function syncToday()
+    {
+        $today = Carbon::now()->format('d/m/Y');
+        return $this->syncAllLocations('ALL', $today, $today);
+    }
+
+    /**
+     * Sync current month data
+     */
+    public function syncCurrentMonth()
+    {
+        $fromDate = Carbon::now()->startOfMonth()->format('d/m/Y');
+        $toDate = Carbon::now()->format('d/m/Y');
+        return $this->syncAllLocations('ALL', $fromDate, $toDate);
+    }
+
+    /**
+     * Sync specific employee for date range
+     */
+    public function syncEmployee($employeeCode, $fromDate, $toDate)
+    {
+        return $this->syncAllLocations($employeeCode, $fromDate, $toDate);
+    }
+}
+```
+
+### Laravel Scheduled Task (Cron)
+
+**File:** `app/Console/Kernel.php`
+
+```php
+<?php
+
+namespace App\Console;
+
+use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+
+class Kernel extends ConsoleKernel
+{
+    protected function schedule(Schedule $schedule)
+    {
+        // Sync eTime Office data every 10 minutes
+        $schedule->call(function () {
+            $service = new \App\Services\ETimeOfficeService();
+            $synced = $service->syncToday();
+            \Log::info("eTime Office sync completed: {$synced} records");
+        })->everyTenMinutes();
+
+        // Full month sync once daily at 2 AM
+        $schedule->call(function () {
+            $service = new \App\Services\ETimeOfficeService();
+            $synced = $service->syncCurrentMonth();
+            \Log::info("eTime Office monthly sync: {$synced} records");
+        })->dailyAt('02:00');
+    }
+}
+```
+
+### Laravel .env Configuration
+
+```env
+# eTime Office - Delhi
+ETIME_DEL_API_URL=https://api.etimeoffice.com/api/DownloadPunchData
+ETIME_DEL_CORPORATE_ID=your_del_corporate_id
+ETIME_DEL_USERNAME=your_del_username
+ETIME_DEL_PASSWORD=your_del_password
+
+# eTime Office - Gurgaon
+ETIME_GGN_API_URL=https://api.etimeoffice.com/api/DownloadPunchData
+ETIME_GGN_CORPORATE_ID=your_ggn_corporate_id
+ETIME_GGN_USERNAME=your_ggn_username
+ETIME_GGN_PASSWORD=your_ggn_password
+
+# eTime Office - Noida
+ETIME_HN_API_URL=https://api.etimeoffice.com/api/DownloadPunchData
+ETIME_HN_CORPORATE_ID=your_hn_corporate_id
+ETIME_HN_USERNAME=your_hn_username
+ETIME_HN_PASSWORD=your_hn_password
+
+# eTime Office - Bangalore
+ETIME_SKBD_API_URL=https://api.etimeoffice.com/api/DownloadPunchData
+ETIME_SKBD_CORPORATE_ID=your_skbd_corporate_id
+ETIME_SKBD_USERNAME=your_skbd_username
+ETIME_SKBD_PASSWORD=your_skbd_password
+```
+
+### Run Laravel Scheduler
+
+Add to your server crontab:
+
+```bash
+* * * * * cd /path/to/laravel-api && php artisan schedule:run >> /dev/null 2>&1
+```
+
+This runs Laravel's scheduler every minute, which then executes your eTime sync tasks.
+
+---
+
+### HRM Portal Sync (Only Employees & Shifts)
+
+Now update the sync to **only sync employees and shifts** (NOT raw_attendance):
+
+**File:** `app/Commands/SyncToApiDatabase.php` (CodeIgniter - UPDATED)
+
+```php
+<?php
+namespace App\Commands;
+
+use CodeIgniter\CLI\BaseCommand;
+use CodeIgniter\CLI\CLI;
+
+class SyncToApiDatabase extends BaseCommand
+{
+    protected $group       = 'sync';
+    protected $name        = 'sync:api-database';
+    protected $description = 'Sync employees and shifts to API database (NO raw_attendance)';
+
+    public function run(array $params)
+    {
+        $apiDb = \Config\Database::connect('api_database');
+        $hrmDb = \Config\Database::connect('default');
+
+        CLI::write('Starting sync to API database...', 'green');
+
+        // 1. Sync Employees (only essential fields)
+        $this->syncEmployees($hrmDb, $apiDb);
+
+        // 2. Sync Shifts
+        $this->syncShifts($hrmDb, $apiDb);
+
+        // NO LONGER SYNCING raw_attendance - API fetches from eTime Office
+
+        CLI::write('Sync completed successfully!', 'green');
+    }
+
+    private function syncEmployees($hrmDb, $apiDb)
+    {
+        CLI::write('Syncing employees...', 'yellow');
+
+        $employees = $hrmDb->table('employees')
+            ->select('employee_id, name, joining_date, exit_date')
+            ->get()
+            ->getResultArray();
+
+        foreach ($employees as $emp) {
+            $apiDb->table('employees')->replace($emp);
+        }
+
+        CLI::write(count($employees) . ' employees synced', 'green');
+    }
+
+    private function syncShifts($hrmDb, $apiDb)
+    {
+        CLI::write('Syncing shifts...', 'yellow');
+
+        $shifts = $hrmDb->table('shifts')->get()->getResultArray();
+
+        foreach ($shifts as $shift) {
+            $apiDb->table('shifts')->replace($shift);
+        }
+
+        CLI::write(count($shifts) . ' shifts synced', 'green');
+    }
+}
+```
+
+**Cron Job (HRM Server):**
+
+```bash
+# Sync employees and shifts every 5 minutes
+*/5 * * * * cd /path/to/hrm && php spark sync:api-database >> /var/log/api-sync.log 2>&1
+```
+
+---
+
+### Summary of eTime Office Migration
+
+#### What to REMOVE from HRM Portal:
+
+```bash
+# Delete or disable these cron jobs in HRM:
+# /cron/rawattendance/save
+# php spark attendance:process (eTime sync part)
+```
+
+**Files to Remove/Archive in HRM:**
+
+- `app/Helpers/Config_defaults_helper.php` (eTime Office functions)
+- Cron routes related to eTime sync
+- Any manual eTime sync endpoints
+
+#### What to ADD in Laravel API:
+
+✅ **New Files:**
+
+- `app/Services/ETimeOfficeService.php` (provided above)
+- `app/Console/Kernel.php` (scheduled tasks)
+- `.env` configuration (eTime Office credentials)
+
+✅ **Cron Job:**
+
+```bash
+* * * * * cd /path/to/laravel-api && php artisan schedule:run
+```
+
+✅ **Laravel Scheduler Tasks:**
+
+- Every 10 minutes: Sync today's punching data
+- Daily at 2 AM: Full month sync
+
+---
+
+### Migration Checklist
+
+**Step 1: Setup Laravel API**
+
+- [ ] Add `ETimeOfficeService.php`
+- [ ] Configure `.env` with eTime Office credentials (all 4 locations)
+- [ ] Add scheduler configuration in `Kernel.php`
+- [ ] Setup cron: `* * * * * php artisan schedule:run`
+
+**Step 2: Test eTime Sync in Laravel**
+
+- [ ] Run manual sync: `php artisan tinker` → `(new \App\Services\ETimeOfficeService())->syncToday()`
+- [ ] Verify data in API database `raw_attendance` table
+- [ ] Check logs for any errors
+
+**Step 3: Update HRM Sync**
+
+- [ ] Update `SyncToApiDatabase.php` to remove raw_attendance sync
+- [ ] Setup cron: `*/5 * * * * php spark sync:api-database`
+- [ ] Test employee/shift sync
+
+**Step 4: Remove eTime from HRM**
+
+- [ ] Disable/delete HRM cron jobs for eTime sync
+- [ ] Archive old eTime sync code
+- [ ] Optional: Keep code commented for rollback
+
+**Step 5: Verify Full Flow**
+
+- [ ] eTime Office → API Database ✓
+- [ ] HRM Database (employees/shifts) → API Database ✓
+- [ ] HRM calls API → Receives processed data ✓
+
+---
+
+#### Option 1: Database Replication (Recommended for Real-time)
+
+**Setup MySQL Read Replica:**
+
+```sql
+-- On HRM Database (Master)
+CREATE USER 'repl_user'@'api_server_ip' IDENTIFIED BY 'password';
+GRANT REPLICATION SLAVE ON *.* TO 'repl_user'@'api_server_ip';
+
+-- On API Database (Slave)
+CHANGE MASTER TO
+  MASTER_HOST='hrm_server_ip',
+  MASTER_USER='repl_user',
+  MASTER_PASSWORD='password',
+  MASTER_LOG_FILE='mysql-bin.000001',
+  MASTER_LOG_POS=  107;
+
+START SLAVE;
+```
+
+**Pros:**
+
+- Real-time data sync
+- No code needed
+- Automatic and reliable
+
+**Cons:**
+
+- Replicates entire database (or specific tables)
+- Requires MySQL configuration access
+- Infrastructure overhead
+
+---
+
+#### Option 2: Scheduled Sync via Cron Job (Recommended for Simplicity)
+
+Create a sync script in your HRM portal that copies data to API database.
+
+**File:** `app/Commands/SyncToApiDatabase.php` (CodeIgniter CLI Command)
+
+```php
+<?php
+namespace App\Commands;
+
+use CodeIgniter\CLI\BaseCommand;
+use CodeIgniter\CLI\CLI;
+
+class SyncToApiDatabase extends BaseCommand
+{
+    protected $group       = 'sync';
+    protected $name        = 'sync:api-database';
+    protected $description = 'Sync employees, shifts, and attendance data to API database';
+
+    public function run(array $params)
+    {
+        $apiDb = \Config\Database::connect('api_database'); // Separate connection
+        $hrmDb = \Config\Database::connect('default');      // HRM database
+
+        CLI::write('Starting sync to API database...', 'green');
+
+        // 1. Sync Employees (only essential fields)
+        $this->syncEmployees($hrmDb, $apiDb);
+
+        // 2. Sync Shifts
+        $this->syncShifts($hrmDb, $apiDb);
+
+        // 3. Sync Raw Attendance (last 60 days)
+        $this->syncRawAttendance($hrmDb, $apiDb);
+
+        CLI::write('Sync completed successfully!', 'green');
+    }
+
+    private function syncEmployees($hrmDb, $apiDb)
+    {
+        CLI::write('Syncing employees...', 'yellow');
+
+        $employees = $hrmDb->table('employees')
+            ->select('employee_id, name, joining_date, exit_date')
+            ->get()
+            ->getResultArray();
+
+        foreach ($employees as $emp) {
+            $apiDb->table('employees')->replace($emp); // INSERT or UPDATE
+        }
+
+        CLI::write(count($employees) . ' employees synced', 'green');
+    }
+
+    private function syncShifts($hrmDb, $apiDb)
+    {
+        CLI::write('Syncing shifts...', 'yellow');
+
+        $shifts = $hrmDb->table('shifts')->get()->getResultArray();
+
+        foreach ($shifts as $shift) {
+            $apiDb->table('shifts')->replace($shift);
+        }
+
+        CLI::write(count($shifts) . ' shifts synced', 'green');
+    }
+
+    private function syncRawAttendance($hrmDb, $apiDb)
+    {
+        CLI::write('Syncing raw attendance (last 60 days)...', 'yellow');
+
+        $fromDate = date('Y-m-d', strtotime('-60 days'));
+
+        $attendance = $hrmDb->table('raw_attendance')
+            ->where('DateString_2 >=', $fromDate)
+            ->get()
+            ->getResultArray();
+
+        foreach ($attendance as $record) {
+            $apiDb->table('raw_attendance')->replace($record);
+        }
+
+        CLI::write(count($attendance) . ' attendance records synced', 'green');
+    }
+}
+```
+
+**Database Configuration (`app/Config/Database.php`):**
+
+```php
+public array $api_database = [
+    'DSN'          => '',
+    'hostname'     => 'api_server_ip',  // Your API database server
+    'username'     => 'api_db_user',
+    'password'     => 'api_db_password',
+    'database'     => 'api_attendance_db',
+    'DBDriver'     => 'MySQLi',
+    'DBPrefix'     => '',
+    'pConnect'     => false,
+    'DBDebug'      => true,
+    'charset'      => 'utf8mb4',
+    'DBCollat'     => 'utf8mb4_general_ci',
+];
+```
+
+**Run Sync:**
+
+```bash
+# Manual sync
+php spark sync:api-database
+
+# Automated via cron (every 5 minutes)
+*/5 * * * * cd /path/to/hrm && php spark sync:api-database >> /var/log/api-sync.log 2>&1
+```
+
+**Pros:**
+
+- Simple to implement
+- Full control over what gets synced
+- Can transform data during sync
+- Easy to debug
+
+**Cons:**
+
+- Not real-time (5-minute delay)
+- Requires cron job setup
+
+---
+
+#### Option 3: Sync via API Endpoint (Real-time on Demand)
+
+HRM calls an API endpoint on the Laravel API to push data when it changes.
+
+**Laravel API Endpoint (`routes/api.php`):**
+
+```php
+Route::post('/sync/employees', [SyncController::class, 'syncEmployees']);
+Route::post('/sync/shifts', [SyncController::class, 'syncShifts']);
+Route::post('/sync/attendance', [SyncController::class, 'syncAttendance']);
+```
+
+**HRM Portal Calls API After Data Changes:**
+
+```php
+// In your HRM after saving employee
+public function saveEmployee($data)
+{
+    $this->employeeModel->save($data);
+
+    // Sync to API database
+    $this->syncToApi('/sync/employees', $data);
+}
+
+private function syncToApi($endpoint, $data)
+{
+    $client = \Config\Services::curlrequest();
+
+    $client->post(getenv('API_URL') . $endpoint, [
+        'json' => $data,
+        'headers' => [
+            'Authorization' => 'Bearer ' . getenv('API_SYNC_TOKEN')
+        ]
+    ]);
+}
+```
+
+**Pros:**
+
+- Real-time sync
+- Event-driven
+- No cron needed
+
+**Cons:**
+
+- More code to maintain
+- Network dependency
+- Need to handle sync failures
+
+---
+
+### Recommended Approach
+
+**For your use case:** Use **Option 2 (Scheduled Sync via Cron)** because:
+
+- ✅ Simple to implement
+- ✅ Doesn't require MySQL replication setup
+- ✅ 5-minute delay is acceptable for attendance processing
+- ✅ Full control over what data gets synced
+- ✅ Easy to troubleshoot
+
+---
+
+### API Database Schema (Laravel Migrations)
+
+Create only the essential tables in your API database:
+
+**Migration: `create_employees_table.php`**
+
+```php
+Schema::create('employees', function (Blueprint $table) {
+    $table->id('employee_id');
+    $table->string('name');
+    $table->date('joining_date')->nullable();
+    $table->date('exit_date')->nullable();
+    $table->timestamps();
+});
+```
+
+**Migration: `create_shifts_table.php`**
+
+```php
+Schema::create('shifts', function (Blueprint $table) {
+    $table->id('shift_id');
+    $table->string('shift_code');
+    $table->string('shift_name');
+    $table->time('shift_start');
+    $table->time('shift_end');
+    $table->enum('shift_type', ['regular', 'reduce'])->default('regular');
+    $table->decimal('reduction_percentage', 5, 2)->default(100.00);
+    $table->date('effective_from_date')->nullable();
+    $table->timestamps();
+});
+```
+
+**Migration: `create_raw_attendance_table.php`**
+
+```php
+Schema::create('raw_attendance', function (Blueprint $table) {
+    $table->id();
+    $table->string('Empcode');
+    $table->time('INTime')->nullable();
+    $table->time('OUTTime')->nullable();
+    $table->string('DateString')->nullable(); // DD-MM-YYYY
+    $table->date('DateString_2')->nullable(); // YYYY-MM-DD
+    $table->string('machine')->nullable();
+    $table->string('default_machine')->nullable();
+    $table->string('override_machine')->nullable();
+    $table->unique(['Empcode', 'DateString_2']);
+});
+```
+
+---
+
+### API Database Query (Laravel Example)
+
+The API reads from its own database (synced copy):
+
+```php
+// app/Models/RawAttendance.php (Laravel API Model)
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class RawAttendance extends Model
+{
+    protected $table = 'raw_attendance';
+    protected $primaryKey = 'id';
+    public $timestamps = false;
+
+    /**
+     * Fetch punching data for employee on specific date
+     */
+    public static function getPunchingData($employee_id, $date)
+    {
+        return self::where('Empcode', $employee_id)
+                   ->where('DateString_2', $date)
+                   ->first();
+    }
+}
+```
+
+### Usage in API Service
+
+```php
+// app/Services/AttendanceService.php
+
+public function processAttendance($employee_id, $shift_id, $date)
+{
+    // 1. Fetch shift details
+    $shift = Shift::find($shift_id);
+
+    // 2. Fetch punching data from raw_attendance table
+    //    (Data already synced by HRM from eTime Office)
+    $punching = RawAttendance::getPunchingData($employee_id, $date);
+
+    if (!$punching) {
+        throw new Exception('No punching data found for this date');
+    }
+
+    // 3. Use INTime and OUTTime from eTime Office
+    $punch_in = $punching->INTime;   // e.g., "09:15:00"
+    $punch_out = $punching->OUTTime; // e.g., "19:30:00"
+    $machine = $punching->machine;    // e.g., "del", "ggn", "hn", "skbd"
+
+    // 4. Calculate work hours and apply reduction
+    // ... rest of the logic
+}
+```
+
+### Key Points
+
+✅ **No Direct eTime Integration Needed in API**
+
+- Your HRM already syncs eTime Office data to `raw_attendance` table
+- API just reads from this existing table
+- Separation of concerns: HRM handles sync, API handles calculation
+
+✅ **Data Already Available**
+
+- Table: `raw_attendance`
+- Fields available:
+  - `Empcode` - Employee code
+  - `INTime` - Clock-in time from eTime Office
+  - `OUTTime` - Clock-out time from eTime Office
+  - `DateString_2` - Date in YYYY-MM-DD format
+  - `machine` - Location (del/ggn/hn/skbd)
+  - `default_machine` - Employee's default machine
+  - `override_machine` - Temporary machine assignment
+
+✅ **Sync Mechanism (Already in HRM)**
+Your existing CodeIgniter HRM handles syncing via:
+
+- **Cron Jobs**: `/cron/rawattendance/save`
+- **CLI Commands**: `php spark attendance:process`
+- **Manual Endpoints**: `/cron/rawattendance/update-from-last-month/save`
+
+✅ **API Responsibility**
+The API only needs to:
+
+1. Read from `raw_attendance` table
+2. Calculate work hours
+3. Apply reduction based on shift type
+4. Return processed data
+
+### Database Connection Configuration
+
+**Laravel API (.env)**
+
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=hrm_healthgenie  # Same database as CodeIgniter
+DB_USERNAME=root
+DB_PASSWORD=your_password
+```
+
+### Handling Missing Punching Data
+
+```php
+public function processAttendance($employee_id, $shift_id, $date)
+{
+    $punching = RawAttendance::getPunchingData($employee_id, $date);
+
+    if (!$punching) {
+        // Return appropriate response for missing punch
+        return [
+            'employee_id' => $employee_id,
+            'shift_id' => $shift_id,
+            'date' => $date,
+            'error' => 'No punching data found',
+            'is_missed_punch' => 'yes',
+            'is_present' => 'no',
+            'is_absent' => 'yes',
+            // ... other default values
+        ];
+    }
+
+    // Continue with normal processing...
+}
+```
+
+### Multi-Location Support
+
+The API can determine which office location the punch came from:
+
+```php
+$machine_location = $punching->machine; // "del", "ggn", "hn", or "skbd"
+
+// Can apply location-specific rules if needed
+switch ($machine_location) {
+    case 'del':
+        // Delhi-specific logic
+        break;
+    case 'ggn':
+        // Gurgaon-specific logic
+        break;
+    // ... etc
+}
+```
+
+### Summary: Two Database Architecture
+
+**HRM Database (Master):**
+
+- ✅ Syncs from eTime Office (existing mechanism)
+- ✅ Manages all employee data
+- ✅ Full control of shifts, attendance, payroll
+- ✅ Syncs data to API database every 5 minutes
+
+**API Database (Synced Copy):**
+
+- ✅ Contains only essential tables (employees, shifts, raw_attendance)
+- ✅ Read-only for API operations
+- ✅ Updated via cron sync from HRM
+- ✅ Isolated from HRM operations
+
+**The API does NOT need to:**
+
+- ❌ Call eTime Office API directly
+- ❌ Sync biometric data from hardware
+- ❌ Handle multiple office credentials
+- ❌ Modify HRM database
+
+**The API ONLY needs to:**
+
+- ✅ Read from its own synced database
+- ✅ Process punching data
+- ✅ Apply reduction logic
+- ✅ Return calculated results to HRM
+
+**Data Sync Responsibility:**
+
+- Your **HRM Portal** will run a cron job every 5 minutes to sync data from HRM DB → API DB
+- Use the provided `SyncToApiDatabase` command in CodeIgniter
+- Syncs: employees, shifts, raw_attendance (last 60 days)
+
+This maintains **complete separation** and allows you to scale/manage both databases independently!
+
+---
+
+## 4. Implementation Plan
+
+### 4.1 Technology Stack Options
+
+#### Option A: PHP (Laravel/Lumen)
+
+**Pros:**
+
+- Same language as HRM portal (easier for team)
+- Lumen is lightweight and fast
+- Rich ecosystem for API development
+
+**Cons:**
+
+- PHP traditionally slower than Node.js/Go for high-concurrency APIs
+
+#### Option B: Node.js (Express/Fastify)
+
+**Pros:**
+
+- Very fast and efficient for I/O operations
+- Non-blocking, handles concurrent requests well
+- Modern async/await syntax
+
+**Cons:**
+
+- Team needs to learn JavaScript/TypeScript
+
+#### Option C: Python (FastAPI/Flask)
+
+**Pros:**
+
+- Excellent for data processing
+- FastAPI has automatic API documentation (Swagger)
+- Great for future ML/AI integration
+
+**Cons:**
+
+- Performance slightly lower than Node.js
+
+**Recommended:** **Node.js (Fastify)** for speed and scalability
+
+### 4.2 Database Strategy
+
+#### Strategy 1: Shared Database (Simple)
+
+API connects to the **same MySQL database** as HRM portal.
+
+**Pros:**
+
+- No data synchronization needed
+- Simple setup
+
+**Cons:**
+
+- Tight coupling
+- API has direct access to production DB (security concern)
+
+#### Strategy 2: Read Replica (Medium)
+
+API connects to a **read-only replica** of the HRM database.
+
+**Pros:**
+
+- No impact on HRM portal performance
+- API cannot modify data
+
+**Cons:**
+
+- Slight replication lag
+- Infrastructure cost
+
+#### Strategy 3: API Gateway + Cache (Advanced)
+
+API fetches data via HRM portal's internal endpoints, caches in Redis.
+
+**Pros:**
+
+- Complete separation
+- Very fast response times
+- Reduced database load
+
+**Cons:**
+
+- Complex setup
+- Cache invalidation strategy needed
+
+**Recommended:** **Strategy 2 (Read Replica)** for balance
+
+### 4.3 Folder Structure (Node.js Example)
+
+```
+attendance-reduction-api/
+├── src/
+│   ├── config/
+│   │   ├── database.js          # Database connection config
+│   │   ├── redis.js              # Redis cache config
+│   │   └── app.js                # App-level config
+│   │
+│   ├── controllers/
+│   │   ├── attendanceController.js
+│   │   ├── shiftController.js
+│   │   └── healthController.js
+│   │
+│   ├── services/
+│   │   ├── reductionService.js   # Core reduction logic
+│   │   ├── calculationService.js # Work hours calculation
+│   │   └── validationService.js  # Input validation
+│   │
+│   ├── models/
+│   │   ├── Shift.js
+│   │   ├── Employee.js
+│   │   └── PunchingData.js
+│   │
+│   ├── middleware/
+│   │   ├── authMiddleware.js
+│   │   ├── rateLimitMiddleware.js
+│   │   └── errorMiddleware.js
+│   │
+│   ├── routes/
+│   │   ├── attendanceRoutes.js
+│   │   ├── shiftRoutes.js
+│   │   └── index.js
+│   │
+│   ├── utils/
+│   │   ├── timeCalculator.js
+│   │   ├── logger.js
+│   │   └── validator.js
+│   │
+│   └── app.js                    # Main app entry
+│
+├── tests/
+│   ├── unit/
+│   ├── integration/
+│   └── e2e/
+│
+├── .env.example
+├── .env
+├── package.json
+├── Dockerfile
+└── README.md
+```
+
+### 4.4 Core Reduction Logic - Unified Handler for Both Shift Types
+
+**Important**: This single service handles BOTH regular and reduce shifts automatically. The logic branches based on `shift_type`.
+
+```javascript
+// File: src/services/reductionService.js
+
+class ReductionService {
+  /**
+   * Apply reduction to work minutes based on shift type
+   *
+   * This method handles BOTH regular and reduce shifts:
+   * - Regular shifts: Returns original minutes unchanged
+   * - Reduce shifts: Applies percentage-based reduction
+   *
+   * @param {number} employee_id - Employee ID
+   * @param {number} shift_id - Shift ID
+   * @param {number} work_minutes - Original work minutes calculated
+   * @param {string} date - Date being processed (YYYY-MM-DD)
+   * @returns {object} Result with adjusted minutes and metadata
+   */
+  async applyReduction(employee_id, shift_id, work_minutes, date) {
+    // 1. Fetch shift details from database
+    const shift = await Shift.findById(shift_id);
+
+    if (!shift) {
+      throw new Error("Shift not found");
+    }
+
+    // =========================================================================
+    // REGULAR SHIFT HANDLING: Return original value if shift_type is 'regular'
+    // =========================================================================
+    if (shift.shift_type !== "reduce") {
+      return {
+        adjusted_minutes: work_minutes, // ← No change
+        reduction_applied: false, // ← Flag as no reduction
+        original_minutes: work_minutes,
+        reduction_percentage: 100.0, // ← 100% = no reduction
+        minutes_reduced: 0, // ← Zero reduction
+        shift_type: shift.shift_type || "regular",
+        shift_code: shift.shift_code,
+        shift_name: shift.shift_name,
+      };
+    }
+
+    // =========================================================================
+    // REDUCE SHIFT HANDLING: Apply reduction if shift_type is 'reduce'
+    // =========================================================================
+
+    // 3. Check effective date (if set)
+    if (shift.effective_from_date) {
+      if (new Date(date) < new Date(shift.effective_from_date)) {
+        // Effective date not reached yet - treat as regular
+        return {
+          adjusted_minutes: work_minutes,
+          reduction_applied: false,
+          original_minutes: work_minutes,
+          reduction_percentage: 100.0,
+          minutes_reduced: 0,
+          reason: "Effective date not reached",
+          shift_type: shift.shift_type,
+          shift_code: shift.shift_code,
+          shift_name: shift.shift_name,
+        };
+      }
+    }
+
+    // 4. Apply reduction calculation
+    const reduction_percentage = shift.reduction_percentage || 66.67;
+    const adjusted_minutes = work_minutes * (reduction_percentage / 100);
+    const minutes_reduced = work_minutes - adjusted_minutes;
+
+    // 5. Return reduced result
+    return {
+      adjusted_minutes: Math.round(adjusted_minutes), // ← Reduced value
+      reduction_applied: true, // ← Flag as reduced
+      original_minutes: work_minutes, // ← Keep original for reference
+      reduction_percentage: reduction_percentage, // ← Percentage applied
+      minutes_reduced: Math.round(minutes_reduced), // ← Amount reduced
+      shift_type: shift.shift_type,
+      shift_code: shift.shift_code,
+      shift_name: shift.shift_name,
+      effective_from_date: shift.effective_from_date,
+    };
+  }
+
+  /**
+   * Calculate attendance status based on adjusted work minutes
+   * Works for BOTH regular and reduce shifts
+   */
+  determineAttendanceStatus(adjusted_minutes, rules) {
+    const { half_day_threshold, absent_threshold } = rules;
+
+    let status = {
+      is_present: "yes",
+      is_absent: "no",
+      is_half_day: "no",
+      absent_because_of_work_hours: "no",
+      half_day_because_of_work_hours: "no",
+    };
+
+    if (adjusted_minutes < absent_threshold) {
+      status.absent_because_of_work_hours = "yes";
+      status.is_absent = "yes";
+      status.is_present = "no";
+    } else if (adjusted_minutes < half_day_threshold) {
+      status.half_day_because_of_work_hours = "yes";
+      status.is_half_day = "yes";
+    }
+
+    return status;
+  }
+
+  /**
+   * Main processing method called by the API controller
+   * INPUT: Only employee_id, shift_id, date
+   * OUTPUT: Complete attendance data (all fields HRM needs)
+   */
+  async processAttendance(employee_id, shift_id, date) {
+    // 1. Fetch shift details from shared database
+    const shift = await Shift.findById(shift_id);
+    if (!shift) throw new Error("Shift not found");
+
+    // 2. Fetch punching data from shared database
+    const punching = await RawAttendance.where("Empcode", employee_id)
+      .where("DateString", date)
+      .first();
+    if (!punching) throw new Error("Punching data not found");
+
+    // 3. Calculate deductions (late coming, early going)
+    const { late_coming_minutes, early_going_minutes, deduction_minutes } =
+      this.calculateDeductions(punching, shift);
+
+    // 4. Calculate work minutes after deductions
+    const work_minutes_original = this.calculateWorkMinutes(
+      punching.INTime,
+      punching.OUTTime,
+      late_coming_minutes + early_going_minutes + deduction_minutes
+    );
+
+    // 5. Apply reduction based on shift type
+    let work_minutes_adjusted,
+      reduction_applied,
+      reduction_percentage,
+      minutes_reduced;
+
+    if (shift.shift_type === "reduce") {
+      reduction_percentage = shift.reduction_percentage || 66.67;
+      work_minutes_adjusted = Math.round(
+        work_minutes_original * (reduction_percentage / 100)
+      );
+      reduction_applied = true;
+      minutes_reduced = work_minutes_original - work_minutes_adjusted;
+    } else {
+      work_minutes_adjusted = work_minutes_original;
+      reduction_applied = false;
+      reduction_percentage = 100.0;
+      minutes_reduced = 0;
+    }
+
+    // 6. Determine attendance status
+    const {
+      is_present,
+      is_absent,
+      is_half_day,
+      absent_because_of_work_hours,
+      half_day_because_of_work_hours,
+    } = this.determineAttendanceStatus(work_minutes_adjusted);
+
+    // 7. Calculate adjusted punch times (for reduce shift)
+    let punch_in_adjusted = punching.INTime;
+    let punch_out_adjusted;
+
+    if (reduction_applied) {
+      // For reduce shift: adjust punch-out to reflect reduced work hours
+      punch_out_adjusted = this.addMinutesToTime(
+        punch_in_adjusted,
+        work_minutes_adjusted
+      );
+    } else {
+      // For regular shift: no adjustment
+      punch_out_adjusted = punching.OUTTime;
+    }
+
+    // 8. Return COMPLETE response with all fields HRM needs
+    return {
+      employee_id,
+      shift_id,
+      date,
+
+      punch_in_original: punching.INTime,
+      punch_out_original: punching.OUTTime,
+      punch_in_adjusted,
+      punch_out_adjusted,
+
+      work_minutes_original,
+      work_minutes_adjusted,
+      work_hours_original: this.formatMinutesToHours(work_minutes_original),
+      work_hours_adjusted: this.formatMinutesToHours(work_minutes_adjusted),
+
+      reduction_applied,
+      reduction_percentage,
+      minutes_reduced,
+
+      late_coming_minutes,
+      early_going_minutes,
+      deduction_minutes,
+
+      is_present,
+      is_absent,
+      is_half_day,
+      absent_because_of_work_hours,
+      half_day_because_of_work_hours,
+    };
+  }
+
+  /**
+   * Helper: Calculate work minutes from punch times
+   */
+  calculateWorkMinutes(in_time, out_time, deductions) {
+    // Implementation here
+    const total_minutes = this.getTimeDifference(in_time, out_time);
+    const deduction_total =
+      deductions.late_coming_minutes +
+      deductions.early_going_minutes +
+      deductions.deduction_minutes;
+    return total_minutes - deduction_total;
+  }
+
+  /**
+   * Helper: Format minutes to HH:MM
+   */
+  formatMinutesToHours(minutes) {
+    const hours = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+    return `${String(hours).padStart(2, "0")}:${String(mins).padStart(2, "0")}`;
+  }
+}
+
+module.exports = new ReductionService();
+```
+
+**How it works:**
+
+1. **Single entry point**: `processAttendance()` method
+2. **Automatic detection**: Checks `shift_type` field
+3. **Conditional logic**:
+   - If `shift_type === 'regular'` → returns original minutes
+   - If `shift_type === 'reduce'` → applies reduction
+4. **Unified response**: Same response structure for both types
+5. **No separate handlers**: One codebase handles all shift types
+
+---
+
+## 5. HRM Portal Integration
+
+### 5.1 Create API Client Service
+
+**File:** `app/Services/AttendanceApiClient.php`
+
+```php
+<?php
+
+namespace App\Services;
+
+use CodeIgniter\HTTP\CURLRequest;
+use Exception;
+
+class AttendanceApiClient
+{
+    protected $apiBaseUrl;
+    protected $apiKey;
+    protected $apiSecret;
+    protected $token;
+    protected $client;
+
+    public function __construct()
+    {
+        $this->apiBaseUrl = getenv('ATTENDANCE_API_URL') ?: 'http://localhost:3000/api/v1';
+        $this->apiKey = getenv('ATTENDANCE_API_KEY');
+        $this->apiSecret = getenv('ATTENDANCE_API_SECRET');
+
+        $this->client = \Config\Services::curlrequest([
+            'baseURI' => $this->apiBaseUrl,
+            'timeout' => 30
+        ]);
+    }
+
+    /**
+     * Authenticate and get JWT token
+     */
+    protected function authenticate()
+    {
+        if ($this->token) {
+            return $this->token;
+        }
+
+        try {
+            $response = $this->client->post('/auth/token', [
+                'json' => [
+                    'api_key' => $this->apiKey,
+                    'secret' => $this->apiSecret
+                ]
+            ]);
+
+            $data = json_decode($response->getBody(), true);
+            $this->token = $data['token'] ?? null;
+
+            return $this->token;
+        } catch (Exception $e) {
+            log_message('error', 'API Authentication failed: ' . $e->getMessage());
+            throw new Exception('Failed to authenticate with Attendance API');
+        }
+    }
+
+    /**
+     * Process single day attendance (MINIMAL API)
+     * Send only employee_id, shift_id, date
+     * Receive only work_minutes_adjusted
+     */
+    public function processSingleDay($employee_id, $shift_id, $date)
+    {
+        $token = $this->authenticate();
+
+        try {
+            $response = $this->client->post('/attendance/process/single', [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $token,
+                    'Content-Type' => 'application/json'
+                ],
+                'json' => [
+                    'employee_id' => $employee_id,
+                    'shift_id' => $shift_id,
+                    'date' => $date
+                ]
+            ]);
+
+            $result = json_decode($response->getBody(), true);
+
+            // Returns: { employee_id, shift_id, date, work_minutes_adjusted }
+            return $result;
+
+        } catch (Exception $e) {
+            log_message('error', 'API call failed: ' . $e->getMessage());
+
+            // Fallback to local processing
+            return $this->fallbackToLocalProcessing($employee_id, $shift_id, $date);
+        }
+    }
+
+    /**
+     * Process bulk attendance for date range (MINIMAL API)
+     */
+    public function processBulk($employee_id, $date_from, $date_to)
+    {
+        $token = $this->authenticate();
+
+        try {
+            $response = $this->client->post('/attendance/process/bulk', [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $token,
+                    'Content-Type' => 'application/json'
+                ],
+                'json' => [
+                    'employee_id' => $employee_id,
+                    'date_from' => $date_from,
+                    'date_to' => $date_to
+                ]
+            ]);
+
+            $result = json_decode($response->getBody(), true);
+
+            // Returns: { employee_id, date_from, date_to, records: [{date, shift_id, work_minutes_adjusted}, ...] }
+            return $result;
+
+        } catch (Exception $e) {
+            log_message('error', 'Bulk API call failed: ' . $e->getMessage());
+            throw $e;
+        }
+    }
+
+    /**
+     * Fallback to local processing if API is down (MINIMAL)
+     */
+    protected function fallbackToLocalProcessing($employee_id, $shift_id, $date)
+    {
+        log_message('warning', 'Using fallback local processing for employee ' . $employee_id);
+
+        // Call existing local ProcessorHelper logic
+        $work_minutes_adjusted = ProcessorHelper::calculateAttendance($employee_id, $shift_id, $date);
+
+        return [
+            'employee_id' => $employee_id,
+            'shift_id' => $shift_id,
+            'date' => $date,
+            'work_minutes_adjusted' => $work_minutes_adjusted,
+            'source' => 'fallback'
+        ];
+    }
+}
+```
+
+### 5.2 Update Attendance Processor Pipe
+
+**File:** `app/Pipes/AttendanceProcessor/AddDataToPunchingRow.php`
+
+```php
+public function handle($punching_row, Closure $next)
+{
+    // ... existing code ...
+
+    // Calculate work minutes (existing logic)
+    $punching_row['work_minutes_between_shifts_including_od'] =
+        ProcessorHelper::get_time_difference($punching_row['in_time'], $punching_row['out_time'], 'minutes')
+        - $punching_row['deduction_minutes'];
+
+    // ============================================================================
+    // NEW: Call MINIMAL API for reduction calculation
+    // ============================================================================
+
+    $useApi = getenv('USE_ATTENDANCE_API') === 'true';
+
+    if ($useApi) {
+        try {
+            $apiClient = new \App\Services\AttendanceApiClient();
+
+            // MINIMAL API CALL - Only send 3 fields
+            $apiResult = $apiClient->processSingleDay(
+                $punching_row['employee_id'],
+                $punching_row['shift_id'],
+                $punching_row['date']
+            );
+
+            // COMPLETE API RESPONSE - Receive all attendance data
+            // No need to change HRM code - just use the values directly
+            $punching_row['in_time'] = $apiResult['punch_in_adjusted'];
+            $punching_row['out_time'] = $apiResult['punch_out_adjusted'];
+            $punching_row['work_minutes_original'] = $apiResult['work_minutes_original'];
+            $punching_row['work_minutes_between_shifts_including_od'] = $apiResult['work_minutes_adjusted'];
+            $punching_row['reduction_applied'] = $apiResult['reduction_applied'];
+            $punching_row['reduction_percentage'] = $apiResult['reduction_percentage'];
+            $punching_row['late_coming_minutes'] = $apiResult['late_coming_minutes'];
+            $punching_row['half_day_because_of_work_hours'] = $apiResult['half_day_because_of_work_hours'];
+            $punching_row['absent_because_of_work_hours'] = $apiResult['absent_because_of_work_hours'];
+
+        } catch (Exception $e) {
+            log_message('error', 'API call failed, falling back to local: ' . $e->getMessage());
+
+            // Fallback to local ProcessorHelper logic
+            $work_minutes_adjusted = ProcessorHelper::calculateAttendance(
+                $punching_row['employee_id'],
+                $punching_row['shift_id'],
+                $punching_row['date']
+            );
+
+            $punching_row['work_minutes_between_shifts_including_od'] = $work_minutes_adjusted;
+        }
+    } else {
+        // Use local ProcessorHelper (existing logic)
+        $work_minutes_adjusted = ProcessorHelper::calculateAttendance(
+            $punching_row['employee_id'],
+            $punching_row['shift_id'],
+            $punching_row['date']
+        );
+
+        $punching_row['work_minutes_between_shifts_including_od'] = $work_minutes_adjusted;
+    }
+
+    // ============================================================================
+    // END: API/Local calculation
+    // ============================================================================
+
+    // Rest of the existing code...
+    $punching_row['work_hours_between_shifts_including_od'] =
+        str_pad(floor($punching_row['work_minutes_between_shifts_including_od'] / 60), 2, '0', STR_PAD_LEFT) . ':' .
+        str_pad(($punching_row['work_minutes_between_shifts_including_od'] - floor($punching_row['work_minutes_between_shifts_including_od'] / 60) * 60), 2, '0', STR_PAD_LEFT);
+
+    return $next($punching_row);
+}
+```
+
+### 5.3 Environment Configuration
+
+**File:** `.env`
+
+```env
+# Attendance API Configuration
+USE_ATTENDANCE_API=true
+ATTENDANCE_API_URL=https://api.healthgenie.in/attendance/v1
+ATTENDANCE_API_KEY=your_api_key_here
+ATTENDANCE_API_SECRET=your_secret_here
+ATTENDANCE_API_TIMEOUT=30
+ATTENDANCE_API_FALLBACK_TO_LOCAL=true
+```
+
+---
+
+## 6. Deployment Strategy
+
+### 6.1 Phase 1: API Development (Week 1-2)
+
+1. Set up Node.js project with Fastify
+2. Implement core endpoints
+3. Write unit tests
+4. Set up Docker container
+5. Deploy to staging environment
+
+### 6.2 Phase 2: HRM Integration (Week 3)
+
+1. Create `AttendanceApiClient` service in HRM portal
+2. Update environment configuration
+3. Modify attendance processor pipe
+4. Test with sample data
+
+### 6.3 Phase 3: Parallel Testing (Week 4)
+
+1. Run both API and local calculations in parallel
+2. Compare results for accuracy
+3. Log discrepancies
+4. Fix any bugs
+
+### 6.4 Phase 4: Gradual Rollout (Week 5)
+
+1. Enable API for 10% of employees
+2. Monitor performance and errors
+3. Gradually increase to 50%, then 100%
+4. Keep local fallback active
+
+### 6.5 Phase 5: Full Migration (Week 6)
+
+1. API handles 100% of requests
+2. Local logic kept as fallback only
+3. Monitor API performance metrics
+4. Optimize based on usage patterns
+
+---
+
+## 7. Monitoring & Logging
+
+### 7.1 API Metrics to Track
+
+- Request rate (requests/second)
+- Average response time
+- Error rate
+- Cache hit/miss ratio
+- Database query time
+- Token generation rate
+
+### 7.2 Logging Strategy
+
+```javascript
+// Example using Winston logger
+
+const logger = require("./utils/logger");
+
+// Request logging
+logger.info("Processing attendance", {
+  employee_id: 123,
+  date: "2025-10-04",
+  shift_id: 5,
+  request_id: "req-12345",
+});
+
+// Error logging
+logger.error("Reduction calculation failed", {
+  employee_id: 123,
+  error: err.message,
+  stack: err.stack,
+  request_id: "req-12345",
+});
+
+// Performance logging
+logger.debug("Calculation completed", {
+  employee_id: 123,
+  duration_ms: 45,
+  reduction_applied: true,
+});
+```
+
+### 7.3 Alerting
+
+Set up alerts for:
+
+- API response time > 1000ms
+- Error rate > 5%
+- API downtime
+- Database connection issues
+- Cache failures
+
+---
+
+## 8. Cost-Benefit Analysis
+
+### 8.1 Development Costs
+
+- API Development: 2-3 weeks (1 developer)
+- HRM Integration: 1 week
+- Testing & QA: 1 week
+- **Total**: ~5 weeks
+
+### 8.2 Infrastructure Costs (Monthly)
+
+- API Server (2GB RAM, 2 vCPU): ~$20/month
+- Redis Cache (1GB): ~$10/month
+- Load Balancer (optional): ~$15/month
+- **Total**: ~$45/month
+
+### 8.3 Benefits
+
+- **Performance**: API can handle 1000+ req/sec vs. 100 req/sec for monolithic
+- **Scalability**: Easy horizontal scaling
+- **Maintenance**: Easier to update reduction logic without touching HRM portal
+- **Reusability**: Same API for web, mobile, reports
+- **Testing**: Isolated testing environment
+
+### 8.4 Recommendation
+
+**Use API architecture if:**
+
+- You plan to build mobile app
+- You need to integrate with external systems
+- You expect to scale beyond 10,000 employees
+- You want to modernize architecture gradually
+
+**Use local logic if:**
+
+- Team size is small (< 3 developers)
+- Budget is tight
+- Current system handles load well
+- No plans for external integrations
+
+---
+
+## 9. Security Considerations
+
+### 9.1 API Security
+
+- JWT token-based authentication
+- API key rotation policy (every 90 days)
+- Rate limiting (100 req/min per IP)
+- HTTPS only (TLS 1.3)
+- Input validation and sanitization
+- SQL injection prevention (parameterized queries)
+
+### 9.2 Data Privacy
+
+- No storage of raw punching data in API
+- Logs rotated and encrypted
+- Compliance with data protection regulations
+- Audit trail for all API calls
+
+### 9.3 Network Security
+
+- API behind VPN or private network
+- IP whitelisting for HRM portal
+- DDoS protection
+- Regular security audits
+
+---
+
+## 10. Conclusion
+
+The **API-based architecture** provides a modern, scalable solution for attendance reduction logic. It separates concerns, improves maintainability, and enables future integrations.
+
+### Comparison Summary
+
+| Aspect               | Monolithic (Local) | API-Based |
+| -------------------- | ------------------ | --------- |
+| **Development Time** | 2 weeks            | 5 weeks   |
+| **Complexity**       | Low                | Medium    |
+| **Scalability**      | Limited            | High      |
+| **Maintenance**      | Harder             | Easier    |
+| **Cost**             | $0/month           | $45/month |
+| **Performance**      | Good               | Excellent |
+| **Reusability**      | No                 | Yes       |
+| **Future-Proof**     | No                 | Yes       |
+
+**Final Recommendation**:
+If the organization is planning to grow, modernize, or integrate with other systems, the **API-based approach is worth the investment**. Otherwise, the local implementation (detailed in the previous plan) is sufficient and more cost-effective for current needs.
+
+---
+
+## 11. Unified API Approach - Key Highlights
+
+### 11.1 Single Endpoint for All Shift Types
+
+The API design follows a **unified approach** where one endpoint handles all shift types:
+
+```
+✅ ONE ENDPOINT: /api/v1/attendance/process/single
+
+Handles:
+- Regular shifts (shift_type = 'regular')
+- Reduce shifts (shift_type = 'reduce')
+- Future shift types (e.g., 'part-time', 'flexible')
+```
+
+**Benefits:**
+
+- **Simplicity**: HRM portal doesn't need multiple API endpoints
+- **Consistency**: Same request/response structure for all shift types
+- **Maintainability**: One codebase to maintain instead of multiple
+- **Extensibility**: Easy to add new shift types without changing API contract
+
+### 11.2 How the API Automatically Detects Shift Type
+
+```javascript
+// Pseudo-flow inside the API
+
+Request received → Extract shift_details.shift_type
+
+if (shift_type === 'reduce') {
+  → Apply reduction logic
+  → Return adjusted minutes
+} else {
+  → Return original minutes unchanged
+}
+
+Build unified response → Send back to HRM portal
+```
+
+### 11.3 HRM Portal Integration (Unified Call)
+
+The HRM portal makes **the same API call** for all employees, regardless of shift type:
+
+```php
+// HRM Portal Code - Same for ALL employees
+
+$apiClient = new AttendanceApiClient();
+
+// Works for employee on regular shift
+$result1 = $apiClient->processSingleDay(
+    employee_id: 123,
+    shift_details: ['shift_type' => 'regular', 'reduction_percentage' => 100.00]
+);
+
+// Works for employee on reduce shift - SAME METHOD
+$result2 = $apiClient->processSingleDay(
+    employee_id: 124,
+    shift_details: ['shift_type' => 'reduce', 'reduction_percentage' => 66.67]
+);
+
+// Both return the same response structure
+// HRM portal processes them identically
+```
+
+### 11.4 Response Structure is Always the Same
+
+```json
+{
+  "status": "success",
+  "data": {
+    "calculated_hours": {
+      "work_minutes_original": 600,
+      "work_minutes_adjusted": ???,      // 600 for regular, 400 for reduce
+      "reduction_applied": ???,          // false for regular, true for reduce
+      "reduction_percentage": ???        // 100 for regular, 66.67 for reduce
+    }
+  }
+}
+```
+
+**The HRM portal just reads the response and uses the values - it doesn't need to know the logic.**
+
+### 11.5 Adding New Shift Types
+
+To add a new shift type (e.g., "part-time" with 50% reduction):
+
+**1. Database Update:**
+
+```sql
+ALTER TABLE shifts MODIFY shift_type ENUM('regular', 'reduce', 'part-time');
+```
+
+**2. API Update (one line):**
+
+```javascript
+if (shift.shift_type === "part-time") {
+  reduction_percentage = 50.0;
+}
+```
+
+**3. HRM Portal Update:**
+
+```php
+// NO CODE CHANGES NEEDED! Just create a shift with type 'part-time'
+```
+
+### 11.6 Comparison: Unified vs. Separate Endpoints
+
+| Approach               | Unified (Recommended) | Separate Endpoints       |
+| ---------------------- | --------------------- | ------------------------ |
+| **Endpoints**          | 1 endpoint            | 2+ endpoints             |
+| **HRM Portal Code**    | Same call for all     | Different calls for each |
+| **API Complexity**     | Low                   | High                     |
+| **Response Structure** | Identical             | May differ               |
+| **Adding New Types**   | Easy                  | Requires new endpoint    |
+| **Testing**            | Test one flow         | Test multiple flows      |
+| **Maintenance**        | Easy                  | Complex                  |
+
+### 11.7 Real-World Example: Processing 1000 Employees
+
+**Scenario**: Company has 1000 employees
+
+- 600 on regular shifts
+- 400 on reduce shifts
+
+**With Unified API:**
+
+```php
+foreach ($employees as $employee) {
+    // Same code for ALL 1000 employees
+    $result = $apiClient->processSingleDay(
+        $employee['id'],
+        $employee['date'],
+        $employee['shift_id'],
+        $employee['shift_details']  // Contains shift_type automatically
+    );
+
+    // Process result (same logic for all)
+    updateAttendance($result);
+}
+```
+
+**Total API calls**: 1000 (to one endpoint)
+**Code complexity**: Low (one loop, one method call)
+
+### 11.8 Error Handling (Unified)
+
+```php
+try {
+    $result = $apiClient->processSingleDay(...);
+
+    // Works for both regular and reduce
+    if ($result['data']['reduction_applied']) {
+        // Show reduction details in UI
+        $ui_note = "Work hours adjusted: " .
+                   $result['data']['calculated_hours']['work_hours_original'] . " → " .
+                   $result['data']['calculated_hours']['work_hours_adjusted'];
+    }
+
+} catch (ApiException $e) {
+    // Fallback works for both shift types
+    $result = ProcessorHelper::get_adjusted_work_minutes(...);
+}
+```
+
+### 11.9 Caching Strategy (Unified)
+
+```javascript
+// API-side cache key (works for both shift types)
+const cacheKey = `attendance:${employee_id}:${date}:${shift_id}`;
+
+// Check cache first
+let result = await cache.get(cacheKey);
+
+if (!result) {
+  // Process (handles both regular and reduce)
+  result = await reductionService.processAttendance(requestData);
+
+  // Cache result (same structure for both)
+  await cache.set(cacheKey, result, TTL);
+}
+
+return result;
+```
+
+### 11.10 Summary: Why Unified API is Better
+
+✅ **Simplicity**: One endpoint, one request structure, one response structure
+✅ **Consistency**: All shift types handled identically from HRM portal perspective
+✅ **Scalability**: Add new shift types without changing API contract
+✅ **Performance**: Single cache strategy works for all
+✅ **Testing**: Test one endpoint comprehensively
+✅ **Documentation**: One API endpoint to document
+✅ **Integration**: HRM portal doesn't need to know business logic
+✅ **Maintenance**: Update logic in one place
+
+**Bottom Line**: The unified API approach treats shift type as **data**, not as **different workflows**. This is the cornerstone of good API design.

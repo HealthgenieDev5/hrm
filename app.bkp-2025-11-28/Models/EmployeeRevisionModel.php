@@ -1,0 +1,62 @@
+<?php
+namespace App\Models;
+use CodeIgniter\Model;
+
+class EmployeeRevisionModel extends Model{
+	protected $table = 'employees_revision';
+	protected $allowedFields = [
+		'employee_id', 
+		'department_id', 
+		'company_id', 
+		'reporting_manager_id', 
+		'designation_id', 
+		'internal_employee_id', 
+		'shift_id', 
+		'second_saturday_fixed_off', 
+		'role', 
+		'joining_date', 
+		'probation',
+		'notice_period', 
+		'date_of_leaving', 
+		'machine', 
+		'min_wages_category', 
+		'first_name', 
+		'last_name', 
+		'highest_qualification', 
+		'total_experience', 
+		'last_company_name', 
+		'relevant_experience', 
+		'college_university', 
+		'hobbies', 
+		'permanent_address', 
+		'permanent_city', 
+		'permanent_district', 
+		'permanent_state', 
+		'permanent_pincode', 
+		'present_address', 
+		'family_members', 
+		'present_city', 
+		'present_district', 
+		'present_state', 
+		'present_pincode', 
+		'personal_email', 
+		'date_of_birth', 
+		'work_email', 
+		'personal_mobile', 
+		'fathers_name', 
+		'husband_name', 
+		'gender', 
+		'marital_status', 
+		'date_of_anniversary', 
+		'attachment', 
+		'work_mobile', 
+		'work_phone_extension_number', 
+		'work_phone_cug_number', 
+		'desk_location', 
+		'emergency_contact_number', 
+		'status', 
+		'date_time',
+		'revised_by'
+	];	
+}
+?>

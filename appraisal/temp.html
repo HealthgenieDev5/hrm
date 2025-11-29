@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <title>Print View | GSTC Appraisal</title>
+    <meta content="" name="description">
+    <meta content="" name="keywords">
+    <link href="http://hrm.healthgenie.tk/appraisal/assets/img/gstc-logo.png" rel="icon">
+    <link href="http://hrm.healthgenie.tk/appraisal/assets/img/gstc-logo.png" rel="apple-touch-icon">
+
+    <link href="https://fonts.gstatic.com" rel="preconnect">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+    <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+    <link href="assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+    <link href="assets/vendor/quill/quill.snow.css" rel="stylesheet">
+    <link href="assets/vendor/quill/quill.bubble.css" rel="stylesheet">
+    <link href="assets/vendor/remixicon/remixicon.css" rel="stylesheet">
+    <link href="assets/vendor/simple-datatables/style.css" rel="stylesheet">
+    <link href="assets/css/style.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+<style type="text/css">
+	.left-side{
+		background-color:#592a45;
+	}
+	table td{
+		vertical-align: middle;
+	}
+</style>
+  <!-- =======================================================
+  * Template Name: NiceAdmin - v2.2.2
+  * Template URL: https://bootstrapmade.com/nice-admin-bootstrap-admin-html-template/
+  * Author: BootstrapMade.com
+  * License: https://bootstrapmade.com/license/
+  ======================================================== -->
+</head>
+
+<body class="toggle-sidebar"><div id="main" class="main">
+
+	<!-- <div class="section">
+		<div class="container" style="max-width: 991px;">
+		    <div class="card" style="border-radius: 20px;">
+			    <div class="card-body p-0">
+			    	<button class="btn btn-primary" onclick="print_file()">Print</button>
+			    </div>
+			</div>
+		</div>
+	</div> -->
+
+				<div class="section" id="appraisal_print">
+				<div class="container" style="max-width: 991px;">
+				    <div class="card" id="appraisal_form" style="border-radius: 20px;">
+					    <div class="card-body p-0">
+					    	<!-- <table class="table" style="width: 100%; border: 1px solid red">
+					    		<tr>
+					    			<td colspan="2">
+					    				<h3 class="text-white fw-bold">Personal Information</h3>
+					    			</td>
+					    		</tr>
+					    		<tr>
+					    			<td colspan="2">
+					    				<p class="text-white fst-italic" style="opacity: 0.7; display: flex; ">
+					    					<span>Please verify employee's personal information.</span>
+					    					<small style="font-size: 12px; line-height: 1.25; display: block;">In case the information is not correct, please contact HR</small>
+					    				</p>
+					    			</td>
+					    		</tr>
+					    	</table> -->
+					    	<div class="row m-0">
+					    		<div class="col-xl-12 left-side d-flex flex-column flex-grow-1 py-4 px-4" style="border-radius: 20px 20px 0px 0px;">
+					    			<div class="text mb-3 border-bottom">
+				                        <h3 class="text-white fw-bold">Personal Information</h3>
+				                        <p class="text-white fst-italic" style="opacity: 0.7;">Please verify employee's personal information.<br><small style="font-size: 12px; line-height: 1.25; display: block;">In case the information is not correct, please contact HR</small></p>
+				                        <!-- <p class="text-muted fst-italic">Please verify your personal information.<br>In case the information is not correct, please contact Developers</p> -->
+				                    </div>
+					    			<div class="flex-grow-1">
+				                    	<div class="row mb-2">
+					                    	<div class="col-md-5">
+					                    		<label class="form-label text-white fw-bold mb-0">Name</label>
+					                    	</div>
+					                    	<div class="col-md-7">
+					                    		<p class="text-white mb-0">ARIHANT</p>
+					                    	</div>
+					                    </div>
+				                    	<div class="row mb-2">
+					                    	<div class="col-md-5">
+					                    		<label class="form-label text-white fw-bold mb-0">Company</label>
+					                    	</div>
+					                    	<div class="col-md-7">
+					                    		<p class="text-white mb-0">GST Corporation Limited</p>
+					                    	</div>
+					                    </div>
+				                    	<div class="row mb-2">
+					                    	<div class="col-md-5">
+					                    		<label class="form-label text-white fw-bold mb-0">Department</label>
+					                    	</div>
+					                    	<div class="col-md-7">
+					                    		<p class="text-white mb-0">EXPORTS MARKETING</p>
+					                    	</div>
+					                    </div>
+				                    	<div class="row mb-2">
+					                    	<div class="col-md-5">
+					                    		<label class="form-label text-white fw-bold mb-0">Designation</label>
+					                    	</div>
+					                    	<div class="col-md-7">
+					                    		<p class="text-white mb-0">Executive</p>
+					                    	</div>
+					                    </div>
+				                    	<div class="row mb-2">
+					                    	<div class="col-md-5">
+					                    		<label class="form-label text-white fw-bold mb-0">Joining Date</label>
+					                    	</div>
+					                    	<div class="col-md-7">
+					                    		<p class="text-white mb-0">06 Jan 2019</p>
+					                    	</div>
+					                    </div>
+				                    	<div class="row mb-2">
+					                    	<div class="col-md-5">
+					                    		<label class="form-label text-white fw-bold mb-0">Desk Location</label>
+					                    	</div>
+					                    	<div class="col-md-7">
+					                    		<p class="text-white mb-0">B-13 Basement</p>
+					                    	</div>
+					                    </div>
+				                    	<div class="row mb-2">
+					                    	<div class="col-md-5">
+					                    		<label class="form-label text-white fw-bold mb-0">Company Addr</label>
+					                    	</div>
+					                    	<div class="col-md-7">
+					                    		<p class="text-white mb-0">
+					                    				B-13, Okhla Phase II, Okhla Industrial Area, New Delhi, Delhi 110020					                    			, New Delhi					                    			, Delhi					                    			, 110020					                    		</p>
+					                    	</div>
+					                    </div>
+				                    	<div class="row mb-2">
+					                    	<div class="col-md-5">
+					                    		<label class="form-label text-white fw-bold mb-0">Employee Code</label>
+					                    	</div>
+					                    	<div class="col-md-7">
+					                    		<p class="text-white mb-0">591</p>
+					                    	</div>
+					                    </div>
+				                    	<div class="row mb-2">
+					                    	<div class="col-md-5">
+					                    		<label class="form-label text-white fw-bold mb-0">Review Period</label>
+					                    	</div>
+					                    	<div class="col-md-7">
+					                    		<p class="text-white mb-0">2021-2022</p>
+					                    	</div>
+					                    </div>
+				                    	<div class="row mb-2">
+					                    	<div class="col-md-5">
+					                    		<label class="form-label text-white fw-bold mb-0">Date</label>
+					                    	</div>
+					                    	<div class="col-md-7">
+					                    		<p class="text-white mb-0">02 Jun 2022</p>
+					                    	</div>
+					                    	<input type="hidden" id="employee_id" name="employee_id" value="41" />
+					                    	<input type="hidden" id="review_period_from" name="review_period_from" value="2021" />
+					                    	<input type="hidden" id="review_period_to" name="review_period_to" value="2022" />
+					                    	<input type="hidden" id="year" name="year" value="2022" />
+					                    </div>
+				                    </div>
+					    		</div>
+					    		<div class="col-xl-12 right-side d-flex flex-column flex-grow-1 py-4 px-0" style="border-radius: 20px 20px 20px 20px;">
+
+		                            <fieldset class="flex-grow-1 flex-column px-5 form-step d-flex" data-title="Performance" data-description="This section should be completed by Employee before the conclusion of the appraisal"  >
+		                            	<h3 class="fw-bold text-center mt-3" id="step_title">Performance</h3>
+					    				<p class="text-muted text-center fst-italic" id="step_description">This section should be completed by employee before the conclusion of the appraisal</p>
+					    				<hr>
+		                            	<div class="d-flex flex-column flex-grow-1 ">
+		                            															<div class="row mb-3">
+														<div class="col-md-4 d-flex align-items-center">
+															<label class="form-label mb-0 me-3 fw-bold" style="font-size:14px">Sales Achieved for last FY 2020-21</label>
+														</div>
+														<div class="col-md-8 d-flex align-items-center">
+															<p class="form-control flex-grow-1 rounded-0 bg-transparent" style="border: none; border-bottom: 1px dotted var(--bs-secondary); box-shadow: none;" >USD 1,005,702.41</p>
+														</div>
+													</div>
+																										<div class="row mb-3">
+														<div class="col-md-4 d-flex align-items-center">
+															<label class="form-label mb-0 me-3 fw-bold" style="font-size:14px">Given Target for FY 2021-22</label>
+														</div>
+														<div class="col-md-8 d-flex align-items-center">
+															<p class="form-control flex-grow-1 rounded-0 bg-transparent" style="border: none; border-bottom: 1px dotted var(--bs-secondary); box-shadow: none;" >USD 1,250,000.00</p>
+														</div>
+													</div>
+																										<div class="row mb-3">
+														<div class="col-md-4 d-flex align-items-center">
+															<label class="form-label mb-0 me-3 fw-bold" style="font-size:14px">Target Achieved FY 2021-22</label>
+														</div>
+														<div class="col-md-8 d-flex align-items-center">
+															<p class="form-control flex-grow-1 rounded-0 bg-transparent" style="border: none; border-bottom: 1px dotted var(--bs-secondary); box-shadow: none;" >USD 1,222,306.43</p>
+														</div>
+													</div>
+																										<div class="row mb-3">
+														<div class="col-md-4 d-flex align-items-center">
+															<label class="form-label mb-0 me-3 fw-bold" style="font-size:14px">Percentage Growth From Last FY</label>
+														</div>
+														<div class="col-md-8 d-flex align-items-center">
+															<p class="form-control flex-grow-1 rounded-0 bg-transparent" style="border: none; border-bottom: 1px dotted var(--bs-secondary); box-shadow: none;" >22%</p>
+														</div>
+													</div>
+																										<div class="row mb-3">
+														<div class="col-md-4 d-flex align-items-center">
+															<label class="form-label mb-0 me-3 fw-bold" style="font-size:14px">Orders in Production in Current FY 2022-23</label>
+														</div>
+														<div class="col-md-8 d-flex align-items-center">
+															<p class="form-control flex-grow-1 rounded-0 bg-transparent" style="border: none; border-bottom: 1px dotted var(--bs-secondary); box-shadow: none;" >USD 724,555.95</p>
+														</div>
+													</div>
+																										<div class="row mb-3">
+														<div class="col-md-4 d-flex align-items-center">
+															<label class="form-label mb-0 me-3 fw-bold" style="font-size:14px">Order in hand in Current FY 2022-23</label>
+														</div>
+														<div class="col-md-8 d-flex align-items-center">
+															<p class="form-control flex-grow-1 rounded-0 bg-transparent" style="border: none; border-bottom: 1px dotted var(--bs-secondary); box-shadow: none;" >USD 50,000.00</p>
+														</div>
+													</div>
+															                            	</div>
+		                            </fieldset>
+		                        </div>
+		                            
+	                            <hr>
+
+		                        <div class="col-xl-12 right-side d-flex flex-column flex-grow-1 py-4 px-0" style="border-radius: 20px 20px 20px 20px;">
+
+		                            <fieldset class="flex-grow-1 flex-column px-5 form-step d-flex" data-title="Questions" data-description="This section should be completed by Employee before the conclusion of the appraisal">
+		                            	<h3 class="fw-bold text-center mt-3" id="step_title">Questions</h3>
+					    				<p class="text-muted text-center fst-italic" id="step_description">This section should be completed by Employee before the conclusion of the appraisal</p>
+					    				<hr>
+		                            	<div class="d-flex flex-column flex-grow-1 ">
+		                            															<div class="row mb-3">
+														<div class="col-md-12 d-flex align-items-center">
+															<label class="form-label fw-bold" style="font-size:14px"><strong style="font-size:18px">1.</strong> What new things you have learned during your assignments in last three months? Please Specify</label>
+														</div>
+														<div class="col-md-12 d-flex align-items-center">
+															<p class="form-control flex-grow-1 bg-transparent" style="border: 1px dotted var(--bs-secondary); box-shadow: none; border-radius:5px" >A) I have closely worked with regulatory department and get to know so much about the regulatory process.
+
+B) Worked on East-Timor tender with Tejas and observe what kind or documents are required and how to make them.
+
+C) It has been a learning experience when colleagues leave the organisation for better growth & opportunities, and how I can learn from their mistakes and do better for not leaving the organisation.  </p>
+														</div>
+													</div>
+																										<div class="row mb-3">
+														<div class="col-md-12 d-flex align-items-center">
+															<label class="form-label fw-bold" style="font-size:14px"><strong style="font-size:18px">2.</strong> What new things you have learned in last FY 2021-2022? Please Specify</label>
+														</div>
+														<div class="col-md-12 d-flex align-items-center">
+															<p class="form-control flex-grow-1 bg-transparent" style="border: 1px dotted var(--bs-secondary); box-shadow: none; border-radius:5px" >A) I Got an exposure of International exhibition as well as learning of  a smooth & Successful exhibition management.
+
+B) Visiting Foreign clients and doing face to face business meeting with them have really given an exposure and practical experience.
+
+C) Being into GST I have always been learning about the products, Markets & customers.</p>
+														</div>
+													</div>
+																										<div class="row mb-3">
+														<div class="col-md-12 d-flex align-items-center">
+															<label class="form-label fw-bold" style="font-size:14px"><strong style="font-size:18px">3.</strong> What new responsibility have you under taken in the last three months? Please Specify</label>
+														</div>
+														<div class="col-md-12 d-flex align-items-center">
+															<p class="form-control flex-grow-1 bg-transparent" style="border: 1px dotted var(--bs-secondary); box-shadow: none; border-radius:5px" >A) To assist the regulatory person, I made some technical files of the products.
+
+B) Submitted a new tender in Guyana, a new market for GST.  
+
+C) GST exports to Latin American markets has increased. I have performed better than year 2021-22 since export business has been rising upward constantly.
+
+D) In Brazil , I have in communication with a new customer ' Farmatex' for the company. This Customer has registered our products and very soon will send their first order.
+
+E) Increased business volume with the existing customer.
+
+F) Medical Sunshine, Mexico – Having  received a complaint, I was able to convince this client not to stop buying from us with my continuous & constant efforts, and hopefully we will be receiving a new order from them by July, This customer has the potential to generate some big numbers for the company.
+
+G) I successfully handled the customers and assigned markets. I executed all the sales and marketing activities of assigned region (Latin America, N. America) in best of my skills. As a result GST business in this region has been growing and i will take it to new high in the forthcoming years with the help of HOD & management.
+
+H) GST exports to Latin American markets has increased. I have performed better than year 2021-22 since export business has been rising upward constantly.
+
+I) Finally overall business volume with the existing customer has increased , also i have added new products with the existing customers.
+
+J) </p>
+														</div>
+													</div>
+																										<div class="row mb-3">
+														<div class="col-md-12 d-flex align-items-center">
+															<label class="form-label fw-bold" style="font-size:14px"><strong style="font-size:18px">4.</strong> What new responsibility have you under taken in last FY 2021-22? Please Specify</label>
+														</div>
+														<div class="col-md-12 d-flex align-items-center">
+															<p class="form-control flex-grow-1 bg-transparent" style="border: 1px dotted var(--bs-secondary); box-shadow: none; border-radius:5px" >A) Executed successful exhibition “Medica” in Germany with my seniors.
+
+B) International Hotel Bookings – I successfully learned the hotel booking process of a foreign country.
+
+C) Catalogue Design - By making orthopaedic aids catalogues, I learned how to make catalogues.
+
+D) Applying for visa – I successfully learned the visa process of different embassies which made me independent and added one more skill under my belt.
+
+E) I visited overseas for exhibition and had successful meeting with the GST existing and prospects customers.
+
+F) Developing company sales & presence in assigned markets.
+
+G) Execute all the sales and marketing activities of assigned region (Latin America, N. America).
+
+H) Developing marketing and sales strategy.
+
+I) Working out on target products and pricing.
+
+J) Increasing business with the existing clients.
+
+K) Approaching new prospects and converting them into GST clients.
+
+L) Reaching out to untapped markets.
+
+M) Resolve customers queries and giving them timely services.
+
+N) Adding new products in existing clients business.
+
+O) Working closely with procurement department.
+
+P) Coordinating with other departments for work efficiency and accuracy.
+
+Q) Placing order in Odoo and update reporting.
+
+R) Handle product registration process at customer end and arranging all the documentations for timely registration.
+
+S) Keeping a positive and friendly environment around my work station.</p>
+														</div>
+													</div>
+																										<div class="row mb-3">
+														<div class="col-md-12 d-flex align-items-center">
+															<label class="form-label fw-bold" style="font-size:14px"><strong style="font-size:18px">5.</strong> What are the new responsibilities that you can take? Please Specify</label>
+														</div>
+														<div class="col-md-12 d-flex align-items-center">
+															<p class="form-control flex-grow-1 bg-transparent" style="border: 1px dotted var(--bs-secondary); box-shadow: none; border-radius:5px" >I think export sales and marketing is the most interesting and rewarding job. Since it keeps you awake and gives an opportunity to connect with different people, culture and environment. So I am open to take any new responsibility related to my work profile.
+</p>
+														</div>
+													</div>
+																										<div class="row mb-3">
+														<div class="col-md-12 d-flex align-items-center">
+															<label class="form-label fw-bold" style="font-size:14px"><strong style="font-size:18px">6.</strong> have you undergone with any Course/Training/Workshop/Program to improve your efficiency or better work delivery? Please Specify</label>
+														</div>
+														<div class="col-md-12 d-flex align-items-center">
+															<p class="form-control flex-grow-1 bg-transparent" style="border: 1px dotted var(--bs-secondary); box-shadow: none; border-radius:5px" >A) During my college days, I attended numerous seminars on international marketing.
+
+B) I also completed a Spanish language course of A1.1 level.</p>
+														</div>
+													</div>
+																										<div class="row mb-3">
+														<div class="col-md-12 d-flex align-items-center">
+															<label class="form-label fw-bold" style="font-size:14px"><strong style="font-size:18px">7.</strong> What kind of Training/Course/Workshop you feel that can help you in your work and career growth? Please Specify</label>
+														</div>
+														<div class="col-md-12 d-flex align-items-center">
+															<p class="form-control flex-grow-1 bg-transparent" style="border: 1px dotted var(--bs-secondary); box-shadow: none; border-radius:5px" >A) Product knowledge - I have been learning every day here in GST but I still believe that I need to have more practical knowledge about our products in order to understand their technical aspect because when we go on a customer visit we lack the technical details while explaining them about a particular product.
+
+B) Need to attend marketing and sales seminar in order to explore my sales limit.
+
+C) From my first overseas visit i have got this feeling that we need to have frequent visit to the assign territory for better customer understanding, their need and expectation from GST, about the product, Price , opportunity as well as the competition from other companies. Such visit are very helpful to get into customer mind and achieving GST goal. Since customer not always shares things over phone or whatsapp hence its necessary to meet him personally.</p>
+														</div>
+													</div>
+																										<div class="row mb-3">
+														<div class="col-md-12 d-flex align-items-center">
+															<label class="form-label fw-bold" style="font-size:14px"><strong style="font-size:18px">8.</strong> What are the areas in which you would put the maximum efforts to better yourself? Please Specify</label>
+														</div>
+														<div class="col-md-12 d-flex align-items-center">
+															<p class="form-control flex-grow-1 bg-transparent" style="border: 1px dotted var(--bs-secondary); box-shadow: none; border-radius:5px" >A) As always i will be standing next to the customer and constantly doing the followup. Further will look for the solution at every steps as far product quality and pricing is concerned.
+
+B) Need to close watch our competitors especially from India.
+
+C) Working closely with the procurement department in order to make efficient and quick order delivery.
+
+D) </p>
+														</div>
+													</div>
+															                        		</div>
+		                            </fieldset>
+		                        </div>
+		                            
+	                            <hr>
+	                            
+		                        <div class="col-xl-12 right-side d-flex flex-column flex-grow-1 py-4 px-0" style="border-radius: 20px 20px 20px 20px;">
+
+		                            <fieldset class="flex-grow-1 flex-column px-5 form-step d-flex" data-title="KRA" data-description="This section should be completed by Employee and HOD on the basis of asigned key result area of the employee">
+		                            	<h3 class="fw-bold text-center mt-3" id="step_title">KRA</h3>
+					    				<p class="text-muted text-center fst-italic" id="step_description">This section should be completed by Employee and HOD on the basis of asigned key result area of the employee</p>
+					    				<hr>
+		                            	<div class="table-responsive d-flex flex-column flex-grow-1 ">
+		                            														<table class="table table-bordered">
+													<tr>
+														<th>Functions & Accountabilities</th>
+														<th>Self Rating</th>
+														<th>HOD Rating</th>
+													</tr>
+																									<tr>
+														<td>
+															<label class="form-label fw-bold" style="font-size:14px"><strong style="font-size:18px">1.</strong> Retention of Old Customers.</label>
+														</td>
+														<td>
+															<input type="number" class="rating text-secondary" id="appr_kra_self_rating_1" name="appr_kra_self_rating[1]"  data-clearable="remove" data-inline=false value="10" data-readonly=true disabled />
+														</td>
+														<td>
+															<input 
+															type="number" 
+															class="rating 
+															text-secondary" 
+															id="appr_kra_hod_rating_1" 
+															name="appr_kra_hod_rating[1]" 
+															data-clearable="remove" 
+															data-inline=false 
+															value="" 
+															data-readonly=true disabled															/>
+														</td>
+													</tr>
+																										<tr>
+														<td>
+															<label class="form-label fw-bold" style="font-size:14px"><strong style="font-size:18px">2.</strong> New Customer Development</label>
+														</td>
+														<td>
+															<input type="number" class="rating text-secondary" id="appr_kra_self_rating_2" name="appr_kra_self_rating[2]"  data-clearable="remove" data-inline=false value="5" data-readonly=true disabled />
+														</td>
+														<td>
+															<input 
+															type="number" 
+															class="rating 
+															text-secondary" 
+															id="appr_kra_hod_rating_2" 
+															name="appr_kra_hod_rating[2]" 
+															data-clearable="remove" 
+															data-inline=false 
+															value="" 
+															data-readonly=true disabled															/>
+														</td>
+													</tr>
+																										<tr>
+														<td>
+															<label class="form-label fw-bold" style="font-size:14px"><strong style="font-size:18px">3.</strong> Rate yourself for customer satisfaction in your assigned territory</label>
+														</td>
+														<td>
+															<input type="number" class="rating text-secondary" id="appr_kra_self_rating_3" name="appr_kra_self_rating[3]"  data-clearable="remove" data-inline=false value="10" data-readonly=true disabled />
+														</td>
+														<td>
+															<input 
+															type="number" 
+															class="rating 
+															text-secondary" 
+															id="appr_kra_hod_rating_3" 
+															name="appr_kra_hod_rating[3]" 
+															data-clearable="remove" 
+															data-inline=false 
+															value="" 
+															data-readonly=true disabled															/>
+														</td>
+													</tr>
+																									</table>
+														                        		</div>
+		                            </fieldset>
+		                        </div>
+		                            
+	                            <hr>
+	                            
+		                        <div class="col-xl-12 right-side d-flex flex-column flex-grow-1 py-4 px-0" style="border-radius: 20px 20px 20px 20px;">
+
+		                            <fieldset class="flex-grow-1 flex-column px-5 form-step d-flex" data-title="Personal Traits" data-description="This section should be completed by Employee, Reporting Manager and HOD on the basis of personal traits">
+		                            	<h3 class="fw-bold text-center mt-3" id="step_title">Personal Traits</h3>
+					    				<p class="text-muted text-center fst-italic" id="step_description">his section should be completed by Employee, Reporting Manager and HOD on the basis of personal traits</p>
+					    				<hr>
+		                            	<div class="table-responsive d-flex flex-column flex-grow-1">
+		                            														<table class="table table-bordered">
+													<tr>
+														<th>Functions & Accountabilities</th>
+														<th>Self Rating</th>
+														<th>Reporting Manager Rating</th>
+														<th>HOD Rating</th>
+													</tr>
+																									<tr>
+														<td>
+															<label class="form-label fw-bold" style="font-size:14px"><strong style="font-size:18px">1.</strong> Attitude to Work</label>
+														</td>
+														<td>
+															<input 
+															type="number" 
+															class="rating text-secondary" 
+															id="personal_trait_self_rating_1" 
+															name="personal_trait_self_rating[1]" 
+															data-clearable="remove" 
+															data-inline=false 
+															value="10" 
+															data-readonly=true 
+															disabled
+															/>
+														</td>
+														<td>
+															<input 
+															type="number" 
+															class="rating 
+															text-secondary															" 
+															id="personal_trait_reporting_manager_rating_1" 
+															name="personal_trait_reporting_manager_rating[1]" 
+															data-clearable="remove" 
+															data-inline=false 
+															value="" 
+															data-readonly=true disabled 
+															/>
+														</td>
+														<td>
+															<input 
+															type="number" 
+															class="rating 
+															text-secondary															" 
+															id="personal_trait_hod_rating_1" 
+															name="personal_trait_hod_rating[1]" 
+															data-clearable="remove" 
+															data-inline=false 
+															value="" 
+															data-readonly=true disabled 
+															/>
+														</td>
+													</tr>
+																										<tr>
+														<td>
+															<label class="form-label fw-bold" style="font-size:14px"><strong style="font-size:18px">2.</strong> Innovative / Positive</label>
+														</td>
+														<td>
+															<input 
+															type="number" 
+															class="rating text-secondary" 
+															id="personal_trait_self_rating_2" 
+															name="personal_trait_self_rating[2]" 
+															data-clearable="remove" 
+															data-inline=false 
+															value="10" 
+															data-readonly=true 
+															disabled
+															/>
+														</td>
+														<td>
+															<input 
+															type="number" 
+															class="rating 
+															text-secondary															" 
+															id="personal_trait_reporting_manager_rating_2" 
+															name="personal_trait_reporting_manager_rating[2]" 
+															data-clearable="remove" 
+															data-inline=false 
+															value="" 
+															data-readonly=true disabled 
+															/>
+														</td>
+														<td>
+															<input 
+															type="number" 
+															class="rating 
+															text-secondary															" 
+															id="personal_trait_hod_rating_2" 
+															name="personal_trait_hod_rating[2]" 
+															data-clearable="remove" 
+															data-inline=false 
+															value="" 
+															data-readonly=true disabled 
+															/>
+														</td>
+													</tr>
+																										<tr>
+														<td>
+															<label class="form-label fw-bold" style="font-size:14px"><strong style="font-size:18px">3.</strong> Leadership Skills (Applicable on TLs)</label>
+														</td>
+														<td>
+															<input 
+															type="number" 
+															class="rating text-secondary" 
+															id="personal_trait_self_rating_3" 
+															name="personal_trait_self_rating[3]" 
+															data-clearable="remove" 
+															data-inline=false 
+															value="10" 
+															data-readonly=true 
+															disabled
+															/>
+														</td>
+														<td>
+															<input 
+															type="number" 
+															class="rating 
+															text-secondary															" 
+															id="personal_trait_reporting_manager_rating_3" 
+															name="personal_trait_reporting_manager_rating[3]" 
+															data-clearable="remove" 
+															data-inline=false 
+															value="" 
+															data-readonly=true disabled 
+															/>
+														</td>
+														<td>
+															<input 
+															type="number" 
+															class="rating 
+															text-secondary															" 
+															id="personal_trait_hod_rating_3" 
+															name="personal_trait_hod_rating[3]" 
+															data-clearable="remove" 
+															data-inline=false 
+															value="" 
+															data-readonly=true disabled 
+															/>
+														</td>
+													</tr>
+																										<tr>
+														<td>
+															<label class="form-label fw-bold" style="font-size:14px"><strong style="font-size:18px">4.</strong> Puntual / Regular</label>
+														</td>
+														<td>
+															<input 
+															type="number" 
+															class="rating text-secondary" 
+															id="personal_trait_self_rating_4" 
+															name="personal_trait_self_rating[4]" 
+															data-clearable="remove" 
+															data-inline=false 
+															value="9" 
+															data-readonly=true 
+															disabled
+															/>
+														</td>
+														<td>
+															<input 
+															type="number" 
+															class="rating 
+															text-secondary															" 
+															id="personal_trait_reporting_manager_rating_4" 
+															name="personal_trait_reporting_manager_rating[4]" 
+															data-clearable="remove" 
+															data-inline=false 
+															value="" 
+															data-readonly=true disabled 
+															/>
+														</td>
+														<td>
+															<input 
+															type="number" 
+															class="rating 
+															text-secondary															" 
+															id="personal_trait_hod_rating_4" 
+															name="personal_trait_hod_rating[4]" 
+															data-clearable="remove" 
+															data-inline=false 
+															value="" 
+															data-readonly=true disabled 
+															/>
+														</td>
+													</tr>
+																										<tr>
+														<td>
+															<label class="form-label fw-bold" style="font-size:14px"><strong style="font-size:18px">5.</strong> Problem Solver</label>
+														</td>
+														<td>
+															<input 
+															type="number" 
+															class="rating text-secondary" 
+															id="personal_trait_self_rating_5" 
+															name="personal_trait_self_rating[5]" 
+															data-clearable="remove" 
+															data-inline=false 
+															value="10" 
+															data-readonly=true 
+															disabled
+															/>
+														</td>
+														<td>
+															<input 
+															type="number" 
+															class="rating 
+															text-secondary															" 
+															id="personal_trait_reporting_manager_rating_5" 
+															name="personal_trait_reporting_manager_rating[5]" 
+															data-clearable="remove" 
+															data-inline=false 
+															value="" 
+															data-readonly=true disabled 
+															/>
+														</td>
+														<td>
+															<input 
+															type="number" 
+															class="rating 
+															text-secondary															" 
+															id="personal_trait_hod_rating_5" 
+															name="personal_trait_hod_rating[5]" 
+															data-clearable="remove" 
+															data-inline=false 
+															value="" 
+															data-readonly=true disabled 
+															/>
+														</td>
+													</tr>
+																										<tr>
+														<td>
+															<label class="form-label fw-bold" style="font-size:14px"><strong style="font-size:18px">6.</strong> Multitasking</label>
+														</td>
+														<td>
+															<input 
+															type="number" 
+															class="rating text-secondary" 
+															id="personal_trait_self_rating_6" 
+															name="personal_trait_self_rating[6]" 
+															data-clearable="remove" 
+															data-inline=false 
+															value="10" 
+															data-readonly=true 
+															disabled
+															/>
+														</td>
+														<td>
+															<input 
+															type="number" 
+															class="rating 
+															text-secondary															" 
+															id="personal_trait_reporting_manager_rating_6" 
+															name="personal_trait_reporting_manager_rating[6]" 
+															data-clearable="remove" 
+															data-inline=false 
+															value="" 
+															data-readonly=true disabled 
+															/>
+														</td>
+														<td>
+															<input 
+															type="number" 
+															class="rating 
+															text-secondary															" 
+															id="personal_trait_hod_rating_6" 
+															name="personal_trait_hod_rating[6]" 
+															data-clearable="remove" 
+															data-inline=false 
+															value="" 
+															data-readonly=true disabled 
+															/>
+														</td>
+													</tr>
+																										<tr>
+														<td>
+															<label class="form-label fw-bold" style="font-size:14px"><strong style="font-size:18px">7.</strong> Team Spirit</label>
+														</td>
+														<td>
+															<input 
+															type="number" 
+															class="rating text-secondary" 
+															id="personal_trait_self_rating_7" 
+															name="personal_trait_self_rating[7]" 
+															data-clearable="remove" 
+															data-inline=false 
+															value="10" 
+															data-readonly=true 
+															disabled
+															/>
+														</td>
+														<td>
+															<input 
+															type="number" 
+															class="rating 
+															text-secondary															" 
+															id="personal_trait_reporting_manager_rating_7" 
+															name="personal_trait_reporting_manager_rating[7]" 
+															data-clearable="remove" 
+															data-inline=false 
+															value="" 
+															data-readonly=true disabled 
+															/>
+														</td>
+														<td>
+															<input 
+															type="number" 
+															class="rating 
+															text-secondary															" 
+															id="personal_trait_hod_rating_7" 
+															name="personal_trait_hod_rating[7]" 
+															data-clearable="remove" 
+															data-inline=false 
+															value="" 
+															data-readonly=true disabled 
+															/>
+														</td>
+													</tr>
+																										<tr>
+														<td>
+															<label class="form-label fw-bold" style="font-size:14px"><strong style="font-size:18px">8.</strong> Required Domain Knowledge</label>
+														</td>
+														<td>
+															<input 
+															type="number" 
+															class="rating text-secondary" 
+															id="personal_trait_self_rating_8" 
+															name="personal_trait_self_rating[8]" 
+															data-clearable="remove" 
+															data-inline=false 
+															value="9" 
+															data-readonly=true 
+															disabled
+															/>
+														</td>
+														<td>
+															<input 
+															type="number" 
+															class="rating 
+															text-secondary															" 
+															id="personal_trait_reporting_manager_rating_8" 
+															name="personal_trait_reporting_manager_rating[8]" 
+															data-clearable="remove" 
+															data-inline=false 
+															value="" 
+															data-readonly=true disabled 
+															/>
+														</td>
+														<td>
+															<input 
+															type="number" 
+															class="rating 
+															text-secondary															" 
+															id="personal_trait_hod_rating_8" 
+															name="personal_trait_hod_rating[8]" 
+															data-clearable="remove" 
+															data-inline=false 
+															value="" 
+															data-readonly=true disabled 
+															/>
+														</td>
+													</tr>
+																										<tr>
+														<td>
+															<label class="form-label fw-bold" style="font-size:14px"><strong style="font-size:18px">9.</strong> Shouldering Responsibility / Additional Responsibility</label>
+														</td>
+														<td>
+															<input 
+															type="number" 
+															class="rating text-secondary" 
+															id="personal_trait_self_rating_9" 
+															name="personal_trait_self_rating[9]" 
+															data-clearable="remove" 
+															data-inline=false 
+															value="10" 
+															data-readonly=true 
+															disabled
+															/>
+														</td>
+														<td>
+															<input 
+															type="number" 
+															class="rating 
+															text-secondary															" 
+															id="personal_trait_reporting_manager_rating_9" 
+															name="personal_trait_reporting_manager_rating[9]" 
+															data-clearable="remove" 
+															data-inline=false 
+															value="" 
+															data-readonly=true disabled 
+															/>
+														</td>
+														<td>
+															<input 
+															type="number" 
+															class="rating 
+															text-secondary															" 
+															id="personal_trait_hod_rating_9" 
+															name="personal_trait_hod_rating[9]" 
+															data-clearable="remove" 
+															data-inline=false 
+															value="" 
+															data-readonly=true disabled 
+															/>
+														</td>
+													</tr>
+																										<tr>
+														<td>
+															<label class="form-label fw-bold" style="font-size:14px"><strong style="font-size:18px">10.</strong> Eagerness to learn</label>
+														</td>
+														<td>
+															<input 
+															type="number" 
+															class="rating text-secondary" 
+															id="personal_trait_self_rating_10" 
+															name="personal_trait_self_rating[10]" 
+															data-clearable="remove" 
+															data-inline=false 
+															value="10" 
+															data-readonly=true 
+															disabled
+															/>
+														</td>
+														<td>
+															<input 
+															type="number" 
+															class="rating 
+															text-secondary															" 
+															id="personal_trait_reporting_manager_rating_10" 
+															name="personal_trait_reporting_manager_rating[10]" 
+															data-clearable="remove" 
+															data-inline=false 
+															value="" 
+															data-readonly=true disabled 
+															/>
+														</td>
+														<td>
+															<input 
+															type="number" 
+															class="rating 
+															text-secondary															" 
+															id="personal_trait_hod_rating_10" 
+															name="personal_trait_hod_rating[10]" 
+															data-clearable="remove" 
+															data-inline=false 
+															value="" 
+															data-readonly=true disabled 
+															/>
+														</td>
+													</tr>
+																									</table>
+														                        		</div>
+		                            </fieldset>
+		                        </div>
+					    	</div>
+					    </div>
+				    </div>
+				</div>
+			</div>
+			</div>
+
+
+  <!-- Vendor JS Files -->
+  <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+  <script src="assets/vendor/apexcharts/apexcharts.min.js"></script>
+  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/vendor/chart.js/chart.min.js"></script>
+  <script src="assets/vendor/echarts/echarts.min.js"></script>
+  <script src="assets/vendor/quill/quill.min.js"></script>
+  <script src="assets/vendor/simple-datatables/simple-datatables.js"></script>
+  <script src="assets/vendor/tinymce/tinymce.min.js"></script>
+  <script src="assets/vendor/php-email-form/validate.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.full.min.js"></script>
+
+  <!-- Template Main JS File -->
+  <script src="assets/js/main.js"></script>
+  <script src="assets/js/bootstrap4-rating-input.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script type="text/javascript">
+	var print_file = function(){
+		var element = document.getElementById('appraisal_print');
+		var opt = {
+			margin:       1,
+			filename:     'myfile.pdf',
+			image:        { type: 'jpeg', quality: 1 },
+			html2canvas:  { scale: 1 },
+			jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+		};
+		html2pdf().from(element).set(opt).save();
+	}
+</script>
+
+</body>
+
+</html>

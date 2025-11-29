@@ -1,0 +1,3 @@
+.header-fixed[data-header-scroll="on"].sidebar-enabled .header {
+  right: 0;
+}

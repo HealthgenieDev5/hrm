@@ -1,0 +1,15 @@
+<?php
+/*begin::AppraisalRoutes */
+
+use App\Controllers\AppraisalsController;
+
+
+$routes->get('/backend/master/appraisals', [AppraisalsController::class, 'index']);
+$routes->get('/backend/master/appraisals/add/(:num)?', [AppraisalsController::class, 'create/$1']);
+$routes->get('/backend/master/appraisals/edit/(:num)?', [AppraisalsController::class, 'edit/$1']);
+$routes->post('/ajax/master/appraisals/delete', [AppraisalsController::class, 'delete/$1']);
+$routes->post('/ajax/master/appraisals/validate', [AppraisalsController::class, 'store']);
+$routes->match(['get', 'post'], '/ajax/get-appraisals_table', [AppraisalsController::class, 'showTable']);
+$routes->match(['get', 'post'], '/ajax/get-appraisals-table-by-empid', [AppraisalsController::class, 'showTableByEmpId']);
+$routes->post('/ajax/master/appraisals/getAppraisalDetails', [AppraisalsController::class, 'getAppraisalDetails']);
+$routes->get('/backend/master/appraisals/pdf/(:num)?', [AppraisalsController::class, 'downloadPDF/$1']);

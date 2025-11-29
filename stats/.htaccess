@@ -1,0 +1,7 @@
+AuthName "hrm.healthgenie.tk statistics"
+AuthType Basic
+AuthUserFile /home/healthgenie/domains/hrm.healthgenie.tk/.stats-htpasswd
+require valid-user
+<Files .stats-htpasswd>
+deny from all
+</Files>

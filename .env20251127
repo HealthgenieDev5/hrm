@@ -1,0 +1,117 @@
+#--------------------------------------------------------------------
+# ENVIRONMENT
+#--------------------------------------------------------------------
+
+#CI_ENVIRONMENT = production
+#toolbar.enabled = false
+CI_ENVIRONMENT = development
+toolbar.enabled = true
+
+#--------------------------------------------------------------------
+# APP
+#--------------------------------------------------------------------
+app.appName = 'HealthGenie HRM'
+app.baseURL = 'https://hrm.healthgenie.test'
+app.forceGlobalSecureRequests = true
+
+# app.CSPEnabled = false
+
+#--------------------------------------------------------------------
+# DATABASE
+#--------------------------------------------------------------------
+
+database.default.hostname = localhost
+database.default.database = hrm.healthgenie.in_bkp_2025_11_05
+database.default.username = root
+database.default.password = mysql
+database.default.DBDriver = MySQLi
+database.default.charset = utf8
+database.default.DBPort = 3306
+database.default.DBCollat = utf8_general_ci
+
+#--------------------------------------------------------------------
+# ENCRYPTION
+#--------------------------------------------------------------------
+
+# encryption.key =
+
+
+#--------------------------------------------------------------------
+# EMAIL
+#---------------------------------------------------------------------
+
+#email.fromEmail = app.hrm@healthgenie.in
+#email.fromName = 'HRM Team'
+#email.protocol = smtp
+#email.SMTPHost = email-smtp.ap-south-1.amazonaws.com
+#email.SMTPUser = AKIAT6SASLFNTBLHR4F7
+#email.SMTPPass = BIxn6rxgMo9WyF3WsbQxjcHofxVUz+q7vgvjGeoRgMbB
+#email.SMTPPort = 587
+#email.SMTPTimeout = 60
+#email.mailType = html
+#email.charset = UTF-8
+
+
+
+#--------------------------------------------------------------------
+# SESSION
+#--------------------------------------------------------------------
+
+app.sessionDriver = CodeIgniter\Session\Handlers\FileHandler
+app.sessionCookieName = ci_session
+app.sessionExpiration = 7200
+app.sessionSavePath = writable/session
+app.cookiePrefix =
+app.cookieSecure = false
+app.CSPEnabled = false
+
+#--------------------------------------------------------------------
+# LOGGER
+#--------------------------------------------------------------------
+
+logger.threshold = 4
+logger.filePermissions = 0644
+logger.dateFormat = 'Y-m-d H:i:s'
+
+
+#--------------------------------------------------------------------
+# eTimeOffice APIs
+#--------------------------------------------------------------------
+
+# del.API_URL="https://api.etimeoffice.com/api/DownloadInOutPunchData"
+# del.CORPORATE_ID="HOOKHLA"
+# del.USERNAME="HO OKHLA"
+# del.PASSWORD="Gstc_321"
+
+# ggn.API_URL="https://api.etimeoffice.com/api/DownloadInOutPunchData"
+# ggn.CORPORATE_ID="GGNOFFICE"
+# ggn.USERNAME="GGN OFFICE"
+# ggn.PASSWORD="Hgipl_321"
+
+# hn.API_URL="https://api.etimeoffice.com/api/DownloadInOutPunchData"
+# hn.CORPORATE_ID="HEUER"
+# hn.USERNAME="HEUER FACTORY"
+# hn.PASSWORD="Heuer_321"
+
+# skbd.API_URL="https://api.etimeoffice.com/api/DownloadInOutPunchData"
+# skbd.CORPORATE_ID="SIKANDRABAD"
+# skbd.USERNAME="SKD FACTORY"
+# skbd.PASSWORD="Skd_321"
+
+
+#--------------------------------------------------------------------
+# Timezone
+#--------------------------------------------------------------------
+
+app.defaultTimezone = Asia/Kolkata
+
+
+#--------------------------------------------------------------------
+# Attendance API Configuration
+#--------------------------------------------------------------------
+USE_ATTENDANCE_API=true
+ATTENDANCE_API_URL=http://hrm-attendance-api.test/api/v1
+ATTENDANCE_API_KEY=639cc3a5cec2e1d9e61c1ec1f8005652
+ATTENDANCE_API_SECRET=845d74e4af6a1e86fe4d21f8d06cd1d1
+ATTENDANCE_API_TIMEOUT=30
+ATTENDANCE_API_FALLBACK_TO_LOCAL=true

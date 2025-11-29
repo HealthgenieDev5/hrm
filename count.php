@@ -1,0 +1,1 @@
+<?php \ = new mysqli('localhost', 'root', 'mysql', 'hrm.healthgenie.in_bkp_2025_11_05'); \ = \->query('SELECT COUNT(*) as total FROM raw_attendance'); \ = \->fetch_assoc(); echo 'Total records: ' . \['total'] . PHP_EOL;
