@@ -1,0 +1,1033 @@
+<?php
+
+namespace App\Controllers\User;
+
+use \Dompdf\Options;
+use App\Models\CustomModel;
+use App\Pipes\BasicDetails;
+use App\Models\CompanyModel;
+use App\Models\EmployeeModel;
+use App\Models\OdRequestsModel;
+use App\Models\LeaveRequestsModel;
+use App\Controllers\BaseController;
+use App\Controllers\Cron\ServerCron;
+use App\Models\EmployeeRevisionModel;
+use App\Controllers\Attendance\Processor;
+use App\Models\ProbationHodResponseModel;
+use App\Pipes\AttendanceProcessor\ProcessorHelper;
+
+class Profile extends BaseController
+{
+
+    public $session;
+    public $tableName;
+    // public $db;
+
+    public function __construct()
+    {
+        helper(['url', 'form', 'Form_helper', 'Config_defaults_helper']);
+        $this->session    = session();
+        $this->tableName = '';
+    }
+
+    public function index()
+    {
+
+        // $CompanyModel = new CompanyModel();
+        // $Companies = $CompanyModel->findAll();
+
+        $EmployeeModel = new EmployeeModel();
+        $current_user = $this->session->get('current_user');
+        $BasicDetailsPipe = new BasicDetails();
+        $pipelinedData_for_current_user_data = $BasicDetailsPipe->handle(
+            ['employee_id' => $current_user["employee_id"]],
+            function ($value) {
+                return $value;
+            }
+        );
+        $current_user_data = $pipelinedData_for_current_user_data['current_user_data'];
+
+        $ServerCron = new ServerCron();
+        $ServerCron->updateMyPunchingDataToday($current_user_data['internal_employee_id']);
+
+        // print_r($current_user_data);
+        // die();
+
+
+        $EnabledDateForCompOffCredit = ProcessorHelper::getEnabledDateForCompOffCredit($current_user_data, $current_user["employee_id"]);
+
+        $EmployeeModel = new EmployeeModel();
+        $employees = $EmployeeModel
+            ->select('employees.id as id')
+            ->select('employees.first_name as first_name')
+            ->select('employees.last_name as last_name')
+            ->select('employees.internal_employee_id as internal_employee_id')
+            ->select('d.department_name as department_name')
+            ->select('c.company_name as company_name')
+            ->select('c.company_short_name as company_short_name')
+            ->join('departments as d', 'd.id = employees.department_id', 'left')
+            ->join('companies as c', 'c.id = employees.company_id', 'left')
+            ->orderBy('employees.first_name ASC')
+            ->findAll();
+
+        $data = [
+            'page_title'            => $current_user['name'] . '\'s Profile',
+            'current_user_data'     => $current_user_data,
+            // 'Companies'             =>  $Companies,
+            'company_id_for_filter' =>  $current_user_data['company_id'],
+            'seven_days_late_minutes_avg' =>  getLateMinutes($current_user_data, date('Y-m-d', strtotime(current_date_of_month() . " -7 days")), current_date_of_month())['average'],
+            'fifteen_days_late_minutes_avg' =>  getLateMinutes($current_user_data, date('Y-m-d', strtotime(current_date_of_month() . " -15 days")), current_date_of_month())['average'],
+            'current_month_late_minutes_avg' =>  getLateMinutes($current_user_data, first_date_of_month(), current_date_of_month())['average'],
+            'current_month_late_minutes' =>  getLateMinutes($current_user_data, first_date_of_month(), current_date_of_month())['total'],
+            'seven_days_early_going_minutes_avg' =>  getEarlyGoingMinutes($current_user_data, date('Y-m-d', strtotime(current_date_of_month() . " -7 days")), current_date_of_month())['average'],
+            'fifteen_days_early_going_minutes_avg' =>  getEarlyGoingMinutes($current_user_data, date('Y-m-d', strtotime(current_date_of_month() . " -15 days")), current_date_of_month())['average'],
+            'current_month_early_going_minutes_avg' =>  getEarlyGoingMinutes($current_user_data, first_date_of_month(), current_date_of_month())['average'],
+            'current_month_early_going_minutes' =>  getEarlyGoingMinutes($current_user_data, first_date_of_month(), current_date_of_month())['total'],
+            'current_date_early_going_minutes' =>  getEarlyGoingMinutes($current_user_data, current_date_of_month(), current_date_of_month())['total'],
+            'employees'             => $employees,
+            'current_controller'    => 'user',
+            'current_method'        => 'profile',
+            'EnabledDateForCompOffCredit' => $EnabledDateForCompOffCredit,
+            'probationPopUpEmployees' => $this->getDataForUnderProbationPopUp(),
+        ];
+        return view('User/Profile', $data);
+    }
+
+    public function getLeaveBalanceOnProfilePage()
+    {
+        $CurrentMonthLeaveBalance = ProcessorHelper::getLeaveBalance($this->session->get('current_user')["employee_id"]);
+        echo json_encode($CurrentMonthLeaveBalance);
+    }
+
+    public function getLeaveBalanceOfNextMonthOnProfilePage()
+    {
+        $NextMonthLeaveBalance = ProcessorHelper::getLeaveBalanceNextMonth($this->session->get('current_user')["employee_id"]);
+        echo json_encode($NextMonthLeaveBalance, true);
+    }
+
+    public function editProfile()
+    {
+        $EmployeeModel = new EmployeeModel();
+        $current_user = $this->session->get('current_user');
+        $current_user_data = $EmployeeModel
+            ->select('employees.*')
+            ->select('d.department_name as department_name')
+            ->select('c.company_name as company_name')
+            ->select('c.company_short_name as company_short_name')
+            ->select('deg.designation_name as designation_name')
+            ->select("trim(concat(reporting_managers.first_name, ' ', reporting_managers.last_name)) as reporting_manager_name")
+            ->select('shifts.shift_name as shift_name')
+            ->join('departments as d', 'd.id = employees.department_id', 'left')
+            ->join('companies as c', 'c.id = employees.company_id', 'left')
+            ->join('designations as deg', 'deg.id = employees.designation_id', 'left')
+            ->join('shifts', 'shifts.id = employees.shift_id', 'left')
+            ->join('employees as reporting_managers', 'reporting_managers.id = employees.reporting_manager_id', 'left')
+            ->where('employees.id =', $current_user['employee_id'])
+            ->first();
+        $CompanyModel = new CompanyModel();
+        $Companies = $CompanyModel->findAll();
+        $data = [
+            'page_title'            => 'Edit Your Profile',
+            'current_controller'    => $this->request->getUri()->getSegment(1),
+            'current_method'        => $this->request->getUri()->getSegment(2),
+            'companies'             => $Companies,
+        ];
+        foreach ($current_user_data as $key => $val) {
+            $data[$key] = $val;
+            if ($key == 'attachment') {
+                $data[$key] = json_decode($val, true);
+            }
+        }
+
+        if (isset($data['family_members']) && !empty($data['family_members'])) {
+            $family_members = json_decode($data['family_members'], true);
+            foreach ($family_members as $index => $family_member) {
+                if (isset($family_member['member_dob']) && !empty($family_member['member_dob'])) {
+                    $member_dob = $family_member['member_dob'];
+                    $today = date_create('today');
+                    $birthday = date_create($member_dob);
+                    $differenceInMilisecond = $today->getTimestamp() - $birthday->getTimestamp();
+                    $year_age = floor($differenceInMilisecond / 31536000);
+                    $day_age = floor(($differenceInMilisecond % 31536000) / 86400);
+                    $month_age = floor($day_age / 30);
+                    $day_age = $day_age % 30;
+
+                    if (is_nan($year_age) || is_nan($month_age) || is_nan($day_age)) {
+                        $member_age = 0;
+                    } else {
+                        $member_age = $year_age;
+                    }
+
+
+
+                    // $member_age = date_diff(date_create($member_dob), date_create('today'))->y;
+                    // $member_age = $member_age > 0 ? $member_age : 0;
+
+                    $family_members[$index]['member_age'] = $member_age;
+                }
+            }
+            $data['family_members'] = json_encode($family_members);
+        }
+
+        return view('User/EditProfile', $data);
+    }
+
+    public function updateProfile()
+    {
+        /*echo '<pre>';
+        print_r($_REQUEST);
+        echo '</pre>';
+        die();*/
+        $response_array = array();
+        if ($this->request->getMethod() == 'post') {
+            $rules = [
+                'first_name'  =>  [
+                    'rules'         =>  'required',
+                    'errors'        =>  [
+                        'required'  => 'First Name is required',
+                    ]
+                ],
+                'personal_email'  =>  [
+                    'rules'         =>  'required|valid_email|is_unique[employees.personal_email,id,{employee_id}]',
+                    'errors'        =>  [
+                        'required'  => 'Personal Email is required',
+                        'valid_email'  => 'Personal Email is not valid',
+                        'is_unique'  => 'This Personal Email already exist in our database'
+                    ]
+                ],
+                'personal_mobile'  =>  [
+                    'rules'         =>  'required|integer|exact_length[10]|is_unique[employees.personal_mobile,id,{employee_id}]',
+                    'errors'        =>  [
+                        'required'  => 'Please enter 10 digit mobile number',
+                        'integer'  => 'Personal Mobile number must be only numbers',
+                        'exact_length'  => 'Personal Mobile number must be exactly 10 digits',
+                        'is_unique'  => 'This Personal Mobile number already exist in our database'
+                    ]
+                ],
+                'gender'  =>  [
+                    'rules'         =>  'required',
+                    'errors'        =>  [
+                        'required'  => 'Please select your gender',
+                    ]
+                ],
+                'fathers_name'  =>  [
+                    'rules'         =>  'required',
+                    'errors'        =>  [
+                        'required'  => 'Please enter Father Name',
+                    ]
+                ],
+                'marital_status'  =>  [
+                    'rules'         =>  'required',
+                    'errors'        =>  [
+                        'required'  => 'Please select your marital status',
+                    ]
+                ],
+                'permanent_city'  =>  [
+                    'rules'         =>  'required',
+                    'errors'        =>  [
+                        'required'  => 'Permanent City is required',
+                    ]
+                ],
+                'permanent_district'  =>  [
+                    'rules'         =>  'required',
+                    'errors'        =>  [
+                        'required'  => 'Permanent District is required',
+                    ]
+                ],
+                'permanent_state'  =>  [
+                    'rules'         =>  'required',
+                    'errors'        =>  [
+                        'required'  => 'Permanent State is required',
+                    ]
+                ],
+                'permanent_pincode'  =>  [
+                    'rules'         =>  'required',
+                    'errors'        =>  [
+                        'required'  => 'Permanent Pincode is required',
+                    ]
+                ],
+                'permanent_address'  =>  [
+                    'rules'         =>  'required',
+                    'errors'        =>  [
+                        'required'  => 'Permanent Address is required',
+                    ]
+                ],
+                'present_city'  =>  [
+                    'rules'         =>  'required',
+                    'errors'        =>  [
+                        'required'  => 'Present City is required',
+                    ]
+                ],
+                'present_district'  =>  [
+                    'rules'         =>  'required',
+                    'errors'        =>  [
+                        'required'  => 'Present District is required',
+                    ]
+                ],
+                'present_state'  =>  [
+                    'rules'         =>  'required',
+                    'errors'        =>  [
+                        'required'  => 'Present State is required',
+                    ]
+                ],
+                'present_pincode'  =>  [
+                    'rules'         =>  'required',
+                    'errors'        =>  [
+                        'required'  => 'Present Pincode is required',
+                    ]
+                ],
+                'present_address'  =>  [
+                    'rules'         =>  'required',
+                    'errors'        =>  [
+                        'required'  => 'Present Address is required',
+                    ]
+                ],
+            ];
+
+            if (isset($_REQUEST['work_email']) && !empty($_REQUEST['work_email'])) {
+                $rules['work_email'] =  [
+                    'rules'         =>  'valid_email|is_unique[employees.work_email,id,{employee_id}]',
+                    'errors'        =>  [
+                        'valid_email'  => 'Work Email is not valid',
+                        'is_unique'  => 'This Work Email already exist in our database'
+                    ]
+                ];
+            }
+            if (isset($_REQUEST['work_mobile']) && !empty($_REQUEST['work_mobile'])) {
+                $rules['work_mobile'] =  [
+                    'rules'         =>  'integer|exact_length[10]|is_unique[employees.work_mobile,id,{employee_id}]',
+                    'errors'        =>  [
+                        'integer'  => 'Work Mobile number must be only numbers',
+                        'exact_length'  => 'Work Mobile number must be exactly 10 digits',
+                        'is_unique'  => 'This Work Mobile number already exist in our database'
+                    ]
+                ];
+            }
+            if (isset($_REQUEST['emergency_contact_number']) && !empty($_REQUEST['emergency_contact_number'])) {
+                $rules['emergency_contact_number'] =  [
+                    'rules'         =>  'integer|exact_length[10]',
+                    'errors'        =>  [
+                        'integer'  => 'Emergency Contact must be only numbers',
+                        'exact_length'  => 'Emergency Contact Number must be exactly 10 digits',
+                    ]
+                ];
+            }
+
+            $validation = $this->validate($rules);
+
+            if (!$validation) {
+                $response_array['response_type'] = 'error';
+                $response_array['response_description'] = 'Sorry, looks like there are some errors,<br>Click ok to view errors';
+                $errors = $this->validator->getErrors();
+                $response_array['response_data']['validation'] = $errors;
+            } else {
+                $employee_id = $this->session->get('current_user')['employee_id'];
+
+                $newData = [
+                    'first_name'                    => trim($this->request->getPost('first_name')),
+                    'last_name'                     => trim($this->request->getPost('last_name')),
+                    'personal_email'                => trim($this->request->getPost('personal_email')),
+                    'fathers_name'                        => $this->request->getPost('fathers_name'),
+                    'gender'                        => $this->request->getPost('gender'),
+                    'marital_status'                => $this->request->getPost('marital_status'),
+                    'date_of_anniversary'           => !empty($this->request->getPost('date_of_anniversary')) ? $this->request->getPost('date_of_anniversary') : NULL,
+                    'personal_mobile'               => trim($this->request->getPost('personal_mobile')),
+                    'date_of_birth'                 => !empty($this->request->getPost('date_of_birth')) ? $this->request->getPost('date_of_birth') : NULL,
+                    'permanent_city'                => trim($this->request->getPost('permanent_city')),
+                    'permanent_district'            => trim($this->request->getPost('permanent_district')),
+                    'permanent_state'               => trim($this->request->getPost('permanent_state')),
+                    'permanent_pincode'             => trim($this->request->getPost('permanent_pincode')),
+                    'permanent_address'             => trim($this->request->getPost('permanent_address')),
+                    'present_city'                  => trim($this->request->getPost('present_city')),
+                    'present_district'              => trim($this->request->getPost('present_district')),
+                    'present_state'                 => trim($this->request->getPost('present_state')),
+                    'present_pincode'               => trim($this->request->getPost('present_pincode')),
+                    'present_address'               => trim($this->request->getPost('present_address')),
+
+                    'family_members'               => !empty($this->request->getPost('family_members')) ? json_encode($this->request->getPost('family_members')) : NULL,
+
+                    // 'work_email'                    => trim($this->request->getPost('work_email')),
+                    // 'work_mobile'                   => trim($this->request->getPost('work_mobile')),
+                    // 'work_phone_extension_number'   => trim($this->request->getPost('work_phone_extension_number')),
+                    // 'work_phone_cug_number'         => trim($this->request->getPost('work_phone_cug_number')),
+                    // 'desk_location'                 => trim($this->request->getPost('desk_location')),
+                    // 'emergency_contact_number'      => trim($this->request->getPost('emergency_contact_number')),
+                    // 'highest_qualification'         => trim($this->request->getPost('highest_qualification')),
+                    // 'total_experience'              => trim($this->request->getPost('total_experience')),
+                ];
+
+                $EmployeeModel = new EmployeeModel();
+                $oldData = $EmployeeModel->where('id', $employee_id)->first();
+
+                $attachment = !empty($oldData['attachment']) ? json_decode($oldData['attachment'], true) : array();
+
+                #avatar
+                if (!empty($this->request->getPost('avatar_attachment_remove'))) {
+                    $attachment['avatar']['file'] = '';
+                } else {
+                    $avatar_attachment = $this->request->getFile('avatar_attachment');
+                    if ($avatar_attachment->isValid() && ! $avatar_attachment->hasMoved()) {
+                        $upload_folder = WRITEPATH . 'uploads/' . date('Y') . '/' . date('m');
+                        $avatar_uploaded = $avatar_attachment->move($upload_folder);
+                        if ($avatar_uploaded) {
+                            $attachment['avatar']['file'] = str_replace(WRITEPATH, "/", $upload_folder . '/' . $avatar_attachment->getName());
+                        }
+                    }
+                }
+                #avatar
+                #pan card
+                // $attachment['pan']['number'] = !empty( $this->request->getPost('pan_card_number') ) ? $this->request->getPost('pan_card_number') : NULL;                
+                // if( !empty( $this->request->getPost('pan_card_attachment_remove') ) ){
+                //     $attachment['pan']['file'] = '';
+                // }else{
+                //     $pan_card_attachment = $this->request->getFile('pan_card_attachment');
+                //     if ($pan_card_attachment->isValid() && ! $pan_card_attachment->hasMoved()) {
+                //         $upload_folder = WRITEPATH . 'uploads/'.date('Y').'/'.date('m');
+                //         $pan_card_uploaded = $pan_card_attachment->move($upload_folder);
+                //         if( $pan_card_uploaded ){
+                //             $attachment['pan']['file'] = str_replace(WRITEPATH, "/", $upload_folder.'/'.$pan_card_attachment->getName());
+                //         }
+                //     } 
+                // }
+                #pan card
+
+                #adhar card
+                // $attachment['adhar']['number'] = !empty( $this->request->getPost('adhar_card_number') ) ? $this->request->getPost('adhar_card_number') : NULL;
+                // if( !empty( $this->request->getPost('adhar_card_attachment_front_remove') ) ){
+                //     $attachment['adhar']['front'] = '';
+                // }else{
+                //     $adhar_card_attachment_front = $this->request->getFile('adhar_card_attachment_front');
+                //     if ($adhar_card_attachment_front->isValid() && ! $adhar_card_attachment_front->hasMoved()) {
+                //         $upload_folder = WRITEPATH . 'uploads/'.date('Y').'/'.date('m');
+                //         $adhar_card_front_uploaded = $adhar_card_attachment_front->move($upload_folder);
+                //         if( $adhar_card_front_uploaded ){
+                //             $attachment['adhar']['front'] = str_replace(WRITEPATH, "/", $upload_folder.'/'.$adhar_card_attachment_front->getName());
+                //         }
+                //     } 
+                // }
+
+                // if( !empty( $this->request->getPost('adhar_card_attachment_back_remove') ) ){
+                //     $attachment['adhar']['back'] = '';
+                // }else{
+                //     $adhar_card_attachment_back = $this->request->getFile('adhar_card_attachment_back');
+                //     if ($adhar_card_attachment_back->isValid() && ! $adhar_card_attachment_back->hasMoved()) {
+                //         $upload_folder = WRITEPATH . 'uploads/'.date('Y').'/'.date('m');
+                //         $adhar_card_back_uploaded = $adhar_card_attachment_back->move($upload_folder);
+                //         if( $adhar_card_back_uploaded ){
+                //             $attachment['adhar']['back'] = str_replace(WRITEPATH, "/", $upload_folder.'/'.$adhar_card_attachment_back->getName());
+                //         }
+                //     } 
+                // }
+                #adhar card
+
+                #bank_account
+                // $attachment['bank_account']['name'] = !empty( $this->request->getPost('bank_name') ) ? $this->request->getPost('bank_name') : NULL;
+                // $attachment['bank_account']['number'] = !empty( $this->request->getPost('bank_account_number') ) ? $this->request->getPost('bank_account_number') : NULL;
+                // if( !empty( $this->request->getPost('bank_account_attachment_remove') ) ){
+                //     $attachment['bank_account']['file'] = '';
+                // }else{
+                //     $bank_account_attachment = $this->request->getFile('bank_account_attachment');
+                //     if ($bank_account_attachment->isValid() && ! $bank_account_attachment->hasMoved()) {
+                //         $upload_folder = WRITEPATH . 'uploads/'.date('Y').'/'.date('m');
+                //         $bank_account_uploaded = $bank_account_attachment->move($upload_folder);
+                //         if( $bank_account_uploaded ){
+                //             $attachment['bank_account']['file'] = str_replace(WRITEPATH, "/", $upload_folder.'/'.$bank_account_attachment->getName());
+                //         }
+                //     } 
+                // }
+                #bank_account
+
+                #passport
+                // $attachment['passport']['number'] = !empty( $this->request->getPost('passport_number') ) ? $this->request->getPost('passport_number') : NULL;
+                // if( !empty( $this->request->getPost('passport_attachment_remove') ) ){
+                //     $attachment['passport']['file'] = '';
+                // }else{
+                //     $passport_attachment = $this->request->getFile('passport_attachment');
+                //     if ($passport_attachment->isValid() && ! $passport_attachment->hasMoved()) {
+                //         $upload_folder = WRITEPATH . 'uploads/'.date('Y').'/'.date('m');
+                //         $passport_uploaded = $passport_attachment->move($upload_folder);
+                //         if( $passport_uploaded ){
+                //             $attachment['passport']['file'] = str_replace(WRITEPATH, "/", $upload_folder.'/'.$passport_attachment->getName());
+                //         }
+                //     } 
+                // }
+                #passport
+
+                $newData['attachment'] = json_encode($attachment);
+
+                $oldData['employee_id'] = $oldData['id'];
+                $oldData['revised_by'] = $employee_id;
+                $EmployeeRevisionModel = new EmployeeRevisionModel();
+                $insertEmployeeRevisionQuery = $EmployeeRevisionModel->insert($oldData);
+                if (!$insertEmployeeRevisionQuery) {
+                    $response_array['response_type'] = 'error';
+                    $response_array['response_description'] = 'DB:Error Failed to create revision <br> Please contact administrator.' . json_encode($EmployeeRevisionModel->error());
+                } else {
+                    $updateQuery = $EmployeeModel->update($employee_id, $newData);
+
+                    if (!$updateQuery) {
+                        $response_array['response_type'] = 'error';
+                        $response_array['response_description'] = 'DB:Error Failed to update employee <br> Please contact administrator.';
+                    } else {
+                        /*$newRole = $this->request->getPost('role');
+                        $sql = "update users set role = '".$newRole."' ";
+                        if( isset($newData['status']) && !empty($newData['status']) ){
+                            $sql .= ", status = '".$newData['status']."' ";
+                        }
+                        $sql .= " where employee_id = '".$employee_id."'";
+                        $CustomModel = new CustomModel();
+                        $query = $CustomModel->CustomQuery($sql);
+                        if(!$query){
+                            $response_array['response_type'] = 'success';
+                            $response_array['response_description'] = 'Employee Updated Successfully, but login credentials were not updated';
+                        }else{
+                            $response_array['response_type'] = 'success';
+                            $response_array['response_description'] = 'Employee Updated Successfully';
+                        }*/
+
+                        $response_array['response_type'] = 'success';
+                        $response_array['response_description'] = 'Employee Updated Successfully';
+                    }
+                    #begin::Update Session
+                    $current_user = [];
+                    $EmployeeModel = new EmployeeModel();
+                    $current_employee_data = $EmployeeModel->find($employee_id);
+                    foreach ($current_employee_data as $key => $val) {
+                        $current_user[$key] = $val;
+                    }
+                    $current_user['user_id'] = $current_employee_data['id'];
+                    $current_user['employee_id'] = $current_employee_data['id'];
+                    $current_user['status'] = $current_employee_data['status'];
+                    $current_user['name'] = trim($current_employee_data['first_name'] . ' ' . $current_employee_data['last_name']);
+                    $current_user['role'] = $current_employee_data['role'];
+                    $this->session->set('current_user', $current_user);
+                    #end::Update Session
+                }
+            }
+        } else {
+            $response_array['response_type'] = 'error';
+            $response_array['response_description'] = 'Sorry, This form only accept Post Method';
+        }
+        return $this->response->setJSON($response_array);
+    }
+
+    public function getPunchingReports()
+    {
+        $current_user = $this->session->get('current_user');
+        $employee_id = $current_user['employee_id'];
+        $dateFrom = date('Y-m-01');
+        $dateTo = date('Y-m-d');
+
+        $PunchingData = Processor::getProcessedPunchingData($employee_id, $dateFrom, $dateTo);
+
+        foreach ($PunchingData as $i => $dataRow) {
+            if ($dataRow['date'] == date('Y-m-d') && (!empty($dataRow['punch_in_time']) && empty($dataRow['punch_out_time']))) {
+                $PunchingData[$i]['status'] = '--';
+                $PunchingData[$i]['status_remarks'] = 'Out time not recorded yet';
+            }
+            if ($dataRow['is_weekoff'] == 'yes' && !in_array($dataRow['status'], ['P+OD', 'P', 'P on OD', 'H/D+OD', 'H/D', 'H/D on OD'])) {
+                $PunchingData[$i]['shift_start'] = null;
+                $PunchingData[$i]['shift_end'] = null;
+            }
+        }
+
+        return $this->response->setJSON($PunchingData);
+    }
+
+    public function getLeaveReports()
+    {
+        $current_user = $this->session->get('current_user');
+        $LeaveRequestsModel = new LeaveRequestsModel();
+        $current_user_data = $LeaveRequestsModel
+            ->select('leave_requests.*')
+            ->select('trim(concat(e.first_name, " ", e.last_name)) as reviewed_by_name')
+            ->join('employees e', 'e.id = leave_requests.reviewed_by', 'left')
+            ->where('leave_requests.employee_id =', $current_user['employee_id'])
+            ->where('(leave_requests.from_date >= "' . first_date_of_month() . '" or leave_requests.to_date >= "' . first_date_of_month() . '")')
+            ->orderBy('leave_requests.from_date', 'DESC')
+            ->findAll();
+
+        foreach ($current_user_data as $index => $array) {
+            if (isset($array['from_date']) && !empty($array['from_date']) && isset($array['to_date']) && !empty($array['to_date'])) {
+                /*$from_date = date_create($array['from_date']);
+                $to_date = date_create($array['to_date']);
+                $interval = date_diff($from_date, $to_date);
+                $current_user_data[$index]['number_of_days'] = (int)$interval->format('%d')+1;*/
+
+                $current_user_data[$index]['from_date'] = date('d M Y', strtotime($array['from_date']));
+                $current_user_data[$index]['to_date'] = date('d M Y', strtotime($array['to_date']));
+            }
+            if (isset($array['reviewed_date']) && !empty($array['reviewed_date'])) {
+                $current_user_data[$index]['reviewed_date'] = date('d M Y', strtotime($array['reviewed_date']));
+            }
+            if (isset($array['date_time']) && !empty($array['date_time'])) {
+                $current_user_data[$index]['date_time'] = date('d M Y', strtotime($array['date_time']));
+            }
+        }
+        echo json_encode($current_user_data);
+    }
+
+    public function getOdReportsPending()
+    {
+        $current_user = $this->session->get('current_user');
+        $OdRequestsModel = new OdRequestsModel();
+        $current_user_data = $OdRequestsModel
+            ->select('od_requests.*')
+            ->select('trim(concat(e.first_name, " ", e.last_name)) as assigned_by')
+            ->select('trim(concat(e1.first_name, " ", e1.last_name)) as reviewed_by_name')
+            ->join('employees e', 'e.id = od_requests.duty_assigner', 'left')
+            ->join('employees e1', 'e1.id = od_requests.reviewed_by', 'left')
+            ->where('od_requests.status =', 'pending')
+            ->where('od_requests.employee_id =', $current_user['employee_id'])
+            ->where('(
+                                    date(od_requests.estimated_from_date_time) >= "' . first_date_of_month() . '" 
+                                    or date(od_requests.estimated_to_date_time) >= "' . first_date_of_month() . '"
+                                    or date(od_requests.actual_from_date_time) >= "' . first_date_of_month() . '"
+                                    or date(od_requests.actual_to_date_time) >= "' . first_date_of_month() . '"
+                                )')
+            ->orderBy('od_requests.estimated_from_date_time', 'DESC')
+            ->findAll();
+
+        foreach ($current_user_data as $index => $row) {
+            if (isset($row['actual_from_date_time']) && !empty($row['actual_from_date_time']) && isset($row['actual_to_date_time']) && !empty($row['actual_to_date_time'])) {
+                $actual_from_date_time = date_create($row['actual_from_date_time']);
+                $actual_to_date_time = date_create($row['actual_to_date_time']);
+                $interval = date_diff($actual_from_date_time, $actual_to_date_time);
+            } elseif (isset($row['estimated_from_date_time']) && !empty($row['estimated_from_date_time']) && isset($row['estimated_to_date_time']) && !empty($row['estimated_to_date_time'])) {
+                $estimated_from_date_time = date_create($row['estimated_from_date_time']);
+                $estimated_to_date_time = date_create($row['estimated_to_date_time']);
+                $interval = date_diff($estimated_from_date_time, $estimated_to_date_time);
+            }
+
+            $hours = 0;
+            $hours += (int)$interval->format('%d') * 24;
+            $hours += (int)$interval->format('%h');
+            $minutes = 0;
+            $minutes += (int)$interval->format('%i');
+            $minutes += round((int)$interval->format('%s') / 60);
+            $current_user_data[$index]['interval'] = json_encode($interval);
+            $current_user_data[$index]['interval'] = str_pad($hours, 2, '0', STR_PAD_LEFT) . ':' . str_pad($minutes, 2, '0', STR_PAD_LEFT);
+
+            if ($row['duty_assigner'] == $current_user['employee_id']) {
+                $current_user_data[$index]['assigned_by'] = 'Self';
+            }
+            if (isset($row['estimated_from_date_time']) && !empty($row['estimated_from_date_time']) && isset($row['estimated_to_date_time']) && !empty($row['estimated_to_date_time'])) {
+                $current_user_data[$index]['estimated_from_date_time'] = date('d M Y h:i A', strtotime($row['estimated_from_date_time']));
+                $current_user_data[$index]['estimated_to_date_time'] = date('d M Y h:i A', strtotime($row['estimated_to_date_time']));
+            }
+            if (isset($row['actual_from_date_time']) && !empty($row['actual_from_date_time']) && isset($row['actual_to_date_time']) && !empty($row['actual_to_date_time'])) {
+                $current_user_data[$index]['actual_from_date_time'] = date('d M Y h:i A', strtotime($row['actual_from_date_time']));
+                $current_user_data[$index]['actual_to_date_time'] = date('d M Y h:i A', strtotime($row['actual_to_date_time']));
+            }
+
+            if (isset($row['reviewed_date_time']) && !empty($row['reviewed_date_time'])) {
+                $current_user_data[$index]['reviewed_date_time'] = date('d M Y', strtotime($row['reviewed_date_time']));
+            }
+            if (isset($row['date_time']) && !empty($row['date_time'])) {
+                $current_user_data[$index]['date_time'] = date('d M Y', strtotime($row['date_time']));
+            }
+            if (isset($row['updated_date_time']) && !empty($row['updated_date_time'])) {
+                $current_user_data[$index]['updated_date_time'] = date('d M Y', strtotime($row['updated_date_time']));
+            }
+            if (isset($row['estimated_from_date_time']) && !empty($row['estimated_from_date_time']) && isset($row['date_time']) && !empty($row['date_time'])) {
+                if (strtotime($row['estimated_from_date_time']) >= strtotime($row['date_time'])) {
+                    $current_user_data[$index]['pre_post'] = 'Pre';
+                } else {
+                    $current_user_data[$index]['pre_post'] = 'Post';
+                }
+            }
+        }
+
+        /*echo '<pre>';
+        print_r($LeaveRequestsModel->getlastQuery()->getQuery());
+        print_r($current_user_data);
+        echo '</pre>';
+        die();*/
+
+
+        echo json_encode($current_user_data);
+    }
+
+    public function getOdReportsApproved()
+    {
+        $current_user = $this->session->get('current_user');
+        $OdRequestsModel = new OdRequestsModel();
+        $current_user_data = $OdRequestsModel
+            ->select('od_requests.*')
+            ->select('trim(concat(e.first_name, " ", e.last_name)) as assigned_by')
+            ->select('trim(concat(e1.first_name, " ", e1.last_name)) as reviewed_by_name')
+            ->join('employees e', 'e.id = od_requests.duty_assigner', 'left')
+            ->join('employees e1', 'e1.id = od_requests.reviewed_by', 'left')
+            ->where('od_requests.status =', 'approved')
+            ->where('od_requests.employee_id =', $current_user['employee_id'])
+            ->where('(
+                                    date(od_requests.estimated_from_date_time) >= "' . first_date_of_month() . '" 
+                                    or date(od_requests.estimated_to_date_time) >= "' . first_date_of_month() . '"
+                                    or date(od_requests.actual_from_date_time) >= "' . first_date_of_month() . '"
+                                    or date(od_requests.actual_to_date_time) >= "' . first_date_of_month() . '"
+                                )')
+            ->orderBy('od_requests.estimated_from_date_time', 'DESC')
+            ->findAll();
+
+        foreach ($current_user_data as $index => $row) {
+            if (isset($row['actual_from_date_time']) && !empty($row['actual_from_date_time']) && isset($row['actual_to_date_time']) && !empty($row['actual_to_date_time'])) {
+                $actual_from_date_time = date_create($row['actual_from_date_time']);
+                $actual_to_date_time = date_create($row['actual_to_date_time']);
+                $interval = date_diff($actual_from_date_time, $actual_to_date_time);
+            } elseif (isset($row['estimated_from_date_time']) && !empty($row['estimated_from_date_time']) && isset($row['estimated_to_date_time']) && !empty($row['estimated_to_date_time'])) {
+                $estimated_from_date_time = date_create($row['estimated_from_date_time']);
+                $estimated_to_date_time = date_create($row['estimated_to_date_time']);
+                $interval = date_diff($estimated_from_date_time, $estimated_to_date_time);
+            }
+
+            $hours = 0;
+            $hours += (int)$interval->format('%d') * 24;
+            $hours += (int)$interval->format('%h');
+            $minutes = 0;
+            $minutes += (int)$interval->format('%i');
+            $minutes += round((int)$interval->format('%s') / 60);
+            $current_user_data[$index]['interval'] = json_encode($interval);
+            $current_user_data[$index]['interval'] = str_pad($hours, 2, '0', STR_PAD_LEFT) . ':' . str_pad($minutes, 2, '0', STR_PAD_LEFT);
+
+            if ($row['duty_assigner'] == $current_user['employee_id']) {
+                $current_user_data[$index]['assigned_by'] = 'Self';
+            }
+            if (isset($row['estimated_from_date_time']) && !empty($row['estimated_from_date_time']) && isset($row['estimated_to_date_time']) && !empty($row['estimated_to_date_time'])) {
+                $current_user_data[$index]['estimated_from_date_time'] = date('d M Y h:i A', strtotime($row['estimated_from_date_time']));
+                $current_user_data[$index]['estimated_to_date_time'] = date('d M Y h:i A', strtotime($row['estimated_to_date_time']));
+            }
+            if (isset($row['actual_from_date_time']) && !empty($row['actual_from_date_time']) && isset($row['actual_to_date_time']) && !empty($row['actual_to_date_time'])) {
+                $current_user_data[$index]['actual_from_date_time'] = date('d M Y h:i A', strtotime($row['actual_from_date_time']));
+                $current_user_data[$index]['actual_to_date_time'] = date('d M Y h:i A', strtotime($row['actual_to_date_time']));
+            }
+
+            if (isset($row['reviewed_date_time']) && !empty($row['reviewed_date_time'])) {
+                $current_user_data[$index]['reviewed_date_time'] = date('d M Y', strtotime($row['reviewed_date_time']));
+            }
+            if (isset($row['date_time']) && !empty($row['date_time'])) {
+                $current_user_data[$index]['date_time'] = date('d M Y', strtotime($row['date_time']));
+            }
+            if (isset($row['updated_date_time']) && !empty($row['updated_date_time'])) {
+                $current_user_data[$index]['updated_date_time'] = date('d M Y', strtotime($row['updated_date_time']));
+            }
+            if (isset($row['estimated_from_date_time']) && !empty($row['estimated_from_date_time']) && isset($row['date_time']) && !empty($row['date_time'])) {
+                if (strtotime($row['estimated_from_date_time']) >= strtotime($row['date_time'])) {
+                    $current_user_data[$index]['pre_post'] = 'Pre';
+                } else {
+                    $current_user_data[$index]['pre_post'] = 'Post';
+                }
+            }
+        }
+
+        /*echo '<pre>';
+        print_r($LeaveRequestsModel->getlastQuery()->getQuery());
+        print_r($current_user_data);
+        echo '</pre>';
+        die();*/
+
+
+        echo json_encode($current_user_data);
+    }
+
+    public function getProbationCompletedEmployees()
+    {
+
+        $EmployeeModel = new EmployeeModel();
+        $EmployeeModel->select("employees.id as employee_id");
+        $EmployeeModel->select("trim(concat(employees.first_name, ' ', employees.last_name)) as employee_name");
+        $EmployeeModel->select("CONCAT(
+                LPAD(DAY(joining_date), 2, '0'),
+                CASE
+                    WHEN DAY(employees.joining_date) IN (1, 21, 31) THEN '<sup>st</sup>'
+                    WHEN DAY(employees.joining_date) IN (2, 22) THEN '<sup>nd</sup>'
+                    WHEN DAY(employees.joining_date) IN (3, 23) THEN '<sup>rd</sup>'
+                    ELSE '<sup>th</sup>'
+                END,
+                ' ',
+                DATE_FORMAT(employees.joining_date, '%b %Y')
+            ) AS formatted_joining_date,");
+        $EmployeeModel->select("employees.joining_date as joining_date_unformatted");
+        $EmployeeModel->select("CASE
+                WHEN employees.probation = '45 Days Probation' THEN 'On Probation'
+                WHEN employees.probation = '90 Days Probation' THEN 'Extended Probation'
+                ELSE employees.probation
+            END AS probation_status");
+        $EmployeeModel->where("employees.status =", 'active');
+        $EmployeeModel->groupStart();
+        $EmployeeModel->where("(employees.probation = '45 Days Probation' AND employees.joining_date <= CURDATE() - INTERVAL 45 DAY)", null, false);
+        $EmployeeModel->orWhere("(employees.probation = '90 Days Probation' AND employees.joining_date <= CURDATE() - INTERVAL 90 DAY)", null, false);
+        $EmployeeModel->groupEnd();
+        $EmployeeModel->orderBy("employees.probation", "ASC");
+        $data = $EmployeeModel->findAll();
+
+        if (!empty($data)) {
+            foreach ($data as $key => $val) {
+                // $data[$key]['joining_date_unformatted'] = !empty($val['joining_date_unformatted']) ? strtotime($val['joining_date_unformatted']) : '0';
+                $newval = $val;
+                $newval['joining_date'] = ['formatted' => $val['formatted_joining_date'], 'ordering' => strtotime($val['joining_date_unformatted'])];
+                $data[$key] = $newval;
+            }
+        }
+
+        // echo '<pre>';
+        // print_r($data);
+        // echo '</pre>';
+        // die();
+
+        echo json_encode($data);
+    }
+
+    public function getProbationConfirmationLetter($id)
+    {
+
+        $EmployeeModel = new EmployeeModel();
+        $EmployeeModel->select("employees.first_name as first_name");
+        $EmployeeModel->select("employees.last_name as last_name");
+        $EmployeeModel->select("trim(concat(employees.first_name, ' ', employees.last_name)) as employee_name");
+        $EmployeeModel->select("employees.joining_date as joining_date");
+        #$EmployeeModel->select("DATE_ADD(employees.joining_date, INTERVAL 45 DAY) AS confirmation_date");
+        $EmployeeModel->select("
+            CASE
+                WHEN employees.probation = '45 Days Probation' THEN DATE_ADD(employees.joining_date, INTERVAL 45 DAY)
+                WHEN employees.probation = '90 Days Probation' THEN DATE_ADD(employees.joining_date, INTERVAL 90 DAY)
+                ELSE NULL
+            END AS confirmation_date
+        ");
+        $EmployeeModel->select("companies.company_name as company_name");
+        $EmployeeModel->join("companies", "companies.id=employees.company_id", "left");
+        $EmployeeModel->where("employees.probation !=", "confirmed");
+        $EmployeeModel->where("employees.id =", $id);
+        $data = $EmployeeModel->first();
+
+        if (empty($data)) {
+            return view('User/Unauthorised', ["page_title" => "Employment already confirmed", "page_content" => "Employee is already confirmed, please set to Probation or Extended Probation and then generate letter"]);
+        }
+        // echo '<pre>';
+        // print_r($data);
+        // echo '</pre>';
+        // die();
+        // return view('Master/ProbationConfirmationLetter', $data); die();
+
+        $currentDate = date('Y-m-d');
+        $confirmationDate = $data['confirmation_date'];
+
+        if (strtotime($currentDate) < strtotime($confirmationDate)) {
+            $ProbationHodResponseModel = new ProbationHodResponseModel();
+            $ProbationHodResponseModel
+                ->select('probation_hod_response.*')
+                ->where('probation_hod_response.employee_id =', $id)
+                ->where('probation_hod_response.response =', 'Confirmed')
+                ->orderBy('probation_hod_response.id', 'DESC');
+            $ProbationHodResponse = $ProbationHodResponseModel->first();
+            if (!empty($ProbationHodResponse)) {
+                $data['confirmation_date'] = date('Y-m-d', strtotime($ProbationHodResponse['date_time']));
+            } else {
+                return view('User/Unauthorised', ["page_title" => "HOD Did not Confirm this employee", "page_content" => "HOD Did not Confirm this employee"]);
+            }
+        }
+
+        $options = new options();
+        $options->set('isRemoteEnabled', true);
+        $dompdf = new \Dompdf\Dompdf($options);
+        $content = view('Master/ProbationConfirmationLetter', $data);
+        $dompdf->loadHtml($content);
+
+        #revision
+        $EmployeeModel = new EmployeeModel();
+        $oldData = $EmployeeModel->find($id);
+        $oldData['employee_id'] = $oldData['id'];
+        $oldData['revised_by'] = $this->session->get('current_user')['employee_id'];
+        $EmployeeRevisionModel = new EmployeeRevisionModel();
+        $insertEmployeeRevisionQuery = $EmployeeRevisionModel->insert($oldData);
+        if ($insertEmployeeRevisionQuery) {
+            $EmployeeModel = new EmployeeModel();
+            $EmployeeModel->update($id, ['probation' => 'confirmed']);
+        }
+        #revision
+
+        $dompdf->setPaper('A4', 'portrait');
+        $dompdf->render();
+        $dompdf->stream("confirmation-letter-" . strtolower($data['first_name'] . '-' . $data['last_name']) . ".pdf");
+
+        // echo json_encode($data);
+
+    }
+
+    public function getDataForUnderProbationPopUp()
+    {
+        $EmployeeModel = new EmployeeModel();
+
+        $SevenDaysBefore = date('Y-m-d H:i:s', strtotime('-7 days'));
+        $OneMonthBefore = date('Y-m-d', strtotime('-1 month'));
+
+        $EmployeeModel->select("employees.id as employee_id");
+        $EmployeeModel->select("trim(concat(employees.first_name, ' ', employees.last_name)) as employee_name");
+        $EmployeeModel->select("employees.joining_date as joining_date");
+        $EmployeeModel->select("employees.probation AS probation_status");
+
+        #Fetch only employees in the HOD's department
+        $EmployeeModel->join("departments", "departments.id = employees.department_id", "left");
+        // $EmployeeModel->where("departments.hod_employee_id", $this->session->get('current_user')['employee_id']);
+
+        #only reporting manager, HOD is not responsible for setting probation 
+        $EmployeeModel->where("employees.reporting_manager_id =", $this->session->get('current_user')['employee_id']);
+
+        #Exclude employees with 'confirmed' probation status
+        $EmployeeModel->where("employees.probation !=", 'confirmed');
+        $EmployeeModel->where("employees.status =", 'active');
+
+        #Add condition for joining date to be at least 1 month older
+        $EmployeeModel->where("employees.joining_date <", $OneMonthBefore);
+
+        #Subquery to get the latest HOD response for each employee
+        $EmployeeModel->join(
+            "(SELECT employee_id, response, MAX(date_time) as last_response_date 
+              FROM probation_hod_response 
+              GROUP BY employee_id) as latest_responses",
+            "latest_responses.employee_id = employees.id",
+            "left"
+        );
+
+        #Include employees who have either no response or their response is older than 7 days and not 'confirmed'
+        $EmployeeModel->groupStart(); #Start OR condition group
+        $EmployeeModel->where("latest_responses.employee_id IS NULL"); #No response exists
+        $EmployeeModel->orGroupStart(); #Start AND condition group
+        $EmployeeModel->where("latest_responses.response !=", 'Confirmed'); #Response is not 'confirmed'
+        $EmployeeModel->where("latest_responses.last_response_date <", $SevenDaysBefore); #Response is older than 7 days
+        $EmployeeModel->groupEnd(); #End AND condition group
+        $EmployeeModel->groupEnd(); #End OR condition group
+
+
+        $data = $EmployeeModel->findAll();
+
+
+
+        // echo $EmployeeModel->getLastQuery()->getQuery();
+        // die();
+        return $data;
+    }
+
+    public function saveProbationResponseOfHod()
+    {
+        $hod_responses = $_REQUEST['reponses'];
+        if (!empty($hod_responses)) {
+            foreach ($hod_responses as $employee_id => $hod_response) {
+
+                if ($hod_response == 'Confirmed') {
+                    $EmployeeModel = new EmployeeModel();
+                    $hod_data = $EmployeeModel->find($this->session->get('current_user')['employee_id']);
+                    $employee_data = $EmployeeModel->find($employee_id);
+                    $hod_name = trim($hod_data['first_name'] . ' ' . $hod_data['last_name']);
+                    $employee_name = trim($employee_data['first_name'] . ' ' . $employee_data['last_name']);
+
+                    $email = \Config\Services::email();
+                    $email->setFrom('app.hrm@healthgenie.in', 'HRM');
+                    #$email->setReplyTo('payroll@healthgenie.in', 'HRM');
+                    $to_emails = array('developer3@healthgenie.in', 'hrd@gstc.com', 'careers@gstc.com', 'developer2@healthgenie.in');
+
+                    $email->setTo($to_emails);
+
+
+                    $email->setSubject('Probation Response by ' . $hod_name . ' for ' . $employee_name);
+                    $email_message = '
+                            <div style="font-family:Arial,Helvetica,sans-serif; line-height: 1.5; font-weight: normal; font-size: 15px; color: #2F3044; min-height: 100%; margin:0; padding:0; width:100%; background-color:#edf2f7">
+                                <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse;margin:0 auto; padding:0; max-width:600px">
+                                    <tbody>
+                                        <tr>
+                                            <td align="center" valign="center" style="text-align:center; padding: 40px">
+                                                <a href="' . base_url('public') . '" rel="noopener" target="_blank">
+                                                    <img alt="Logo" src="' . base_url('public') . '/assets/media/logos/logo-healthgenie.png" />
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td align="left" valign="center">
+                                                <div style="text-align:left; margin: 0 20px; padding: 40px; background-color:#ffffff; border-radius: 6px">
+                                                    <!--begin:Email content-->
+                                                    <div style="padding-bottom: 30px; font-size: 17px;">
+                                                        <strong>' . $hod_name . ' has responded on ' . $employee_name . ' \'s probation</strong>
+                                                    </div>
+                                                    <div style="padding-bottom: 10px">' . $hod_name . ' want\'s to set the probation status as ' . $hod_response . '</div>
+                                                    <!--end:Email content-->
+                                                    <div style="padding-bottom: 10px">Kind regards,
+                                                    <br>HRM Team.
+                                                    <tr>
+                                                        <td align="center" valign="center" style="font-size: 13px; text-align:center;padding: 20px; color: #6d6e7c;">
+                                                            <p>B-13, Okhla industrial area phase 2, Delhi 110020 India</p>
+                                                            <p>Copyright ©
+                                                            <a href="' . base_url('public') . '" rel="noopener" target="_blank">Healthgenie/Gstc</a>.</p>
+                                                        </td>
+                                                    </tr></br></div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>';
+
+
+                    $email->setMessage($email_message);
+                    $email_send = $email->send();
+                    if (!$email_send) {
+                        $response_array = array();
+                        $response_array['response_type'] = 'failed';
+                        $response_array['response_description'] = 'Sending email to HR was failed. Please Inform Developer on extension 452';
+                        return $this->response->setJSON($response_array);
+                    }
+                }
+
+
+                $data = [
+                    'employee_id' => $employee_id,
+                    'hod_id' => $this->session->get('current_user')['employee_id'],
+                    'response' => $hod_response
+                ];
+                $ProbationHodResponseModel = new ProbationHodResponseModel();
+                $ProbationHodResponseModel->save($data);
+            }
+        }
+
+        $response_array = array();
+        $response_array['response_type'] = 'success';
+        $response_array['response_description'] = 'HOD Response saved Successfully';
+        return $this->response->setJSON($response_array);
+    }
+
+
+
+    public function getEmployeesWaitingforWelcome()
+    {
+        $oneMonthBefore =  date('Y-m-d', strtotime("-1 month"));
+        $tenDaysBefore =  date('Y-m-d', strtotime("-10 days"));
+        $EmployeeModel = new EmployeeModel();
+        $EmployeeModel->select("employees.id as employee_id");
+        $EmployeeModel->select("trim(concat(employees.first_name, ' ', employees.last_name)) as employee_name");
+        $EmployeeModel->select("CONCAT(
+                LPAD(DAY(joining_date), 2, '0'),
+                CASE
+                    WHEN DAY(employees.joining_date) IN (1, 21, 31) THEN '<sup>st</sup>'
+                    WHEN DAY(employees.joining_date) IN (2, 22) THEN '<sup>nd</sup>'
+                    WHEN DAY(employees.joining_date) IN (3, 23) THEN '<sup>rd</sup>'
+                    ELSE '<sup>th</sup>'
+                END,
+                ' ',
+                DATE_FORMAT(employees.joining_date, '%b %Y')
+            ) AS formatted_joining_date,");
+        $EmployeeModel->select("employees.joining_date as joining_date_unformatted");
+        $EmployeeModel->where("employees.status =", 'active');
+        $EmployeeModel->where("employees.joining_date >=", $tenDaysBefore);
+        $EmployeeModel->where("employees.id not in (select employee_id from welcome_email_history)");
+        $EmployeeModel->orderBy("employees.id", "ASC");
+        $data = $EmployeeModel->findAll();
+
+        if (!empty($data)) {
+            foreach ($data as $key => $val) {
+                $newval = $val;
+                $newval['joining_date'] = ['formatted' => $val['formatted_joining_date'], 'ordering' => strtotime($val['joining_date_unformatted'])];
+                $data[$key] = $newval;
+            }
+        }
+
+        echo json_encode($data);
+    }
+}

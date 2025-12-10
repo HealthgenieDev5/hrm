@@ -1,0 +1,226 @@
+CRITICAL - 2025-12-10 12:56:30 --> ErrorException: Undefined array key "shift_type"
+[Method: GET, Route: ajax/profile/get-punching-reports]
+in APPPATH\Pipes\AttendanceProcessor\ProcessorHelper.php on line 998.
+ 1 APPPATH\Pipes\AttendanceProcessor\ProcessorHelper.php(998): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "shift_type"', 'D:\\LOCALHOST\\hrm.healthgenie\\app\\Pipes\\AttendanceProcessor\\ProcessorHelper.php', 998)
+ 2 APPPATH\Pipes\AttendanceProcessor\RefactorPunchingRow.php(25): App\Pipes\AttendanceProcessor\ProcessorHelper::get_shiftType('1')
+ 3 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\RefactorPunchingRow->handle([...], Object(Closure))
+ 4 APPPATH\Pipes\AttendanceProcessor\ApplyShiftOverride.php(47): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+ 5 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\ApplyShiftOverride->handle([...], Object(Closure))
+ 6 APPPATH\Libraries\Pipeline.php(36): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+ 7 APPPATH\Pipes\ProcessAttendance.php(52): App\Libraries\Pipeline->then(Object(Closure))
+ 8 APPPATH\Libraries\Pipeline.php(30): App\Pipes\ProcessAttendance->handle([...], Object(Closure))
+ 9 APPPATH\Pipes\GetAttendanceClean.php(34): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+10 APPPATH\Libraries\Pipeline.php(30): App\Pipes\GetAttendanceClean->handle([...], Object(Closure))
+11 APPPATH\Pipes\ShiftRulesAndDetails.php(39): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+12 APPPATH\Libraries\Pipeline.php(30): App\Pipes\ShiftRulesAndDetails->handle([...], Object(Closure))
+13 APPPATH\Pipes\BasicDetails.php(37): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+14 APPPATH\Libraries\Pipeline.php(30): App\Pipes\BasicDetails->handle([...], Object(Closure))
+15 APPPATH\Libraries\Pipeline.php(36): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+16 APPPATH\Controllers\Attendance\Processor.php(72): App\Libraries\Pipeline->then(Object(Closure))
+17 APPPATH\Controllers\Attendance\Processor.php(37): App\Controllers\Attendance\Processor::ProcessPunchingData('40', '2025-12-01', '2025-12-10', true)
+18 APPPATH\Controllers\User\Profile.php(597): App\Controllers\Attendance\Processor::getProcessedPunchingData('40', '2025-12-01', '2025-12-10')
+19 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\User\Profile->getPunchingReports()
+20 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\User\Profile))
+21 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+22 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+23 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+24 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+25 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+CRITICAL - 2025-12-10 13:00:13 --> ErrorException: Undefined array key "shift_type"
+[Method: POST, Route: ajax/hr/employee/send-absent-without-leave-notification]
+in APPPATH\Pipes\AttendanceProcessor\ProcessorHelper.php on line 998.
+ 1 APPPATH\Pipes\AttendanceProcessor\ProcessorHelper.php(998): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "shift_type"', 'D:\\LOCALHOST\\hrm.healthgenie\\app\\Pipes\\AttendanceProcessor\\ProcessorHelper.php', 998)
+ 2 APPPATH\Pipes\AttendanceProcessor\RefactorPunchingRow.php(25): App\Pipes\AttendanceProcessor\ProcessorHelper::get_shiftType('26')
+ 3 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\RefactorPunchingRow->handle([...], Object(Closure))
+ 4 APPPATH\Pipes\AttendanceProcessor\ApplyShiftOverride.php(47): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+ 5 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\ApplyShiftOverride->handle([...], Object(Closure))
+ 6 APPPATH\Libraries\Pipeline.php(36): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+ 7 APPPATH\Pipes\ProcessAttendance.php(52): App\Libraries\Pipeline->then(Object(Closure))
+ 8 APPPATH\Libraries\Pipeline.php(30): App\Pipes\ProcessAttendance->handle([...], Object(Closure))
+ 9 APPPATH\Pipes\GetAttendanceClean.php(34): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+10 APPPATH\Libraries\Pipeline.php(30): App\Pipes\GetAttendanceClean->handle([...], Object(Closure))
+11 APPPATH\Pipes\ShiftRulesAndDetails.php(39): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+12 APPPATH\Libraries\Pipeline.php(30): App\Pipes\ShiftRulesAndDetails->handle([...], Object(Closure))
+13 APPPATH\Pipes\BasicDetails.php(37): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+14 APPPATH\Libraries\Pipeline.php(30): App\Pipes\BasicDetails->handle([...], Object(Closure))
+15 APPPATH\Libraries\Pipeline.php(36): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+16 APPPATH\Controllers\Attendance\Processor.php(72): App\Libraries\Pipeline->then(Object(Closure))
+17 APPPATH\Controllers\Attendance\Processor.php(37): App\Controllers\Attendance\Processor::ProcessPunchingData('2', '2025-12-08', '2025-12-10', true)
+18 APPPATH\Controllers\Cron\ServerCron.php(82): App\Controllers\Attendance\Processor::getProcessedPunchingData('2', '2025-12-08', '2025-12-10')
+19 APPPATH\Controllers\Cron\ServerCron.php(169): App\Controllers\Cron\ServerCron->checkEmployeeAbseanceWithoutApplingLeave()
+20 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Cron\ServerCron->sendAbsentWithoutLeaveNotification()
+21 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Cron\ServerCron))
+22 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+23 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+24 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+25 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+26 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+CRITICAL - 2025-12-10 13:00:13 --> ErrorException: Undefined array key "shift_type"
+[Method: POST, Route: ajax/hr/employee/send-absent-without-leave-notification-heuer-only]
+in APPPATH\Pipes\AttendanceProcessor\ProcessorHelper.php on line 998.
+ 1 APPPATH\Pipes\AttendanceProcessor\ProcessorHelper.php(998): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "shift_type"', 'D:\\LOCALHOST\\hrm.healthgenie\\app\\Pipes\\AttendanceProcessor\\ProcessorHelper.php', 998)
+ 2 APPPATH\Pipes\AttendanceProcessor\RefactorPunchingRow.php(25): App\Pipes\AttendanceProcessor\ProcessorHelper::get_shiftType('26')
+ 3 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\RefactorPunchingRow->handle([...], Object(Closure))
+ 4 APPPATH\Pipes\AttendanceProcessor\ApplyShiftOverride.php(47): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+ 5 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\ApplyShiftOverride->handle([...], Object(Closure))
+ 6 APPPATH\Libraries\Pipeline.php(36): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+ 7 APPPATH\Pipes\ProcessAttendance.php(52): App\Libraries\Pipeline->then(Object(Closure))
+ 8 APPPATH\Libraries\Pipeline.php(30): App\Pipes\ProcessAttendance->handle([...], Object(Closure))
+ 9 APPPATH\Pipes\GetAttendanceClean.php(34): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+10 APPPATH\Libraries\Pipeline.php(30): App\Pipes\GetAttendanceClean->handle([...], Object(Closure))
+11 APPPATH\Pipes\ShiftRulesAndDetails.php(39): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+12 APPPATH\Libraries\Pipeline.php(30): App\Pipes\ShiftRulesAndDetails->handle([...], Object(Closure))
+13 APPPATH\Pipes\BasicDetails.php(37): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+14 APPPATH\Libraries\Pipeline.php(30): App\Pipes\BasicDetails->handle([...], Object(Closure))
+15 APPPATH\Libraries\Pipeline.php(36): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+16 APPPATH\Controllers\Attendance\Processor.php(72): App\Libraries\Pipeline->then(Object(Closure))
+17 APPPATH\Controllers\Attendance\Processor.php(37): App\Controllers\Attendance\Processor::ProcessPunchingData('2', '2025-12-08', '2025-12-10', true)
+18 APPPATH\Controllers\Cron\ServerCron.php(82): App\Controllers\Attendance\Processor::getProcessedPunchingData('2', '2025-12-08', '2025-12-10')
+19 APPPATH\Controllers\Cron\ServerCron.php(297): App\Controllers\Cron\ServerCron->checkEmployeeAbseanceWithoutApplingLeave()
+20 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Cron\ServerCron->sendAbsentWithoutLeaveNotificationHeuerOnly()
+21 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Cron\ServerCron))
+22 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+23 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+24 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+25 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+26 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+CRITICAL - 2025-12-10 13:00:37 --> ErrorException: Undefined array key "shift_type"
+[Method: GET, Route: backend/reports/attendance-report/attendance-sheet]
+in APPPATH\Pipes\AttendanceProcessor\ProcessorHelper.php on line 998.
+ 1 APPPATH\Pipes\AttendanceProcessor\ProcessorHelper.php(998): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "shift_type"', 'D:\\LOCALHOST\\hrm.healthgenie\\app\\Pipes\\AttendanceProcessor\\ProcessorHelper.php', 998)
+ 2 APPPATH\Pipes\AttendanceProcessor\RefactorPunchingRow.php(25): App\Pipes\AttendanceProcessor\ProcessorHelper::get_shiftType('1')
+ 3 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\RefactorPunchingRow->handle([...], Object(Closure))
+ 4 APPPATH\Pipes\AttendanceProcessor\ApplyShiftOverride.php(47): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+ 5 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\ApplyShiftOverride->handle([...], Object(Closure))
+ 6 APPPATH\Libraries\Pipeline.php(36): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+ 7 APPPATH\Pipes\ProcessAttendance.php(52): App\Libraries\Pipeline->then(Object(Closure))
+ 8 APPPATH\Libraries\Pipeline.php(30): App\Pipes\ProcessAttendance->handle([...], Object(Closure))
+ 9 APPPATH\Pipes\GetAttendanceClean.php(34): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+10 APPPATH\Libraries\Pipeline.php(30): App\Pipes\GetAttendanceClean->handle([...], Object(Closure))
+11 APPPATH\Pipes\ShiftRulesAndDetails.php(39): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+12 APPPATH\Libraries\Pipeline.php(30): App\Pipes\ShiftRulesAndDetails->handle([...], Object(Closure))
+13 APPPATH\Pipes\BasicDetails.php(37): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+14 APPPATH\Libraries\Pipeline.php(30): App\Pipes\BasicDetails->handle([...], Object(Closure))
+15 APPPATH\Libraries\Pipeline.php(36): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+16 APPPATH\Controllers\Attendance\Processor.php(72): App\Libraries\Pipeline->then(Object(Closure))
+17 APPPATH\Controllers\Attendance\Processor.php(37): App\Controllers\Attendance\Processor::ProcessPunchingData('40', '2025-12-01', '2025-12-10', true)
+18 APPPATH\Controllers\Reports\FinalAttendance.php(150): App\Controllers\Attendance\Processor::getProcessedPunchingData('40', '2025-12-01', '2025-12-10')
+19 APPPATH\Controllers\Reports\FinalAttendance.php(317): App\Controllers\Reports\FinalAttendance->generateAttendance('40')
+20 APPPATH\Controllers\Reports\FinalAttendance.php(229): App\Controllers\Reports\FinalAttendance->loadAttendanceSheet([...])
+21 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Reports\FinalAttendance->attendanceSheet()
+22 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Reports\FinalAttendance))
+23 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+24 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+25 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+26 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+27 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+ERROR - 2025-12-10 13:02:13 --> Error connecting to the database: mysqli_sql_exception: Unknown database 'hrm.healthgenie' in D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php:201
+Stack trace:
+#0 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php(201): mysqli->real_connect('localhost', 'root', Object(SensitiveParameterValue), 'hrm.healthgenie', 3306, '', 0)
+#1 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\BaseConnection.php(419): CodeIgniter\Database\MySQLi\Connection->connect(false)
+#2 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\BaseConnection.php(614): CodeIgniter\Database\BaseConnection->initialize()
+#3 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `rc_job_...', Array, false)
+#4 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Model.php(286): CodeIgniter\Database\BaseBuilder->get()
+#5 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\BaseModel.php(677): CodeIgniter\Model->doFindAll(0, 0)
+#6 D:\LOCALHOST\hrm.healthgenie\app\Controllers\Recruitment\JobListingCommentsController.php(425): CodeIgniter\BaseModel->findAll()
+#7 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(933): App\Controllers\Recruitment\JobListingCommentsController->getUnreadCount()
+#8 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Recruitment\JobListingCommentsController))
+#9 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#10 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#11 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#12 D:\LOCALHOST\hrm.healthgenie\public\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#13 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hr...')
+#14 {main}
+
+Next CodeIgniter\Database\Exceptions\DatabaseException: Unknown database 'hrm.healthgenie' in D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php:246
+Stack trace:
+#0 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\BaseConnection.php(419): CodeIgniter\Database\MySQLi\Connection->connect(false)
+#1 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\BaseConnection.php(614): CodeIgniter\Database\BaseConnection->initialize()
+#2 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `rc_job_...', Array, false)
+#3 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Model.php(286): CodeIgniter\Database\BaseBuilder->get()
+#4 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\BaseModel.php(677): CodeIgniter\Model->doFindAll(0, 0)
+#5 D:\LOCALHOST\hrm.healthgenie\app\Controllers\Recruitment\JobListingCommentsController.php(425): CodeIgniter\BaseModel->findAll()
+#6 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(933): App\Controllers\Recruitment\JobListingCommentsController->getUnreadCount()
+#7 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Recruitment\JobListingCommentsController))
+#8 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#9 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#10 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#11 D:\LOCALHOST\hrm.healthgenie\public\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#12 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hr...')
+#13 {main}
+CRITICAL - 2025-12-10 13:02:13 --> CodeIgniter\Database\Exceptions\DatabaseException: Unable to connect to the database.
+Main connection [MySQLi]: Unknown database 'hrm.healthgenie'
+[Method: GET, Route: recruitment/job-listing/comments/unread-count]
+in SYSTEMPATH\Database\BaseConnection.php on line 465.
+ 1 SYSTEMPATH\Database\BaseConnection.php(614): CodeIgniter\Database\BaseConnection->initialize()
+ 2 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `rc_job_listing_comments`.*, `rc_job_listing`.*, `departments`.`hod_employee_id`
+FROM `rc_job_listing_comments`
+LEFT JOIN `rc_job_listing` ON `rc_job_listing`.`id` = `rc_job_listing_comments`.`listing_id`
+LEFT JOIN `departments` ON `departments`.`id` = `rc_job_listing`.`department_id`
+WHERE `rc_job_listing_comments`.`status` = :rc_job_listing_comments.status:
+AND `rc_job_listing_comments`.`sender_id` != :rc_job_listing_comments.sender_id:', [...], false)
+ 3 SYSTEMPATH\Model.php(286): CodeIgniter\Database\BaseBuilder->get()
+ 4 SYSTEMPATH\BaseModel.php(677): CodeIgniter\Model->doFindAll(0, 0)
+ 5 APPPATH\Controllers\Recruitment\JobListingCommentsController.php(425): CodeIgniter\BaseModel->findAll()
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Recruitment\JobListingCommentsController->getUnreadCount()
+ 7 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Recruitment\JobListingCommentsController))
+ 8 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+12 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+ERROR - 2025-12-10 13:02:14 --> Error connecting to the database: mysqli_sql_exception: Unknown database 'hrm.healthgenie' in D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php:201
+Stack trace:
+#0 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php(201): mysqli->real_connect('localhost', 'root', Object(SensitiveParameterValue), 'hrm.healthgenie', 3306, '', 0)
+#1 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\BaseConnection.php(419): CodeIgniter\Database\MySQLi\Connection->connect(false)
+#2 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\BaseConnection.php(614): CodeIgniter\Database\BaseConnection->initialize()
+#3 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `rc_job_...', Array, false)
+#4 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Model.php(286): CodeIgniter\Database\BaseBuilder->get()
+#5 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\BaseModel.php(677): CodeIgniter\Model->doFindAll(0, 0)
+#6 D:\LOCALHOST\hrm.healthgenie\app\Controllers\Recruitment\JobListingCommentsController.php(425): CodeIgniter\BaseModel->findAll()
+#7 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(933): App\Controllers\Recruitment\JobListingCommentsController->getUnreadCount()
+#8 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Recruitment\JobListingCommentsController))
+#9 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#10 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#11 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#12 D:\LOCALHOST\hrm.healthgenie\public\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#13 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hr...')
+#14 {main}
+
+Next CodeIgniter\Database\Exceptions\DatabaseException: Unknown database 'hrm.healthgenie' in D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php:246
+Stack trace:
+#0 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\BaseConnection.php(419): CodeIgniter\Database\MySQLi\Connection->connect(false)
+#1 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\BaseConnection.php(614): CodeIgniter\Database\BaseConnection->initialize()
+#2 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `rc_job_...', Array, false)
+#3 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Model.php(286): CodeIgniter\Database\BaseBuilder->get()
+#4 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\BaseModel.php(677): CodeIgniter\Model->doFindAll(0, 0)
+#5 D:\LOCALHOST\hrm.healthgenie\app\Controllers\Recruitment\JobListingCommentsController.php(425): CodeIgniter\BaseModel->findAll()
+#6 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(933): App\Controllers\Recruitment\JobListingCommentsController->getUnreadCount()
+#7 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Recruitment\JobListingCommentsController))
+#8 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#9 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#10 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#11 D:\LOCALHOST\hrm.healthgenie\public\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#12 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hr...')
+#13 {main}
+CRITICAL - 2025-12-10 13:02:14 --> CodeIgniter\Database\Exceptions\DatabaseException: Unable to connect to the database.
+Main connection [MySQLi]: Unknown database 'hrm.healthgenie'
+[Method: GET, Route: recruitment/job-listing/comments/unread-count]
+in SYSTEMPATH\Database\BaseConnection.php on line 465.
+ 1 SYSTEMPATH\Database\BaseConnection.php(614): CodeIgniter\Database\BaseConnection->initialize()
+ 2 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `rc_job_listing_comments`.*, `rc_job_listing`.*, `departments`.`hod_employee_id`
+FROM `rc_job_listing_comments`
+LEFT JOIN `rc_job_listing` ON `rc_job_listing`.`id` = `rc_job_listing_comments`.`listing_id`
+LEFT JOIN `departments` ON `departments`.`id` = `rc_job_listing`.`department_id`
+WHERE `rc_job_listing_comments`.`status` = :rc_job_listing_comments.status:
+AND `rc_job_listing_comments`.`sender_id` != :rc_job_listing_comments.sender_id:', [...], false)
+ 3 SYSTEMPATH\Model.php(286): CodeIgniter\Database\BaseBuilder->get()
+ 4 SYSTEMPATH\BaseModel.php(677): CodeIgniter\Model->doFindAll(0, 0)
+ 5 APPPATH\Controllers\Recruitment\JobListingCommentsController.php(425): CodeIgniter\BaseModel->findAll()
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Recruitment\JobListingCommentsController->getUnreadCount()
+ 7 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Recruitment\JobListingCommentsController))
+ 8 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+12 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')

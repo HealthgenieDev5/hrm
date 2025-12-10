@@ -100,20 +100,19 @@ class LateComingAdjustment
                             } elseif ($dataRow['is_present'] !== 'yes' && $dataRow['is_onOD'] == 'yes') {
                                 $dataRow['status']  = 'OD/2';
                             }
-                            if ($dataRow['shift_type'] == 'reduced') {
-                                $dataRow['status_remarks']  = 'Late minutes cannot be adjusted <br>Balance minute: ' . $totalGrace * 2 / 3 . '<br>Required minutes: ' . $dataRow["minutes_required_for_full_day"] * 2 / 3;
+                            if ($dataRow['shift_type'] == 'reduce') {
+                                $dataRow['status_remarks']  = 'Late minutes cannot be adjusted <br>Balance minute: ' . round($totalGrace * 2 / 3) . '<br>Required minutes: ' . round($dataRow["minutes_required_for_full_day"] * 2 / 3);
                             } else {
                                 $dataRow['status_remarks']  = 'Late minutes cannot be adjusted <br>Balance minute: ' . $totalGrace . '<br>Required minutes: ' . $dataRow["minutes_required_for_full_day"];
                             }
-                            $dataRow['status_remarks']  = 'Late minutes cannot be adjusted <br>Balance minute: ' . $totalGrace . '<br>Required minutes: ' . $dataRow["minutes_required_for_full_day"];
                             $dataRow['paid']  = '0.5';
 
                             if ($dataRow['is_halfDayLeave'] == 'yes') {
                                 $dataRow['status'] = $dataRow['status'] . "+" . $dataRow['halfDayStatus'];
                                 $paid  = $dataRow['paid'] + $dataRow['halfDayPaid'];
                                 $dataRow['paid']  = $paid > 1 ? 1 : $paid;
-                                if ($dataRow['shift_type'] == 'reduced') {
-                                    $dataRow['status_remarks']  = 'Approved Half day Leave Request + Full day working But you were present for full day please contact Developer (adjsted ' . $dataRow['minutes_required_for_full_day'] * 2 / 3 . ' minutes) ';
+                                if ($dataRow['shift_type'] == 'reduce') {
+                                    $dataRow['status_remarks']  = 'Approved Half day Leave Request + Full day working But you were present for full day please contact Developer (adjsted ' . round($dataRow['minutes_required_for_full_day'] * 2 / 3) . ' minutes) ';
                                 } else {
                                     $dataRow['status_remarks']  = 'Approved Half day Leave Request + Full day working But you were present for full day please contact Developer (adjsted ' . $dataRow['minutes_required_for_full_day'] . ' minutes) ';
                                 }
@@ -154,8 +153,8 @@ class LateComingAdjustment
                                 }
                                 $totalGrace = $totalGrace - $min;
 
-                                if ($dataRow['shift_type'] == 'reduced') {
-                                    $dataRow['status_remarks']  = 'Approved Half day Leave Request + Half day working (only adjsted ' . $max * 2 / 3 . ' minutes with leave request, ' . $min * 2 / 3 . ' minutes also deducted from grace) ';
+                                if ($dataRow['shift_type'] == 'reduce') {
+                                    $dataRow['status_remarks']  = 'Approved Half day Leave Request + Half day working (only adjsted ' . round($max * 2 / 3) . ' minutes with leave request, ' . round($min * 2 / 3) . ' minutes also deducted from grace) ';
                                 } else {
                                     $dataRow['status_remarks']  = 'Approved Half day Leave Request + Half day working (only adjsted ' . $max . ' minutes with leave request, ' . $min . ' minutes also deducted from grace) ';
                                 }
@@ -170,10 +169,10 @@ class LateComingAdjustment
                                     $dataRow['status']  = 'OD';
                                 }
                                 /*$dataRow['status_remarks']  = 'Remaining minutes adjusted to make it full day 1<br>Balance minute: '.$totalGrace.'<br>Required minutes: '.$dataRow["minutes_required_for_full_day"];*/
-                                if ($dataRow['shift_type'] == 'reduced') {
-                                    $dataRow['status_remarks']  = $dataRow["minutes_required_for_full_day"] * 2 / 3 . ' minutes adjusted';
+                                if ($dataRow['shift_type'] == 'reduce') {
+                                    $dataRow['status_remarks']  = round($dataRow["minutes_required_for_full_day"] * 2 / 3) . ' minutes adjusted ';
                                 } else {
-                                    $dataRow['status_remarks']  = $dataRow["minutes_required_for_full_day"] . ' minutes adjusted';
+                                    $dataRow['status_remarks']  = $dataRow["minutes_required_for_full_day"] . ' minutes adjusted ';
                                 }
 
 
@@ -191,8 +190,8 @@ class LateComingAdjustment
                             } elseif ($dataRow['is_present'] !== 'yes' && $dataRow['is_onOD'] == 'yes') {
                                 $dataRow['status']  = 'OD/2';
                             }
-                            if ($dataRow['shift_type'] == 'reduced') {
-                                $dataRow['status_remarks']  = 'Late minutes cannot be adjusted <br>Balance minute: ' . $totalGrace * 2 / 3 . '<br>Required minutes: ' . $dataRow["minutes_required_for_full_day"] * 2 / 3;
+                            if ($dataRow['shift_type'] == 'reduce') {
+                                $dataRow['status_remarks']  = 'Late minutes cannot be adjusted <br>Balance minute: ' . round($totalGrace * 2 / 3) . '<br>Required minutes: ' . round($dataRow["minutes_required_for_full_day"] * 2 / 3);
                             } else {
                                 $dataRow['status_remarks']  = 'Late minutes cannot be adjusted <br>Balance minute: ' . $totalGrace . '<br>Required minutes: ' . $dataRow["minutes_required_for_full_day"];
                             }
@@ -202,15 +201,15 @@ class LateComingAdjustment
                                 $dataRow['status'] = $dataRow['status'] . "+" . $dataRow['halfDayStatus'];
                                 $paid  = $dataRow['paid'] + $dataRow['halfDayPaid'];
                                 $dataRow['paid']  = $paid > 1 ? 1 : $paid;
-                                if ($dataRow['shift_type'] == 'reduced') {
-                                    $dataRow['status_remarks']  = 'Approved Half day Leave Request + Full day working But you were present for full day please contact Developer (adjsted ' . $dataRow['minutes_required_for_full_day'] * 2 / 3 . ' minutes) ';
+                                if ($dataRow['shift_type'] == 'reduce') {
+                                    $dataRow['status_remarks']  = 'Approved Half day Leave Request + Full day working But you were present for full day please contact Developer (adjsted ' . round($dataRow['minutes_required_for_full_day'] * 2 / 3) . ' minutes) ';
                                 } else {
                                     $dataRow['status_remarks']  = 'Approved Half day Leave Request + Full day working But you were present for full day please contact Developer (adjsted ' . $dataRow['minutes_required_for_full_day'] . ' minutes) ';
                                 }
                                 #######late coming or early going remove#########
                                 $min = min($dataRow['late_coming_minutes'], $dataRow['early_going_minutes']);
-                                if ($dataRow['shift_type'] == 'reduced') {
-                                    $dataRow['status_remarks']  = 'Approved Half day Leave Request + Full day working But you were present for full day please contact Developer (adjsted ' . $dataRow['minutes_required_for_full_day'] * 2 / 3 . ' minutes) ';
+                                if ($dataRow['shift_type'] == 'reduce') {
+                                    $dataRow['status_remarks']  = 'Approved Half day Leave Request + Full day working But you were present for full day please contact Developer (adjsted ' . round($dataRow['minutes_required_for_full_day'] * 2 / 3) . ' minutes) ';
                                 } else {
                                     $dataRow['status_remarks']  = 'Approved Half day Leave Request + Full day working But you were present for full day please contact Developer (adjsted ' . $dataRow['minutes_required_for_full_day'] . ' minutes) ';
                                 }
@@ -252,8 +251,8 @@ class LateComingAdjustment
                                 }
                                 // $dataRow['status_remarks']  = 'Approved Half day Leave Request + Half day working (adjsted '.$min.' minutes) ';
                                 $totalGrace = $totalGrace - $min;
-                                if ($dataRow['shift_type'] == 'reduced') {
-                                    $dataRow['status_remarks']  = 'Approved Half day Leave Request + Half day working (only adjsted ' . $max * 2 / 3 . ' minutes with leave request, ' . $min * 2 / 3 . ' minutes also deducted from grace) ';
+                                if ($dataRow['shift_type'] == 'reduce') {
+                                    $dataRow['status_remarks']  = 'Approved Half day Leave Request + Half day working (only adjsted ' . round($max * 2 / 3) . ' minutes with leave request, ' . round($min * 2 / 3) . ' minutes also deducted from grace) ';
                                 } else {
                                     $dataRow['status_remarks']  = 'Approved Half day Leave Request + Half day working (only adjsted ' . $max . ' minutes with leave request, ' . $min . ' minutes also deducted from grace) ';
                                 }
@@ -267,8 +266,8 @@ class LateComingAdjustment
                                 } elseif ($dataRow['is_present'] !== 'yes' && $dataRow['is_onOD'] == 'yes') {
                                     $dataRow['status']  = 'OD/2';
                                 }
-                                if ($dataRow['shift_type'] == 'reduced') {
-                                    $dataRow['status_remarks']  = 'Your work hours between the shift timing is less than minimum required, see attendance rule in your shift <br>Balance minute: ' . $totalGrace * 2 / 3 . '<br>Required minutes: ' . $dataRow["minutes_required_for_full_day"] * 2 / 3;
+                                if ($dataRow['shift_type'] == 'reduce') {
+                                    $dataRow['status_remarks']  = 'Your work hours between the shift timing is less than minimum required, see attendance rule in your shift <br>Balance minute: ' . round($totalGrace * 2 / 3) . '<br>Required minutes: ' . round($dataRow["minutes_required_for_full_day"] * 2 / 3);
                                 } else {
                                     $dataRow['status_remarks']  = 'Your work hours between the shift timing is less than minimum required, see attendance rule in your shift <br>Balance minute: ' . $totalGrace . '<br>Required minutes: ' . $dataRow["minutes_required_for_full_day"];
                                 }
@@ -333,8 +332,8 @@ class LateComingAdjustment
                                     $dataRow['late_coming_minutes'] = 0;
                                 }
                                 $totalGrace = $totalGrace - $min;
-                                if ($dataRow['shift_type'] == 'reduced') {
-                                    $dataRow['status_remarks']  = 'Approved Half day Leave Request (only adjsted ' . $max * 2 / 3 . ' minutes with leave request, ' . $min * 2 / 3 . ' minutes also deducted from grace) ';
+                                if ($dataRow['shift_type'] == 'reduce') {
+                                    $dataRow['status_remarks']  = 'Approved Half day Leave Request (only adjsted ' . round($max * 2 / 3) . ' minutes with leave request, ' . round($min * 2 / 3) . ' minutes also deducted from grace) ';
                                 } else {
                                     $dataRow['status_remarks']  = 'Approved Half day Leave Request (only adjsted ' . $max . ' minutes with leave request, ' . $min . ' minutes also deducted from grace) ';
                                 }
@@ -350,10 +349,10 @@ class LateComingAdjustment
                                     $dataRow['status']  = 'OD';
                                 }
                                 // $dataRow['status_remarks']  = 'Remaining minutes adjusted to make it full day <br>Balance minute: '.$totalGrace.'<br>Required minutes: '.$dataRow["minutes_required_for_full_day"];
-                                if ($dataRow['shift_type'] == 'reduced') {
-                                    $dataRow['status_remarks']  = $dataRow["minutes_required_for_full_day"] . ' minutes adjusted';
+                                if ($dataRow['shift_type'] == 'reduce') {
+                                    $dataRow['status_remarks']  = round($dataRow["minutes_required_for_full_day"] * 2 / 3) . ' minutes adjusted ';
                                 } else {
-                                    $dataRow['status_remarks']  = $dataRow["minutes_required_for_full_day"] * 2 / 3 . ' minutes adjusted';
+                                    $dataRow['status_remarks']  = $dataRow["minutes_required_for_full_day"] . ' minutes adjusted ';
                                 }
 
                                 $dataRow['paid']  = '1';
@@ -370,10 +369,10 @@ class LateComingAdjustment
                                 $dataRow['status']  = 'OD/2';
                             }
                             // $dataRow['status_remarks']  = 'Remaining minutes adjusted to make it half day <br>Balance minute: '.$totalGrace.'<br>Required minutes: '.$dataRow["minutes_required_for_half_day"];
-                            if ($dataRow['shift_type'] == 'reduced') {
-                                $dataRow['status_remarks']  = $dataRow["minutes_required_for_half_day"] * 2 / 3 . ' minutes adjusted';
+                            if ($dataRow['shift_type'] == 'reduce') {
+                                $dataRow['status_remarks']  = round($dataRow["minutes_required_for_half_day"] * 2 / 3) . ' minutes adjusted ';
                             } else {
-                                $dataRow['status_remarks']  = $dataRow["minutes_required_for_half_day"] . ' minutes adjusted';
+                                $dataRow['status_remarks']  = $dataRow["minutes_required_for_half_day"] . ' minutes adjusted ';
                             }
 
                             $dataRow['paid']  = '0.5';
@@ -382,8 +381,8 @@ class LateComingAdjustment
                                 $dataRow['status'] = $dataRow['status'] . "+" . $dataRow['halfDayStatus'];
                                 $paid  = $dataRow['paid'] + $dataRow['halfDayPaid'];
                                 $dataRow['paid']  = $paid > 1 ? 1 : $paid;
-                                if ($dataRow['shift_type'] == 'reduced') {
-                                    $dataRow['status_remarks']  = 'Approved Half day Leave Request + Half day working (adjsted ' . $dataRow['minutes_required_for_half_day'] * 2 / 3 . ' minutes) ' . '.....';
+                                if ($dataRow['shift_type'] == 'reduce') {
+                                    $dataRow['status_remarks']  = 'Approved Half day Leave Request + Half day working (adjsted ' . round($dataRow['minutes_required_for_half_day'] * 2 / 3) . ' minutes) ' . '.....';
                                 } else {
                                     $dataRow['status_remarks']  = 'Approved Half day Leave Request + Half day working (adjsted ' . $dataRow['minutes_required_for_half_day'] . ' minutes) ' . '.....';
                                 }
@@ -416,8 +415,8 @@ class LateComingAdjustment
                             } elseif ($dataRow['is_present'] !== 'yes' && $dataRow['is_onOD'] == 'yes') {
                                 $dataRow['status']  = 'OD/2';
                             }
-                            if ($dataRow['shift_type'] == 'reduced') {
-                                $dataRow['status_remarks']  = 'Remaining minutes adjusted to make it half day <br>Balance minute: ' . $totalGrace * 2 / 3 . '<br>Required minutes: ' . $dataRow["minutes_required_for_half_day"] * 2 / 3;
+                            if ($dataRow['shift_type'] == 'reduce') {
+                                $dataRow['status_remarks']  = 'Remaining minutes adjusted to make it half day <br>Balance minute: ' . round($totalGrace * 2 / 3) . '<br>Required minutes: ' . round($dataRow["minutes_required_for_half_day"] * 2 / 3);
                             } else {
                                 $dataRow['status_remarks']  = 'Remaining minutes adjusted to make it half day <br>Balance minute: ' . $totalGrace . '<br>Required minutes: ' . $dataRow["minutes_required_for_half_day"];
                             }
@@ -439,9 +438,9 @@ class LateComingAdjustment
                                     $dataRow['late_coming_minutes'] = 0;
                                 }
                                 $totalGrace = $totalGrace - $min;
-                                if ($dataRow['shift_type'] == 'reduced') {
+                                if ($dataRow['shift_type'] == 'reduce') {
 
-                                    $dataRow['status_remarks']  = 'Approved Half day Leave Request + Half day working (only adjsted ' . $max * 2 / 3 . ' minutes with leave request, ' . $min * 2 / 3 . ' minutes also deducted from grace) ';
+                                    $dataRow['status_remarks']  = 'Approved Half day Leave Request + Half day working (only adjsted ' . round($max * 2 / 3) . ' minutes with leave request, ' . round($min * 2 / 3) . ' minutes also deducted from grace) ';
                                 } else {
                                     $dataRow['status_remarks']  = 'Approved Half day Leave Request + Half day working (only adjsted ' . $max . ' minutes with leave request, ' . $min . ' minutes also deducted from grace) ';
                                 }
@@ -467,8 +466,8 @@ class LateComingAdjustment
                                     $dataRow['late_coming_minutes'] = 0;
                                 }
                                 // $totalGrace = $totalGrace - $min;
-                                if ($dataRow['shift_type'] == 'reduced') {
-                                    $dataRow['status_remarks']  = 'Approved Half day Leave Request + Half day working (adjsted ' . $min * 2 / 3 . ' minutes) ';
+                                if ($dataRow['shift_type'] == 'reduce') {
+                                    $dataRow['status_remarks']  = 'Approved Half day Leave Request + Half day working (adjsted ' . round($min * 2 / 3) . ' minutes) ';
                                 } else {
                                     $dataRow['status_remarks']  = 'Approved Half day Leave Request + Half day working (adjsted ' . $min . ' minutes) ';
                                 }
@@ -488,8 +487,8 @@ class LateComingAdjustment
                             if ($dataRow['is_halfDayLeave'] == 'yes') {
                                 $dataRow['status'] = $dataRow['halfDayStatus'];
                                 $dataRow['paid']  = $dataRow['paid'] + $dataRow['halfDayPaid'];
-                                if ($dataRow['shift_type'] == 'reduced') {
-                                    $dataRow['status_remarks']  = 'Approved Half day Leave Request + Your work hours between the shift timing is less than minimum required, see attendance rule in your shift <br>Balance minute: ' . $totalGrace * 2 / 3 . '<br>Required minutes: ' . $dataRow["minutes_required_for_half_day"] * 2 / 3;
+                                if ($dataRow['shift_type'] == 'reduce') {
+                                    $dataRow['status_remarks']  = 'Approved Half day Leave Request + Your work hours between the shift timing is less than minimum required, see attendance rule in your shift <br>Balance minute: ' . round($totalGrace * 2 / 3) . '<br>Required minutes: ' . round($dataRow["minutes_required_for_half_day"] * 2 / 3);
                                 } else {
                                     $dataRow['status_remarks']  = 'Approved Half day Leave Request + Your work hours between the shift timing is less than minimum required, see attendance rule in your shift <br>Balance minute: ' . $totalGrace . '<br>Required minutes: ' . $dataRow["minutes_required_for_half_day"];
                                 }
@@ -505,8 +504,8 @@ class LateComingAdjustment
                                     $dataRow['late_coming_minutes'] = 0;
                                 }
                                 $totalGrace = $totalGrace - $min;
-                                if ($dataRow['shift_type'] == 'reduced') {
-                                    $dataRow['status_remarks']  = 'Approved Half day Leave Request (only adjsted ' . $max * 2 / 3 . ' minutes with leave request, ' . $min * 2 / 3 . ' minutes also deducted from grace) ';
+                                if ($dataRow['shift_type'] == 'reduce') {
+                                    $dataRow['status_remarks']  = 'Approved Half day Leave Request (only adjsted ' . round($max * 2 / 3) . ' minutes with leave request, ' . round($min * 2 / 3) . ' minutes also deducted from grace) ';
                                 } else {
                                     $dataRow['status_remarks']  = 'Approved Half day Leave Request (only adjsted ' . $max . ' minutes with leave request, ' . $min . ' minutes also deducted from grace) ';
                                 }
@@ -521,8 +520,8 @@ class LateComingAdjustment
                                     $dataRow['status']  = 'A';
                                 }
                                 $fraud_remarks  = $dataRow['fraud_remarks'] ?? '';
-                                if ($dataRow['shift_type'] == 'reduced') {
-                                    $dataRow['status_remarks']  = $fraud_remarks . 'Your work hours between the shift timing is less than minimum required, see attendance rule in your shift <br>Balance minute: ' . $totalGrace * 2 / 3 . '<br>Required minutes: ' . $dataRow["minutes_required_for_half_day"] . ' work_minutes_between_shifts_including_od=' . $dataRow['work_minutes_between_shifts_including_od'] * 2 / 3;
+                                if ($dataRow['shift_type'] == 'reduce') {
+                                    $dataRow['status_remarks']  = $fraud_remarks . 'Your work hours between the shift timing is less than minimum required, see attendance rule in your shift <br>Balance minute: ' . round($totalGrace * 2 / 3) . '<br>Required minutes: ' . $dataRow["minutes_required_for_half_day"] . ' work_minutes_between_shifts_including_od=' . round($dataRow['work_minutes_between_shifts_including_od'] * 2 / 3);
                                 } else {
                                     $dataRow['status_remarks']  = $fraud_remarks . 'Your work hours between the shift timing is less than minimum required, see attendance rule in your shift <br>Balance minute: ' . $totalGrace . '<br>Required minutes: ' . $dataRow["minutes_required_for_half_day"] . ' work_minutes_between_shifts_including_od=' . $dataRow['work_minutes_between_shifts_including_od'];
                                 }
@@ -560,8 +559,8 @@ class LateComingAdjustment
                             $dataRow['late_coming_minutes'] = 0;
                         }
                         $totalGrace = $totalGrace - $min;
-                        if ($dataRow['shift_type'] == 'reduced') {
-                            $dataRow['status_remarks']  = 'Approved Half day Leave Request + Half day working (only adjsted ' . $max * 2 / 3 . ' minutes with leave request, ' . $min * 2 / 3 . ' minutes also deducted from grace) ';
+                        if ($dataRow['shift_type'] == 'reduce') {
+                            $dataRow['status_remarks']  = 'Approved Half day Leave Request + Half day working (only adjsted ' . round($max * 2 / 3) . ' minutes with leave request, ' . round($min * 2 / 3) . ' minutes also deducted from grace) ';
                         } else {
                             $dataRow['status_remarks']  = 'Approved Half day Leave Request + Half day working (only adjsted ' . $max . ' minutes with leave request, ' . $min . ' minutes also deducted from grace) ';
                         }
@@ -629,8 +628,8 @@ class LateComingAdjustment
                         $totalGrace = $totalGrace - $late_coming_plus_early_going_minutes_adjustable;
                         $dataRow['status']  = 'INC';
                         #$dataRow['status_remarks'] = $late_coming_plus_early_going_minutes_adjustable.' Late coming minutes adjusted remarks: A';
-                        if ($dataRow['shift_type'] == 'reduced') {
-                            $dataRow['status_remarks'] = "Absent but adjusted " . $late_coming_plus_early_going_minutes_adjustable * 2 / 3 . " Remaining grace minutes to make it full day paid";
+                        if ($dataRow['shift_type'] == 'reduce') {
+                            $dataRow['status_remarks'] = "Absent but adjusted " . round($late_coming_plus_early_going_minutes_adjustable * 2 / 3) . " Remaining grace minutes to make it full day paid";
                         } else {
                             $dataRow['status_remarks'] = "Absent but adjusted " . $late_coming_plus_early_going_minutes_adjustable . " Remaining grace minutes to make it full day paid";
                         }
@@ -643,7 +642,11 @@ class LateComingAdjustment
                     } else {
                         $dataRow['status']  = 'A';
                         $fraud_remarks  = $dataRow['fraud_remarks'] ?? "";
-                        $dataRow['status_remarks']  = $fraud_remarks . "Already absent Late minutes cannot be adjusted,,, <br> Balance Minutes: [" . $totalGrace . "]<br>Required: " . $dataRow['late_coming_plus_early_going_minutes_adjustable'];
+                        if ($dataRow['shift_type'] == 'reduce') {
+                            $dataRow['status_remarks']  = $fraud_remarks . "Already absent Late minutes cannot be adjusted,,, <br> Balance Minutes: [" . round($totalGrace * 2 / 3) . "]<br>Required: " . round($dataRow['late_coming_plus_early_going_minutes_adjustable'] * 2 / 3);
+                        } else {
+                            $dataRow['status_remarks']  = $fraud_remarks . "Already absent Late minutes cannot be adjusted,,, <br> Balance Minutes: [" . $totalGrace . "]<br>Required: " . $dataRow['late_coming_plus_early_going_minutes_adjustable'];
+                        }
                         $dataRow['paid']  = '0';
                     }
                 }

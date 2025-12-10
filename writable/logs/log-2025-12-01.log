@@ -1,0 +1,865 @@
+ERROR - 2025-12-01 16:33:42 --> mysqli_sql_exception: Table 'hrm.healthgenie.in_bkp_2025_11_28.announcements' doesn't exist in D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php(327): mysqli->query('SELECT `announc...', 0)
+#1 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `announc...')
+#2 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `announc...')
+#3 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `announc...', Array, false)
+#4 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Model.php(925): CodeIgniter\Database\BaseBuilder->get()
+#5 D:\LOCALHOST\hrm.healthgenie\app\Models\AnnouncementModel.php(65): CodeIgniter\Model->__call('get', Array)
+#6 D:\LOCALHOST\hrm.healthgenie\app\Controllers\AnnouncementController.php(44): App\Models\AnnouncementModel->getPendingAnnouncementsForEmployee(385)
+#7 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(933): App\Controllers\AnnouncementController->getPendingAnnouncements()
+#8 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\AnnouncementController))
+#9 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#10 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#11 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#12 D:\LOCALHOST\hrm.healthgenie\public\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#13 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hr...')
+#14 {main}
+CRITICAL - 2025-12-01 16:33:42 --> CodeIgniter\Database\Exceptions\DatabaseException: Table 'hrm.healthgenie.in_bkp_2025_11_28.announcements' doesn't exist
+[Method: GET, Route: announcement/get-pending]
+in SYSTEMPATH\Database\BaseConnection.php on line 684.
+ 1 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `announcements`.*, `announcement_acknowledgments`.`employee_id` as `acknowledged_by`
+FROM `announcements`
+LEFT JOIN `announcement_acknowledgments` ON `announcement_acknowledgments`.`announcement_id` = `announcements`.`id`
+WHERE `is_active` = :is_active:
+AND `requires_acknowledgment` = :requires_acknowledgment:
+AND `start_date` <= :start_date:
+AND `target_type` = :target_type:
+ORDER BY `priority` DESC, `created_at` DESC', [...], false)
+ 2 SYSTEMPATH\Model.php(925): CodeIgniter\Database\BaseBuilder->get()
+ 3 APPPATH\Models\AnnouncementModel.php(65): CodeIgniter\Model->__call('get', [])
+ 4 APPPATH\Controllers\AnnouncementController.php(44): App\Models\AnnouncementModel->getPendingAnnouncementsForEmployee(385)
+ 5 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\AnnouncementController->getPendingAnnouncements()
+ 6 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\AnnouncementController))
+ 7 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 8 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 9 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+10 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+11 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+CRITICAL - 2025-12-01 16:33:42 --> [Caused by] CodeIgniter\Database\Exceptions\DatabaseException: Table 'hrm.healthgenie.in_bkp_2025_11_28.announcements' doesn't exist
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 332.
+ 1 SYSTEMPATH\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `announcements`.*, `announcement_acknowledgments`.`employee_id` as `acknowledged_by`
+FROM `announcements`
+LEFT JOIN `announcement_acknowledgments` ON `announcement_acknowledgments`.`announcement_id` = `announcements`.`id`
+WHERE `is_active` = 1
+AND `requires_acknowledgment` = 1
+AND `start_date` <= \'2025-12-01 16:33:41\'
+AND `target_type` = \'all\'
+ORDER BY `priority` DESC, `created_at` DESC')
+ 2 SYSTEMPATH\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `announcements`.*, `announcement_acknowledgments`.`employee_id` as `acknowledged_by`
+FROM `announcements`
+LEFT JOIN `announcement_acknowledgments` ON `announcement_acknowledgments`.`announcement_id` = `announcements`.`id`
+WHERE `is_active` = 1
+AND `requires_acknowledgment` = 1
+AND `start_date` <= \'2025-12-01 16:33:41\'
+AND `target_type` = \'all\'
+ORDER BY `priority` DESC, `created_at` DESC')
+ 3 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `announcements`.*, `announcement_acknowledgments`.`employee_id` as `acknowledged_by`
+FROM `announcements`
+LEFT JOIN `announcement_acknowledgments` ON `announcement_acknowledgments`.`announcement_id` = `announcements`.`id`
+WHERE `is_active` = :is_active:
+AND `requires_acknowledgment` = :requires_acknowledgment:
+AND `start_date` <= :start_date:
+AND `target_type` = :target_type:
+ORDER BY `priority` DESC, `created_at` DESC', [...], false)
+ 4 SYSTEMPATH\Model.php(925): CodeIgniter\Database\BaseBuilder->get()
+ 5 APPPATH\Models\AnnouncementModel.php(65): CodeIgniter\Model->__call('get', [])
+ 6 APPPATH\Controllers\AnnouncementController.php(44): App\Models\AnnouncementModel->getPendingAnnouncementsForEmployee(385)
+ 7 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\AnnouncementController->getPendingAnnouncements()
+ 8 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\AnnouncementController))
+ 9 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+10 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+11 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+12 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+13 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+CRITICAL - 2025-12-01 16:33:42 --> [Caused by] mysqli_sql_exception: Table 'hrm.healthgenie.in_bkp_2025_11_28.announcements' doesn't exist
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 327.
+ 1 SYSTEMPATH\Database\MySQLi\Connection.php(327): mysqli->query('SELECT `announcements`.*, `announcement_acknowledgments`.`employee_id` as `acknowledged_by`
+FROM `announcements`
+LEFT JOIN `announcement_acknowledgments` ON `announcement_acknowledgments`.`announcement_id` = `announcements`.`id`
+WHERE `is_active` = 1
+AND `requires_acknowledgment` = 1
+AND `start_date` <= \'2025-12-01 16:33:41\'
+AND `target_type` = \'all\'
+ORDER BY `priority` DESC, `created_at` DESC', 0)
+ 2 SYSTEMPATH\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `announcements`.*, `announcement_acknowledgments`.`employee_id` as `acknowledged_by`
+FROM `announcements`
+LEFT JOIN `announcement_acknowledgments` ON `announcement_acknowledgments`.`announcement_id` = `announcements`.`id`
+WHERE `is_active` = 1
+AND `requires_acknowledgment` = 1
+AND `start_date` <= \'2025-12-01 16:33:41\'
+AND `target_type` = \'all\'
+ORDER BY `priority` DESC, `created_at` DESC')
+ 3 SYSTEMPATH\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `announcements`.*, `announcement_acknowledgments`.`employee_id` as `acknowledged_by`
+FROM `announcements`
+LEFT JOIN `announcement_acknowledgments` ON `announcement_acknowledgments`.`announcement_id` = `announcements`.`id`
+WHERE `is_active` = 1
+AND `requires_acknowledgment` = 1
+AND `start_date` <= \'2025-12-01 16:33:41\'
+AND `target_type` = \'all\'
+ORDER BY `priority` DESC, `created_at` DESC')
+ 4 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `announcements`.*, `announcement_acknowledgments`.`employee_id` as `acknowledged_by`
+FROM `announcements`
+LEFT JOIN `announcement_acknowledgments` ON `announcement_acknowledgments`.`announcement_id` = `announcements`.`id`
+WHERE `is_active` = :is_active:
+AND `requires_acknowledgment` = :requires_acknowledgment:
+AND `start_date` <= :start_date:
+AND `target_type` = :target_type:
+ORDER BY `priority` DESC, `created_at` DESC', [...], false)
+ 5 SYSTEMPATH\Model.php(925): CodeIgniter\Database\BaseBuilder->get()
+ 6 APPPATH\Models\AnnouncementModel.php(65): CodeIgniter\Model->__call('get', [])
+ 7 APPPATH\Controllers\AnnouncementController.php(44): App\Models\AnnouncementModel->getPendingAnnouncementsForEmployee(385)
+ 8 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\AnnouncementController->getPendingAnnouncements()
+ 9 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\AnnouncementController))
+10 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+11 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+12 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+13 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+14 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+ERROR - 2025-12-01 16:35:47 --> mysqli_sql_exception: Table 'hrm.healthgenie.in_bkp_2025_11_28.announcements' doesn't exist in D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php(327): mysqli->query('SELECT `announc...', 0)
+#1 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `announc...')
+#2 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `announc...')
+#3 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `announc...', Array, false)
+#4 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Model.php(925): CodeIgniter\Database\BaseBuilder->get()
+#5 D:\LOCALHOST\hrm.healthgenie\app\Models\AnnouncementModel.php(65): CodeIgniter\Model->__call('get', Array)
+#6 D:\LOCALHOST\hrm.healthgenie\app\Controllers\AnnouncementController.php(44): App\Models\AnnouncementModel->getPendingAnnouncementsForEmployee(385)
+#7 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(933): App\Controllers\AnnouncementController->getPendingAnnouncements()
+#8 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\AnnouncementController))
+#9 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#10 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#11 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#12 D:\LOCALHOST\hrm.healthgenie\public\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#13 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hr...')
+#14 {main}
+CRITICAL - 2025-12-01 16:35:47 --> CodeIgniter\Database\Exceptions\DatabaseException: Table 'hrm.healthgenie.in_bkp_2025_11_28.announcements' doesn't exist
+[Method: GET, Route: announcement/get-pending]
+in SYSTEMPATH\Database\BaseConnection.php on line 684.
+ 1 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `announcements`.*, `announcement_acknowledgments`.`employee_id` as `acknowledged_by`
+FROM `announcements`
+LEFT JOIN `announcement_acknowledgments` ON `announcement_acknowledgments`.`announcement_id` = `announcements`.`id`
+WHERE `is_active` = :is_active:
+AND `requires_acknowledgment` = :requires_acknowledgment:
+AND `start_date` <= :start_date:
+AND `target_type` = :target_type:
+ORDER BY `priority` DESC, `created_at` DESC', [...], false)
+ 2 SYSTEMPATH\Model.php(925): CodeIgniter\Database\BaseBuilder->get()
+ 3 APPPATH\Models\AnnouncementModel.php(65): CodeIgniter\Model->__call('get', [])
+ 4 APPPATH\Controllers\AnnouncementController.php(44): App\Models\AnnouncementModel->getPendingAnnouncementsForEmployee(385)
+ 5 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\AnnouncementController->getPendingAnnouncements()
+ 6 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\AnnouncementController))
+ 7 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 8 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 9 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+10 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+11 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+CRITICAL - 2025-12-01 16:35:47 --> [Caused by] CodeIgniter\Database\Exceptions\DatabaseException: Table 'hrm.healthgenie.in_bkp_2025_11_28.announcements' doesn't exist
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 332.
+ 1 SYSTEMPATH\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `announcements`.*, `announcement_acknowledgments`.`employee_id` as `acknowledged_by`
+FROM `announcements`
+LEFT JOIN `announcement_acknowledgments` ON `announcement_acknowledgments`.`announcement_id` = `announcements`.`id`
+WHERE `is_active` = 1
+AND `requires_acknowledgment` = 1
+AND `start_date` <= \'2025-12-01 16:35:47\'
+AND `target_type` = \'all\'
+ORDER BY `priority` DESC, `created_at` DESC')
+ 2 SYSTEMPATH\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `announcements`.*, `announcement_acknowledgments`.`employee_id` as `acknowledged_by`
+FROM `announcements`
+LEFT JOIN `announcement_acknowledgments` ON `announcement_acknowledgments`.`announcement_id` = `announcements`.`id`
+WHERE `is_active` = 1
+AND `requires_acknowledgment` = 1
+AND `start_date` <= \'2025-12-01 16:35:47\'
+AND `target_type` = \'all\'
+ORDER BY `priority` DESC, `created_at` DESC')
+ 3 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `announcements`.*, `announcement_acknowledgments`.`employee_id` as `acknowledged_by`
+FROM `announcements`
+LEFT JOIN `announcement_acknowledgments` ON `announcement_acknowledgments`.`announcement_id` = `announcements`.`id`
+WHERE `is_active` = :is_active:
+AND `requires_acknowledgment` = :requires_acknowledgment:
+AND `start_date` <= :start_date:
+AND `target_type` = :target_type:
+ORDER BY `priority` DESC, `created_at` DESC', [...], false)
+ 4 SYSTEMPATH\Model.php(925): CodeIgniter\Database\BaseBuilder->get()
+ 5 APPPATH\Models\AnnouncementModel.php(65): CodeIgniter\Model->__call('get', [])
+ 6 APPPATH\Controllers\AnnouncementController.php(44): App\Models\AnnouncementModel->getPendingAnnouncementsForEmployee(385)
+ 7 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\AnnouncementController->getPendingAnnouncements()
+ 8 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\AnnouncementController))
+ 9 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+10 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+11 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+12 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+13 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+CRITICAL - 2025-12-01 16:35:47 --> [Caused by] mysqli_sql_exception: Table 'hrm.healthgenie.in_bkp_2025_11_28.announcements' doesn't exist
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 327.
+ 1 SYSTEMPATH\Database\MySQLi\Connection.php(327): mysqli->query('SELECT `announcements`.*, `announcement_acknowledgments`.`employee_id` as `acknowledged_by`
+FROM `announcements`
+LEFT JOIN `announcement_acknowledgments` ON `announcement_acknowledgments`.`announcement_id` = `announcements`.`id`
+WHERE `is_active` = 1
+AND `requires_acknowledgment` = 1
+AND `start_date` <= \'2025-12-01 16:35:47\'
+AND `target_type` = \'all\'
+ORDER BY `priority` DESC, `created_at` DESC', 0)
+ 2 SYSTEMPATH\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `announcements`.*, `announcement_acknowledgments`.`employee_id` as `acknowledged_by`
+FROM `announcements`
+LEFT JOIN `announcement_acknowledgments` ON `announcement_acknowledgments`.`announcement_id` = `announcements`.`id`
+WHERE `is_active` = 1
+AND `requires_acknowledgment` = 1
+AND `start_date` <= \'2025-12-01 16:35:47\'
+AND `target_type` = \'all\'
+ORDER BY `priority` DESC, `created_at` DESC')
+ 3 SYSTEMPATH\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `announcements`.*, `announcement_acknowledgments`.`employee_id` as `acknowledged_by`
+FROM `announcements`
+LEFT JOIN `announcement_acknowledgments` ON `announcement_acknowledgments`.`announcement_id` = `announcements`.`id`
+WHERE `is_active` = 1
+AND `requires_acknowledgment` = 1
+AND `start_date` <= \'2025-12-01 16:35:47\'
+AND `target_type` = \'all\'
+ORDER BY `priority` DESC, `created_at` DESC')
+ 4 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `announcements`.*, `announcement_acknowledgments`.`employee_id` as `acknowledged_by`
+FROM `announcements`
+LEFT JOIN `announcement_acknowledgments` ON `announcement_acknowledgments`.`announcement_id` = `announcements`.`id`
+WHERE `is_active` = :is_active:
+AND `requires_acknowledgment` = :requires_acknowledgment:
+AND `start_date` <= :start_date:
+AND `target_type` = :target_type:
+ORDER BY `priority` DESC, `created_at` DESC', [...], false)
+ 5 SYSTEMPATH\Model.php(925): CodeIgniter\Database\BaseBuilder->get()
+ 6 APPPATH\Models\AnnouncementModel.php(65): CodeIgniter\Model->__call('get', [])
+ 7 APPPATH\Controllers\AnnouncementController.php(44): App\Models\AnnouncementModel->getPendingAnnouncementsForEmployee(385)
+ 8 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\AnnouncementController->getPendingAnnouncements()
+ 9 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\AnnouncementController))
+10 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+11 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+12 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+13 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+14 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+CRITICAL - 2025-12-01 16:38:46 --> ErrorException: Maximum execution time of 300 seconds exceeded
+[Method: POST, Route: ajax/hr/employee/send-absent-without-leave-notification]
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 327.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-01 16:38:51 --> ErrorException: Maximum execution time of 300 seconds exceeded
+[Method: POST, Route: ajax/hr/employee/send-absent-without-leave-notification-heuer-only]
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 327.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+ERROR - 2025-12-01 16:39:12 --> mysqli_sql_exception: Table 'hrm.healthgenie.in_bkp_2025_11_05.announcements' doesn't exist in D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php(327): mysqli->query('SELECT `announc...', 0)
+#1 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `announc...')
+#2 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `announc...')
+#3 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `announc...', Array, false)
+#4 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Model.php(925): CodeIgniter\Database\BaseBuilder->get()
+#5 D:\LOCALHOST\hrm.healthgenie\app\Models\AnnouncementModel.php(65): CodeIgniter\Model->__call('get', Array)
+#6 D:\LOCALHOST\hrm.healthgenie\app\Controllers\AnnouncementController.php(44): App\Models\AnnouncementModel->getPendingAnnouncementsForEmployee(385)
+#7 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(933): App\Controllers\AnnouncementController->getPendingAnnouncements()
+#8 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\AnnouncementController))
+#9 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#10 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#11 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#12 D:\LOCALHOST\hrm.healthgenie\public\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#13 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hr...')
+#14 {main}
+CRITICAL - 2025-12-01 16:39:12 --> CodeIgniter\Database\Exceptions\DatabaseException: Table 'hrm.healthgenie.in_bkp_2025_11_05.announcements' doesn't exist
+[Method: GET, Route: announcement/get-pending]
+in SYSTEMPATH\Database\BaseConnection.php on line 684.
+ 1 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `announcements`.*, `announcement_acknowledgments`.`employee_id` as `acknowledged_by`
+FROM `announcements`
+LEFT JOIN `announcement_acknowledgments` ON `announcement_acknowledgments`.`announcement_id` = `announcements`.`id`
+WHERE `is_active` = :is_active:
+AND `requires_acknowledgment` = :requires_acknowledgment:
+AND `start_date` <= :start_date:
+AND `target_type` = :target_type:
+ORDER BY `priority` DESC, `created_at` DESC', [...], false)
+ 2 SYSTEMPATH\Model.php(925): CodeIgniter\Database\BaseBuilder->get()
+ 3 APPPATH\Models\AnnouncementModel.php(65): CodeIgniter\Model->__call('get', [])
+ 4 APPPATH\Controllers\AnnouncementController.php(44): App\Models\AnnouncementModel->getPendingAnnouncementsForEmployee(385)
+ 5 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\AnnouncementController->getPendingAnnouncements()
+ 6 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\AnnouncementController))
+ 7 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 8 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 9 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+10 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+11 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+CRITICAL - 2025-12-01 16:39:12 --> [Caused by] CodeIgniter\Database\Exceptions\DatabaseException: Table 'hrm.healthgenie.in_bkp_2025_11_05.announcements' doesn't exist
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 332.
+ 1 SYSTEMPATH\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `announcements`.*, `announcement_acknowledgments`.`employee_id` as `acknowledged_by`
+FROM `announcements`
+LEFT JOIN `announcement_acknowledgments` ON `announcement_acknowledgments`.`announcement_id` = `announcements`.`id`
+WHERE `is_active` = 1
+AND `requires_acknowledgment` = 1
+AND `start_date` <= \'2025-12-01 16:39:12\'
+AND `target_type` = \'all\'
+ORDER BY `priority` DESC, `created_at` DESC')
+ 2 SYSTEMPATH\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `announcements`.*, `announcement_acknowledgments`.`employee_id` as `acknowledged_by`
+FROM `announcements`
+LEFT JOIN `announcement_acknowledgments` ON `announcement_acknowledgments`.`announcement_id` = `announcements`.`id`
+WHERE `is_active` = 1
+AND `requires_acknowledgment` = 1
+AND `start_date` <= \'2025-12-01 16:39:12\'
+AND `target_type` = \'all\'
+ORDER BY `priority` DESC, `created_at` DESC')
+ 3 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `announcements`.*, `announcement_acknowledgments`.`employee_id` as `acknowledged_by`
+FROM `announcements`
+LEFT JOIN `announcement_acknowledgments` ON `announcement_acknowledgments`.`announcement_id` = `announcements`.`id`
+WHERE `is_active` = :is_active:
+AND `requires_acknowledgment` = :requires_acknowledgment:
+AND `start_date` <= :start_date:
+AND `target_type` = :target_type:
+ORDER BY `priority` DESC, `created_at` DESC', [...], false)
+ 4 SYSTEMPATH\Model.php(925): CodeIgniter\Database\BaseBuilder->get()
+ 5 APPPATH\Models\AnnouncementModel.php(65): CodeIgniter\Model->__call('get', [])
+ 6 APPPATH\Controllers\AnnouncementController.php(44): App\Models\AnnouncementModel->getPendingAnnouncementsForEmployee(385)
+ 7 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\AnnouncementController->getPendingAnnouncements()
+ 8 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\AnnouncementController))
+ 9 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+10 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+11 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+12 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+13 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+CRITICAL - 2025-12-01 16:39:12 --> [Caused by] mysqli_sql_exception: Table 'hrm.healthgenie.in_bkp_2025_11_05.announcements' doesn't exist
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 327.
+ 1 SYSTEMPATH\Database\MySQLi\Connection.php(327): mysqli->query('SELECT `announcements`.*, `announcement_acknowledgments`.`employee_id` as `acknowledged_by`
+FROM `announcements`
+LEFT JOIN `announcement_acknowledgments` ON `announcement_acknowledgments`.`announcement_id` = `announcements`.`id`
+WHERE `is_active` = 1
+AND `requires_acknowledgment` = 1
+AND `start_date` <= \'2025-12-01 16:39:12\'
+AND `target_type` = \'all\'
+ORDER BY `priority` DESC, `created_at` DESC', 0)
+ 2 SYSTEMPATH\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `announcements`.*, `announcement_acknowledgments`.`employee_id` as `acknowledged_by`
+FROM `announcements`
+LEFT JOIN `announcement_acknowledgments` ON `announcement_acknowledgments`.`announcement_id` = `announcements`.`id`
+WHERE `is_active` = 1
+AND `requires_acknowledgment` = 1
+AND `start_date` <= \'2025-12-01 16:39:12\'
+AND `target_type` = \'all\'
+ORDER BY `priority` DESC, `created_at` DESC')
+ 3 SYSTEMPATH\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `announcements`.*, `announcement_acknowledgments`.`employee_id` as `acknowledged_by`
+FROM `announcements`
+LEFT JOIN `announcement_acknowledgments` ON `announcement_acknowledgments`.`announcement_id` = `announcements`.`id`
+WHERE `is_active` = 1
+AND `requires_acknowledgment` = 1
+AND `start_date` <= \'2025-12-01 16:39:12\'
+AND `target_type` = \'all\'
+ORDER BY `priority` DESC, `created_at` DESC')
+ 4 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `announcements`.*, `announcement_acknowledgments`.`employee_id` as `acknowledged_by`
+FROM `announcements`
+LEFT JOIN `announcement_acknowledgments` ON `announcement_acknowledgments`.`announcement_id` = `announcements`.`id`
+WHERE `is_active` = :is_active:
+AND `requires_acknowledgment` = :requires_acknowledgment:
+AND `start_date` <= :start_date:
+AND `target_type` = :target_type:
+ORDER BY `priority` DESC, `created_at` DESC', [...], false)
+ 5 SYSTEMPATH\Model.php(925): CodeIgniter\Database\BaseBuilder->get()
+ 6 APPPATH\Models\AnnouncementModel.php(65): CodeIgniter\Model->__call('get', [])
+ 7 APPPATH\Controllers\AnnouncementController.php(44): App\Models\AnnouncementModel->getPendingAnnouncementsForEmployee(385)
+ 8 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\AnnouncementController->getPendingAnnouncements()
+ 9 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\AnnouncementController))
+10 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+11 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+12 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+13 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+14 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+CRITICAL - 2025-12-01 16:40:45 --> ErrorException: Maximum execution time of 300 seconds exceeded
+[Method: POST, Route: ajax/hr/employee/send-absent-without-leave-notification]
+in SYSTEMPATH\Database\BaseResult.php on line 397.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-01 16:40:51 --> ErrorException: Maximum execution time of 300 seconds exceeded
+[Method: POST, Route: ajax/hr/employee/send-absent-without-leave-notification-heuer-only]
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 327.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-01 16:44:13 --> ErrorException: Maximum execution time of 300 seconds exceeded
+[Method: POST, Route: ajax/hr/employee/send-absent-without-leave-notification]
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 327.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-01 16:44:16 --> ErrorException: Maximum execution time of 300 seconds exceeded
+[Method: POST, Route: ajax/hr/employee/send-absent-without-leave-notification-heuer-only]
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 327.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-01 16:47:08 --> ErrorException: Undefined array key "shift_type"
+[Method: GET, Route: ajax/profile/get-punching-reports]
+in APPPATH\Pipes\AttendanceProcessor\ProcessorHelper.php on line 998.
+ 1 APPPATH\Pipes\AttendanceProcessor\ProcessorHelper.php(998): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "shift_type"', 'D:\\LOCALHOST\\hrm.healthgenie\\app\\Pipes\\AttendanceProcessor\\ProcessorHelper.php', 998)
+ 2 APPPATH\Pipes\AttendanceProcessor\RefactorPunchingRow.php(25): App\Pipes\AttendanceProcessor\ProcessorHelper::get_shiftType('1')
+ 3 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\RefactorPunchingRow->handle([...], Object(Closure))
+ 4 APPPATH\Pipes\AttendanceProcessor\ApplyShiftOverride.php(47): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+ 5 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\ApplyShiftOverride->handle([...], Object(Closure))
+ 6 APPPATH\Libraries\Pipeline.php(36): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+ 7 APPPATH\Pipes\ProcessAttendance.php(52): App\Libraries\Pipeline->then(Object(Closure))
+ 8 APPPATH\Libraries\Pipeline.php(30): App\Pipes\ProcessAttendance->handle([...], Object(Closure))
+ 9 APPPATH\Pipes\GetAttendanceClean.php(34): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+10 APPPATH\Libraries\Pipeline.php(30): App\Pipes\GetAttendanceClean->handle([...], Object(Closure))
+11 APPPATH\Pipes\ShiftRulesAndDetails.php(39): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+12 APPPATH\Libraries\Pipeline.php(30): App\Pipes\ShiftRulesAndDetails->handle([...], Object(Closure))
+13 APPPATH\Pipes\BasicDetails.php(37): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+14 APPPATH\Libraries\Pipeline.php(30): App\Pipes\BasicDetails->handle([...], Object(Closure))
+15 APPPATH\Libraries\Pipeline.php(36): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+16 APPPATH\Controllers\Attendance\Processor.php(72): App\Libraries\Pipeline->then(Object(Closure))
+17 APPPATH\Controllers\Attendance\Processor.php(37): App\Controllers\Attendance\Processor::ProcessPunchingData('385', '2025-12-01', '2025-12-01', true)
+18 APPPATH\Controllers\User\Profile.php(597): App\Controllers\Attendance\Processor::getProcessedPunchingData('385', '2025-12-01', '2025-12-01')
+19 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\User\Profile->getPunchingReports()
+20 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\User\Profile))
+21 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+22 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+23 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+24 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+25 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+CRITICAL - 2025-12-01 16:47:18 --> ErrorException: Undefined array key "shift_type"
+[Method: POST, Route: ajax/hr/employee/send-absent-without-leave-notification]
+in APPPATH\Pipes\AttendanceProcessor\ProcessorHelper.php on line 998.
+ 1 APPPATH\Pipes\AttendanceProcessor\ProcessorHelper.php(998): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "shift_type"', 'D:\\LOCALHOST\\hrm.healthgenie\\app\\Pipes\\AttendanceProcessor\\ProcessorHelper.php', 998)
+ 2 APPPATH\Pipes\AttendanceProcessor\RefactorPunchingRow.php(25): App\Pipes\AttendanceProcessor\ProcessorHelper::get_shiftType('26')
+ 3 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\RefactorPunchingRow->handle([...], Object(Closure))
+ 4 APPPATH\Pipes\AttendanceProcessor\ApplyShiftOverride.php(47): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+ 5 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\ApplyShiftOverride->handle([...], Object(Closure))
+ 6 APPPATH\Libraries\Pipeline.php(36): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+ 7 APPPATH\Pipes\ProcessAttendance.php(52): App\Libraries\Pipeline->then(Object(Closure))
+ 8 APPPATH\Libraries\Pipeline.php(30): App\Pipes\ProcessAttendance->handle([...], Object(Closure))
+ 9 APPPATH\Pipes\GetAttendanceClean.php(34): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+10 APPPATH\Libraries\Pipeline.php(30): App\Pipes\GetAttendanceClean->handle([...], Object(Closure))
+11 APPPATH\Pipes\ShiftRulesAndDetails.php(39): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+12 APPPATH\Libraries\Pipeline.php(30): App\Pipes\ShiftRulesAndDetails->handle([...], Object(Closure))
+13 APPPATH\Pipes\BasicDetails.php(37): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+14 APPPATH\Libraries\Pipeline.php(30): App\Pipes\BasicDetails->handle([...], Object(Closure))
+15 APPPATH\Libraries\Pipeline.php(36): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+16 APPPATH\Controllers\Attendance\Processor.php(72): App\Libraries\Pipeline->then(Object(Closure))
+17 APPPATH\Controllers\Attendance\Processor.php(37): App\Controllers\Attendance\Processor::ProcessPunchingData('2', '2025-11-01', '2025-12-01', true)
+18 APPPATH\Controllers\Cron\ServerCron.php(82): App\Controllers\Attendance\Processor::getProcessedPunchingData('2', '2025-11-01', '2025-12-01')
+19 APPPATH\Controllers\Cron\ServerCron.php(169): App\Controllers\Cron\ServerCron->checkEmployeeAbseanceWithoutApplingLeave()
+20 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Cron\ServerCron->sendAbsentWithoutLeaveNotification()
+21 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Cron\ServerCron))
+22 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+23 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+24 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+25 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+26 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+CRITICAL - 2025-12-01 16:47:23 --> ErrorException: Undefined array key "shift_type"
+[Method: POST, Route: ajax/hr/employee/send-absent-without-leave-notification-heuer-only]
+in APPPATH\Pipes\AttendanceProcessor\ProcessorHelper.php on line 998.
+ 1 APPPATH\Pipes\AttendanceProcessor\ProcessorHelper.php(998): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "shift_type"', 'D:\\LOCALHOST\\hrm.healthgenie\\app\\Pipes\\AttendanceProcessor\\ProcessorHelper.php', 998)
+ 2 APPPATH\Pipes\AttendanceProcessor\RefactorPunchingRow.php(25): App\Pipes\AttendanceProcessor\ProcessorHelper::get_shiftType('26')
+ 3 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\RefactorPunchingRow->handle([...], Object(Closure))
+ 4 APPPATH\Pipes\AttendanceProcessor\ApplyShiftOverride.php(47): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+ 5 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\ApplyShiftOverride->handle([...], Object(Closure))
+ 6 APPPATH\Libraries\Pipeline.php(36): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+ 7 APPPATH\Pipes\ProcessAttendance.php(52): App\Libraries\Pipeline->then(Object(Closure))
+ 8 APPPATH\Libraries\Pipeline.php(30): App\Pipes\ProcessAttendance->handle([...], Object(Closure))
+ 9 APPPATH\Pipes\GetAttendanceClean.php(34): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+10 APPPATH\Libraries\Pipeline.php(30): App\Pipes\GetAttendanceClean->handle([...], Object(Closure))
+11 APPPATH\Pipes\ShiftRulesAndDetails.php(39): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+12 APPPATH\Libraries\Pipeline.php(30): App\Pipes\ShiftRulesAndDetails->handle([...], Object(Closure))
+13 APPPATH\Pipes\BasicDetails.php(37): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+14 APPPATH\Libraries\Pipeline.php(30): App\Pipes\BasicDetails->handle([...], Object(Closure))
+15 APPPATH\Libraries\Pipeline.php(36): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+16 APPPATH\Controllers\Attendance\Processor.php(72): App\Libraries\Pipeline->then(Object(Closure))
+17 APPPATH\Controllers\Attendance\Processor.php(37): App\Controllers\Attendance\Processor::ProcessPunchingData('2', '2025-11-01', '2025-12-01', true)
+18 APPPATH\Controllers\Cron\ServerCron.php(82): App\Controllers\Attendance\Processor::getProcessedPunchingData('2', '2025-11-01', '2025-12-01')
+19 APPPATH\Controllers\Cron\ServerCron.php(297): App\Controllers\Cron\ServerCron->checkEmployeeAbseanceWithoutApplingLeave()
+20 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Cron\ServerCron->sendAbsentWithoutLeaveNotificationHeuerOnly()
+21 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Cron\ServerCron))
+22 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+23 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+24 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+25 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+26 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+CRITICAL - 2025-12-01 16:55:33 --> ErrorException: Undefined array key "shift_type"
+[Method: GET, Route: ajax/profile/get-punching-reports]
+in APPPATH\Pipes\AttendanceProcessor\ProcessorHelper.php on line 998.
+ 1 APPPATH\Pipes\AttendanceProcessor\ProcessorHelper.php(998): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "shift_type"', 'D:\\LOCALHOST\\hrm.healthgenie\\app\\Pipes\\AttendanceProcessor\\ProcessorHelper.php', 998)
+ 2 APPPATH\Pipes\AttendanceProcessor\RefactorPunchingRow.php(25): App\Pipes\AttendanceProcessor\ProcessorHelper::get_shiftType('1')
+ 3 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\RefactorPunchingRow->handle([...], Object(Closure))
+ 4 APPPATH\Pipes\AttendanceProcessor\ApplyShiftOverride.php(47): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+ 5 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\ApplyShiftOverride->handle([...], Object(Closure))
+ 6 APPPATH\Libraries\Pipeline.php(36): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+ 7 APPPATH\Pipes\ProcessAttendance.php(52): App\Libraries\Pipeline->then(Object(Closure))
+ 8 APPPATH\Libraries\Pipeline.php(30): App\Pipes\ProcessAttendance->handle([...], Object(Closure))
+ 9 APPPATH\Pipes\GetAttendanceClean.php(34): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+10 APPPATH\Libraries\Pipeline.php(30): App\Pipes\GetAttendanceClean->handle([...], Object(Closure))
+11 APPPATH\Pipes\ShiftRulesAndDetails.php(39): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+12 APPPATH\Libraries\Pipeline.php(30): App\Pipes\ShiftRulesAndDetails->handle([...], Object(Closure))
+13 APPPATH\Pipes\BasicDetails.php(37): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+14 APPPATH\Libraries\Pipeline.php(30): App\Pipes\BasicDetails->handle([...], Object(Closure))
+15 APPPATH\Libraries\Pipeline.php(36): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+16 APPPATH\Controllers\Attendance\Processor.php(72): App\Libraries\Pipeline->then(Object(Closure))
+17 APPPATH\Controllers\Attendance\Processor.php(37): App\Controllers\Attendance\Processor::ProcessPunchingData('385', '2025-12-01', '2025-12-01', true)
+18 APPPATH\Controllers\User\Profile.php(597): App\Controllers\Attendance\Processor::getProcessedPunchingData('385', '2025-12-01', '2025-12-01')
+19 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\User\Profile->getPunchingReports()
+20 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\User\Profile))
+21 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+22 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+23 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+24 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+25 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+CRITICAL - 2025-12-01 16:55:42 --> ErrorException: Undefined array key "shift_type"
+[Method: POST, Route: ajax/hr/employee/send-absent-without-leave-notification]
+in APPPATH\Pipes\AttendanceProcessor\ProcessorHelper.php on line 998.
+ 1 APPPATH\Pipes\AttendanceProcessor\ProcessorHelper.php(998): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "shift_type"', 'D:\\LOCALHOST\\hrm.healthgenie\\app\\Pipes\\AttendanceProcessor\\ProcessorHelper.php', 998)
+ 2 APPPATH\Pipes\AttendanceProcessor\RefactorPunchingRow.php(25): App\Pipes\AttendanceProcessor\ProcessorHelper::get_shiftType('26')
+ 3 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\RefactorPunchingRow->handle([...], Object(Closure))
+ 4 APPPATH\Pipes\AttendanceProcessor\ApplyShiftOverride.php(47): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+ 5 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\ApplyShiftOverride->handle([...], Object(Closure))
+ 6 APPPATH\Libraries\Pipeline.php(36): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+ 7 APPPATH\Pipes\ProcessAttendance.php(52): App\Libraries\Pipeline->then(Object(Closure))
+ 8 APPPATH\Libraries\Pipeline.php(30): App\Pipes\ProcessAttendance->handle([...], Object(Closure))
+ 9 APPPATH\Pipes\GetAttendanceClean.php(34): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+10 APPPATH\Libraries\Pipeline.php(30): App\Pipes\GetAttendanceClean->handle([...], Object(Closure))
+11 APPPATH\Pipes\ShiftRulesAndDetails.php(39): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+12 APPPATH\Libraries\Pipeline.php(30): App\Pipes\ShiftRulesAndDetails->handle([...], Object(Closure))
+13 APPPATH\Pipes\BasicDetails.php(37): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+14 APPPATH\Libraries\Pipeline.php(30): App\Pipes\BasicDetails->handle([...], Object(Closure))
+15 APPPATH\Libraries\Pipeline.php(36): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+16 APPPATH\Controllers\Attendance\Processor.php(72): App\Libraries\Pipeline->then(Object(Closure))
+17 APPPATH\Controllers\Attendance\Processor.php(37): App\Controllers\Attendance\Processor::ProcessPunchingData('2', '2025-11-01', '2025-12-01', true)
+18 APPPATH\Controllers\Cron\ServerCron.php(82): App\Controllers\Attendance\Processor::getProcessedPunchingData('2', '2025-11-01', '2025-12-01')
+19 APPPATH\Controllers\Cron\ServerCron.php(169): App\Controllers\Cron\ServerCron->checkEmployeeAbseanceWithoutApplingLeave()
+20 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Cron\ServerCron->sendAbsentWithoutLeaveNotification()
+21 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Cron\ServerCron))
+22 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+23 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+24 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+25 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+26 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+CRITICAL - 2025-12-01 16:57:17 --> ErrorException: Undefined array key "shift_type"
+[Method: POST, Route: ajax/hr/employee/send-absent-without-leave-notification-heuer-only]
+in APPPATH\Pipes\AttendanceProcessor\ProcessorHelper.php on line 998.
+ 1 APPPATH\Pipes\AttendanceProcessor\ProcessorHelper.php(998): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "shift_type"', 'D:\\LOCALHOST\\hrm.healthgenie\\app\\Pipes\\AttendanceProcessor\\ProcessorHelper.php', 998)
+ 2 APPPATH\Pipes\AttendanceProcessor\RefactorPunchingRow.php(25): App\Pipes\AttendanceProcessor\ProcessorHelper::get_shiftType('26')
+ 3 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\RefactorPunchingRow->handle([...], Object(Closure))
+ 4 APPPATH\Pipes\AttendanceProcessor\ApplyShiftOverride.php(47): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+ 5 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\ApplyShiftOverride->handle([...], Object(Closure))
+ 6 APPPATH\Libraries\Pipeline.php(36): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+ 7 APPPATH\Pipes\ProcessAttendance.php(52): App\Libraries\Pipeline->then(Object(Closure))
+ 8 APPPATH\Libraries\Pipeline.php(30): App\Pipes\ProcessAttendance->handle([...], Object(Closure))
+ 9 APPPATH\Pipes\GetAttendanceClean.php(34): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+10 APPPATH\Libraries\Pipeline.php(30): App\Pipes\GetAttendanceClean->handle([...], Object(Closure))
+11 APPPATH\Pipes\ShiftRulesAndDetails.php(39): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+12 APPPATH\Libraries\Pipeline.php(30): App\Pipes\ShiftRulesAndDetails->handle([...], Object(Closure))
+13 APPPATH\Pipes\BasicDetails.php(37): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+14 APPPATH\Libraries\Pipeline.php(30): App\Pipes\BasicDetails->handle([...], Object(Closure))
+15 APPPATH\Libraries\Pipeline.php(36): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+16 APPPATH\Controllers\Attendance\Processor.php(72): App\Libraries\Pipeline->then(Object(Closure))
+17 APPPATH\Controllers\Attendance\Processor.php(37): App\Controllers\Attendance\Processor::ProcessPunchingData('2', '2025-11-01', '2025-12-01', true)
+18 APPPATH\Controllers\Cron\ServerCron.php(82): App\Controllers\Attendance\Processor::getProcessedPunchingData('2', '2025-11-01', '2025-12-01')
+19 APPPATH\Controllers\Cron\ServerCron.php(297): App\Controllers\Cron\ServerCron->checkEmployeeAbseanceWithoutApplingLeave()
+20 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Cron\ServerCron->sendAbsentWithoutLeaveNotificationHeuerOnly()
+21 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Cron\ServerCron))
+22 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+23 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+24 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+25 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+26 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+CRITICAL - 2025-12-01 16:57:37 --> ErrorException: Undefined array key "shift_type"
+[Method: GET, Route: ajax/profile/get-punching-reports]
+in APPPATH\Pipes\AttendanceProcessor\ProcessorHelper.php on line 998.
+ 1 APPPATH\Pipes\AttendanceProcessor\ProcessorHelper.php(998): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "shift_type"', 'D:\\LOCALHOST\\hrm.healthgenie\\app\\Pipes\\AttendanceProcessor\\ProcessorHelper.php', 998)
+ 2 APPPATH\Pipes\AttendanceProcessor\RefactorPunchingRow.php(25): App\Pipes\AttendanceProcessor\ProcessorHelper::get_shiftType('1')
+ 3 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\RefactorPunchingRow->handle([...], Object(Closure))
+ 4 APPPATH\Pipes\AttendanceProcessor\ApplyShiftOverride.php(47): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+ 5 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\ApplyShiftOverride->handle([...], Object(Closure))
+ 6 APPPATH\Libraries\Pipeline.php(36): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+ 7 APPPATH\Pipes\ProcessAttendance.php(52): App\Libraries\Pipeline->then(Object(Closure))
+ 8 APPPATH\Libraries\Pipeline.php(30): App\Pipes\ProcessAttendance->handle([...], Object(Closure))
+ 9 APPPATH\Pipes\GetAttendanceClean.php(34): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+10 APPPATH\Libraries\Pipeline.php(30): App\Pipes\GetAttendanceClean->handle([...], Object(Closure))
+11 APPPATH\Pipes\ShiftRulesAndDetails.php(39): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+12 APPPATH\Libraries\Pipeline.php(30): App\Pipes\ShiftRulesAndDetails->handle([...], Object(Closure))
+13 APPPATH\Pipes\BasicDetails.php(37): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+14 APPPATH\Libraries\Pipeline.php(30): App\Pipes\BasicDetails->handle([...], Object(Closure))
+15 APPPATH\Libraries\Pipeline.php(36): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+16 APPPATH\Controllers\Attendance\Processor.php(72): App\Libraries\Pipeline->then(Object(Closure))
+17 APPPATH\Controllers\Attendance\Processor.php(37): App\Controllers\Attendance\Processor::ProcessPunchingData('385', '2025-12-01', '2025-12-01', true)
+18 APPPATH\Controllers\User\Profile.php(597): App\Controllers\Attendance\Processor::getProcessedPunchingData('385', '2025-12-01', '2025-12-01')
+19 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\User\Profile->getPunchingReports()
+20 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\User\Profile))
+21 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+22 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+23 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+24 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+25 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+CRITICAL - 2025-12-01 16:57:46 --> ErrorException: Undefined array key "shift_type"
+[Method: POST, Route: ajax/hr/employee/send-absent-without-leave-notification]
+in APPPATH\Pipes\AttendanceProcessor\ProcessorHelper.php on line 998.
+ 1 APPPATH\Pipes\AttendanceProcessor\ProcessorHelper.php(998): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "shift_type"', 'D:\\LOCALHOST\\hrm.healthgenie\\app\\Pipes\\AttendanceProcessor\\ProcessorHelper.php', 998)
+ 2 APPPATH\Pipes\AttendanceProcessor\RefactorPunchingRow.php(25): App\Pipes\AttendanceProcessor\ProcessorHelper::get_shiftType('26')
+ 3 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\RefactorPunchingRow->handle([...], Object(Closure))
+ 4 APPPATH\Pipes\AttendanceProcessor\ApplyShiftOverride.php(47): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+ 5 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\ApplyShiftOverride->handle([...], Object(Closure))
+ 6 APPPATH\Libraries\Pipeline.php(36): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+ 7 APPPATH\Pipes\ProcessAttendance.php(52): App\Libraries\Pipeline->then(Object(Closure))
+ 8 APPPATH\Libraries\Pipeline.php(30): App\Pipes\ProcessAttendance->handle([...], Object(Closure))
+ 9 APPPATH\Pipes\GetAttendanceClean.php(34): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+10 APPPATH\Libraries\Pipeline.php(30): App\Pipes\GetAttendanceClean->handle([...], Object(Closure))
+11 APPPATH\Pipes\ShiftRulesAndDetails.php(39): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+12 APPPATH\Libraries\Pipeline.php(30): App\Pipes\ShiftRulesAndDetails->handle([...], Object(Closure))
+13 APPPATH\Pipes\BasicDetails.php(37): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+14 APPPATH\Libraries\Pipeline.php(30): App\Pipes\BasicDetails->handle([...], Object(Closure))
+15 APPPATH\Libraries\Pipeline.php(36): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+16 APPPATH\Controllers\Attendance\Processor.php(72): App\Libraries\Pipeline->then(Object(Closure))
+17 APPPATH\Controllers\Attendance\Processor.php(37): App\Controllers\Attendance\Processor::ProcessPunchingData('2', '2025-11-01', '2025-12-01', true)
+18 APPPATH\Controllers\Cron\ServerCron.php(82): App\Controllers\Attendance\Processor::getProcessedPunchingData('2', '2025-11-01', '2025-12-01')
+19 APPPATH\Controllers\Cron\ServerCron.php(169): App\Controllers\Cron\ServerCron->checkEmployeeAbseanceWithoutApplingLeave()
+20 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Cron\ServerCron->sendAbsentWithoutLeaveNotification()
+21 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Cron\ServerCron))
+22 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+23 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+24 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+25 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+26 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+CRITICAL - 2025-12-01 16:57:51 --> ErrorException: Undefined array key "shift_type"
+[Method: POST, Route: ajax/hr/employee/send-absent-without-leave-notification-heuer-only]
+in APPPATH\Pipes\AttendanceProcessor\ProcessorHelper.php on line 998.
+ 1 APPPATH\Pipes\AttendanceProcessor\ProcessorHelper.php(998): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "shift_type"', 'D:\\LOCALHOST\\hrm.healthgenie\\app\\Pipes\\AttendanceProcessor\\ProcessorHelper.php', 998)
+ 2 APPPATH\Pipes\AttendanceProcessor\RefactorPunchingRow.php(25): App\Pipes\AttendanceProcessor\ProcessorHelper::get_shiftType('26')
+ 3 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\RefactorPunchingRow->handle([...], Object(Closure))
+ 4 APPPATH\Pipes\AttendanceProcessor\ApplyShiftOverride.php(47): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+ 5 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\ApplyShiftOverride->handle([...], Object(Closure))
+ 6 APPPATH\Libraries\Pipeline.php(36): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+ 7 APPPATH\Pipes\ProcessAttendance.php(52): App\Libraries\Pipeline->then(Object(Closure))
+ 8 APPPATH\Libraries\Pipeline.php(30): App\Pipes\ProcessAttendance->handle([...], Object(Closure))
+ 9 APPPATH\Pipes\GetAttendanceClean.php(34): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+10 APPPATH\Libraries\Pipeline.php(30): App\Pipes\GetAttendanceClean->handle([...], Object(Closure))
+11 APPPATH\Pipes\ShiftRulesAndDetails.php(39): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+12 APPPATH\Libraries\Pipeline.php(30): App\Pipes\ShiftRulesAndDetails->handle([...], Object(Closure))
+13 APPPATH\Pipes\BasicDetails.php(37): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+14 APPPATH\Libraries\Pipeline.php(30): App\Pipes\BasicDetails->handle([...], Object(Closure))
+15 APPPATH\Libraries\Pipeline.php(36): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+16 APPPATH\Controllers\Attendance\Processor.php(72): App\Libraries\Pipeline->then(Object(Closure))
+17 APPPATH\Controllers\Attendance\Processor.php(37): App\Controllers\Attendance\Processor::ProcessPunchingData('2', '2025-11-01', '2025-12-01', true)
+18 APPPATH\Controllers\Cron\ServerCron.php(82): App\Controllers\Attendance\Processor::getProcessedPunchingData('2', '2025-11-01', '2025-12-01')
+19 APPPATH\Controllers\Cron\ServerCron.php(297): App\Controllers\Cron\ServerCron->checkEmployeeAbseanceWithoutApplingLeave()
+20 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Cron\ServerCron->sendAbsentWithoutLeaveNotificationHeuerOnly()
+21 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Cron\ServerCron))
+22 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+23 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+24 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+25 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+26 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+CRITICAL - 2025-12-01 17:03:04 --> ErrorException: Undefined array key "shift_type"
+[Method: GET, Route: ajax/profile/get-punching-reports]
+in APPPATH\Pipes\AttendanceProcessor\ProcessorHelper.php on line 998.
+ 1 APPPATH\Pipes\AttendanceProcessor\ProcessorHelper.php(998): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "shift_type"', 'D:\\LOCALHOST\\hrm.healthgenie\\app\\Pipes\\AttendanceProcessor\\ProcessorHelper.php', 998)
+ 2 APPPATH\Pipes\AttendanceProcessor\RefactorPunchingRow.php(25): App\Pipes\AttendanceProcessor\ProcessorHelper::get_shiftType('1')
+ 3 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\RefactorPunchingRow->handle([...], Object(Closure))
+ 4 APPPATH\Pipes\AttendanceProcessor\ApplyShiftOverride.php(47): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+ 5 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\ApplyShiftOverride->handle([...], Object(Closure))
+ 6 APPPATH\Libraries\Pipeline.php(36): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+ 7 APPPATH\Pipes\ProcessAttendance.php(52): App\Libraries\Pipeline->then(Object(Closure))
+ 8 APPPATH\Libraries\Pipeline.php(30): App\Pipes\ProcessAttendance->handle([...], Object(Closure))
+ 9 APPPATH\Pipes\GetAttendanceClean.php(34): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+10 APPPATH\Libraries\Pipeline.php(30): App\Pipes\GetAttendanceClean->handle([...], Object(Closure))
+11 APPPATH\Pipes\ShiftRulesAndDetails.php(39): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+12 APPPATH\Libraries\Pipeline.php(30): App\Pipes\ShiftRulesAndDetails->handle([...], Object(Closure))
+13 APPPATH\Pipes\BasicDetails.php(37): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+14 APPPATH\Libraries\Pipeline.php(30): App\Pipes\BasicDetails->handle([...], Object(Closure))
+15 APPPATH\Libraries\Pipeline.php(36): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+16 APPPATH\Controllers\Attendance\Processor.php(72): App\Libraries\Pipeline->then(Object(Closure))
+17 APPPATH\Controllers\Attendance\Processor.php(37): App\Controllers\Attendance\Processor::ProcessPunchingData('385', '2025-12-01', '2025-12-01', true)
+18 APPPATH\Controllers\User\Profile.php(597): App\Controllers\Attendance\Processor::getProcessedPunchingData('385', '2025-12-01', '2025-12-01')
+19 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\User\Profile->getPunchingReports()
+20 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\User\Profile))
+21 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+22 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+23 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+24 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+25 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+CRITICAL - 2025-12-01 17:03:14 --> ErrorException: Undefined array key "shift_type"
+[Method: POST, Route: ajax/hr/employee/send-absent-without-leave-notification]
+in APPPATH\Pipes\AttendanceProcessor\ProcessorHelper.php on line 998.
+ 1 APPPATH\Pipes\AttendanceProcessor\ProcessorHelper.php(998): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "shift_type"', 'D:\\LOCALHOST\\hrm.healthgenie\\app\\Pipes\\AttendanceProcessor\\ProcessorHelper.php', 998)
+ 2 APPPATH\Pipes\AttendanceProcessor\RefactorPunchingRow.php(25): App\Pipes\AttendanceProcessor\ProcessorHelper::get_shiftType('26')
+ 3 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\RefactorPunchingRow->handle([...], Object(Closure))
+ 4 APPPATH\Pipes\AttendanceProcessor\ApplyShiftOverride.php(47): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+ 5 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\ApplyShiftOverride->handle([...], Object(Closure))
+ 6 APPPATH\Libraries\Pipeline.php(36): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+ 7 APPPATH\Pipes\ProcessAttendance.php(52): App\Libraries\Pipeline->then(Object(Closure))
+ 8 APPPATH\Libraries\Pipeline.php(30): App\Pipes\ProcessAttendance->handle([...], Object(Closure))
+ 9 APPPATH\Pipes\GetAttendanceClean.php(34): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+10 APPPATH\Libraries\Pipeline.php(30): App\Pipes\GetAttendanceClean->handle([...], Object(Closure))
+11 APPPATH\Pipes\ShiftRulesAndDetails.php(39): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+12 APPPATH\Libraries\Pipeline.php(30): App\Pipes\ShiftRulesAndDetails->handle([...], Object(Closure))
+13 APPPATH\Pipes\BasicDetails.php(37): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+14 APPPATH\Libraries\Pipeline.php(30): App\Pipes\BasicDetails->handle([...], Object(Closure))
+15 APPPATH\Libraries\Pipeline.php(36): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+16 APPPATH\Controllers\Attendance\Processor.php(72): App\Libraries\Pipeline->then(Object(Closure))
+17 APPPATH\Controllers\Attendance\Processor.php(37): App\Controllers\Attendance\Processor::ProcessPunchingData('2', '2025-11-01', '2025-12-01', true)
+18 APPPATH\Controllers\Cron\ServerCron.php(82): App\Controllers\Attendance\Processor::getProcessedPunchingData('2', '2025-11-01', '2025-12-01')
+19 APPPATH\Controllers\Cron\ServerCron.php(169): App\Controllers\Cron\ServerCron->checkEmployeeAbseanceWithoutApplingLeave()
+20 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Cron\ServerCron->sendAbsentWithoutLeaveNotification()
+21 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Cron\ServerCron))
+22 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+23 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+24 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+25 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+26 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+CRITICAL - 2025-12-01 17:03:24 --> ErrorException: Undefined array key "shift_type"
+[Method: GET, Route: ajax/profile/get-punching-reports]
+in APPPATH\Pipes\AttendanceProcessor\ProcessorHelper.php on line 998.
+ 1 APPPATH\Pipes\AttendanceProcessor\ProcessorHelper.php(998): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "shift_type"', 'D:\\LOCALHOST\\hrm.healthgenie\\app\\Pipes\\AttendanceProcessor\\ProcessorHelper.php', 998)
+ 2 APPPATH\Pipes\AttendanceProcessor\RefactorPunchingRow.php(25): App\Pipes\AttendanceProcessor\ProcessorHelper::get_shiftType('1')
+ 3 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\RefactorPunchingRow->handle([...], Object(Closure))
+ 4 APPPATH\Pipes\AttendanceProcessor\ApplyShiftOverride.php(47): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+ 5 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\ApplyShiftOverride->handle([...], Object(Closure))
+ 6 APPPATH\Libraries\Pipeline.php(36): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+ 7 APPPATH\Pipes\ProcessAttendance.php(52): App\Libraries\Pipeline->then(Object(Closure))
+ 8 APPPATH\Libraries\Pipeline.php(30): App\Pipes\ProcessAttendance->handle([...], Object(Closure))
+ 9 APPPATH\Pipes\GetAttendanceClean.php(34): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+10 APPPATH\Libraries\Pipeline.php(30): App\Pipes\GetAttendanceClean->handle([...], Object(Closure))
+11 APPPATH\Pipes\ShiftRulesAndDetails.php(39): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+12 APPPATH\Libraries\Pipeline.php(30): App\Pipes\ShiftRulesAndDetails->handle([...], Object(Closure))
+13 APPPATH\Pipes\BasicDetails.php(37): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+14 APPPATH\Libraries\Pipeline.php(30): App\Pipes\BasicDetails->handle([...], Object(Closure))
+15 APPPATH\Libraries\Pipeline.php(36): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+16 APPPATH\Controllers\Attendance\Processor.php(72): App\Libraries\Pipeline->then(Object(Closure))
+17 APPPATH\Controllers\Attendance\Processor.php(37): App\Controllers\Attendance\Processor::ProcessPunchingData('40', '2025-12-01', '2025-12-01', true)
+18 APPPATH\Controllers\User\Profile.php(597): App\Controllers\Attendance\Processor::getProcessedPunchingData('40', '2025-12-01', '2025-12-01')
+19 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\User\Profile->getPunchingReports()
+20 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\User\Profile))
+21 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+22 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+23 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+24 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+25 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+CRITICAL - 2025-12-01 17:03:33 --> ErrorException: Undefined array key "shift_type"
+[Method: POST, Route: ajax/hr/employee/send-absent-without-leave-notification]
+in APPPATH\Pipes\AttendanceProcessor\ProcessorHelper.php on line 998.
+ 1 APPPATH\Pipes\AttendanceProcessor\ProcessorHelper.php(998): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "shift_type"', 'D:\\LOCALHOST\\hrm.healthgenie\\app\\Pipes\\AttendanceProcessor\\ProcessorHelper.php', 998)
+ 2 APPPATH\Pipes\AttendanceProcessor\RefactorPunchingRow.php(25): App\Pipes\AttendanceProcessor\ProcessorHelper::get_shiftType('26')
+ 3 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\RefactorPunchingRow->handle([...], Object(Closure))
+ 4 APPPATH\Pipes\AttendanceProcessor\ApplyShiftOverride.php(47): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+ 5 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\ApplyShiftOverride->handle([...], Object(Closure))
+ 6 APPPATH\Libraries\Pipeline.php(36): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+ 7 APPPATH\Pipes\ProcessAttendance.php(52): App\Libraries\Pipeline->then(Object(Closure))
+ 8 APPPATH\Libraries\Pipeline.php(30): App\Pipes\ProcessAttendance->handle([...], Object(Closure))
+ 9 APPPATH\Pipes\GetAttendanceClean.php(34): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+10 APPPATH\Libraries\Pipeline.php(30): App\Pipes\GetAttendanceClean->handle([...], Object(Closure))
+11 APPPATH\Pipes\ShiftRulesAndDetails.php(39): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+12 APPPATH\Libraries\Pipeline.php(30): App\Pipes\ShiftRulesAndDetails->handle([...], Object(Closure))
+13 APPPATH\Pipes\BasicDetails.php(37): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+14 APPPATH\Libraries\Pipeline.php(30): App\Pipes\BasicDetails->handle([...], Object(Closure))
+15 APPPATH\Libraries\Pipeline.php(36): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+16 APPPATH\Controllers\Attendance\Processor.php(72): App\Libraries\Pipeline->then(Object(Closure))
+17 APPPATH\Controllers\Attendance\Processor.php(37): App\Controllers\Attendance\Processor::ProcessPunchingData('2', '2025-11-01', '2025-12-01', true)
+18 APPPATH\Controllers\Cron\ServerCron.php(82): App\Controllers\Attendance\Processor::getProcessedPunchingData('2', '2025-11-01', '2025-12-01')
+19 APPPATH\Controllers\Cron\ServerCron.php(169): App\Controllers\Cron\ServerCron->checkEmployeeAbseanceWithoutApplingLeave()
+20 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Cron\ServerCron->sendAbsentWithoutLeaveNotification()
+21 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Cron\ServerCron))
+22 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+23 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+24 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+25 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+26 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+CRITICAL - 2025-12-01 17:03:38 --> ErrorException: Undefined array key "shift_type"
+[Method: POST, Route: ajax/hr/employee/send-absent-without-leave-notification-heuer-only]
+in APPPATH\Pipes\AttendanceProcessor\ProcessorHelper.php on line 998.
+ 1 APPPATH\Pipes\AttendanceProcessor\ProcessorHelper.php(998): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "shift_type"', 'D:\\LOCALHOST\\hrm.healthgenie\\app\\Pipes\\AttendanceProcessor\\ProcessorHelper.php', 998)
+ 2 APPPATH\Pipes\AttendanceProcessor\RefactorPunchingRow.php(25): App\Pipes\AttendanceProcessor\ProcessorHelper::get_shiftType('26')
+ 3 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\RefactorPunchingRow->handle([...], Object(Closure))
+ 4 APPPATH\Pipes\AttendanceProcessor\ApplyShiftOverride.php(47): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+ 5 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\ApplyShiftOverride->handle([...], Object(Closure))
+ 6 APPPATH\Libraries\Pipeline.php(36): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+ 7 APPPATH\Pipes\ProcessAttendance.php(52): App\Libraries\Pipeline->then(Object(Closure))
+ 8 APPPATH\Libraries\Pipeline.php(30): App\Pipes\ProcessAttendance->handle([...], Object(Closure))
+ 9 APPPATH\Pipes\GetAttendanceClean.php(34): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+10 APPPATH\Libraries\Pipeline.php(30): App\Pipes\GetAttendanceClean->handle([...], Object(Closure))
+11 APPPATH\Pipes\ShiftRulesAndDetails.php(39): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+12 APPPATH\Libraries\Pipeline.php(30): App\Pipes\ShiftRulesAndDetails->handle([...], Object(Closure))
+13 APPPATH\Pipes\BasicDetails.php(37): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+14 APPPATH\Libraries\Pipeline.php(30): App\Pipes\BasicDetails->handle([...], Object(Closure))
+15 APPPATH\Libraries\Pipeline.php(36): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+16 APPPATH\Controllers\Attendance\Processor.php(72): App\Libraries\Pipeline->then(Object(Closure))
+17 APPPATH\Controllers\Attendance\Processor.php(37): App\Controllers\Attendance\Processor::ProcessPunchingData('2', '2025-11-01', '2025-12-01', true)
+18 APPPATH\Controllers\Cron\ServerCron.php(82): App\Controllers\Attendance\Processor::getProcessedPunchingData('2', '2025-11-01', '2025-12-01')
+19 APPPATH\Controllers\Cron\ServerCron.php(297): App\Controllers\Cron\ServerCron->checkEmployeeAbseanceWithoutApplingLeave()
+20 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Cron\ServerCron->sendAbsentWithoutLeaveNotificationHeuerOnly()
+21 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Cron\ServerCron))
+22 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+23 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+24 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+25 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+26 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+CRITICAL - 2025-12-01 17:04:32 --> ErrorException: Undefined array key "shift_type"
+[Method: GET, Route: ajax/profile/get-punching-reports]
+in APPPATH\Pipes\AttendanceProcessor\ProcessorHelper.php on line 998.
+ 1 APPPATH\Pipes\AttendanceProcessor\ProcessorHelper.php(998): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "shift_type"', 'D:\\LOCALHOST\\hrm.healthgenie\\app\\Pipes\\AttendanceProcessor\\ProcessorHelper.php', 998)
+ 2 APPPATH\Pipes\AttendanceProcessor\RefactorPunchingRow.php(25): App\Pipes\AttendanceProcessor\ProcessorHelper::get_shiftType('1')
+ 3 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\RefactorPunchingRow->handle([...], Object(Closure))
+ 4 APPPATH\Pipes\AttendanceProcessor\ApplyShiftOverride.php(47): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+ 5 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\ApplyShiftOverride->handle([...], Object(Closure))
+ 6 APPPATH\Libraries\Pipeline.php(36): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+ 7 APPPATH\Pipes\ProcessAttendance.php(52): App\Libraries\Pipeline->then(Object(Closure))
+ 8 APPPATH\Libraries\Pipeline.php(30): App\Pipes\ProcessAttendance->handle([...], Object(Closure))
+ 9 APPPATH\Pipes\GetAttendanceClean.php(34): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+10 APPPATH\Libraries\Pipeline.php(30): App\Pipes\GetAttendanceClean->handle([...], Object(Closure))
+11 APPPATH\Pipes\ShiftRulesAndDetails.php(39): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+12 APPPATH\Libraries\Pipeline.php(30): App\Pipes\ShiftRulesAndDetails->handle([...], Object(Closure))
+13 APPPATH\Pipes\BasicDetails.php(37): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+14 APPPATH\Libraries\Pipeline.php(30): App\Pipes\BasicDetails->handle([...], Object(Closure))
+15 APPPATH\Libraries\Pipeline.php(36): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+16 APPPATH\Controllers\Attendance\Processor.php(72): App\Libraries\Pipeline->then(Object(Closure))
+17 APPPATH\Controllers\Attendance\Processor.php(37): App\Controllers\Attendance\Processor::ProcessPunchingData('40', '2025-12-01', '2025-12-01', true)
+18 APPPATH\Controllers\User\Profile.php(597): App\Controllers\Attendance\Processor::getProcessedPunchingData('40', '2025-12-01', '2025-12-01')
+19 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\User\Profile->getPunchingReports()
+20 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\User\Profile))
+21 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+22 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+23 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+24 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+25 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+CRITICAL - 2025-12-01 17:04:41 --> ErrorException: Undefined array key "shift_type"
+[Method: POST, Route: ajax/hr/employee/send-absent-without-leave-notification]
+in APPPATH\Pipes\AttendanceProcessor\ProcessorHelper.php on line 998.
+ 1 APPPATH\Pipes\AttendanceProcessor\ProcessorHelper.php(998): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "shift_type"', 'D:\\LOCALHOST\\hrm.healthgenie\\app\\Pipes\\AttendanceProcessor\\ProcessorHelper.php', 998)
+ 2 APPPATH\Pipes\AttendanceProcessor\RefactorPunchingRow.php(25): App\Pipes\AttendanceProcessor\ProcessorHelper::get_shiftType('26')
+ 3 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\RefactorPunchingRow->handle([...], Object(Closure))
+ 4 APPPATH\Pipes\AttendanceProcessor\ApplyShiftOverride.php(47): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+ 5 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\ApplyShiftOverride->handle([...], Object(Closure))
+ 6 APPPATH\Libraries\Pipeline.php(36): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+ 7 APPPATH\Pipes\ProcessAttendance.php(52): App\Libraries\Pipeline->then(Object(Closure))
+ 8 APPPATH\Libraries\Pipeline.php(30): App\Pipes\ProcessAttendance->handle([...], Object(Closure))
+ 9 APPPATH\Pipes\GetAttendanceClean.php(34): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+10 APPPATH\Libraries\Pipeline.php(30): App\Pipes\GetAttendanceClean->handle([...], Object(Closure))
+11 APPPATH\Pipes\ShiftRulesAndDetails.php(39): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+12 APPPATH\Libraries\Pipeline.php(30): App\Pipes\ShiftRulesAndDetails->handle([...], Object(Closure))
+13 APPPATH\Pipes\BasicDetails.php(37): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+14 APPPATH\Libraries\Pipeline.php(30): App\Pipes\BasicDetails->handle([...], Object(Closure))
+15 APPPATH\Libraries\Pipeline.php(36): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+16 APPPATH\Controllers\Attendance\Processor.php(72): App\Libraries\Pipeline->then(Object(Closure))
+17 APPPATH\Controllers\Attendance\Processor.php(37): App\Controllers\Attendance\Processor::ProcessPunchingData('2', '2025-11-01', '2025-12-01', true)
+18 APPPATH\Controllers\Cron\ServerCron.php(82): App\Controllers\Attendance\Processor::getProcessedPunchingData('2', '2025-11-01', '2025-12-01')
+19 APPPATH\Controllers\Cron\ServerCron.php(169): App\Controllers\Cron\ServerCron->checkEmployeeAbseanceWithoutApplingLeave()
+20 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Cron\ServerCron->sendAbsentWithoutLeaveNotification()
+21 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Cron\ServerCron))
+22 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+23 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+24 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+25 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+26 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+CRITICAL - 2025-12-01 17:04:46 --> ErrorException: Undefined array key "shift_type"
+[Method: POST, Route: ajax/hr/employee/send-absent-without-leave-notification-heuer-only]
+in APPPATH\Pipes\AttendanceProcessor\ProcessorHelper.php on line 998.
+ 1 APPPATH\Pipes\AttendanceProcessor\ProcessorHelper.php(998): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "shift_type"', 'D:\\LOCALHOST\\hrm.healthgenie\\app\\Pipes\\AttendanceProcessor\\ProcessorHelper.php', 998)
+ 2 APPPATH\Pipes\AttendanceProcessor\RefactorPunchingRow.php(25): App\Pipes\AttendanceProcessor\ProcessorHelper::get_shiftType('26')
+ 3 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\RefactorPunchingRow->handle([...], Object(Closure))
+ 4 APPPATH\Pipes\AttendanceProcessor\ApplyShiftOverride.php(47): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+ 5 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\ApplyShiftOverride->handle([...], Object(Closure))
+ 6 APPPATH\Libraries\Pipeline.php(36): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+ 7 APPPATH\Pipes\ProcessAttendance.php(52): App\Libraries\Pipeline->then(Object(Closure))
+ 8 APPPATH\Libraries\Pipeline.php(30): App\Pipes\ProcessAttendance->handle([...], Object(Closure))
+ 9 APPPATH\Pipes\GetAttendanceClean.php(34): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+10 APPPATH\Libraries\Pipeline.php(30): App\Pipes\GetAttendanceClean->handle([...], Object(Closure))
+11 APPPATH\Pipes\ShiftRulesAndDetails.php(39): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+12 APPPATH\Libraries\Pipeline.php(30): App\Pipes\ShiftRulesAndDetails->handle([...], Object(Closure))
+13 APPPATH\Pipes\BasicDetails.php(37): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+14 APPPATH\Libraries\Pipeline.php(30): App\Pipes\BasicDetails->handle([...], Object(Closure))
+15 APPPATH\Libraries\Pipeline.php(36): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+16 APPPATH\Controllers\Attendance\Processor.php(72): App\Libraries\Pipeline->then(Object(Closure))
+17 APPPATH\Controllers\Attendance\Processor.php(37): App\Controllers\Attendance\Processor::ProcessPunchingData('2', '2025-11-01', '2025-12-01', true)
+18 APPPATH\Controllers\Cron\ServerCron.php(82): App\Controllers\Attendance\Processor::getProcessedPunchingData('2', '2025-11-01', '2025-12-01')
+19 APPPATH\Controllers\Cron\ServerCron.php(297): App\Controllers\Cron\ServerCron->checkEmployeeAbseanceWithoutApplingLeave()
+20 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Cron\ServerCron->sendAbsentWithoutLeaveNotificationHeuerOnly()
+21 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Cron\ServerCron))
+22 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+23 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+24 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+25 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+26 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')

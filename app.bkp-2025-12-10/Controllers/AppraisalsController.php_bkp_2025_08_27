@@ -1,0 +1,1191 @@
+<?php
+
+namespace App\Controllers;
+
+use App\Controllers\BaseController;
+use CodeIgniter\HTTP\ResponseInterface;
+use App\Models\CustomModel;
+use App\Models\CompanyModel;
+use App\Models\EmployeeModel;
+use App\Models\SalaryModel;
+use App\Models\PreFinalSalaryModel;
+use App\Models\MinWagesCategoryModel;
+use \Dompdf\Options;
+use App\Models\AppraisalsRevisionModel;
+use App\Models\AppraisalsModel;
+
+
+
+class AppraisalsController extends BaseController
+{
+    protected $appraisalsModel;
+    protected $appraisalsRevisionModel;
+    protected $session;
+
+    public function __construct()
+    {
+        $this->session = session();
+
+        helper(['url', 'form', 'Form_helper', 'global_helper', 'Config_defaults_helper']);
+        $this->appraisalsModel = new AppraisalsModel();
+        $this->appraisalsRevisionModel = new AppraisalsRevisionModel();
+    }
+    public function index()
+    {
+        $employee_id = session()->get('current_user')['employee_id'];
+        if (!in_array($employee_id, ['40', '93'])) {
+            return redirect()->to(base_url('/unauthorised'));
+        }
+
+
+        $CustomModel = new CustomModel();
+        $CompanyModel = new CompanyModel();
+        $Companies = $CompanyModel->findAll();
+
+        // $filter = $this->request->getGet('filter');
+        // $arrCompanyId = $this->request->getGet('company');
+        // $arrDepartmentId = $this->request->getGet('department');
+        // $arrEmployeeId = $this->request->getGet('employee');
+        // $employeeModel = new EmployeeModel();
+        // $employees = $employeeModel->getFilteredEmployees($arrCompanyId, $arrDepartmentId, $arrEmployeeId);
+
+        $data = [
+            'page_title'            => 'Employee Appraisals Management System',
+            'current_controller'    => $this->request->getUri()->getSegment(2),
+            'current_method'        => $this->request->getUri()->getSegment(3),
+            // 'employees'             => $employees,
+            'employee_id'           => $employee_id,
+            'Companies'             => $Companies,
+        ];
+        $data['appraisals'] = $this->appraisalsModel->findAll();
+        // echo json value
+        // echo json_encode($data);
+
+
+        return view('Appraisals/Show', $data);
+    }
+
+    public function showTable()
+    {
+
+        $filter = $this->request->getPost('filter');
+        parse_str($filter, $params);
+
+        $arrCompanyId     = isset($params['company']) ? $params['company'] : "";
+        $arrDepartmentId  = isset($params['department']) ? $params['department'] : "";
+        $arrEmployeeId    = isset($params['employee']) ? $params['employee'] : "";
+
+        $current_employee_id = $this->session->get('current_user')['employee_id'];
+
+        $arrResponseData  = $this->appraisalsModel->getFilteredAllAppraisalsData($arrCompanyId, $arrDepartmentId, $arrEmployeeId);
+
+        //$lastQuery = $this->appraisalsModel->getLastQuery()->getQuery();  
+        $data = [
+            'appraisals' => $arrResponseData,
+        ];
+        //  //echo $lastQuery = $this->appraisalsModel->getLastQuery()->getQuery();
+        return json_encode($data);
+    }
+
+
+
+
+    public function showTableByEmpId()
+    {
+        // print_r($_REQUEST);die();
+        if ($this->request->isAJAX()) {
+            $filter = $this->request->getPost('filter');
+            parse_str($filter, $params);
+
+            //return json_encode($params); 
+
+
+            // echo $employeeId = $params['employee_name'] ?? null;
+            $employeeId['employee_id'] = $params['employee_name'] ?? null;
+            $appraisals  = $this->appraisalsModel->getFilteredEmployeesAppraisals([], [], $employeeId);
+            // $appraisals = $this->appraisalsModel
+            // ->where('employee_id', $employeeId)
+            // ->findAll();
+            return $this->response->setJSON($appraisals);
+            //parse_str($filter, $params);
+        }
+
+
+        // if( !in_array( session()->get('current_user')['employee_id'], ['40', '93']) ){
+        //     return redirect()->to(base_url('/unauthorised'));
+        // }
+        // if( !empty($id) ){
+        //     $appraisal = $this->appraisalsModel->find($id);
+        //     if(!$appraisal){
+        //         return $this->failNotFound('Appraisal not found');
+        //     }
+        //     return $this->respond($appraisal);
+        // }
+    }
+
+    public function create($employee_id = null)
+    {
+
+        if (!in_array(session()->get('current_user')['employee_id'], ['40', '93'])) {
+            return redirect()->to(base_url('/unauthorised'));
+        }
+
+        $current_user = $this->session->get('current_user');
+
+        $CustomModel = new CustomModel();
+        $CustomSql = "select e.id as id, e.first_name as first_name, e.last_name as last_name, e.internal_employee_id as internal_employee_id, 
+        d.department_name, 
+        c.company_name 
+        from employees e 
+        left join departments d on d.id = e.department_id 
+        left join companies c on c.id = e.company_id 
+        order by e.first_name
+        ";
+        $employees = $CustomModel->CustomQuery($CustomSql)->getResultArray();
+        // $appraisals = $this->appraisalsModel
+        // ->where('employee_id', $employee_id)
+        // ->findAll();
+
+        $data = [
+            'page_title'            => 'Add Employee Appraisals',
+            'current_controller'    => $this->request->getUri()->getSegment(2),
+            'current_method'        => $this->request->getUri()->getSegment(4),
+            'employees'             => $employees,
+            'employee_id'           => $employee_id,
+            // 'appraisals'            => $appraisals,
+        ];
+
+        $data['salary'] = array(
+            'employee_id' => $employee_id,
+        );
+        $data['last_month_salary_disbursed'] = 'no';
+
+        if (!empty($employee_id)) {
+
+
+            $SalaryModel = new SalaryModel();
+            $get_employee_salary = $SalaryModel->where('employee_id =', $employee_id)->first();
+            if (!empty($get_employee_salary)) {
+                $salary = array();
+                foreach ($get_employee_salary as $field_name => $field_value) {
+                    if (in_array($field_name, array('non_compete_loan_from', 'non_compete_loan_to', 'loyalty_incentive_from', 'loyalty_incentive_to'))) {
+                        $salary[$field_name] = (!empty($field_value) && $field_value !== '0000-00-00') ? date('Y-m-d', strtotime($field_value)) : '';
+                    } else {
+                        $salary[$field_name] = $field_value;
+                    }
+                }
+                $data['salary'] = $salary;
+            } else {
+                $data['salary'] = array(
+                    'employee_id' => $employee_id,
+                );
+            }
+
+            $year_month_of_last_month = date('My', strtotime('first day of last month'));
+            $year_month_of_current_month = date('My');
+            $PreFinalSalaryModel = new PreFinalSalaryModel();
+            $PreFinalSalaryModel->select('pre_final_salary.*');
+            $PreFinalSalaryModel->where('employee_id =', $employee_id);
+            $PreFinalSalaryModel->where('year =', date('Y', strtotime($year_month_of_last_month)));
+            $PreFinalSalaryModel->where('month =', date('m', strtotime($year_month_of_last_month)));
+            $FinalSalary = $PreFinalSalaryModel->first();
+            if (!empty($FinalSalary)) {
+                $data['last_month_salary_disbursed'] = $FinalSalary['disbursed'];
+            }
+        }
+
+
+
+        return view('Appraisals/Create', $data);
+        // $data = [
+
+
+        // $data = $this->request->getPost();
+        // if(!$this->validate($this->appraisalsModel->validationRules)){
+        //     return $this->failValidationErrors($this->validator->getErrors());
+        // }
+        // $id = $this->appraisalsModel->insert($data);
+        // if (!$id) {
+        //     return $this->fail('Failed to create appraisal');
+        // }
+        // return redirect->to('/appraisals')->with('success', 'Appraisal created successfully');
+        //return redirect()->to('/products')->with('error', 'Product not found.');
+        //return $this->respondCreated(['id' => $id]);
+    }
+
+
+    public function store()
+    {
+        if (!in_array(session()->get('current_user')['employee_id'], ['40', '93'])) {
+            return redirect()->to(base_url('/unauthorised'));
+        }
+        $response_array = array();
+        $data = $this->request->getPost();
+        //$data['created_by'] = $this->session->get('current_user')['employee_id'];  
+
+        if (!$this->appraisalsModel->validate($data)) {
+            $response_array['response_type'] = 'error';
+            $response_array['response_description'] = 'Sorry, looks like there are some errors,<br>Click ok to view errors';
+            $response_array['response_data']['validation'] = $this->appraisalsModel->errors();
+        } else {
+
+
+            $data = [
+                'employee_id'                               => $this->request->getPost('employee_id'),
+                'basic_salary'                              => !empty($this->request->getPost('basic_salary')) ? $this->request->getPost('basic_salary') : 0,
+                'house_rent_allowance'                      => !empty($this->request->getPost('house_rent_allowance')) ? $this->request->getPost('house_rent_allowance') : 0,
+                'conveyance'                                => !empty($this->request->getPost('conveyance')) ? $this->request->getPost('conveyance') : 0,
+                'medical_allowance'                         => !empty($this->request->getPost('medical_allowance')) ? $this->request->getPost('medical_allowance') : 0,
+                'special_allowance'                         => !empty($this->request->getPost('special_allowance')) ? $this->request->getPost('special_allowance') : 0,
+                'fuel_allowance'                            => !empty($this->request->getPost('fuel_allowance')) ? $this->request->getPost('fuel_allowance') : 0,
+                'vacation_allowance'                        => !empty($this->request->getPost('vacation_allowance')) ? $this->request->getPost('vacation_allowance') : 0,
+                'other_allowance'                           => !empty($this->request->getPost('other_allowance')) ? $this->request->getPost('other_allowance') : 0,
+                'other_benefits'                            => !empty($this->request->getPost('other_benefits')) ? $this->request->getPost('other_benefits') : 0,
+                'appraisal_remarks'                         => !empty($this->request->getPost('appraisal_remarks')) ? $this->request->getPost('appraisal_remarks') : '',
+                'appraisal_date'                            => $this->request->getPost('appraisal_date'),
+                'created_by'                                => $this->session->get('current_user')['employee_id']
+            ];
+
+
+            $data['id'] = $this->request->getPost('id') ?? null;
+            $data['enable_bonus'] = $this->request->getPost('enable_bonus') ?? 'no';
+            $data['pf'] = $this->request->getPost('pf') ?? 'no';
+            $data['pf_number']                          = $this->request->getPost('pf_number') ?? '';
+            $data['pf_employee_contribution']           = $this->request->getPost('pf_employee_contribution') ?? 0;
+            $data['pf_employer_contribution']           = $this->request->getPost('pf_employer_contribution') ?? 0;
+            $data['esi']                                = $this->request->getPost('esi') ?? 'no';
+            $data['esi_number']                         = $this->request->getPost('esi_number') ?? '';
+            $data['esi_employee_contribution']          = $this->request->getPost('esi_employee_contribution')  ?? 0;
+            $data['esi_employer_contribution']          = $this->request->getPost('esi_employer_contribution') ?? 0;
+            $data['non_compete_loan']                   = $this->request->getPost('non_compete_loan') ?? 'no';
+            $data['non_compete_loan_from']              = $this->request->getPost('non_compete_loan_from') ?? null;
+            $data['non_compete_loan_to']                = $this->request->getPost('non_compete_loan_to') ?? null;
+            $data['non_compete_loan_amount_per_month']  = $this->request->getPost('non_compete_loan_amount_per_month') ?? 0;
+            $data['non_compete_loan_remarks']           = $this->request->getPost('non_compete_loan_remarks') ?? null;
+            $data['loyalty_incentive']                  = $this->request->getPost('loyalty_incentive') ?? 'no';
+            $data['loyalty_incentive_from']             = $this->request->getPost('loyalty_incentive_from') ?? null;
+            $data['loyalty_incentive_to']               = $this->request->getPost('loyalty_incentive_to') ?? null;
+            $data['loyalty_incentive_amount_per_month'] = $this->request->getPost('loyalty_incentive_amount_per_month') ?? 0;
+            $data['loyalty_incentive_mature_after_month'] = $this->request->getPost('loyalty_incentive_mature_after_month') ?? '';
+            $data['loyalty_incentive_pay_after_month'] = $this->request->getPost('loyalty_incentive_pay_after_month') ?? '';
+            $data['loyalty_incentive_remarks']          = $this->request->getPost('loyalty_incentive_remarks') ?? null;
+            $data['lwf']                                = $this->request->getPost('lwf') ?? 'no';
+            $data['lwf_employee_contribution']          = $this->request->getPost('lwf_employee_contribution') ?? 0;
+            $data['lwf_employer_contribution']          = $this->request->getPost('lwf_employer_contribution') ?? 0;
+            $data['lwf_deduction_on_every_n_month']     = $this->request->getPost('lwf_deduction_on_every_n_month') ?? 0;
+
+
+
+            $data['bonus'] = 0;
+            if ($data['enable_bonus'] == 'yes') {
+                $EmployeeModel = new EmployeeModel();
+                $employee = $EmployeeModel->find($data['employee_id']);
+                if (!empty($employee['min_wages_category'])) {
+                    $MinWagesCategoryModel = new MinWagesCategoryModel();
+                    $MinWage = $MinWagesCategoryModel->find($employee['min_wages_category']);
+                    $MinWageValue = $MinWage['minimum_wages_category_value'] ?? 0;
+                    $data['bonus'] = round(($MinWageValue * 8.33) / 100);
+                }
+            }
+
+            // Calculate gross salary for current appraisal
+            $data['vacation_allowance'] = 0;
+            $gross_salary = $data['basic_salary'] + $data['house_rent_allowance'] + $data['conveyance'] + $data['medical_allowance'] + $data['special_allowance'] + $data['fuel_allowance'] + $data['vacation_allowance'] + $data['other_allowance'];
+
+            $data['gross_salary'] = $gross_salary;
+
+            // Start CTC calculation for current appraisal
+            $ctc = $data['gross_salary'];
+            $ctc += $data['bonus'];
+
+            // Gratuity for current appraisal
+            $data['gratuity'] = round((($data['basic_salary'] / 26) * 15) * (1 / 12));
+            $ctc += $data['gratuity'];
+
+            // --- Aggregate calculations for statutory deductions ---
+            $arrExistAppraisalByEmployee = $this->appraisalsModel->where('employee_id', $data['employee_id'])->findAll();
+
+            $otherAppraisalsGross = 0;
+            $otherAppraisalsPfEmployee = 0;
+            $otherAppraisalsPfEmployer = 0;
+            $otherAppraisalsEsiEmployee = 0;
+            $otherAppraisalsEsiEmployer = 0;
+            $otherAppraisalsLwfEmployee = 0;
+            $otherAppraisalsLwfEmployer = 0;
+
+            $isUpdate = !empty($data['id']);
+
+            if (!empty($arrExistAppraisalByEmployee)) {
+                foreach ($arrExistAppraisalByEmployee as $existAppraisal) {
+                    if ($isUpdate && $existAppraisal['id'] == $data['id']) {
+                        continue; // Skip the current record being updated from the "existing" totals.
+                    }
+                    $otherAppraisalsGross += (float) $existAppraisal['gross_salary'];
+                    $otherAppraisalsPfEmployee  += (float) $existAppraisal['pf_employee_contribution'];
+                    $otherAppraisalsPfEmployer  += (float) $existAppraisal['pf_employer_contribution'];
+                    $otherAppraisalsEsiEmployee += (float) $existAppraisal['esi_employee_contribution'];
+                    $otherAppraisalsEsiEmployer += (float) $existAppraisal['esi_employer_contribution'];
+                    $otherAppraisalsLwfEmployee += (float) $existAppraisal['lwf_employee_contribution'];
+                    $otherAppraisalsLwfEmployer += (float) $existAppraisal['lwf_employer_contribution'];
+                }
+            }
+
+            $totalGrossSalary = $otherAppraisalsGross + $gross_salary;
+
+            // PF Calculation
+            if ($data['pf'] === 'yes') {
+                $pf_base_salary = ($totalGrossSalary >= 15000) ? 15000 : $totalGrossSalary;
+                $totalPfEmployee = round(($pf_base_salary * 12) / 100, 2);
+                $totalPfEmployer = round(($pf_base_salary * 13) / 100, 2);
+
+                $data['pf_employee_contribution'] = $totalPfEmployee - $otherAppraisalsPfEmployee;
+                $data['pf_employer_contribution'] = $totalPfEmployer - $otherAppraisalsPfEmployer;
+
+                $ctc += $data['pf_employer_contribution'];
+            } else {
+                $data['pf_employee_contribution'] = 0;
+                $data['pf_employer_contribution'] = 0;
+            }
+
+            // ESI Calculation
+            if ($data['esi'] === 'yes' && $totalGrossSalary <= 21000) {
+                $totalEsiEmployee = round(($totalGrossSalary * 0.75) / 100, 2);
+                $totalEsiEmployer = round(($totalGrossSalary * 3.25) / 100, 2);
+
+                $data['esi_employee_contribution'] = $totalEsiEmployee - $otherAppraisalsEsiEmployee;
+                $data['esi_employer_contribution'] = $totalEsiEmployer - $otherAppraisalsEsiEmployer;
+
+                $ctc += $data['esi_employer_contribution'];
+            } else {
+                $data['esi_employee_contribution'] = 0;
+                $data['esi_employer_contribution'] = 0;
+            }
+
+            // LWF Calculation
+            if ($data['lwf'] === 'yes') {
+                $lwf_employee_contribution = ((($totalGrossSalary * 0.2) / 100 <= 31) ? round(($totalGrossSalary * 0.2) / 100, 2) : 31);
+                $lwf_employer_contribution = round($lwf_employee_contribution * 2, 2);
+
+                $data['lwf_employee_contribution'] = $lwf_employee_contribution - $otherAppraisalsLwfEmployee;
+                $data['lwf_employer_contribution'] = $lwf_employer_contribution - $otherAppraisalsLwfEmployer;
+
+                $ctc += $data['lwf_employer_contribution'];
+            } else {
+                $data['lwf_employee_contribution'] = 0;
+                $data['lwf_employer_contribution'] = 0;
+            }
+
+            $ctc += $data['other_benefits'] ?? 0;
+
+            $ctc += ($data['non_compete_loan'] == 'yes' && $data['non_compete_loan_amount_per_month'] > 0)
+                ? $data['non_compete_loan_amount_per_month']
+                : 0;
+
+            $ctc += ($data['loyalty_incentive'] == 'yes' && $data['loyalty_incentive_amount_per_month'] > 0)
+                ? $data['loyalty_incentive_amount_per_month']
+                : 0;
+
+            // $monthly_el = round($data['basic_salary'] / 30 * 1.25);
+            // $ctc += $monthly_el;
+
+            // $monthly_cl = round($data['gross_salary'] / 30 * 1);
+            // $ctc += $monthly_cl;
+            $data['ctc'] = $ctc;
+            $existingAppraisal = $this->appraisalsModel->find($data['id'] ?? null);
+
+
+            if (isset($existingAppraisal['id'])) {
+                //if ($this->isDataUnchanged($existingAppraisal, $data)) {
+                $success = $this->appraisalsModel->update($existingAppraisal['id'], $data);
+                if (!$success) {
+                    $response_array['response_type'] = 'error';
+                    $response_array['response_description'] = 'Failed to update appraisal';
+                } else {
+                    $data['appraisal_id'] = $existingAppraisal['id'];
+                    $data['action'] = 'update';
+                    $data['created_by'] = session()->get('current_user')['employee_id'];
+                    $id = $this->appraisalsRevisionModel->insert($data);
+                    $response_array['response_type'] = 'success';
+                    $response_array['response_description'] = 'Appraisal updated successfully';
+                }
+            } else {
+                $id = $this->appraisalsModel->insert($data);
+                if (!$id) {
+                    // $error = $this->appraisalsModel->errors();
+                    $response_array['response_type'] = 'error';
+                    $response_array['response_description'] = 'Failed to create appraisal';
+                } else {
+                    $data['appraisal_id'] = $id;
+                    $data['action'] = 'insert';
+                    $data['created_by'] = session()->get('current_user')['employee_id'];
+                    $id = $this->appraisalsRevisionModel->insert($data);
+                    $response_array['response_type'] = 'success';
+                    $response_array['response_description'] = 'Appraisal added successfully';
+                }
+            }
+        }
+
+        return $this->response->setJSON($response_array);
+    }
+
+    public function getAppraisalDetails()
+    {
+        $id = $this->request->getPost('id');
+        //$appraisal = $this->appraisalsModel->find($id);
+        $appraisal = $this->appraisalsModel->getAppraisalWithEmployee($id);
+        if ($appraisal) {
+
+            return $this->response->setJSON([
+                'status' => 'success',
+                'data' => $appraisal,
+            ]);
+        } else {
+            return $this->response->setJSON([
+                'status' => 'error',
+                'message' => 'Appraisal not found.',
+            ]);
+        }
+    }
+
+    public function edit($id = null)
+    {
+        if (!in_array(session()->get('current_user')['employee_id'], ['40', '93'])) {
+            return redirect()->to(base_url('/unauthorised'));
+        }
+        $data['created_by'] = $this->session->get('current_user')['employee_id'];
+        if (!$id) {
+            return $this->response->setJSON([
+                'status' => 'error',
+                'message' => 'Appraisal ID is missing.',
+            ]);
+        }
+
+
+        $appraisal = $this->appraisalsModel->find($id);
+        if (!$appraisal) {
+            return $this->response->setJSON([
+                'status' => 'error',
+                'message' => 'Appraisal not found.',
+            ]);
+        }
+
+        $data = [
+            'page_title'            => 'Edit Employee Appraisals',
+            'current_controller'    => $this->request->getUri()->getSegment(2),
+            'current_method'        => $this->request->getUri()->getSegment(4),
+            'appraisal'             => $appraisal,
+        ];
+
+        $SalaryModel = new SalaryModel();
+        $get_employee_salary = $SalaryModel->where('employee_id =', $appraisal['employee_id'])->first();
+        if (!empty($get_employee_salary)) {
+            $salary = array();
+            foreach ($get_employee_salary as $field_name => $field_value) {
+                if (in_array($field_name, array('non_compete_loan_from', 'non_compete_loan_to', 'loyalty_incentive_from', 'loyalty_incentive_to'))) {
+                    $salary[$field_name] = (!empty($field_value) && $field_value !== '0000-00-00') ? date('Y-m-d', strtotime($field_value)) : '';
+                } else {
+                    $salary[$field_name] = $field_value;
+                }
+            }
+            $data['current_salary'] = $salary;
+        } else {
+            $data['current_salary'] = [];
+        }
+
+        $data['last_month_salary_disbursed'] = 'no';
+        return view('Appraisals/Edit', $data);
+    }
+
+    public function delete()
+    {
+        if (!in_array(session()->get('current_user')['employee_id'], ['40', '93'])) {
+            return redirect()->to(base_url('/unauthorised'));
+        }
+        $id = $this->request->getPost('id');
+        if (!$id) {
+            return $this->response->setJSON([
+                'title' => 'Error!',
+                'status' => 'error',
+                'message' => 'Appraisal ID is missing.',
+            ]);
+        }
+        $appraisal = $this->appraisalsModel->find($id);
+        $data = $appraisal;
+
+        if (!$appraisal) {
+            return $this->response->setJSON([
+                'title' => 'Error!',
+                'status' => 'error',
+                'message' => 'Appraisal not found.',
+            ]);
+        }
+        if ($this->appraisalsModel->delete($id)) {
+            $data['appraisal_id'] = $appraisal['id'];
+            $data['created_by'] = session()->get('current_user')['employee_id'];
+            $data['action'] = 'delete';
+
+            $id = $this->appraisalsRevisionModel->insert($data);
+
+            return $this->response->setJSON([
+                'title' => 'Success!',
+                'status' => 'success',
+                'message' => 'Appraisal deleted successfully.',
+            ]);
+        } else {
+            return $this->response->setJSON([
+                'title' => 'Error!',
+                'status' => 'error',
+                'message' => 'Failed to delete appraisal.',
+            ]);
+        }
+    }
+
+    // public function downloadPDF($employee_id = null)
+    // {
+    //     $appraisals = $this->appraisalsModel
+    //         ->select('appraisals.*, 
+    //               employees.*, departments.department_name, designations.designation_name, companies.company_name, companies.logo_url')
+    //         ->join('employees', 'employees.id = appraisals.employee_id')
+    //         ->join('designations', 'designations.id = employees.designation_id')
+    //         ->join('departments', 'departments.id = employees.department_id')
+    //         ->join('companies', 'companies.id = employees.company_id')
+    //         //  ->join('employee_salary', 'employee_salary.employee_id = appraisals.employee_id')
+    //         ->where('appraisals.employee_id', $employee_id)
+    //         //->orderBy('employees.id').
+    //         ->groupBy('employees.id, appraisals.id')
+    //         ->findAll();
+
+
+    //     $arrAppraisalData = [];
+    //     $appraisalCount = 0;
+    //     $finalGrossSalary = 0;
+
+
+
+    //     foreach ($appraisals as $key => $appraisal) {
+    //         $appraisalCount++;
+    //         $employeeId = $appraisal['employee_id'];
+    //         if (!isset($arrAppraisalData[$employeeId])) {
+    //             $arrAppraisalData[$employeeId] = [
+    //                 'employee_name' => $appraisal['first_name'] . ' ' . $appraisal['last_name'],
+    //                 'employee_id' => $appraisal['internal_employee_id'],
+    //                 'notice_period' => $appraisal['notice_period'] . ' days',
+    //                 'joining_date' => $appraisal['joining_date'],
+    //                 'designation' => $appraisal['designation_name'],
+    //                 'department_name' => $appraisal['department_name'],
+    //                 'company_name' => $appraisal['company_name'],
+    //                 'logo_url' => $appraisal['logo_url'],
+    //                 'appraisals' => []
+    //             ];
+
+    //             $previous_gross_salary[$employeeId] = 0;
+    //             $previous_basic_salary[$employeeId] = 0;
+    //             $previous_monthly_el[$employeeId] = 0;
+    //             $previous_monthly_cl[$employeeId] = 0;
+    //             $previous_house_rent_allowance[$employeeId] = 0;
+    //             $previous_conveyance[$employeeId] = 0;
+    //             $previous_medical_allowance[$employeeId] = 0;
+    //             $previous_special_allowance[$employeeId] = 0;
+    //             $previous_fuel_allowance[$employeeId] = 0;
+    //             $previous_vacation_allowance[$employeeId] = 0;
+    //             $previous_other_allowance[$employeeId] = 0;
+    //             $previous_gratuity[$employeeId] = 0;
+    //             $previous_bonus[$employeeId] = 0;
+    //             $previous_loyalty_incentive[$employeeId] = 0;
+    //             $previous_ctc_total[$employeeId] = 0;
+    //             $previous_pf_employee_contribution[$employeeId] = 0;
+    //             $previous_pf_employer_contribution[$employeeId] = 0;
+    //             $previous_esi_employee_contribution[$employeeId] = 0;
+    //             $previous_esi_employer_contribution[$employeeId] = 0;
+    //             $previous_lwf_employee_contribution[$employeeId] = 0;
+    //             $previous_lwf_employer_contribution[$employeeId] = 0;
+    //             $previous_non_compete_loan[$employeeId] = 0;
+    //             $previous_non_compete_loan_amount_per_month[$employeeId] = 0;
+    //             $previous_loyalty_incentive_amount_per_month[$employeeId] = 0;
+    //             $previous_in_hand_salary[$employeeId] = 0;
+    //             $pf_employee_contribution = 0;
+    //             $pf_employer_contribution = 0;
+
+    //             // ESI Calculation for Existing Records
+    //             $esi_employee_contribution = 0;
+    //             $esi_employer_contribution = 0;
+
+
+    //             // LWF Calculation for Existing Records
+    //             $lwf_employee_contribution = 0;
+    //             $lwf_employer_contribution = 0;
+    //         }
+
+    //         $arrAppraisalData[$employeeId]['appraisals'][$key] = [
+    //             'ctc' => $appraisal['ctc'],
+    //             'ctc_total' => $previous_ctc_total[$employeeId] += $appraisal['ctc'],
+    //             'gross_salary' => $appraisal['gross_salary'],
+    //             'gross_salary_total' => $previous_gross_salary[$employeeId] += $appraisal['gross_salary'],
+    //             'basic_salary' => $appraisal['basic_salary'],
+    //             'monthly_el' => round($appraisal['basic_salary'] / 30 * 1.25),
+    //             'monthly_el_total' => $previous_monthly_el[$employeeId] += round($appraisal['basic_salary'] / 30 * 1.25),
+    //             'monthly_cl' => round($appraisal['gross_salary'] / 30 * 1),
+    //             'monthly_cl_total' => $previous_monthly_cl[$employeeId] += round($appraisal['gross_salary'] / 30 * 1),
+    //             'basic_salary_total' => $previous_basic_salary[$employeeId] += $appraisal['basic_salary'], //$previous_basic_salary[$employeeId],
+    //             'other_benefits' => $appraisal['other_benefits'],
+    //             'house_rent_allowance' => $appraisal['house_rent_allowance'],
+    //             'house_rent_allowance_total' => $previous_house_rent_allowance[$employeeId] += $appraisal['house_rent_allowance'],
+    //             'conveyance' => $appraisal['conveyance'],
+    //             'conveyance_total' => $previous_conveyance[$employeeId] += $appraisal['conveyance'],
+    //             'medical_allowance' => $appraisal['medical_allowance'],
+    //             'medical_allowance_total' => $previous_medical_allowance[$employeeId] += $appraisal['medical_allowance'],
+    //             'special_allowance' => $appraisal['special_allowance'],
+    //             'special_allowance_total' => $previous_special_allowance[$employeeId] += $appraisal['special_allowance'],
+    //             'fuel_allowance' => $appraisal['fuel_allowance'],
+    //             'fuel_allowance_total' => $previous_fuel_allowance[$employeeId] += $appraisal['fuel_allowance'],
+    //             'vacation_allowance' => $appraisal['vacation_allowance'],
+    //             'vacation_allowance_total' => $previous_vacation_allowance[$employeeId] += $appraisal['vacation_allowance'],
+    //             'other_allowance' => $appraisal['other_allowance'],
+    //             'other_allowance_total' => $previous_other_allowance[$employeeId] += $appraisal['other_allowance'],
+    //             'gratuity' => $appraisal['gratuity'],
+    //             'gratuity_total' => $previous_gratuity[$employeeId] += $appraisal['gratuity'],
+    //             'enable_bonus' => $appraisal['enable_bonus'],
+    //             'non_compete_loan' => $appraisal['non_compete_loan'],
+    //             'bonus' => $appraisal['bonus'],
+    //             'bonus_total' => $previous_bonus[$employeeId] += $appraisal['bonus'],
+    //             'loyalty_incentive' => $appraisal['loyalty_incentive'],
+    //             'loyalty_incentive_total' => $previous_loyalty_incentive[$employeeId] += $appraisal['loyalty_incentive_amount_per_month'],
+    //             'pf' => $appraisal['pf'],
+    //             'pf_number' => $appraisal['pf_number'],
+    //             'pf_employee_contribution' => $appraisal['pf_employee_contribution'],
+    //             'pf_employer_contribution' => $appraisal['pf_employer_contribution'],
+    //             'esi' => $appraisal['esi'],
+    //             'esi_number' => $appraisal['esi_number'],
+    //             'esi_employee_contribution' => $appraisal['esi_employee_contribution'],
+    //             'esi_employer_contribution' => $appraisal['esi_employer_contribution'],
+    //             'lwf' => $appraisal['lwf'],
+    //             'lwf_employee_contribution' => $appraisal['lwf_employee_contribution'],
+    //             'lwf_employer_contribution' => $appraisal['lwf_employer_contribution'],
+    //             'lwf_deduction_on_every_n_month' => $appraisal['lwf_deduction_on_every_n_month'],
+    //             'total_deductions' => $appraisal['pf_employee_contribution'] + $appraisal['esi_employee_contribution'] + $appraisal['lwf_employee_contribution'],
+    //             'non_compete_loan' => $appraisal['non_compete_loan'],
+    //             'appraisal_date' => $appraisal['appraisal_date'],
+    //             'appraisal_remarks' => $appraisal['appraisal_remarks'],
+    //             'created_at' => $appraisal['created_at'],
+    //             'pf_employee_contribution_total' => $previous_pf_employee_contribution[$employeeId] += $appraisal['pf_employee_contribution'],
+    //             'pf_employer_contribution_total' => $previous_pf_employer_contribution[$employeeId] += $appraisal['pf_employer_contribution'],
+    //             'esi_employee_contribution_total' => $previous_esi_employee_contribution[$employeeId] += $appraisal['esi_employee_contribution'],
+    //             'esi_employer_contribution_total' => $previous_esi_employer_contribution[$employeeId] += $appraisal['esi_employer_contribution'],
+    //             'lwf_employee_contribution_total' => $previous_lwf_employee_contribution[$employeeId] += $appraisal['lwf_employee_contribution'],
+    //             'lwf_employer_contribution_total' => $previous_lwf_employer_contribution[$employeeId] += $appraisal['lwf_employer_contribution'],
+    //             'non_compete_loan_amount_per_month' => $appraisal['non_compete_loan_amount_per_month'],
+    //             'total_deductions_total' => $appraisal['pf_employee_contribution'] + $appraisal['esi_employee_contribution'] + $appraisal['lwf_employee_contribution'],
+    //             'in_hand_salary' => $appraisal['gross_salary'] - ($appraisal['pf_employee_contribution'] + $appraisal['esi_employee_contribution'] + $appraisal['lwf_employee_contribution']),
+    //             'in_hand_salary_total' => $previous_in_hand_salary[$employeeId] += $appraisal['gross_salary'] - ($appraisal['pf_employee_contribution'] + $appraisal['esi_employee_contribution'] + $appraisal['lwf_employee_contribution']),
+
+
+    //         ];
+    //     }
+
+    //     //print_r($arrAppraisalData);die;
+
+
+
+
+    //     $data = [
+    //         'employee_id' => $employee_id,
+    //         'first_name' => $appraisal['first_name'],
+    //         'last_name' => $appraisal['last_name'],
+    //         'arrAppraisalData' => $arrAppraisalData,
+
+    //     ];
+
+    //     //return view( 'Appraisals/AppraisalsReport', $data );
+
+    //     $options = new options();
+    //     $options->set('isRemoteEnabled', true);
+    //     $options->set('chroot', FCPATH);
+    //     $options->set('defaultFont', 'DejaVu Sans');
+    //     $dompdf = new \Dompdf\Dompdf($options);
+    //     $content = view('Appraisals/AppraisalsReport', $data);
+    //     $dompdf->loadHtml($content);
+    //     $dompdf->setPaper('A3', 'landscape');
+    //     $dompdf->render();
+    //     $dompdf->stream("appraisal-report-" . strtolower($data['first_name'] . '-' . $data['last_name']) . "-.pdf");
+    // }
+
+    // public function downloadPDF($employee_id = null)
+    // {
+    //     $appraisals = $this->appraisalsModel
+    //         ->select('appraisals.*')
+    //         ->select('employees.*')
+    //         ->select('departments.department_name')
+    //         ->select('designations.designation_name')
+    //         ->select('companies.company_name, companies.logo_url')
+    //         ->select('employee_salary.gratuity as gratuity')
+    //         ->join('employees', 'employees.id = appraisals.employee_id')
+    //         ->join('designations', 'designations.id = employees.designation_id')
+    //         ->join('departments', 'departments.id = employees.department_id')
+    //         ->join('companies', 'companies.id = employees.company_id')
+    //         ->join('employee_salary', 'employee_salary.employee_id = appraisals.employee_id')
+    //         ->where('appraisals.employee_id', $employee_id)
+    //         //->orderBy('employees.id').
+    //         ->orderBy('appraisals.id')
+    //         ->groupBy('employees.id, appraisals.id')
+    //         ->findAll();
+
+
+
+
+    //     $arrAppraisalData = [];
+    //     $appraisalCount = 0;
+    //     $finalGrossSalary = 0;
+
+
+
+    //     foreach ($appraisals as $key => $appraisal) {
+    //         $appraisalCount++;
+    //         $employeeId = $appraisal['employee_id'];
+    //         if (!isset($arrAppraisalData[$employeeId])) {
+    //             $attachment = json_decode($appraisal['attachment'], true);
+    //             $pdc_enabled = isset($attachment['pdc_cheque']) && isset($attachment['pdc_cheque']['enable_pdc']) && $attachment['pdc_cheque']['enable_pdc'] == 'yes' ? true : false;
+    //             $ensure_pdc_available = isset($attachment['pdc_cheque']['cheque_number_1'])
+    //                 && !empty($attachment['pdc_cheque']['cheque_number_1'])
+    //                 ? true : false;
+    //             // print_r($attachment);
+    //             // die();
+    //             if (isset($appraisal['joining_date']) && !empty($appraisal['joining_date'])) {
+    //                 $joining_date = date_create($appraisal['joining_date']);
+    //                 $today = date_create(date('Y-m-d'));
+    //                 $diff = date_diff($joining_date, $today);
+    //                 $tenure_array = [];
+    //                 if ($diff->y > 0) {
+    //                     $tenure_array[] = $diff->y . ' Years';
+    //                 }
+    //                 if ($diff->m > 0) {
+    //                     $tenure_array[] = $diff->m . ' Months';
+    //                 }
+    //                 $tenue = implode(' & ', $tenure_array);
+    //             } else {
+    //                 $tenue = 'N/A';
+    //             }
+
+    //             if (isset($appraisal['date_of_birth']) && !empty($appraisal['date_of_birth'])) {
+    //                 $date_of_birth = date_create($appraisal['date_of_birth']);
+    //                 $today = date_create(date('Y-m-d'));
+    //                 $diff = date_diff($date_of_birth, $today);
+    //                 if ($diff->y > 0) {
+    //                     $age = $diff->y . ' Years';
+    //                 } elseif ($diff->m > 0) {
+    //                     $age = $diff->m . ' Months';
+    //                 } elseif ($diff->d > 0) {
+    //                     $age = $diff->d . ' Days';
+    //                 } else {
+    //                     $age = 'N/A';
+    //                 }
+    //             } else {
+    //                 $age = 'N/A';
+    //             }
+
+    //             $tenureYears = null;
+
+    //             if (is_numeric($tenue)) {
+    //                 // Already numeric (assume it's years)
+    //                 $tenureYears = (float)$tenue;
+    //             } elseif (preg_match('/(\d+)\s*Months?/i', $tenue, $m)) {
+    //                 $tenureYears = round($m[1] / 12, 2); // convert months to years
+    //             } elseif (preg_match('/(\d+)\s*Years?/i', $tenue, $m)) {
+    //                 $tenureYears = (float)$m[1];
+    //             }
+
+    //             // Now set gratuity eligibility (5 years rule)
+    //             $gratuityEligible = ($tenureYears !== null && $tenureYears >= 5) ? 'yes' : 'no';
+
+    //             $arrAppraisalData[$employeeId] = [
+    //                 'employee_name' => $appraisal['first_name'] . ' ' . $appraisal['last_name'],
+    //                 'employee_id' => $appraisal['internal_employee_id'],
+    //                 'notice_period' => $appraisal['notice_period'] . ' days',
+    //                 'joining_date' => isset($appraisal['joining_date'])
+    //                     && !empty($appraisal['joining_date'])
+    //                     ? date('d M Y', strtotime($appraisal['joining_date'])) : 'N/A',
+    //                 'designation' => $appraisal['designation_name'],
+    //                 'department_name' => $appraisal['department_name'],
+    //                 'company_name' => $appraisal['company_name'],
+    //                 'logo_url' => $appraisal['logo_url'],
+    //                 'enable_bonus' => $appraisal['enable_bonus'],
+    //                 'probation' => $appraisal['probation'],
+    //                 'date_of_birth' => isset($appraisal['date_of_birth'])
+    //                     && !empty($appraisal['date_of_birth'])
+    //                     ? date('d M Y', strtotime($appraisal['date_of_birth'])) : 'N/A',
+    //                 'relevant_experience' => $appraisal['relevant_experience'] ? $appraisal['relevant_experience'] : 'N/A',
+    //                 'age' => $age,
+    //                 'tenure' => $tenue,
+    //                 'gratuity' => $appraisal['gratuity'] ? 'yes' : 'no',
+    //                 'pdc_for_np' => $pdc_enabled && $ensure_pdc_available ? 'yes' : 'no',
+    //                 'gratuity_eligible' => $gratuityEligible,
+    //                 'appraisals' => []
+    //             ];
+
+
+
+
+    //             $previous_gross_salary[$employeeId] = 0;
+    //             $previous_basic_salary[$employeeId] = 0;
+    //             $previous_monthly_el[$employeeId] = 0;
+    //             $previous_monthly_cl[$employeeId] = 0;
+    //             $previous_house_rent_allowance[$employeeId] = 0;
+    //             $previous_conveyance[$employeeId] = 0;
+    //             $previous_medical_allowance[$employeeId] = 0;
+    //             $previous_special_allowance[$employeeId] = 0;
+    //             $previous_fuel_allowance[$employeeId] = 0;
+    //             $previous_vacation_allowance[$employeeId] = 0;
+    //             $previous_other_allowance[$employeeId] = 0;
+    //             $previous_other_benefits[$employeeId] = 0;
+    //             $previous_gratuity[$employeeId] = 0;
+    //             $previous_bonus[$employeeId] = 0;
+    //             $previous_loyalty_incentive[$employeeId] = 0;
+    //             $previous_ctc_total[$employeeId] = 0;
+    //             $previous_pf_employee_contribution[$employeeId] = 0;
+    //             $previous_pf_employer_contribution[$employeeId] = 0;
+    //             $previous_esi_employee_contribution[$employeeId] = 0;
+    //             $previous_esi_employer_contribution[$employeeId] = 0;
+    //             $previous_lwf_employee_contribution[$employeeId] = 0;
+    //             $previous_lwf_employer_contribution[$employeeId] = 0;
+    //             $previous_non_compete_loan[$employeeId] = 0;
+    //             $previous_non_compete_loan_amount_per_month[$employeeId] = 0;
+    //             $previous_loyalty_incentive_amount_per_month[$employeeId] = 0;
+    //             $previous_in_hand_salary[$employeeId] = 0;
+    //             $pf_employee_contribution = 0;
+    //             $pf_employer_contribution = 0;
+
+
+    //             // ESI Calculation for Existing Records
+    //             // $esi_employee_contribution = 0;
+    //             // $esi_employer_contribution = 0;
+
+
+    //             // LWF Calculation for Existing Records
+    //             // $lwf_employee_contribution = 0;
+    //             // $lwf_employer_contribution = 0;
+    //         }
+
+    //         $arrAppraisalData[$employeeId]['appraisals'][$key] = [
+    //             'ctc' => $appraisal['ctc'],
+    //             'ctc_total' => $previous_ctc_total[$employeeId] += ($appraisal['ctc'] -= $previous_gratuity[$employeeId]),
+    //             'gross_salary' => $appraisal['gross_salary'],
+    //             'gross_salary_total' => $previous_gross_salary[$employeeId] += $appraisal['gross_salary'],
+    //             'basic_salary' => $appraisal['basic_salary'],
+    //             'monthly_el' => round($appraisal['basic_salary'] / 30 * 1.25),
+    //             'monthly_el_total' => $previous_monthly_el[$employeeId] += round($appraisal['basic_salary'] / 30 * 1.25),
+    //             'monthly_cl' => round($appraisal['gross_salary'] / 30 * 1),
+    //             'monthly_cl_total' => $previous_monthly_cl[$employeeId] += round($appraisal['gross_salary'] / 30 * 1),
+    //             'basic_salary_total' => $previous_basic_salary[$employeeId] += $appraisal['basic_salary'], //$previous_basic_salary[$employeeId],
+    //             'other_benefits' => $appraisal['other_benefits'],
+    //             'other_benefits_total' => $previous_other_benefits[$employeeId] += $appraisal['other_benefits'],
+    //             'house_rent_allowance' => $appraisal['house_rent_allowance'],
+    //             'house_rent_allowance_total' => $previous_house_rent_allowance[$employeeId] += $appraisal['house_rent_allowance'],
+    //             'conveyance' => $appraisal['conveyance'],
+    //             'conveyance_total' => $previous_conveyance[$employeeId] += $appraisal['conveyance'],
+    //             'medical_allowance' => $appraisal['medical_allowance'],
+    //             'medical_allowance_total' => $previous_medical_allowance[$employeeId] += $appraisal['medical_allowance'],
+    //             'special_allowance' => $appraisal['special_allowance'],
+    //             'special_allowance_total' => $previous_special_allowance[$employeeId] += $appraisal['special_allowance'],
+    //             'fuel_allowance' => $appraisal['fuel_allowance'],
+    //             'fuel_allowance_total' => $previous_fuel_allowance[$employeeId] += $appraisal['fuel_allowance'],
+    //             'vacation_allowance' => $appraisal['vacation_allowance'],
+    //             'vacation_allowance_total' => $previous_vacation_allowance[$employeeId] += $appraisal['vacation_allowance'],
+    //             'other_allowance' => $appraisal['other_allowance'],
+    //             'other_allowance_total' => $previous_other_allowance[$employeeId] += $appraisal['other_allowance'],
+    //             'gratuity' => $appraisal['gratuity'],
+    //             'gratuity_total' => $previous_gratuity[$employeeId] += $appraisal['gratuity'],
+    //             'enable_bonus' => $appraisal['enable_bonus'],
+    //             'non_compete_loan_amount_per_month' => $appraisal['non_compete_loan_amount_per_month'] ?? 0,
+    //             'bonus' => $appraisal['bonus'],
+    //             'bonus_total' => $previous_bonus[$employeeId] += $appraisal['bonus'],
+    //             'loyalty_incentive' => $appraisal['loyalty_incentive'],
+    //             'loyalty_incentive_amount_per_month' => $appraisal['loyalty_incentive_amount_per_month'],
+    //             'loyalty_incentive_total' => $previous_loyalty_incentive[$employeeId] += $appraisal['loyalty_incentive_amount_per_month'],
+    //             'pf' => $appraisal['pf'],
+    //             'pf_number' => $appraisal['pf_number'],
+    //             'pf_employee_contribution' => $appraisal['pf_employee_contribution'],
+    //             'pf_employer_contribution' => $appraisal['pf_employer_contribution'],
+    //             'esi' => $appraisal['esi'],
+    //             'esi_number' => $appraisal['esi_number'],
+    //             'esi_employee_contribution' => $appraisal['esi_employee_contribution'],
+    //             'esi_employer_contribution' => $appraisal['esi_employer_contribution'],
+    //             'lwf' => $appraisal['lwf'],
+    //             'lwf_employee_contribution' => $appraisal['lwf_employee_contribution'],
+    //             'lwf_employer_contribution' => $appraisal['lwf_employer_contribution'],
+    //             'lwf_deduction_on_every_n_month' => $appraisal['lwf_deduction_on_every_n_month'],
+    //             'total_deductions' => $appraisal['pf_employee_contribution'] + $appraisal['esi_employee_contribution'] + $appraisal['lwf_employee_contribution'],
+    //             'non_compete_loan' => $appraisal['non_compete_loan'],
+    //             'non_compete_loan_amount_per_month' => (float)($appraisal['non_compete_loan_amount_per_month'] ?? 0),
+
+    //             'non_compete_loan_amount_per_month_total' => $previous_non_compete_loan_amount_per_month[$employeeId] += (int)$appraisal['non_compete_loan_amount_per_month'] ?? 0,
+    //             'appraisal_date' => isset($appraisal['appraisal_date'])
+    //                 && !empty($appraisal['appraisal_date'])
+    //                 ? date('d M Y', strtotime($appraisal['appraisal_date'])) : 'N/A',
+    //             'appraisal_remarks' => $appraisal['appraisal_remarks'],
+    //             'created_at' => isset($appraisal['created_at'])
+    //                 && !empty($appraisal['created_at'])
+    //                 ? date('d M Y', strtotime($appraisal['created_at'])) : 'N/A',
+    //             'pf_employee_contribution_total' => $previous_pf_employee_contribution[$employeeId] += $appraisal['pf_employee_contribution'],
+    //             'pf_employer_contribution_total' => $previous_pf_employer_contribution[$employeeId] += $appraisal['pf_employer_contribution'],
+    //             'esi_employee_contribution_total' => $previous_esi_employee_contribution[$employeeId] += $appraisal['esi_employee_contribution'],
+    //             'esi_employer_contribution_total' => $previous_esi_employer_contribution[$employeeId] += $appraisal['esi_employer_contribution'],
+    //             'lwf_employee_contribution_total' => $previous_lwf_employee_contribution[$employeeId] += $appraisal['lwf_employee_contribution'],
+    //             'lwf_employer_contribution_total' => $previous_lwf_employer_contribution[$employeeId] += $appraisal['lwf_employer_contribution'],
+    //             'total_deductions_total' => $appraisal['pf_employee_contribution'] + $appraisal['esi_employee_contribution'] + $appraisal['lwf_employee_contribution'],
+    //             'in_hand_salary' => $appraisal['gross_salary'] - ($appraisal['pf_employee_contribution'] + $appraisal['esi_employee_contribution'] + $appraisal['lwf_employee_contribution']),
+    //             'in_hand_salary_total' => $previous_in_hand_salary[$employeeId] += $appraisal['gross_salary'] - ($appraisal['pf_employee_contribution'] + $appraisal['esi_employee_contribution'] + $appraisal['lwf_employee_contribution']),
+
+
+    //         ];
+    //     }
+
+    //     //print_r($arrAppraisalData);die;
+
+
+
+
+    //     $data = [
+    //         'employee_id' => $employee_id,
+    //         'first_name' => $appraisal['first_name'],
+    //         'last_name' => $appraisal['last_name'],
+    //         'arrAppraisalData' => $arrAppraisalData,
+
+    //     ];
+
+    //     // return view('Appraisals/AppraisalsReportNew', $data);
+
+    //     $options = new options();
+    //     $options->set('isRemoteEnabled', true);
+    //     $options->set('chroot', FCPATH);
+    //     $options->set('defaultFont', 'DejaVu Sans');
+    //     $dompdf = new \Dompdf\Dompdf($options);
+    //     $content = view('Appraisals/AppraisalsReportNew', $data);
+    //     $dompdf->loadHtml($content);
+    //     $dompdf->setPaper('A3', 'landscape');
+    //     $dompdf->render();
+    //     $dompdf->stream("appraisal-report-" . strtolower($data['first_name'] . '-' . $data['last_name']) . "-.pdf");
+    // }
+
+    public function downloadPDF($employee_id = null)
+    {
+        $appraisals = $this->appraisalsModel
+            ->select('appraisals.*')
+            ->select('employees.*')
+            ->select('departments.department_name')
+            ->select('designations.designation_name')
+            ->select('companies.company_name, companies.logo_url')
+            ->select('employee_salary.gratuity as gratuity')
+            ->join('employees', 'employees.id = appraisals.employee_id')
+            ->join('designations', 'designations.id = employees.designation_id')
+            ->join('departments', 'departments.id = employees.department_id')
+            ->join('companies', 'companies.id = employees.company_id')
+            ->join('employee_salary', 'employee_salary.employee_id = appraisals.employee_id')
+            ->where('appraisals.employee_id', $employee_id)
+            ->orderBy('appraisals.id')
+            ->groupBy('employees.id, appraisals.id')
+            ->findAll();
+
+        $arrAppraisalData = [];
+        $appraisalCount = 0;
+        $finalGrossSalary = 0;
+
+        foreach ($appraisals as $key => $appraisal) {
+            $appraisalCount++;
+            $employeeId = $appraisal['employee_id'];
+
+            if (!isset($arrAppraisalData[$employeeId])) {
+                $attachment = json_decode($appraisal['attachment'], true);
+                $pdc_enabled = isset($attachment['pdc_cheque']) && isset($attachment['pdc_cheque']['enable_pdc']) && $attachment['pdc_cheque']['enable_pdc'] == 'yes' ? true : false;
+                $ensure_pdc_available = isset($attachment['pdc_cheque']['cheque_number_1']) && !empty($attachment['pdc_cheque']['cheque_number_1']) ? true : false;
+
+                if (isset($appraisal['joining_date']) && !empty($appraisal['joining_date'])) {
+                    $joining_date = date_create($appraisal['joining_date']);
+                    $today = date_create(date('Y-m-d'));
+                    $diff = date_diff($joining_date, $today);
+                    $tenure_array = [];
+                    if ($diff->y > 0) {
+                        $tenure_array[] = $diff->y . ' Years';
+                    }
+                    if ($diff->m > 0) {
+                        $tenure_array[] = $diff->m . ' Months';
+                    }
+                    $tenue = implode(' & ', $tenure_array);
+                } else {
+                    $tenue = 'N/A';
+                }
+
+                if (isset($appraisal['date_of_birth']) && !empty($appraisal['date_of_birth'])) {
+                    $date_of_birth = date_create($appraisal['date_of_birth']);
+                    $today = date_create(date('Y-m-d'));
+                    $diff = date_diff($date_of_birth, $today);
+                    if ($diff->y > 0) {
+                        $age = $diff->y . ' Years';
+                    } elseif ($diff->m > 0) {
+                        $age = $diff->m . ' Months';
+                    } elseif ($diff->d > 0) {
+                        $age = $diff->d . ' Days';
+                    } else {
+                        $age = 'N/A';
+                    }
+                } else {
+                    $age = 'N/A';
+                }
+
+                $tenureYears = null;
+                if (is_numeric($tenue)) {
+                    $tenureYears = (float)$tenue;
+                } elseif (preg_match('/(\d+)\s*Months?/i', $tenue, $m)) {
+                    $tenureYears = round($m[1] / 12, 2);
+                } elseif (preg_match('/(\d+)\s*Years?/i', $tenue, $m)) {
+                    $tenureYears = (float)$m[1];
+                }
+
+                $gratuityEligible = ($tenureYears !== null && $tenureYears >= 5) ? 'yes' : 'no';
+
+                $arrAppraisalData[$employeeId] = [
+                    'employee_name' => $appraisal['first_name'] . ' ' . $appraisal['last_name'],
+                    'employee_id' => $appraisal['internal_employee_id'],
+                    'notice_period' => $appraisal['notice_period'] . ' days',
+                    'joining_date' => isset($appraisal['joining_date']) && !empty($appraisal['joining_date']) ? date('d M Y', strtotime($appraisal['joining_date'])) : 'N/A',
+                    'designation' => $appraisal['designation_name'],
+                    'department_name' => $appraisal['department_name'],
+                    'company_name' => $appraisal['company_name'],
+                    'logo_url' => $appraisal['logo_url'],
+                    'enable_bonus' => $appraisal['enable_bonus'],
+                    'probation' => $appraisal['probation'],
+                    'date_of_birth' => isset($appraisal['date_of_birth']) && !empty($appraisal['date_of_birth']) ? date('d M Y', strtotime($appraisal['date_of_birth'])) : 'N/A',
+                    'relevant_experience' => $appraisal['relevant_experience'] ? $appraisal['relevant_experience'] : 'N/A',
+                    'age' => $age,
+                    'tenure' => $tenue,
+                    'gratuity' => $appraisal['gratuity'] ? 'yes' : 'no',
+                    'pdc_for_np' => $pdc_enabled && $ensure_pdc_available ? 'yes' : 'no',
+                    'gratuity_eligible' => $gratuityEligible,
+                    'appraisals' => []
+                ];
+
+                // Initialize previous totals
+                $previous_gross_salary[$employeeId] = 0;
+                $previous_basic_salary[$employeeId] = 0;
+                $previous_monthly_el[$employeeId] = 0;
+                $previous_monthly_cl[$employeeId] = 0;
+                $previous_house_rent_allowance[$employeeId] = 0;
+                $previous_conveyance[$employeeId] = 0;
+                $previous_medical_allowance[$employeeId] = 0;
+                $previous_special_allowance[$employeeId] = 0;
+                $previous_fuel_allowance[$employeeId] = 0;
+                $previous_vacation_allowance[$employeeId] = 0;
+                $previous_other_allowance[$employeeId] = 0;
+                $previous_other_benefits[$employeeId] = 0;
+                $previous_gratuity[$employeeId] = 0;
+                $previous_bonus[$employeeId] = 0;
+                $previous_loyalty_incentive[$employeeId] = 0;
+                $previous_ctc_total[$employeeId] = 0;
+                $previous_pf_employee_contribution[$employeeId] = 0;
+                $previous_pf_employer_contribution[$employeeId] = 0;
+                $previous_esi_employee_contribution[$employeeId] = 0;
+                $previous_esi_employer_contribution[$employeeId] = 0;
+                $previous_lwf_employee_contribution[$employeeId] = 0;
+                $previous_lwf_employer_contribution[$employeeId] = 0;
+                $previous_non_compete_loan[$employeeId] = 0;
+                $previous_non_compete_loan_amount_per_month[$employeeId] = 0;
+                $previous_loyalty_incentive_amount_per_month[$employeeId] = 0;
+                $previous_in_hand_salary[$employeeId] = 0;
+            }
+
+            // Calculate CTC from table components only - convert all to float to avoid type errors
+            $calculated_ctc = (float)$appraisal['gross_salary']
+                + (float)$appraisal['pf_employer_contribution']
+                + (float)$appraisal['esi_employer_contribution']
+                + (float)$appraisal['lwf_employer_contribution']
+                + (float)($appraisal['loyalty_incentive_amount_per_month'] ?? 0)
+                + (float)($appraisal['non_compete_loan_amount_per_month'] ?? 0)
+                + (float)$appraisal['bonus']
+                + (float)$appraisal['other_benefits'];
+
+            $arrAppraisalData[$employeeId]['appraisals'][$key] = [
+                'ctc' => $calculated_ctc, // Use calculated CTC instead of database CTC
+                'ctc_total' => $previous_ctc_total[$employeeId] += $calculated_ctc,
+                'gross_salary' => $appraisal['gross_salary'],
+                'gross_salary_total' => $previous_gross_salary[$employeeId] += $appraisal['gross_salary'],
+                'basic_salary' => $appraisal['basic_salary'],
+                'monthly_el' => round($appraisal['basic_salary'] / 30 * 1.25),
+                'monthly_el_total' => $previous_monthly_el[$employeeId] += round($appraisal['basic_salary'] / 30 * 1.25),
+                'monthly_cl' => round($appraisal['gross_salary'] / 30 * 1),
+                'monthly_cl_total' => $previous_monthly_cl[$employeeId] += round($appraisal['gross_salary'] / 30 * 1),
+                'basic_salary_total' => $previous_basic_salary[$employeeId] += $appraisal['basic_salary'],
+                'other_benefits' => $appraisal['other_benefits'],
+                'other_benefits_total' => $previous_other_benefits[$employeeId] += $appraisal['other_benefits'],
+                'house_rent_allowance' => $appraisal['house_rent_allowance'],
+                'house_rent_allowance_total' => $previous_house_rent_allowance[$employeeId] += $appraisal['house_rent_allowance'],
+                'conveyance' => $appraisal['conveyance'],
+                'conveyance_total' => $previous_conveyance[$employeeId] += $appraisal['conveyance'],
+                'medical_allowance' => $appraisal['medical_allowance'],
+                'medical_allowance_total' => $previous_medical_allowance[$employeeId] += $appraisal['medical_allowance'],
+                'special_allowance' => $appraisal['special_allowance'],
+                'special_allowance_total' => $previous_special_allowance[$employeeId] += $appraisal['special_allowance'],
+                'fuel_allowance' => $appraisal['fuel_allowance'],
+                'fuel_allowance_total' => $previous_fuel_allowance[$employeeId] += $appraisal['fuel_allowance'],
+                'vacation_allowance' => $appraisal['vacation_allowance'],
+                'vacation_allowance_total' => $previous_vacation_allowance[$employeeId] += $appraisal['vacation_allowance'],
+                'other_allowance' => $appraisal['other_allowance'],
+                'other_allowance_total' => $previous_other_allowance[$employeeId] += $appraisal['other_allowance'],
+                'gratuity' => $appraisal['gratuity'],
+                'gratuity_total' => $previous_gratuity[$employeeId] += $appraisal['gratuity'],
+                'enable_bonus' => $appraisal['enable_bonus'],
+                'non_compete_loan_amount_per_month' => $appraisal['non_compete_loan_amount_per_month'] ?? 0,
+                'bonus' => $appraisal['bonus'],
+                'bonus_total' => $previous_bonus[$employeeId] += $appraisal['bonus'],
+                'loyalty_incentive' => $appraisal['loyalty_incentive'],
+                'loyalty_incentive_amount_per_month' => $appraisal['loyalty_incentive_amount_per_month'],
+                'loyalty_incentive_total' => $previous_loyalty_incentive[$employeeId] += $appraisal['loyalty_incentive_amount_per_month'],
+                'pf' => $appraisal['pf'],
+                'pf_number' => $appraisal['pf_number'],
+                'pf_employee_contribution' => $appraisal['pf_employee_contribution'],
+                'pf_employer_contribution' => $appraisal['pf_employer_contribution'],
+                'esi' => $appraisal['esi'],
+                'esi_number' => $appraisal['esi_number'],
+                'esi_employee_contribution' => $appraisal['esi_employee_contribution'],
+                'esi_employer_contribution' => $appraisal['esi_employer_contribution'],
+                'lwf' => $appraisal['lwf'],
+                'lwf_employee_contribution' => $appraisal['lwf_employee_contribution'],
+                'lwf_employer_contribution' => $appraisal['lwf_employer_contribution'],
+                'lwf_deduction_on_every_n_month' => $appraisal['lwf_deduction_on_every_n_month'],
+                'total_deductions' => $appraisal['pf_employee_contribution'] + $appraisal['esi_employee_contribution'] + $appraisal['lwf_employee_contribution'],
+                'non_compete_loan' => $appraisal['non_compete_loan'],
+                'non_compete_loan_amount_per_month' => (float)($appraisal['non_compete_loan_amount_per_month'] ?? 0),
+                'non_compete_loan_amount_per_month_total' => $previous_non_compete_loan_amount_per_month[$employeeId] += (int)$appraisal['non_compete_loan_amount_per_month'] ?? 0,
+                'appraisal_date' => isset($appraisal['appraisal_date']) && !empty($appraisal['appraisal_date']) ? date('d M Y', strtotime($appraisal['appraisal_date'])) : 'N/A',
+                'appraisal_remarks' => $appraisal['appraisal_remarks'],
+                'created_at' => isset($appraisal['created_at']) && !empty($appraisal['created_at']) ? date('d M Y', strtotime($appraisal['created_at'])) : 'N/A',
+                'pf_employee_contribution_total' => $previous_pf_employee_contribution[$employeeId] += $appraisal['pf_employee_contribution'],
+                'pf_employer_contribution_total' => $previous_pf_employer_contribution[$employeeId] += $appraisal['pf_employer_contribution'],
+                'esi_employee_contribution_total' => $previous_esi_employee_contribution[$employeeId] += $appraisal['esi_employee_contribution'],
+                'esi_employer_contribution_total' => $previous_esi_employer_contribution[$employeeId] += $appraisal['esi_employer_contribution'],
+                'lwf_employee_contribution_total' => $previous_lwf_employee_contribution[$employeeId] += $appraisal['lwf_employee_contribution'],
+                'lwf_employer_contribution_total' => $previous_lwf_employer_contribution[$employeeId] += $appraisal['lwf_employer_contribution'],
+                'total_deductions_total' => $appraisal['pf_employee_contribution'] + $appraisal['esi_employee_contribution'] + $appraisal['lwf_employee_contribution'],
+                'in_hand_salary' => $appraisal['gross_salary'] - ($appraisal['pf_employee_contribution'] + $appraisal['esi_employee_contribution'] + $appraisal['lwf_employee_contribution']),
+                'in_hand_salary_total' => $previous_in_hand_salary[$employeeId] += $appraisal['gross_salary'] - ($appraisal['pf_employee_contribution'] + $appraisal['esi_employee_contribution'] + $appraisal['lwf_employee_contribution']),
+            ];
+        }
+
+        $data = [
+            'employee_id' => $employee_id,
+            'first_name' => $appraisal['first_name'],
+            'last_name' => $appraisal['last_name'],
+            'arrAppraisalData' => $arrAppraisalData,
+        ];
+
+        // return view('Appraisals/AppraisalsReportNew', $data);
+
+        $options = new options();
+        $options->set('isRemoteEnabled', true);
+        $options->set('chroot', FCPATH);
+        $options->set('defaultFont', 'DejaVu Sans');
+        $dompdf = new \Dompdf\Dompdf($options);
+        $content = view('Appraisals/AppraisalsReportNew', $data);
+        $dompdf->loadHtml($content);
+        $dompdf->setPaper('A3', 'landscape');
+        $dompdf->render();
+        $dompdf->stream("appraisal-report-" . strtolower($data['first_name'] . '-' . $data['last_name']) . "-.pdf");
+    }
+}
