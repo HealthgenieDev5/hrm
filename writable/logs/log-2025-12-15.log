@@ -1,0 +1,101 @@
+CRITICAL - 2025-12-15 08:07:04 --> ParseError: syntax error, unexpected identifier "ingData"
+[Method: GET, Route: /]
+in APPPATH\Controllers\User\Profile.php on line 624.
+ 1 VENDORPATH\composer\ClassLoader.php(427): Composer\Autoload\{closure}('D:\\LOCALHOST\\hrm.healthgenie\\vendor\\composer/../../app/Controllers/User/Profile.php')
+ 2 [internal function]: Composer\Autoload\ClassLoader->loadClass('App\\Controllers\\User\\Profile')
+ 3 SYSTEMPATH\Debug\Toolbar\Collectors\Routes.php(85): ReflectionMethod->__construct('\\App\\Controllers\\User\\Profile', 'index')
+ 4 SYSTEMPATH\Debug\Toolbar\Collectors\BaseCollector.php(228): CodeIgniter\Debug\Toolbar\Collectors\Routes->display()
+ 5 SYSTEMPATH\Debug\Toolbar.php(95): CodeIgniter\Debug\Toolbar\Collectors\BaseCollector->getAsArray()
+ 6 SYSTEMPATH\Debug\Toolbar.php(390): CodeIgniter\Debug\Toolbar->run(1765786019.591962, 4.9705, Object(CodeIgniter\HTTP\IncomingRequest), Object(CodeIgniter\HTTP\RedirectResponse))
+ 7 SYSTEMPATH\Filters\DebugToolbar.php(44): CodeIgniter\Debug\Toolbar->prepare(Object(CodeIgniter\HTTP\IncomingRequest), Object(CodeIgniter\HTTP\RedirectResponse))
+ 8 SYSTEMPATH\Filters\Filters.php(278): CodeIgniter\Filters\DebugToolbar->after(Object(CodeIgniter\HTTP\IncomingRequest), Object(CodeIgniter\HTTP\RedirectResponse), null)
+ 9 SYSTEMPATH\Filters\Filters.php(364): CodeIgniter\Filters\Filters->runAfter([...])
+10 SYSTEMPATH\CodeIgniter.php(407): CodeIgniter\Filters\Filters->runRequired('after')
+11 SYSTEMPATH\CodeIgniter.php(368): CodeIgniter\CodeIgniter->runRequiredAfterFilters(Object(CodeIgniter\Filters\Filters))
+12 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+13 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+14 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+15 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+CRITICAL - 2025-12-15 13:47:13 --> ErrorException: Undefined array key "date"
+[Method: GET, Route: ajax/profile/get-punching-reports]
+in APPPATH\Controllers\User\Profile.php on line 626.
+ 1 APPPATH\Controllers\User\Profile.php(626): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "date"', 'D:\\LOCALHOST\\hrm.healthgenie\\app\\Controllers\\User\\Profile.php', 626)
+ 2 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\User\Profile->getPunchingReports()
+ 3 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\User\Profile))
+ 4 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ 8 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+CRITICAL - 2025-12-15 13:49:37 --> ErrorException: Undefined array key "date"
+[Method: GET, Route: ajax/profile/get-punching-reports]
+in APPPATH\Controllers\User\Profile.php on line 626.
+ 1 APPPATH\Controllers\User\Profile.php(626): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "date"', 'D:\\LOCALHOST\\hrm.healthgenie\\app\\Controllers\\User\\Profile.php', 626)
+ 2 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\User\Profile->getPunchingReports()
+ 3 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\User\Profile))
+ 4 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ 8 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+CRITICAL - 2025-12-15 13:54:12 --> ErrorException: Undefined array key "is_weekoff"
+[Method: GET, Route: ajax/profile/get-punching-reports]
+in APPPATH\Controllers\User\Profile.php on line 630.
+ 1 APPPATH\Controllers\User\Profile.php(630): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "is_weekoff"', 'D:\\LOCALHOST\\hrm.healthgenie\\app\\Controllers\\User\\Profile.php', 630)
+ 2 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\User\Profile->getPunchingReports()
+ 3 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\User\Profile))
+ 4 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ 8 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+CRITICAL - 2025-12-15 16:37:02 --> ErrorException: Undefined array key "weekoff"
+[Method: GET, Route: ajax/profile/get-punching-reports]
+in APPPATH\Pipes\AttendanceProcessor\ProcessorHelper.php on line 555.
+ 1 APPPATH\Pipes\AttendanceProcessor\ProcessorHelper.php(555): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "weekoff"', 'D:\\LOCALHOST\\hrm.healthgenie\\app\\Pipes\\AttendanceProcessor\\ProcessorHelper.php', 555)
+ 2 APPPATH\Controllers\Attendance\Processor.php(64): App\Pipes\AttendanceProcessor\ProcessorHelper::is_weekoff(null, '2025-12-01')
+ 3 APPPATH\Controllers\User\Profile.php(624): App\Controllers\Attendance\Processor::getProcessedPunchingDataProfile('40', '2025-12-01', '2025-12-15')
+ 4 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\User\Profile->getPunchingReports()
+ 5 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\User\Profile))
+ 6 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 8 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 9 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+10 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+CRITICAL - 2025-12-15 16:38:20 --> ErrorException: Undefined array key "weekoff"
+[Method: GET, Route: ajax/profile/get-punching-reports]
+in APPPATH\Pipes\AttendanceProcessor\ProcessorHelper.php on line 555.
+ 1 APPPATH\Pipes\AttendanceProcessor\ProcessorHelper.php(555): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "weekoff"', 'D:\\LOCALHOST\\hrm.healthgenie\\app\\Pipes\\AttendanceProcessor\\ProcessorHelper.php', 555)
+ 2 APPPATH\Controllers\Attendance\Processor.php(64): App\Pipes\AttendanceProcessor\ProcessorHelper::is_weekoff(null, '2025-12-01')
+ 3 APPPATH\Controllers\User\Profile.php(624): App\Controllers\Attendance\Processor::getProcessedPunchingDataProfile('40', '2025-12-01', '2025-12-15')
+ 4 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\User\Profile->getPunchingReports()
+ 5 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\User\Profile))
+ 6 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 8 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 9 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+10 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+CRITICAL - 2025-12-15 17:13:03 --> ErrorException: Undefined array key "weekoff"
+[Method: GET, Route: ajax/profile/get-punching-reports]
+in APPPATH\Pipes\AttendanceProcessor\ProcessorHelper.php on line 555.
+ 1 APPPATH\Pipes\AttendanceProcessor\ProcessorHelper.php(555): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "weekoff"', 'D:\\LOCALHOST\\hrm.healthgenie\\app\\Pipes\\AttendanceProcessor\\ProcessorHelper.php', 555)
+ 2 APPPATH\Controllers\Attendance\Processor.php(64): App\Pipes\AttendanceProcessor\ProcessorHelper::is_weekoff(null, '2025-12-01')
+ 3 APPPATH\Controllers\User\Profile.php(624): App\Controllers\Attendance\Processor::getProcessedPunchingDataProfile('40', '2025-12-01', '2025-12-15')
+ 4 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\User\Profile->getPunchingReports()
+ 5 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\User\Profile))
+ 6 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 8 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 9 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+10 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+CRITICAL - 2025-12-15 17:22:35 --> ErrorException: Trying to access array offset on null
+[Method: POST, Route: ajax/check-gate-pass-request-today]
+in APPPATH\Controllers\Requests\GatePass.php on line 208.
+ 1 APPPATH\Controllers\Requests\GatePass.php(208): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Trying to access array offset on null', 'D:\\LOCALHOST\\hrm.healthgenie\\app\\Controllers\\Requests\\GatePass.php', 208)
+ 2 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Requests\GatePass->getGatePassRequestToday()
+ 3 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Requests\GatePass))
+ 4 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ 8 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')

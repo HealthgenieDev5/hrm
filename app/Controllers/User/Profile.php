@@ -13,10 +13,13 @@ use App\Controllers\BaseController;
 use App\Controllers\Cron\ServerCron;
 use App\Models\EmployeeRevisionModel;
 use App\Controllers\Attendance\Processor;
+use App\Controllers\Reports\FinalPaidDays;
+use App\Libraries\AttendanceProcessor;
 use App\Models\ProbationHodResponseModel;
 use App\Pipes\AttendanceProcessor\ProcessorHelper;
 use App\Models\ProbationNotificationModel;
 use App\Models\GraceBalanceModel;
+use App\Models\PreFinalPaidDaysModel;
 
 class Profile extends BaseController
 {
@@ -35,8 +38,40 @@ class Profile extends BaseController
     public function index()
     {
 
+        // dd(getLateMinutes(date('Y-m-01'), date('Y-m-d')));
+        // dd(getEarlyGoingMinutes(date('Y-m-01'), date('Y-m-d')));
+
         // $CompanyModel = new CompanyModel();
         // $Companies = $CompanyModel->findAll();
+
+        /* try {
+            ob_start();
+            $processor = new AttendanceProcessor();
+            $processor->processAll(25, date('Y-m'), [40]);
+            $processor_output = ob_get_clean();
+
+            echo $processor_output;
+
+            $PreFinalPaidDaysModel = new PreFinalPaidDaysModel();
+            $PreFinalPaidDays = $PreFinalPaidDaysModel
+                ->select('pre_final_paid_days.*')
+                ->select('trim(concat(settler.first_name, " ", settler.last_name)) as settled_by_name')
+                ->join('employees as settler', 'settler.id = pre_final_paid_days.settled_by', 'left')
+                ->where('pre_final_paid_days.employee_id =', 40)
+                ->where("(pre_final_paid_days.date between '" . date('Y-m-01') . "' and '" . date('Y-m-d') . "')")
+                ->orderBy('pre_final_paid_days.date', 'ASC')
+                ->findAll();
+            // $PreFinalPaidDays_Data = array();
+            // foreach ($PreFinalPaidDays as $PaidDayData) {
+            //     $PreFinalPaidDays_Data[$PaidDayData['date']] = $PaidDayData;
+            // }
+
+            return (['punching_data' => $PreFinalPaidDays]);
+            die();
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+        die("dfghdfgh"); */
 
         $EmployeeModel = new EmployeeModel();
         $current_user = $this->session->get('current_user');
@@ -49,8 +84,8 @@ class Profile extends BaseController
         );
         $current_user_data = $pipelinedData_for_current_user_data['current_user_data'];
 
-        // $ServerCron = new ServerCron();
-        // $ServerCron->updateMyPunchingDataToday($current_user_data['internal_employee_id']);
+        $ServerCron = new ServerCron();
+        $ServerCron->updateMyPunchingDataToday($current_user_data['internal_employee_id']);
 
         // print_r($current_user_data);
         // die();
@@ -77,15 +112,15 @@ class Profile extends BaseController
             'current_user_data'     => $current_user_data,
             // 'Companies'             =>  $Companies,
             'company_id_for_filter' =>  $current_user_data['company_id'],
-            'seven_days_late_minutes_avg' =>  getLateMinutes($current_user_data, date('Y-m-d', strtotime(current_date_of_month() . " -7 days")), current_date_of_month())['average'],
-            'fifteen_days_late_minutes_avg' =>  getLateMinutes($current_user_data, date('Y-m-d', strtotime(current_date_of_month() . " -15 days")), current_date_of_month())['average'],
-            'current_month_late_minutes_avg' =>  getLateMinutes($current_user_data, first_date_of_month(), current_date_of_month())['average'],
-            'current_month_late_minutes' =>  getLateMinutes($current_user_data, first_date_of_month(), current_date_of_month())['total'],
-            'seven_days_early_going_minutes_avg' =>  getEarlyGoingMinutes($current_user_data, date('Y-m-d', strtotime(current_date_of_month() . " -7 days")), current_date_of_month())['average'],
-            'fifteen_days_early_going_minutes_avg' =>  getEarlyGoingMinutes($current_user_data, date('Y-m-d', strtotime(current_date_of_month() . " -15 days")), current_date_of_month())['average'],
-            'current_month_early_going_minutes_avg' =>  getEarlyGoingMinutes($current_user_data, first_date_of_month(), current_date_of_month())['average'],
-            'current_month_early_going_minutes' =>  getEarlyGoingMinutes($current_user_data, first_date_of_month(), current_date_of_month())['total'],
-            'current_date_early_going_minutes' =>  getEarlyGoingMinutes($current_user_data, current_date_of_month(), current_date_of_month())['total'],
+            'seven_days_late_minutes_avg' =>  getLateMinutes(date('Y-m-d', strtotime(current_date_of_month() . " -7 days")), current_date_of_month())['average'],
+            'fifteen_days_late_minutes_avg' =>  getLateMinutes(date('Y-m-d', strtotime(current_date_of_month() . " -15 days")), current_date_of_month())['average'],
+            'current_month_late_minutes_avg' =>  getLateMinutes(first_date_of_month(), current_date_of_month())['average'],
+            'current_month_late_minutes' =>  getLateMinutes(first_date_of_month(), current_date_of_month())['total'],
+            'seven_days_early_going_minutes_avg' =>  getEarlyGoingMinutes(date('Y-m-d', strtotime(current_date_of_month() . " -7 days")), current_date_of_month())['average'],
+            'fifteen_days_early_going_minutes_avg' =>  getEarlyGoingMinutes(date('Y-m-d', strtotime(current_date_of_month() . " -15 days")), current_date_of_month())['average'],
+            'current_month_early_going_minutes_avg' =>  getEarlyGoingMinutes(first_date_of_month(), current_date_of_month())['average'],
+            'current_month_early_going_minutes' =>  getEarlyGoingMinutes(first_date_of_month(), current_date_of_month())['total'],
+            'current_date_early_going_minutes' =>  getEarlyGoingMinutes(current_date_of_month(), current_date_of_month())['total'],
             'employees'             => $employees,
             'current_controller'    => 'user',
             'current_method'        => 'profile',
@@ -93,6 +128,7 @@ class Profile extends BaseController
             'probationPopUpEmployees' => $this->getDataForUnderProbationPopUp(),
 
         ];
+        // dd($this->getDataForUnderProbationPopUp());
         return view('User/Profile', $data);
     }
 
@@ -167,12 +203,35 @@ class Profile extends BaseController
         echo json_encode($NextMonthLeaveBalance, true);
     }
 
-    public function getBalanceGrace()
+    public function getAttendanceStats()
     {
+        $current_user = $this->session->get('current_user');
+        $BasicDetailsPipe = new BasicDetails();
         $GraceBalanceModel = new GraceBalanceModel();
-        $balance_grace_row = $GraceBalanceModel->where('employee_id', $this->session->get('current_user')['employee_id'])->where('year_month', date('Y-m'))->first();
+        $pipelinedData_for_current_user_data = $BasicDetailsPipe->handle(
+            ['employee_id' => $current_user["employee_id"]],
+            function ($value) {
+                return $value;
+            }
+        );
+        $balance_grace_row = $GraceBalanceModel->where('employee_id', $current_user['employee_id'])->where('year_month', date('Y-m'))->first();
         $balance_grace = !empty($balance_grace_row) ? $balance_grace_row['minutes'] : 0;
-        echo $balance_grace;
+        $current_user_data = $pipelinedData_for_current_user_data['current_user_data'];
+
+        $stats = [
+            'seven_days_late_minutes_avg' => getLateMinutes(date('Y-m-d', strtotime(current_date_of_month() . " -7 days")), current_date_of_month())['average'],
+            'fifteen_days_late_minutes_avg' => getLateMinutes(date('Y-m-d', strtotime(current_date_of_month() . " -15 days")), current_date_of_month())['average'],
+            'current_month_late_minutes_avg' => getLateMinutes(first_date_of_month(), current_date_of_month())['average'],
+            'current_month_late_minutes' => getLateMinutes(first_date_of_month(), current_date_of_month())['total'],
+            'seven_days_early_going_minutes_avg' => getEarlyGoingMinutes(date('Y-m-d', strtotime(current_date_of_month() . " -7 days")), current_date_of_month())['average'],
+            'fifteen_days_early_going_minutes_avg' => getEarlyGoingMinutes(date('Y-m-d', strtotime(current_date_of_month() . " -15 days")), current_date_of_month())['average'],
+            'current_month_early_going_minutes_avg' => getEarlyGoingMinutes(first_date_of_month(), current_date_of_month())['average'],
+            'current_month_early_going_minutes' => getEarlyGoingMinutes(first_date_of_month(), current_date_of_month())['total'],
+            'current_date_early_going_minutes' => getEarlyGoingMinutes(current_date_of_month(), current_date_of_month())['total'],
+            'balance_grace' => getBalanceGrace(),
+        ];
+
+        return $this->response->setJSON($stats);
     }
 
     public function editProfile()
@@ -588,17 +647,17 @@ class Profile extends BaseController
         $dateFrom = date('Y-m-01');
         $dateTo = date('Y-m-d');
 
-        $PunchingData = Processor::getProcessedPunchingData($employee_id, $dateFrom, $dateTo);
-
+        //$PunchingData = Processor::getProcessedPunchingData($employee_id, $dateFrom, $dateTo);
+        $PunchingData = Processor::getProcessedPunchingDataProfile($employee_id, $dateFrom, $dateTo);
         foreach ($PunchingData as $i => $dataRow) {
             if ($dataRow['date'] == date('Y-m-d') && (!empty($dataRow['punch_in_time']) && empty($dataRow['punch_out_time']))) {
                 $PunchingData[$i]['status'] = '--';
                 $PunchingData[$i]['status_remarks'] = 'Out time not recorded yet';
             }
-            if ($dataRow['is_weekoff'] == 'yes' && !in_array($dataRow['status'], ['P+OD', 'P', 'P on OD', 'H/D+OD', 'H/D', 'H/D on OD'])) {
-                $PunchingData[$i]['shift_start'] = null;
-                $PunchingData[$i]['shift_end'] = null;
-            }
+            // if ($dataRow['is_weekoff'] == 'yes' && !in_array($dataRow['status'], ['P+OD', 'P', 'P on OD', 'H/D+OD', 'H/D', 'H/D on OD'])) {
+            //     $PunchingData[$i]['shift_start'] = null;
+            //     $PunchingData[$i]['shift_end'] = null;
+            // }
         }
 
         return $this->response->setJSON($PunchingData);
@@ -923,7 +982,7 @@ class Profile extends BaseController
 
     }
 
-    public function getDataForUnderProbationPopUp()
+    /* public function getDataForUnderProbationPopUp()
     {
         $EmployeeModel = new EmployeeModel();
 
@@ -933,7 +992,7 @@ class Profile extends BaseController
         $EmployeeModel->select("employees.id as employee_id");
         $EmployeeModel->select("trim(concat(employees.first_name, ' ', employees.last_name)) as employee_name");
         $EmployeeModel->select("employees.joining_date as joining_date");
-        $EmployeeModel->select("employees.probation  AS probation");
+        // $EmployeeModel->select("employees.probation  AS probation");
         $EmployeeModel->select("employees.probation AS probation_status");
 
         #Fetch only employees in the HOD's department
@@ -976,6 +1035,144 @@ class Profile extends BaseController
         // echo $EmployeeModel->getLastQuery()->getQuery();
         // die();
         return $data;
+    } */
+
+    public function getDataForUnderProbationPopUp()
+    {
+        $EmployeeModel = new EmployeeModel();
+
+        $SevenDaysBefore = date('Y-m-d', strtotime('-7 days'));
+        $OneMonthBefore = date('Y-m-d', strtotime('-1 month'));
+
+        $EmployeeModel->select("employees.id as employee_id");
+        $EmployeeModel->select("trim(concat(employees.first_name, ' ', employees.last_name)) as employee_name");
+        $EmployeeModel->select("employees.joining_date as joining_date");
+        // $EmployeeModel->select("employees.probation  AS probation");
+        $EmployeeModel->select("employees.probation AS probation_status");
+        $EmployeeModel->select("employees.notice_period AS notice_period");
+
+        #Fetch only employees in the HOD's department
+        $EmployeeModel->join("departments", "departments.id = employees.department_id", "left");
+        // $EmployeeModel->where("departments.hod_employee_id", $this->session->get('current_user')['employee_id']);
+
+        #only reporting manager, HOD is not responsible for setting probation
+        $EmployeeModel->where("employees.reporting_manager_id =", $this->session->get('current_user')['employee_id']);
+
+        #Exclude employees with 'confirmed' probation status
+        $EmployeeModel->where("employees.probation !=", 'confirmed');
+        $EmployeeModel->where("employees.status =", 'active');
+
+        #Add condition for joining date to be at least 1 month older
+        $EmployeeModel->where("employees.joining_date <", $OneMonthBefore);
+        $EmployeeModel->whereNotIn("employees.designation_id", ['161', '75']);
+        $all_uncofirmed_employees = $EmployeeModel->findAll();
+
+        if (!empty($all_uncofirmed_employees)) {
+            $filtered_employees = [];
+            foreach ($all_uncofirmed_employees as $uncofirmed_employee) {
+                $ProbationHodResponseModel = new ProbationHodResponseModel();
+                $ProbationHodResponseModel->select('response');
+                $ProbationHodResponseModel->select('date(date_time) as response_date');
+                $ProbationHodResponseModel->where('employee_id', $uncofirmed_employee['employee_id']);
+                $ProbationHodResponseModel->orderBy('date_time', 'DESC');
+                $ProbationHodResponseModel->limit(1);
+                $ProbationHodResponse = $ProbationHodResponseModel->first();
+
+                $should_include = true;
+                if (!empty($ProbationHodResponse)) {
+                    $hod_response = $ProbationHodResponse['response'];
+                    $response_date = $ProbationHodResponse['response_date'];
+
+                    // Exclude if response is 'Confirmed'
+                    if ($hod_response == 'Confirmed') {
+                        $should_include = false;
+                    }
+                    // Also exclude if there's a response within the last 7 days (still fresh)
+                    elseif (strtotime($response_date) >= strtotime($SevenDaysBefore)) {
+                        $should_include = false;
+                    }
+                }
+
+                if ($should_include) {
+                    $uncofirmed_employee['hod_response'] = !empty($ProbationHodResponse) ? $ProbationHodResponse['response'] : null;
+                    $uncofirmed_employee['hod_response_date'] = !empty($ProbationHodResponse) ? $ProbationHodResponse['response_date'] : null;
+
+                    $joining_date = new \DateTime($uncofirmed_employee['joining_date']);
+                    $today = new \DateTime();
+                    $interval = $joining_date->diff($today);
+                    $uncofirmed_employee['days_from_joining'] = $interval->days;
+
+                    $probation_status = $uncofirmed_employee['probation_status'];
+
+                    switch ($probation_status) {
+                        case '45 Days Probation':
+                            $probation_days = 45;
+                            break;
+
+                        case '60 Days Probation':
+                            $probation_days = 60;
+                            break;
+
+                        case '90 Days Probation':
+                            $probation_days = 90;
+                            break;
+
+                        default:
+                            $probation_days = 90;
+                            break;
+                    }
+                    $probation_end_date = date('Y-m-d', strtotime($uncofirmed_employee['joining_date'] . ' +' . $probation_days . ' days'));
+                    $uncofirmed_employee['probation_days'] = $probation_days;
+                    $uncofirmed_employee['probation_end_date'] = $probation_end_date;
+
+                    // Determine if extendable:
+                    // - 45 or 60 days probation are always extendable (can extend to 90 days)
+                    // - 90 days probation is NOT extendable (already at maximum)
+                    if ($probation_days == 45 || $probation_days == 60) {
+                        $uncofirmed_employee['extendable'] = true;
+                    } else {
+                        // For 90 days probation, not extendable (already at max)
+                        $uncofirmed_employee['extendable'] = false;
+                    }
+
+                    // Determine available actions for dropdown
+                    $available_actions = [];
+                    $notice_period = !empty($uncofirmed_employee['notice_period']) ? (int)$uncofirmed_employee['notice_period'] : 0;
+                    $days_from_joining = $uncofirmed_employee['days_from_joining'];
+
+                    // Check if too early to decide (less than notice_period - 10 days)
+                    $is_too_early = $days_from_joining < ($notice_period - 10);
+
+                    if ($is_too_early) {
+                        $available_actions[] = 'Too Early to Decide';
+                    }
+
+                    // "To be Extended" option available if extendable and too early
+                    if ($uncofirmed_employee['extendable'] && $is_too_early) {
+                        $available_actions[] = 'To be Extended';
+                    }
+
+                    // These options are always available
+                    $available_actions[] = 'Not to Confirm';
+                    $available_actions[] = 'Confirmed';
+
+                    $uncofirmed_employee['available_actions'] = $available_actions;
+
+                    // Cancellable is true only if "Too Early to Decide" option is available
+                    // If it's too early, manager can dismiss/cancel the prompt
+                    // If not too early, a decision must be made (not cancellable)
+                    $uncofirmed_employee['cancellable'] = $is_too_early;
+
+                    $filtered_employees[] = $uncofirmed_employee;
+                }
+            }
+            $all_uncofirmed_employees = $filtered_employees;
+
+            // dd($all_uncofirmed_employees);
+        }
+
+
+        return $all_uncofirmed_employees;
     }
 
     public function saveProbationResponseOfHod()
@@ -1038,7 +1235,8 @@ class Profile extends BaseController
 
 
                 $email->setMessage($email_message);
-                $email_send = $email->send();
+                // $email_send = $email->send();
+                $email_send = true; #bypass send email check 
                 if (!$email_send) {
                     $response_array = array();
                     $response_array['response_type'] = 'failed';

@@ -58,8 +58,8 @@ class PunchTimeCleanup
         $punching_row['in_time'] = $punching_time_between_shift_including_od[0];
         $punching_row['out_time'] = $punching_time_between_shift_including_od[1];
 
-        // if ($punching_row['DateString_2'] == '2025-04-10') {
-        //     dd($punching_row['in_time'], $punching_row['out_time']);
+        // if ($punching_row['employee_id'] == '316' && $punching_row['date'] == '2025-12-03') {
+        //     dd($punching_row);
         // }
 
         return $next($punching_row);

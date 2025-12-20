@@ -22,7 +22,8 @@ class AttendanceProcessor
     public function processAll(int $chunkSize = 25, ?string $month = null, ?array $employeeIds = null): void
     {
 
-        CLI::write("Processing has Started at " . date('Y-m-d H:i:s'), 'yellow');
+        CLI::write("Processing has Started at " . date('Y-m-d H:i:s') . " - " . json_encode($employeeIds) . " - " . $month, 'yellow');
+        
 
         $employeeIds = !empty($employeeIds) ? $employeeIds : [];
         $isBulkProcessing = empty($employeeIds) ? true : false;

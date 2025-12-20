@@ -27,16 +27,32 @@ class RefactorPunchingRow
         $punching_row['shift_type']      = ProcessorHelper::get_shift_type($punching_row['shift_id']);
 
         if ($punching_row['shift_type'] == 'reduce') {
-            $shift_duration = ProcessorHelper::get_time_difference($punching_row['shift_start'], $punching_row['shift_end'], 'minutes');
-            $expanded_shift_duration = $shift_duration * 3 / 2;
-            $new_shift_end_timestamp = strtotime($punching_row['shift_start']) + $expanded_shift_duration * 60;
-            $punching_row['shift_end'] = date('H:i:s', $new_shift_end_timestamp);
+            $is_night_shift = strtotime($punching_row['shift_start']) > strtotime($punching_row['shift_end']) ? true : false;
+            if ($is_night_shift) {
+                //New formula for night shifts
+                $shift_duration = ProcessorHelper::get_time_difference($punching_row['shift_start'], $punching_row['shift_end'], 'minutes');
+                $expanded_shift_duration = round($shift_duration * (100 / (100 - 30.43)));
+                $new_shift_end_timestamp = strtotime($punching_row['shift_start']) + $expanded_shift_duration * 60;
+                $punching_row['shift_end'] = date('H:i:s', $new_shift_end_timestamp);
 
-            $punching_row['absent_for_work_hours_minutes'] = $punching_row['absent_for_work_hours_minutes'] * 3 / 2;
-            $punching_row['half_day_for_work_hours_minutes'] = $punching_row['half_day_for_work_hours_minutes'] * 3 / 2;
-            $punching_row['attendance_rule']['absent_for_work_hours'] = ProcessorHelper::convertToTime(round(ProcessorHelper::convertToMinutes($punching_row['attendance_rule']['absent_for_work_hours']) * 3 / 2));
-            $punching_row['attendance_rule']['half_day_for_work_hours'] = ProcessorHelper::convertToTime(round(ProcessorHelper::convertToMinutes($punching_row['attendance_rule']['half_day_for_work_hours']) * 3 / 2));
-            $punching_row['late_coming_rule'][0]['hours'] = ProcessorHelper::convertToTime(round(ProcessorHelper::convertToMinutes($punching_row['late_coming_rule'][0]['hours']) * 3 / 2));
+                $punching_row['absent_for_work_hours_minutes'] = $punching_row['absent_for_work_hours_minutes'] * (100 / (100 - 30.43));
+                $punching_row['half_day_for_work_hours_minutes'] = $punching_row['half_day_for_work_hours_minutes'] * (100 / (100 - 30.43));
+                $punching_row['attendance_rule']['absent_for_work_hours'] = ProcessorHelper::convertToTime(round(ProcessorHelper::convertToMinutes($punching_row['attendance_rule']['absent_for_work_hours']) * (100 / (100 - 30.43))));
+                $punching_row['attendance_rule']['half_day_for_work_hours'] = ProcessorHelper::convertToTime(round(ProcessorHelper::convertToMinutes($punching_row['attendance_rule']['half_day_for_work_hours']) * (100 / (100 - 30.43))));
+                // $punching_row['late_coming_rule'][0]['hours'] = ProcessorHelper::convertToTime(round(ProcessorHelper::convertToMinutes($punching_row['late_coming_rule'][0]['hours']) * (100 / (100 - 30.43))));
+                $punching_row['late_coming_rule'][0]['hours'] = ProcessorHelper::convertToTime(ceil(ProcessorHelper::convertToMinutes($punching_row['late_coming_rule'][0]['hours']) * (100 / (100 - 30.43))));
+            } else {
+                $shift_duration = ProcessorHelper::get_time_difference($punching_row['shift_start'], $punching_row['shift_end'], 'minutes');
+                $expanded_shift_duration = $shift_duration * 3 / 2;
+                $new_shift_end_timestamp = strtotime($punching_row['shift_start']) + $expanded_shift_duration * 60;
+                $punching_row['shift_end'] = date('H:i:s', $new_shift_end_timestamp);
+
+                $punching_row['absent_for_work_hours_minutes'] = $punching_row['absent_for_work_hours_minutes'] * 3 / 2;
+                $punching_row['half_day_for_work_hours_minutes'] = $punching_row['half_day_for_work_hours_minutes'] * 3 / 2;
+                $punching_row['attendance_rule']['absent_for_work_hours'] = ProcessorHelper::convertToTime(round(ProcessorHelper::convertToMinutes($punching_row['attendance_rule']['absent_for_work_hours']) * 3 / 2));
+                $punching_row['attendance_rule']['half_day_for_work_hours'] = ProcessorHelper::convertToTime(round(ProcessorHelper::convertToMinutes($punching_row['attendance_rule']['half_day_for_work_hours']) * 3 / 2));
+                $punching_row['late_coming_rule'][0]['hours'] = ProcessorHelper::convertToTime(round(ProcessorHelper::convertToMinutes($punching_row['late_coming_rule'][0]['hours']) * 3 / 2));
+            }
         }
 
 
@@ -50,6 +66,16 @@ class RefactorPunchingRow
         //             $punching_row['late_coming_rule'][0]['hours'],
         //         ]
         //     );
+        // }
+
+        // if ($punching_row['employee_id'] == '400' && $punching_row['date'] == '2025-12-01') {
+        //     echo '<pre>';
+        //     print_r([
+        //         'shift_duration' => $shift_duration,
+        //         'expanded_shift_duration' => $expanded_shift_duration
+        //     ]);
+        //     echo '</pre>';
+        //     die();
         // }
         return $next($punching_row);
     }

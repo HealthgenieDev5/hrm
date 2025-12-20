@@ -1,0 +1,465 @@
+ERROR - 2025-12-20 11:19:51 --> Email: sendWithMail throwed ErrorException: mail(): Failed to connect to mailserver at &quot;localhost&quot; port 25, verify your &quot;SMTP&quot; and &quot;smtp_port&quot; setting in php.ini or use ini_set() in D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php:1771
+Stack trace:
+#0 [internal function]: CodeIgniter\Debug\Exceptions->errorHandler(2, 'mail(): Failed ...', 'D:\\LOCALHOST\\hr...', 1771)
+#1 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php(1771): mail('developer3@heal...', '=?UTF-8?Q?Proba...', '\r\n             ...', 'Date: Sat, 20 D...', '-f app.hrm@heal...')
+#2 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php(1703): CodeIgniter\Email\Email->sendWithMail()
+#3 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php(1597): CodeIgniter\Email\Email->spoolEmail()
+#4 D:\LOCALHOST\hrm.healthgenie\app\Controllers\Master\Employee\Edit.php(1029): CodeIgniter\Email\Email->send()
+#5 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(933): App\Controllers\Master\Employee\Edit->update()
+#6 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Master\Employee\Edit))
+#7 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#9 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 D:\LOCALHOST\hrm.healthgenie\public\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hr...')
+#12 {main}
+ERROR - 2025-12-20 11:19:51 --> Email: Unable to send email using PHP mail(). Your server might not be configured to send mail using this method.
+ERROR - 2025-12-20 11:19:51 --> 
+ERROR - 2025-12-20 11:32:23 --> mysqli_sql_exception: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '11:32:23
+ORDER BY `date_time` DESC
+ LIMIT 1' at line 3 in D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php(327): mysqli->query('SELECT `respons...', 0)
+#1 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `respons...')
+#2 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `respons...')
+#3 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `respons...', Array, false)
+#4 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Model.php(330): CodeIgniter\Database\BaseBuilder->get()
+#5 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\BaseModel.php(715): CodeIgniter\Model->doFirst()
+#6 D:\LOCALHOST\hrm.healthgenie\app\Controllers\User\Profile.php(1077): CodeIgniter\BaseModel->first()
+#7 D:\LOCALHOST\hrm.healthgenie\app\Controllers\User\Profile.php(128): App\Controllers\User\Profile->getDataForUnderProbationPopUp()
+#8 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(933): App\Controllers\User\Profile->index()
+#9 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\User\Profile))
+#10 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#11 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#12 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#13 D:\LOCALHOST\hrm.healthgenie\public\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#14 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hr...')
+#15 {main}
+CRITICAL - 2025-12-20 11:32:23 --> CodeIgniter\Database\Exceptions\DatabaseException: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '11:32:23
+ORDER BY `date_time` DESC
+ LIMIT 1' at line 3
+[Method: GET, Route: /]
+in SYSTEMPATH\Database\BaseConnection.php on line 684.
+ 1 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `response`, date(date_time) as response_date
+FROM `probation_hod_response`
+WHERE date(date_time) < 2025-12-13 11:32:23
+ORDER BY `date_time` DESC
+ LIMIT 1', [], false)
+ 2 SYSTEMPATH\Model.php(330): CodeIgniter\Database\BaseBuilder->get()
+ 3 SYSTEMPATH\BaseModel.php(715): CodeIgniter\Model->doFirst()
+ 4 APPPATH\Controllers\User\Profile.php(1077): CodeIgniter\BaseModel->first()
+ 5 APPPATH\Controllers\User\Profile.php(128): App\Controllers\User\Profile->getDataForUnderProbationPopUp()
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\User\Profile->index()
+ 7 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\User\Profile))
+ 8 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+12 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+CRITICAL - 2025-12-20 11:32:23 --> [Caused by] CodeIgniter\Database\Exceptions\DatabaseException: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '11:32:23
+ORDER BY `date_time` DESC
+ LIMIT 1' at line 3
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 332.
+ 1 SYSTEMPATH\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `response`, date(date_time) as response_date
+FROM `probation_hod_response`
+WHERE date(date_time) < 2025-12-13 11:32:23
+ORDER BY `date_time` DESC
+ LIMIT 1')
+ 2 SYSTEMPATH\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `response`, date(date_time) as response_date
+FROM `probation_hod_response`
+WHERE date(date_time) < 2025-12-13 11:32:23
+ORDER BY `date_time` DESC
+ LIMIT 1')
+ 3 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `response`, date(date_time) as response_date
+FROM `probation_hod_response`
+WHERE date(date_time) < 2025-12-13 11:32:23
+ORDER BY `date_time` DESC
+ LIMIT 1', [], false)
+ 4 SYSTEMPATH\Model.php(330): CodeIgniter\Database\BaseBuilder->get()
+ 5 SYSTEMPATH\BaseModel.php(715): CodeIgniter\Model->doFirst()
+ 6 APPPATH\Controllers\User\Profile.php(1077): CodeIgniter\BaseModel->first()
+ 7 APPPATH\Controllers\User\Profile.php(128): App\Controllers\User\Profile->getDataForUnderProbationPopUp()
+ 8 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\User\Profile->index()
+ 9 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\User\Profile))
+10 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+11 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+12 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+13 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+14 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+CRITICAL - 2025-12-20 11:32:23 --> [Caused by] mysqli_sql_exception: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '11:32:23
+ORDER BY `date_time` DESC
+ LIMIT 1' at line 3
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 327.
+ 1 SYSTEMPATH\Database\MySQLi\Connection.php(327): mysqli->query('SELECT `response`, date(date_time) as response_date
+FROM `probation_hod_response`
+WHERE date(date_time) < 2025-12-13 11:32:23
+ORDER BY `date_time` DESC
+ LIMIT 1', 0)
+ 2 SYSTEMPATH\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `response`, date(date_time) as response_date
+FROM `probation_hod_response`
+WHERE date(date_time) < 2025-12-13 11:32:23
+ORDER BY `date_time` DESC
+ LIMIT 1')
+ 3 SYSTEMPATH\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `response`, date(date_time) as response_date
+FROM `probation_hod_response`
+WHERE date(date_time) < 2025-12-13 11:32:23
+ORDER BY `date_time` DESC
+ LIMIT 1')
+ 4 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `response`, date(date_time) as response_date
+FROM `probation_hod_response`
+WHERE date(date_time) < 2025-12-13 11:32:23
+ORDER BY `date_time` DESC
+ LIMIT 1', [], false)
+ 5 SYSTEMPATH\Model.php(330): CodeIgniter\Database\BaseBuilder->get()
+ 6 SYSTEMPATH\BaseModel.php(715): CodeIgniter\Model->doFirst()
+ 7 APPPATH\Controllers\User\Profile.php(1077): CodeIgniter\BaseModel->first()
+ 8 APPPATH\Controllers\User\Profile.php(128): App\Controllers\User\Profile->getDataForUnderProbationPopUp()
+ 9 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\User\Profile->index()
+10 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\User\Profile))
+11 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+12 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+13 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+14 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+15 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+CRITICAL - 2025-12-20 11:32:47 --> Error: Undefined constant "App\Controllers\User\DESC"
+[Method: GET, Route: /]
+in APPPATH\Controllers\User\Profile.php on line 1075.
+ 1 APPPATH\Controllers\User\Profile.php(128): App\Controllers\User\Profile->getDataForUnderProbationPopUp()
+ 2 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\User\Profile->index()
+ 3 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\User\Profile))
+ 4 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ 8 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+ERROR - 2025-12-20 11:33:07 --> mysqli_sql_exception: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '11:33:07
+ORDER BY `date_time` DESC
+ LIMIT 1' at line 3 in D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php(327): mysqli->query('SELECT `respons...', 0)
+#1 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `respons...')
+#2 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `respons...')
+#3 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `respons...', Array, false)
+#4 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Model.php(330): CodeIgniter\Database\BaseBuilder->get()
+#5 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\BaseModel.php(715): CodeIgniter\Model->doFirst()
+#6 D:\LOCALHOST\hrm.healthgenie\app\Controllers\User\Profile.php(1077): CodeIgniter\BaseModel->first()
+#7 D:\LOCALHOST\hrm.healthgenie\app\Controllers\User\Profile.php(128): App\Controllers\User\Profile->getDataForUnderProbationPopUp()
+#8 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(933): App\Controllers\User\Profile->index()
+#9 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\User\Profile))
+#10 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#11 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#12 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#13 D:\LOCALHOST\hrm.healthgenie\public\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#14 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hr...')
+#15 {main}
+CRITICAL - 2025-12-20 11:33:07 --> CodeIgniter\Database\Exceptions\DatabaseException: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '11:33:07
+ORDER BY `date_time` DESC
+ LIMIT 1' at line 3
+[Method: GET, Route: /]
+in SYSTEMPATH\Database\BaseConnection.php on line 684.
+ 1 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `response`, date(date_time) as response_date
+FROM `probation_hod_response`
+WHERE `date_time` < 2025-12-13 11:33:07
+ORDER BY `date_time` DESC
+ LIMIT 1', [], false)
+ 2 SYSTEMPATH\Model.php(330): CodeIgniter\Database\BaseBuilder->get()
+ 3 SYSTEMPATH\BaseModel.php(715): CodeIgniter\Model->doFirst()
+ 4 APPPATH\Controllers\User\Profile.php(1077): CodeIgniter\BaseModel->first()
+ 5 APPPATH\Controllers\User\Profile.php(128): App\Controllers\User\Profile->getDataForUnderProbationPopUp()
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\User\Profile->index()
+ 7 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\User\Profile))
+ 8 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+12 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+CRITICAL - 2025-12-20 11:33:07 --> [Caused by] CodeIgniter\Database\Exceptions\DatabaseException: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '11:33:07
+ORDER BY `date_time` DESC
+ LIMIT 1' at line 3
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 332.
+ 1 SYSTEMPATH\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `response`, date(date_time) as response_date
+FROM `probation_hod_response`
+WHERE `date_time` < 2025-12-13 11:33:07
+ORDER BY `date_time` DESC
+ LIMIT 1')
+ 2 SYSTEMPATH\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `response`, date(date_time) as response_date
+FROM `probation_hod_response`
+WHERE `date_time` < 2025-12-13 11:33:07
+ORDER BY `date_time` DESC
+ LIMIT 1')
+ 3 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `response`, date(date_time) as response_date
+FROM `probation_hod_response`
+WHERE `date_time` < 2025-12-13 11:33:07
+ORDER BY `date_time` DESC
+ LIMIT 1', [], false)
+ 4 SYSTEMPATH\Model.php(330): CodeIgniter\Database\BaseBuilder->get()
+ 5 SYSTEMPATH\BaseModel.php(715): CodeIgniter\Model->doFirst()
+ 6 APPPATH\Controllers\User\Profile.php(1077): CodeIgniter\BaseModel->first()
+ 7 APPPATH\Controllers\User\Profile.php(128): App\Controllers\User\Profile->getDataForUnderProbationPopUp()
+ 8 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\User\Profile->index()
+ 9 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\User\Profile))
+10 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+11 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+12 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+13 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+14 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+CRITICAL - 2025-12-20 11:33:07 --> [Caused by] mysqli_sql_exception: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '11:33:07
+ORDER BY `date_time` DESC
+ LIMIT 1' at line 3
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 327.
+ 1 SYSTEMPATH\Database\MySQLi\Connection.php(327): mysqli->query('SELECT `response`, date(date_time) as response_date
+FROM `probation_hod_response`
+WHERE `date_time` < 2025-12-13 11:33:07
+ORDER BY `date_time` DESC
+ LIMIT 1', 0)
+ 2 SYSTEMPATH\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `response`, date(date_time) as response_date
+FROM `probation_hod_response`
+WHERE `date_time` < 2025-12-13 11:33:07
+ORDER BY `date_time` DESC
+ LIMIT 1')
+ 3 SYSTEMPATH\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `response`, date(date_time) as response_date
+FROM `probation_hod_response`
+WHERE `date_time` < 2025-12-13 11:33:07
+ORDER BY `date_time` DESC
+ LIMIT 1')
+ 4 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `response`, date(date_time) as response_date
+FROM `probation_hod_response`
+WHERE `date_time` < 2025-12-13 11:33:07
+ORDER BY `date_time` DESC
+ LIMIT 1', [], false)
+ 5 SYSTEMPATH\Model.php(330): CodeIgniter\Database\BaseBuilder->get()
+ 6 SYSTEMPATH\BaseModel.php(715): CodeIgniter\Model->doFirst()
+ 7 APPPATH\Controllers\User\Profile.php(1077): CodeIgniter\BaseModel->first()
+ 8 APPPATH\Controllers\User\Profile.php(128): App\Controllers\User\Profile->getDataForUnderProbationPopUp()
+ 9 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\User\Profile->index()
+10 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\User\Profile))
+11 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+12 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+13 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+14 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+15 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+ERROR - 2025-12-20 11:34:29 --> mysqli_sql_exception: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '11:34:29
+ORDER BY `date_time` DESC
+ LIMIT 1' at line 3 in D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php(327): mysqli->query('SELECT `respons...', 0)
+#1 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `respons...')
+#2 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `respons...')
+#3 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `respons...', Array, false)
+#4 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Model.php(330): CodeIgniter\Database\BaseBuilder->get()
+#5 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\BaseModel.php(715): CodeIgniter\Model->doFirst()
+#6 D:\LOCALHOST\hrm.healthgenie\app\Controllers\User\Profile.php(1079): CodeIgniter\BaseModel->first()
+#7 D:\LOCALHOST\hrm.healthgenie\app\Controllers\User\Profile.php(128): App\Controllers\User\Profile->getDataForUnderProbationPopUp()
+#8 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(933): App\Controllers\User\Profile->index()
+#9 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\User\Profile))
+#10 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#11 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#12 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#13 D:\LOCALHOST\hrm.healthgenie\public\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#14 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hr...')
+#15 {main}
+CRITICAL - 2025-12-20 11:34:29 --> CodeIgniter\Database\Exceptions\DatabaseException: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '11:34:29
+ORDER BY `date_time` DESC
+ LIMIT 1' at line 3
+[Method: GET, Route: /]
+in SYSTEMPATH\Database\BaseConnection.php on line 684.
+ 1 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `response`, date(date_time) as response_date
+FROM `probation_hod_response`
+WHERE `date_time` < 2025-12-13 11:34:29
+ORDER BY `date_time` DESC
+ LIMIT 1', [], false)
+ 2 SYSTEMPATH\Model.php(330): CodeIgniter\Database\BaseBuilder->get()
+ 3 SYSTEMPATH\BaseModel.php(715): CodeIgniter\Model->doFirst()
+ 4 APPPATH\Controllers\User\Profile.php(1079): CodeIgniter\BaseModel->first()
+ 5 APPPATH\Controllers\User\Profile.php(128): App\Controllers\User\Profile->getDataForUnderProbationPopUp()
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\User\Profile->index()
+ 7 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\User\Profile))
+ 8 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+12 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+CRITICAL - 2025-12-20 11:34:29 --> [Caused by] CodeIgniter\Database\Exceptions\DatabaseException: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '11:34:29
+ORDER BY `date_time` DESC
+ LIMIT 1' at line 3
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 332.
+ 1 SYSTEMPATH\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `response`, date(date_time) as response_date
+FROM `probation_hod_response`
+WHERE `date_time` < 2025-12-13 11:34:29
+ORDER BY `date_time` DESC
+ LIMIT 1')
+ 2 SYSTEMPATH\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `response`, date(date_time) as response_date
+FROM `probation_hod_response`
+WHERE `date_time` < 2025-12-13 11:34:29
+ORDER BY `date_time` DESC
+ LIMIT 1')
+ 3 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `response`, date(date_time) as response_date
+FROM `probation_hod_response`
+WHERE `date_time` < 2025-12-13 11:34:29
+ORDER BY `date_time` DESC
+ LIMIT 1', [], false)
+ 4 SYSTEMPATH\Model.php(330): CodeIgniter\Database\BaseBuilder->get()
+ 5 SYSTEMPATH\BaseModel.php(715): CodeIgniter\Model->doFirst()
+ 6 APPPATH\Controllers\User\Profile.php(1079): CodeIgniter\BaseModel->first()
+ 7 APPPATH\Controllers\User\Profile.php(128): App\Controllers\User\Profile->getDataForUnderProbationPopUp()
+ 8 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\User\Profile->index()
+ 9 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\User\Profile))
+10 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+11 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+12 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+13 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+14 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+CRITICAL - 2025-12-20 11:34:29 --> [Caused by] mysqli_sql_exception: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '11:34:29
+ORDER BY `date_time` DESC
+ LIMIT 1' at line 3
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 327.
+ 1 SYSTEMPATH\Database\MySQLi\Connection.php(327): mysqli->query('SELECT `response`, date(date_time) as response_date
+FROM `probation_hod_response`
+WHERE `date_time` < 2025-12-13 11:34:29
+ORDER BY `date_time` DESC
+ LIMIT 1', 0)
+ 2 SYSTEMPATH\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `response`, date(date_time) as response_date
+FROM `probation_hod_response`
+WHERE `date_time` < 2025-12-13 11:34:29
+ORDER BY `date_time` DESC
+ LIMIT 1')
+ 3 SYSTEMPATH\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `response`, date(date_time) as response_date
+FROM `probation_hod_response`
+WHERE `date_time` < 2025-12-13 11:34:29
+ORDER BY `date_time` DESC
+ LIMIT 1')
+ 4 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `response`, date(date_time) as response_date
+FROM `probation_hod_response`
+WHERE `date_time` < 2025-12-13 11:34:29
+ORDER BY `date_time` DESC
+ LIMIT 1', [], false)
+ 5 SYSTEMPATH\Model.php(330): CodeIgniter\Database\BaseBuilder->get()
+ 6 SYSTEMPATH\BaseModel.php(715): CodeIgniter\Model->doFirst()
+ 7 APPPATH\Controllers\User\Profile.php(1079): CodeIgniter\BaseModel->first()
+ 8 APPPATH\Controllers\User\Profile.php(128): App\Controllers\User\Profile->getDataForUnderProbationPopUp()
+ 9 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\User\Profile->index()
+10 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\User\Profile))
+11 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+12 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+13 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+14 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+15 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+ERROR - 2025-12-20 12:25:36 --> Email: sendWithMail throwed ErrorException: mail(): Failed to connect to mailserver at &quot;localhost&quot; port 25, verify your &quot;SMTP&quot; and &quot;smtp_port&quot; setting in php.ini or use ini_set() in D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php:1771
+Stack trace:
+#0 [internal function]: CodeIgniter\Debug\Exceptions->errorHandler(2, 'mail(): Failed ...', 'D:\\LOCALHOST\\hr...', 1771)
+#1 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php(1771): mail('developer3@heal...', '=?UTF-8?Q?Proba...', '\r\n             ...', 'Date: Sat, 20 D...', '-f app.hrm@heal...')
+#2 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php(1703): CodeIgniter\Email\Email->sendWithMail()
+#3 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php(1597): CodeIgniter\Email\Email->spoolEmail()
+#4 D:\LOCALHOST\hrm.healthgenie\app\Controllers\User\Profile.php(1198): CodeIgniter\Email\Email->send()
+#5 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(933): App\Controllers\User\Profile->saveProbationResponseOfHod()
+#6 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\User\Profile))
+#7 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#9 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 D:\LOCALHOST\hrm.healthgenie\public\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hr...')
+#12 {main}
+ERROR - 2025-12-20 12:25:36 --> Email: Unable to send email using PHP mail(). Your server might not be configured to send mail using this method.
+ERROR - 2025-12-20 12:25:36 --> 
+ERROR - 2025-12-20 12:26:44 --> Email: sendWithMail throwed ErrorException: mail(): Failed to connect to mailserver at &quot;localhost&quot; port 25, verify your &quot;SMTP&quot; and &quot;smtp_port&quot; setting in php.ini or use ini_set() in D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php:1771
+Stack trace:
+#0 [internal function]: CodeIgniter\Debug\Exceptions->errorHandler(2, 'mail(): Failed ...', 'D:\\LOCALHOST\\hr...', 1771)
+#1 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php(1771): mail('developer3@heal...', '=?UTF-8?Q?Proba...', '\r\n             ...', 'Date: Sat, 20 D...', '-f app.hrm@heal...')
+#2 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php(1703): CodeIgniter\Email\Email->sendWithMail()
+#3 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php(1597): CodeIgniter\Email\Email->spoolEmail()
+#4 D:\LOCALHOST\hrm.healthgenie\app\Controllers\User\Profile.php(1198): CodeIgniter\Email\Email->send()
+#5 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(933): App\Controllers\User\Profile->saveProbationResponseOfHod()
+#6 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\User\Profile))
+#7 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#9 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 D:\LOCALHOST\hrm.healthgenie\public\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hr...')
+#12 {main}
+ERROR - 2025-12-20 12:26:44 --> Email: Unable to send email using PHP mail(). Your server might not be configured to send mail using this method.
+ERROR - 2025-12-20 12:26:44 --> 
+ERROR - 2025-12-20 12:27:08 --> Email: sendWithMail throwed ErrorException: mail(): Failed to connect to mailserver at &quot;localhost&quot; port 25, verify your &quot;SMTP&quot; and &quot;smtp_port&quot; setting in php.ini or use ini_set() in D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php:1771
+Stack trace:
+#0 [internal function]: CodeIgniter\Debug\Exceptions->errorHandler(2, 'mail(): Failed ...', 'D:\\LOCALHOST\\hr...', 1771)
+#1 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php(1771): mail('developer3@heal...', '=?UTF-8?Q?Proba...', '\r\n             ...', 'Date: Sat, 20 D...', '-f app.hrm@heal...')
+#2 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php(1703): CodeIgniter\Email\Email->sendWithMail()
+#3 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php(1597): CodeIgniter\Email\Email->spoolEmail()
+#4 D:\LOCALHOST\hrm.healthgenie\app\Controllers\User\Profile.php(1198): CodeIgniter\Email\Email->send()
+#5 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(933): App\Controllers\User\Profile->saveProbationResponseOfHod()
+#6 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\User\Profile))
+#7 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#9 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 D:\LOCALHOST\hrm.healthgenie\public\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hr...')
+#12 {main}
+ERROR - 2025-12-20 12:27:08 --> Email: Unable to send email using PHP mail(). Your server might not be configured to send mail using this method.
+ERROR - 2025-12-20 12:27:08 --> 
+ERROR - 2025-12-20 12:28:13 --> Email: sendWithMail throwed ErrorException: mail(): Failed to connect to mailserver at &quot;localhost&quot; port 25, verify your &quot;SMTP&quot; and &quot;smtp_port&quot; setting in php.ini or use ini_set() in D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php:1771
+Stack trace:
+#0 [internal function]: CodeIgniter\Debug\Exceptions->errorHandler(2, 'mail(): Failed ...', 'D:\\LOCALHOST\\hr...', 1771)
+#1 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php(1771): mail('developer3@heal...', '=?UTF-8?Q?Proba...', '\r\n             ...', 'Date: Sat, 20 D...', '-f app.hrm@heal...')
+#2 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php(1703): CodeIgniter\Email\Email->sendWithMail()
+#3 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php(1597): CodeIgniter\Email\Email->spoolEmail()
+#4 D:\LOCALHOST\hrm.healthgenie\app\Controllers\User\Profile.php(1198): CodeIgniter\Email\Email->send()
+#5 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(933): App\Controllers\User\Profile->saveProbationResponseOfHod()
+#6 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\User\Profile))
+#7 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#9 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 D:\LOCALHOST\hrm.healthgenie\public\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hr...')
+#12 {main}
+ERROR - 2025-12-20 12:28:13 --> Email: Unable to send email using PHP mail(). Your server might not be configured to send mail using this method.
+ERROR - 2025-12-20 12:28:13 --> 
+ERROR - 2025-12-20 12:38:17 --> Email: sendWithMail throwed ErrorException: mail(): Failed to connect to mailserver at &quot;localhost&quot; port 25, verify your &quot;SMTP&quot; and &quot;smtp_port&quot; setting in php.ini or use ini_set() in D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php:1771
+Stack trace:
+#0 [internal function]: CodeIgniter\Debug\Exceptions->errorHandler(2, 'mail(): Failed ...', 'D:\\LOCALHOST\\hr...', 1771)
+#1 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php(1771): mail('payroll1@gstc.c...', '=?UTF-8?Q?Absen...', '\r\n             ...', 'Date: Sat, 20 D...', '-f app.hrm@heal...')
+#2 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php(1703): CodeIgniter\Email\Email->sendWithMail()
+#3 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php(1597): CodeIgniter\Email\Email->spoolEmail()
+#4 D:\LOCALHOST\hrm.healthgenie\app\Controllers\Cron\ServerCron.php(273): CodeIgniter\Email\Email->send()
+#5 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(933): App\Controllers\Cron\ServerCron->sendAbsentWithoutLeaveNotification()
+#6 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Cron\ServerCron))
+#7 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#9 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 D:\LOCALHOST\hrm.healthgenie\public\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hr...')
+#12 {main}
+ERROR - 2025-12-20 12:38:17 --> Email: Unable to send email using PHP mail(). Your server might not be configured to send mail using this method.
+ERROR - 2025-12-20 12:38:17 --> 
+ERROR - 2025-12-20 12:38:35 --> Email: sendWithMail throwed ErrorException: mail(): Failed to connect to mailserver at &quot;localhost&quot; port 25, verify your &quot;SMTP&quot; and &quot;smtp_port&quot; setting in php.ini or use ini_set() in D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php:1771
+Stack trace:
+#0 [internal function]: CodeIgniter\Debug\Exceptions->errorHandler(2, 'mail(): Failed ...', 'D:\\LOCALHOST\\hr...', 1771)
+#1 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php(1771): mail('payroll1@gstc.c...', '=?UTF-8?Q?Absen...', '\r\n             ...', 'Date: Sat, 20 D...', '-f app.hrm@heal...')
+#2 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php(1703): CodeIgniter\Email\Email->sendWithMail()
+#3 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php(1597): CodeIgniter\Email\Email->spoolEmail()
+#4 D:\LOCALHOST\hrm.healthgenie\app\Controllers\Cron\ServerCron.php(273): CodeIgniter\Email\Email->send()
+#5 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(933): App\Controllers\Cron\ServerCron->sendAbsentWithoutLeaveNotification()
+#6 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Cron\ServerCron))
+#7 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#9 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 D:\LOCALHOST\hrm.healthgenie\public\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hr...')
+#12 {main}
+ERROR - 2025-12-20 12:38:35 --> Email: Unable to send email using PHP mail(). Your server might not be configured to send mail using this method.
+ERROR - 2025-12-20 12:38:35 --> 
+ERROR - 2025-12-20 12:38:39 --> Email: sendWithMail throwed ErrorException: mail(): Failed to connect to mailserver at &quot;localhost&quot; port 25, verify your &quot;SMTP&quot; and &quot;smtp_port&quot; setting in php.ini or use ini_set() in D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php:1771
+Stack trace:
+#0 [internal function]: CodeIgniter\Debug\Exceptions->errorHandler(2, 'mail(): Failed ...', 'D:\\LOCALHOST\\hr...', 1771)
+#1 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php(1771): mail('hrd@heuerintern...', '=?UTF-8?Q?Absen...', '<div style="fon...', 'Date: Sat, 20 D...', '-f app.hrm@heal...')
+#2 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php(1703): CodeIgniter\Email\Email->sendWithMail()
+#3 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php(1597): CodeIgniter\Email\Email->spoolEmail()
+#4 D:\LOCALHOST\hrm.healthgenie\app\Controllers\Cron\ServerCron.php(390): CodeIgniter\Email\Email->send()
+#5 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(933): App\Controllers\Cron\ServerCron->sendAbsentWithoutLeaveNotificationHeuerOnly()
+#6 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Cron\ServerCron))
+#7 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#9 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 D:\LOCALHOST\hrm.healthgenie\public\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hr...')
+#12 {main}
+ERROR - 2025-12-20 12:38:39 --> Email: Unable to send email using PHP mail(). Your server might not be configured to send mail using this method.
+ERROR - 2025-12-20 12:38:39 --> 

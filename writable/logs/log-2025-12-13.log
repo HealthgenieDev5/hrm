@@ -1,0 +1,34 @@
+CRITICAL - 2025-12-13 11:19:12 --> TypeError: App\Libraries\AttendanceProcessor::processAll(): Argument #3 ($employeeIds) must be of type ?array, string given, called in D:\LOCALHOST\hrm.healthgenie\app\Controllers\Attendance\Processor.php on line 87
+[Method: GET, Route: ajax/profile/get-punching-reports]
+in APPPATH\Libraries\AttendanceProcessor.php on line 22.
+ 1 APPPATH\Controllers\Attendance\Processor.php(87): App\Libraries\AttendanceProcessor->processAll(25, '2025-12', '385')
+ 2 APPPATH\Controllers\User\Profile.php(623): App\Controllers\Attendance\Processor::getProcessedPunchingData('385', '2025-12-01', '2025-12-13')
+ 3 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\User\Profile->getPunchingReports()
+ 4 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\User\Profile))
+ 5 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 6 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 7 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 8 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ 9 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+CRITICAL - 2025-12-13 11:24:51 --> ErrorException: Maximum execution time of 300 seconds exceeded
+[Method: GET, Route: ajax/profile/get-punching-reports]
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 327.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-13 12:58:52 --> ParseError: syntax error, unexpected identifier "ingData"
+[Method: GET, Route: /]
+in APPPATH\Controllers\User\Profile.php on line 624.
+ 1 VENDORPATH\composer\ClassLoader.php(427): Composer\Autoload\{closure}('D:\\LOCALHOST\\hrm.healthgenie\\vendor\\composer/../../app/Controllers/User/Profile.php')
+ 2 [internal function]: Composer\Autoload\ClassLoader->loadClass('App\\Controllers\\User\\Profile')
+ 3 SYSTEMPATH\Debug\Toolbar\Collectors\Routes.php(85): ReflectionMethod->__construct('\\App\\Controllers\\User\\Profile', 'index')
+ 4 SYSTEMPATH\Debug\Toolbar\Collectors\BaseCollector.php(228): CodeIgniter\Debug\Toolbar\Collectors\Routes->display()
+ 5 SYSTEMPATH\Debug\Toolbar.php(95): CodeIgniter\Debug\Toolbar\Collectors\BaseCollector->getAsArray()
+ 6 SYSTEMPATH\Debug\Toolbar.php(390): CodeIgniter\Debug\Toolbar->run(1765630731.371247, 1.1194, Object(CodeIgniter\HTTP\IncomingRequest), Object(CodeIgniter\HTTP\RedirectResponse))
+ 7 SYSTEMPATH\Filters\DebugToolbar.php(44): CodeIgniter\Debug\Toolbar->prepare(Object(CodeIgniter\HTTP\IncomingRequest), Object(CodeIgniter\HTTP\RedirectResponse))
+ 8 SYSTEMPATH\Filters\Filters.php(278): CodeIgniter\Filters\DebugToolbar->after(Object(CodeIgniter\HTTP\IncomingRequest), Object(CodeIgniter\HTTP\RedirectResponse), null)
+ 9 SYSTEMPATH\Filters\Filters.php(364): CodeIgniter\Filters\Filters->runAfter([...])
+10 SYSTEMPATH\CodeIgniter.php(407): CodeIgniter\Filters\Filters->runRequired('after')
+11 SYSTEMPATH\CodeIgniter.php(368): CodeIgniter\CodeIgniter->runRequiredAfterFilters(Object(CodeIgniter\Filters\Filters))
+12 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+13 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+14 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+15 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')

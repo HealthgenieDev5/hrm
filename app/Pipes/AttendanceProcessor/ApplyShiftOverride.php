@@ -44,6 +44,15 @@ class ApplyShiftOverride
             $punching_row['half_day_for_work_hours_minutes']        = $half_day_for_work_hours_minutes_current_user_data;
         }
 
+        // if ($punching_row['employee_id'] == '400' && $punching_row['date'] == '2025-12-01') {
+        //     echo '<pre>';
+        //     print_r($punching_row);
+        //     echo '</pre>';
+        //     die();
+        // }
+
+
+
         return $next($punching_row);
     }
 }

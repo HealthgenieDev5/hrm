@@ -63,284 +63,10 @@
         <div class="card shadow-sm mb-5">
             <div class="card-body">
                 <div class="row d-flex flex-wrap gy-3 g-x-3 stats-container">
-                    <div class="border border-gray-400 border-dashed rounded w-auto min-w-125px py-3 px-4 me-3">
-                        <div class="d-flex align-items-center">
-                            <span class="svg-icon svg-icon-3 svg-icon-success me-2">
-                                <?php
-                                if ($seven_days_late_minutes_avg <= 10) {
-                                ?>
-                                    <i class="fa-solid fa-arrow-down text-success me-2"></i>
-                                <?php
-                                } elseif ($seven_days_late_minutes_avg > 10 && $seven_days_late_minutes_avg <= 20) {
-                                ?>
-                                    <i class="fa-solid fa-arrow-up text-warning me-2"></i>
-                                <?php
-                                } else {
-                                ?>
-                                    <i class="fa-solid fa-arrow-up text-danger me-2"></i>
-                                <?php
-                                }
-                                ?>
-                            </span>
-                            <div class="fs-5 fw-bolder" data-kt-countup="true" data-kt-countup-value="<?php echo $seven_days_late_minutes_avg; ?>" data-kt-countup-suffix=" Minutes">0</div>
-                        </div>
-                        <div class="fw-bold fs-9 text-gray-600">Avg Late in last 7 days</div>
+                    <div class="col-12 text-center py-5">
+                        <i class="fa fa-spinner fa-spin fa-2x fa-fw"></i>
+                        <div class="mt-3 text-muted">Loading attendance statistics...</div>
                     </div>
-                    <div class="border border-gray-400 border-dashed rounded w-auto min-w-125px py-3 px-4 me-3">
-
-                        <div class="d-flex align-items-center">
-
-                            <span class="svg-icon svg-icon-3 svg-icon-success me-2">
-                                <?php
-                                if ($fifteen_days_late_minutes_avg <= 10) {
-                                ?>
-                                    <i class="fa-solid fa-arrow-down text-success me-2"></i>
-                                <?php
-                                } elseif ($fifteen_days_late_minutes_avg > 10 && $fifteen_days_late_minutes_avg <= 20) {
-                                ?>
-                                    <i class="fa-solid fa-arrow-up text-warning me-2"></i>
-                                <?php
-                                } else {
-                                ?>
-                                    <i class="fa-solid fa-arrow-up text-danger me-2"></i>
-                                <?php
-                                }
-                                ?>
-                            </span>
-
-                            <div class="fs-5 fw-bolder" data-kt-countup="true" data-kt-countup-value="<?php echo $fifteen_days_late_minutes_avg; ?>" data-kt-countup-suffix=" Minutes">0</div>
-                        </div>
-
-
-                        <div class="fw-bold fs-9 text-gray-600">Avg Late in last 15 days</div>
-
-                    </div>
-
-
-
-                    <div class="border border-gray-400 border-dashed rounded w-auto min-w-125px py-3 px-4 me-3">
-
-                        <div class="d-flex align-items-center">
-
-                            <span class="svg-icon svg-icon-3 svg-icon-success me-2">
-                                <?php
-                                if ($current_month_late_minutes_avg <= 10) {
-                                ?>
-                                    <i class="fa-solid fa-arrow-down text-success me-2"></i>
-                                <?php
-                                } elseif ($current_month_late_minutes_avg > 10 && $current_month_late_minutes_avg <= 20) {
-                                ?>
-                                    <i class="fa-solid fa-arrow-up text-warning me-2"></i>
-                                <?php
-                                } else {
-                                ?>
-                                    <i class="fa-solid fa-arrow-up text-danger me-2"></i>
-                                <?php
-                                }
-                                ?>
-                            </span>
-
-                            <div class="fs-5 fw-bolder" data-kt-countup="true" data-kt-countup-value="<?php echo $current_month_late_minutes_avg; ?>" data-kt-countup-suffix=" Minutes">0</div>
-                        </div>
-
-
-                        <div class="fw-bold fs-9 text-gray-600">Avg Late in Current Month</div>
-
-                    </div>
-
-
-
-                    <div class="border border-gray-400 border-dashed rounded w-auto min-w-125px py-3 px-4 me-3">
-
-                        <div class="d-flex align-items-center">
-
-                            <span class="svg-icon svg-icon-3 svg-icon-success me-2">
-                                <?php
-                                if (round($current_month_late_minutes / date('d')) <= 10) {
-                                ?>
-                                    <i class="fa-solid fa-arrow-down text-success me-2"></i>
-                                <?php
-                                } elseif (round($current_month_late_minutes / date('d')) > 10 && round($current_month_late_minutes / date('d')) <= 20) {
-                                ?>
-                                    <i class="fa-solid fa-arrow-up text-warning me-2"></i>
-                                <?php
-                                } else {
-                                ?>
-                                    <i class="fa-solid fa-arrow-up text-danger me-2"></i>
-                                <?php
-                                }
-                                ?>
-                            </span>
-
-                            <div class="fs-5 fw-bolder" data-kt-countup="true" data-kt-countup-value="<?php echo $current_month_late_minutes; ?>" data-kt-countup-suffix=" Minutes">0</div>
-                        </div>
-
-
-                        <div class="fw-bold fs-9 text-gray-600">Total Late in Current Month</div>
-
-                    </div>
-
-
-
-                    <div class="border border-gray-400 border-dashed rounded w-auto min-w-125px py-3 px-4 me-3">
-
-                        <div class="d-flex align-items-center">
-
-                            <span class="svg-icon svg-icon-3 svg-icon-success me-2">
-                                <?php
-                                if ($seven_days_early_going_minutes_avg <= 10) {
-                                ?>
-                                    <i class="fa-solid fa-arrow-down text-success me-2"></i>
-                                <?php
-                                } elseif ($seven_days_early_going_minutes_avg > 10 && $seven_days_early_going_minutes_avg <= 20) {
-                                ?>
-                                    <i class="fa-solid fa-arrow-up text-warning me-2"></i>
-                                <?php
-                                } else {
-                                ?>
-                                    <i class="fa-solid fa-arrow-up text-danger me-2"></i>
-                                <?php
-                                }
-                                ?>
-                            </span>
-
-                            <div class="fs-5 fw-bolder" data-kt-countup="true" data-kt-countup-value="<?php echo $seven_days_early_going_minutes_avg; ?>" data-kt-countup-suffix=" Minutes">0</div>
-                        </div>
-
-
-                        <div class="fw-bold fs-9 text-gray-600">Avg Early Going in last 7 days</div>
-
-                    </div>
-
-
-
-                    <div class="border border-gray-400 border-dashed rounded w-auto min-w-125px py-3 px-4 me-3">
-
-                        <div class="d-flex align-items-center">
-
-                            <span class="svg-icon svg-icon-3 svg-icon-success me-2">
-                                <?php
-                                if ($fifteen_days_early_going_minutes_avg <= 10) {
-                                ?>
-                                    <i class="fa-solid fa-arrow-down text-success me-2"></i>
-                                <?php
-                                } elseif ($fifteen_days_early_going_minutes_avg > 10 && $fifteen_days_early_going_minutes_avg <= 20) {
-                                ?>
-                                    <i class="fa-solid fa-arrow-up text-warning me-2"></i>
-                                <?php
-                                } else {
-                                ?>
-                                    <i class="fa-solid fa-arrow-up text-danger me-2"></i>
-                                <?php
-                                }
-                                ?>
-                            </span>
-
-                            <div class="fs-5 fw-bolder" data-kt-countup="true" data-kt-countup-value="<?php echo $fifteen_days_early_going_minutes_avg; ?>" data-kt-countup-suffix=" Minutes">0</div>
-                        </div>
-
-
-                        <div class="fw-bold fs-9 text-gray-600">Avg Early Going in last 15 days</div>
-
-                    </div>
-
-
-
-                    <div class="border border-gray-400 border-dashed rounded w-auto min-w-125px py-3 px-4 me-3">
-
-                        <div class="d-flex align-items-center">
-
-                            <span class="svg-icon svg-icon-3 svg-icon-success me-2">
-                                <?php
-                                if ($current_month_early_going_minutes_avg <= 10) {
-                                ?>
-                                    <i class="fa-solid fa-arrow-down text-success me-2"></i>
-                                <?php
-                                } elseif ($current_month_early_going_minutes_avg > 10 && $current_month_early_going_minutes_avg <= 20) {
-                                ?>
-                                    <i class="fa-solid fa-arrow-up text-warning me-2"></i>
-                                <?php
-                                } else {
-                                ?>
-                                    <i class="fa-solid fa-arrow-up text-danger me-2"></i>
-                                <?php
-                                }
-                                ?>
-                            </span>
-
-                            <div class="fs-5 fw-bolder" data-kt-countup="true" data-kt-countup-value="<?php echo $current_month_early_going_minutes_avg; ?>" data-kt-countup-suffix=" Minutes">0</div>
-                        </div>
-
-
-                        <div class="fw-bold fs-9 text-gray-600">Avg Early Going in Current Month</div>
-
-                    </div>
-
-
-
-                    <div class="border border-gray-400 border-dashed rounded w-auto min-w-125px py-3 px-4 me-3">
-
-                        <div class="d-flex align-items-center">
-
-                            <span class="svg-icon svg-icon-3 svg-icon-success me-2">
-                                <?php
-                                if (round($current_month_early_going_minutes / date('d')) <= 10) {
-                                ?>
-                                    <i class="fa-solid fa-arrow-down text-success me-2"></i>
-                                <?php
-                                } elseif (round($current_month_early_going_minutes / date('d')) > 10 && round($current_month_early_going_minutes / date('d')) <= 20) {
-                                ?>
-                                    <i class="fa-solid fa-arrow-up text-warning me-2"></i>
-                                <?php
-                                } else {
-                                ?>
-                                    <i class="fa-solid fa-arrow-up text-danger me-2"></i>
-                                <?php
-                                }
-                                ?>
-                            </span>
-
-                            <div class="fs-5 fw-bolder" data-kt-countup="true" data-kt-countup-value="<?php echo $current_month_early_going_minutes; ?>" data-kt-countup-suffix=" Minutes">0</div>
-
-                        </div>
-
-
-                        <div class="fw-bold fs-9 text-gray-600">Total Early Going in Current Month</div>
-
-                    </div>
-
-
-
-                    <div class="border border-gray-400 border-dashed rounded w-auto min-w-125px py-3 px-4 me-3">
-
-                        <div class="d-flex align-items-center">
-
-                            <span class="svg-icon svg-icon-3 svg-icon-success me-2">
-                                <?php
-                                if (round($current_date_early_going_minutes / date('d')) <= 10) {
-                                ?>
-                                    <i class="fa-solid fa-arrow-down text-success me-2"></i>
-                                <?php
-                                } elseif (round($current_date_early_going_minutes / date('d')) > 10 && round($current_date_early_going_minutes / date('d')) <= 20) {
-                                ?>
-                                    <i class="fa-solid fa-arrow-up text-warning me-2"></i>
-                                <?php
-                                } else {
-                                ?>
-                                    <i class="fa-solid fa-arrow-up text-danger me-2"></i>
-                                <?php
-                                }
-                                ?>
-                            </span>
-
-                            <div class="fs-5 fw-bolder" data-kt-countup="true" data-kt-countup-value="<?php echo $current_date_early_going_minutes; ?>" data-kt-countup-suffix=" Minutes">0</div>
-                        </div>
-
-
-                        <div class="fw-bold fs-9 text-gray-600">Total Early Going Today</div>
-
-                    </div>
-
                 </div>
             </div>
         </div>
@@ -1528,22 +1254,9 @@ if (!empty($probationPopUpEmployees)) {
         $(document).ready(function() {
             const probationPopUpEmployees = JSON.parse('<?php echo json_encode($probationPopUpEmployees); ?>');
             let htmlContent = '<ul class="list-group text-start">';
-            const currentDate = new Date();
-            let removeContent = true;
-            let showToBeExtended = true;
-
+            let cancellable = true;
             probationPopUpEmployees.forEach(employee => {
-                const joining_date = new Date(employee.joining_date);
-                const probationMatch = employee.probation.match(/\d+/); // extracts the number part
-                const probationDays = probationMatch ? parseInt(probationMatch[0]) : NaN;
-                const probationEndDate = new Date(joining_date);
-                probationEndDate.setDate(joining_date.getDate() + parseInt(probationDays));
-                removeContent = probationEndDate > currentDate;
-                const daysRemaining = Math.ceil((probationEndDate - currentDate) / (1000 * 60 * 60 * 24));
-                const daysSinceJoining = Math.ceil((currentDate - joining_date) / (1000 * 60 * 60 * 24));
-                showToBeExtended = probationDays < 90;
-                const showTooEarlyOption = daysSinceJoining < 45;
-
+                cancellable = (cancellable == true && employee.cancellable == true) ? true : false;
                 htmlContent += `
                 <li class="employee-dropdown list-group-item">
                     <div class="d-flex justify-content-between align-items-start">
@@ -1553,14 +1266,11 @@ if (!empty($probationPopUpEmployees)) {
                             <small style="font-size: 0.70rem;">is currently on ${employee.probation_status}</small>
                         </div>
                         <span class="badge bg-white border border-primary p-0">
-                            <select id="employee_${employee.employee_id}" class="">
-
+                             <select id="employee_${employee.employee_id}">
                                 <option value="" disabled selected>Select an action</option>
-                                 ${showTooEarlyOption ? '<option value="Too Early to Decide">Too Early to Decide</option>' : ''}
-                                 ${showToBeExtended ? '<option value="To be Extended">To be Extended</option>' : ''}
-
-                                <option value="Not to Confirm">Not to Confirm</option>
-                                <option value="Confirmed">Confirmed</option>
+                                ${employee.available_actions.map(action => 
+                                    `<option value="${action}">${action}</option>`
+                                ).join('')}
                             </select>
                         </span>
                     </div>
@@ -1575,7 +1285,7 @@ if (!empty($probationPopUpEmployees)) {
                 html: htmlContent,
                 padding: "1rem",
                 confirmButtonText: 'Save',
-                showCancelButton: removeContent,
+                showCancelButton: cancellable,
                 allowOutsideClick: false,
                 preConfirm: () => {
                     let valid = true;
@@ -1602,6 +1312,8 @@ if (!empty($probationPopUpEmployees)) {
                     return formData;
                 },
             }).then(async (result) => {
+
+                console.log(result);
                 if (result.isConfirmed) {
                     const selectedData = {
                         'reponses': result.value
@@ -1924,28 +1636,7 @@ if (!empty($probationPopUpEmployees)) {
             "initComplete": function(settings, json) {
                 const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
                 const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
-
-                $.ajax({
-                    method: "get",
-                    url: "<?php echo base_url('ajax/profile/get-balance-grace'); ?>",
-                    success: function(response) {
-                        console.log(response);
-                        var balance_grace_html = `<div class="border border-gray-400 border-dashed rounded w-auto min-w-125px py-3 px-4 me-3">
-                            <div class="d-flex align-items-center">
-                                <span class="svg-icon svg-icon-3 svg-icon-success me-2">
-                                    <i class="fa-solid fa-clock text-primary me-2"></i>
-                                </span>
-                                <div class="fs-5 fw-bolder counted" data-kt-countup="true" data-kt-countup-value="${response}" data-kt-countup-suffix=" Minutes">${response} Minutes</div>
-                            </div>
-                            <div class="fw-bold fs-9 text-gray-600">Balance Grace</div>
-                        </div>`;
-                        $('.stats-container').append(balance_grace_html);
-                    },
-                    failed: function() {
-                        console.log('error at ajax');
-                    }
-                });
-
+                get_attendance_stats();
 
             },
             "headerCallback": function(thead, data, start, end, display) {
@@ -2016,7 +1707,62 @@ if (!empty($probationPopUpEmployees)) {
             }
         });
         $('#punching_report_table_wrapper > .card > .card-header > .card-title').replaceWith('<div class="d-flex flex-column"><h3 class="card-title">Punching Report</h3><small>As per your shift timings</small></div>');
+
+
+
+        function get_attendance_stats() {
+            function get_icon(value) {
+                if (value <= 10) {
+                    icon = '<i class="fa-solid fa-arrow-down text-success me-2"></i>';
+                } else if (value > 10 && value <= 20) {
+                    icon = '<i class="fa-solid fa-arrow-up text-warning me-2"></i>';
+                } else {
+                    icon = '<i class="fa-solid fa-arrow-up text-danger me-2"></i>';
+                }
+                return icon;
+            }
+
+            function get_stat_html(value, title, icon = false) {
+                var html = `<div class="border border-gray-400 border-dashed rounded w-auto min-w-125px py-3 px-4 me-3">
+                            <div class="d-flex align-items-center">
+                                <span class="svg-icon svg-icon-3 svg-icon-success me-2">
+                                    ${icon ? icon : get_icon(value)}
+                                </span>
+                                <div class="fs-5 fw-bolder counted">${value} Minutes</div>
+                            </div>
+                            <div class="fw-bold fs-9 text-gray-600">${title}</div>
+                        </div>`;
+                return html;
+            }
+
+            $.ajax({
+                method: "get",
+                url: "<?php echo base_url('ajax/profile/get-attendance-stats'); ?>",
+                success: function(stats) {
+                    console.log(stats);
+
+                    $('.stats-container').html(
+                        get_stat_html(stats.seven_days_late_minutes_avg, "Avg Late in last 7 days") +
+                        get_stat_html(stats.fifteen_days_late_minutes_avg, "Avg Late in last 15 days") +
+                        get_stat_html(stats.current_month_late_minutes_avg, "Avg Late in Current Month") +
+                        get_stat_html(stats.current_month_late_minutes, "Total Late in Current Month") +
+                        get_stat_html(stats.seven_days_early_going_minutes_avg, "Avg Early Going in last 7 days") +
+                        get_stat_html(stats.fifteen_days_early_going_minutes_avg, "Avg Early Going in last 15 days") +
+                        get_stat_html(stats.current_month_early_going_minutes_avg, "Avg Early Going in Current Month") +
+                        get_stat_html(stats.current_month_early_going_minutes, "Total Early Going in Current Month") +
+                        get_stat_html(stats.current_date_early_going_minutes, "Total Early Going Today") +
+                        get_stat_html(stats.balance_grace, "Balance Grace", `<i class="fa-solid fa-clock text-primary me-2"></i>`)
+                    );
+                },
+                failed: function() {
+                    console.log('error at ajax');
+                    $('.stats-container').html('<div class="col-12 text-center py-5 text-danger"><i class="fa-solid fa-exclamation-triangle me-2"></i>Failed to load attendance statistics</div>');
+                }
+            });
+        }
+
         /*end::punching_report_table*/
+
         /*begin::leave_report_table*/
         var leave_report_table = $("#leave_report_table").DataTable({
             "dom": '<"card"<"card-header"<"card-title"><"card-toolbar"<"datatable-buttons-container me-1"B>f<"toolbar-buttons">>><"card-body pt-1 pb-1"rt><"card-footer pt-5 pb-3"<"row"<"col-sm-12 col-md-5 d-flex align-items-center justify-content-start mb-3"li><"col-sm-12 col-md-7 d-flex align-items-center justify-content-start justify-content-md-end"p>>>>',

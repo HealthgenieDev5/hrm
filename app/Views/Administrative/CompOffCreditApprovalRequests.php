@@ -1189,6 +1189,25 @@
             /*console.log(action);
             return false;*/
             var form = $('#update_comp_off_credit_request');
+            if (confirmButtonText_html == 'Approve') {
+                var exchangeValue = form.find('input[name="exchange"]:checked').val();
+                var minutesValue = form.find('input[name="minutes"]').val();
+
+
+
+                if ((exchangeValue == 0 || exchangeValue == '') && (!minutesValue || minutesValue.trim() == '')) {
+                    Swal.fire({
+                        html: "Please select either Exchange (Half Day/Full Day) or enter Minutes value.",
+                        icon: "error",
+                        buttonsStyling: false,
+                        confirmButtonText: "Ok, got it!",
+                        customClass: {
+                            confirmButton: "btn btn-primary"
+                        },
+                    });
+                    return false;
+                }
+            }
 
             form.closest('.modal').modal('hide');
             Swal.fire({

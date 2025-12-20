@@ -106,14 +106,18 @@ class FinalPaidDays extends BaseController
         }
 
 
+        dd($data);
+
         return view('Salary/FinalPaidDaysAll', $data);
     }
 
-    public function loadFinalPaidDays()
+    public function loadFinalPaidDays($params = false, $return = false)
     {
+        if (!$return) {
+            $filter = $this->request->getPost('filter');
+            parse_str($filter, $params);
+        }
 
-        $filter = $this->request->getPost('filter');
-        parse_str($filter, $params);
 
         $company_id     = isset($params['company']) ? $params['company'] : "";
         $department_id  = isset($params['department']) ? $params['department'] : "";
@@ -175,6 +179,10 @@ class FinalPaidDays extends BaseController
             }
             $FinalPaidDays[$index] = $FinalPaidDaysRow;
         }
+
+        // if ($return) {
+        //     return $FinalPaidDays;
+        // }
         echo json_encode($FinalPaidDays);
     }
 
@@ -561,6 +569,19 @@ class FinalPaidDays extends BaseController
 
     public function finalPaidDaysSheet()
     {
+
+        if (
+            session()->get('current_user')['role'] == 'hr'
+            || session()->get('current_user')['employee_id'] == '20'
+            || session()->get('current_user')['employee_id'] == '40'
+            || session()->get('current_user')['employee_id'] == '165'
+        ) {
+            $can_load_other_employee_attendance    = true;
+        } else {
+            $can_load_other_employee_attendance    = false;
+        }
+
+
         $CompanyModel = new CompanyModel();
         $Companies = $CompanyModel->findAll();
 
@@ -579,20 +600,37 @@ class FinalPaidDays extends BaseController
 
         $company_id     = isset($_REQUEST['company']) ? $_REQUEST['company'] : "";
         $department_id  = isset($_REQUEST['department']) ? $_REQUEST['department'] : "";
-        $employee_id    = isset($_REQUEST['employee']) ? $_REQUEST['employee'] : "";
+
+
+        if ($can_load_other_employee_attendance == true) {
+            $employee_id    = isset($_REQUEST['employee']) ? $_REQUEST['employee'] : "";
+        } else {
+            $employee_id = [session()->get('current_user')['employee_id']];
+        }
+
+
+
+
         if (isset($company_id) && !empty($company_id) && !in_array('all_companies', $company_id) && !in_array('', $company_id)) {
             $EmployeeModel->whereIn('employees.company_id', $company_id);
         }
         if (isset($department_id) && !empty($department_id) && !in_array('all_departments', $department_id) && !in_array('', $department_id)) {
             $EmployeeModel->whereIn('employees.department_id', $department_id);
         }
+
         if (isset($employee_id) && !empty($employee_id) && !in_array('all_employees', $employee_id) && !in_array('', $employee_id)) {
             $EmployeeModel->whereIn('employees.id', $employee_id);
         }
 
-        $month = isset($_REQUEST['month']) ? $_REQUEST['month'] : date('Y-m', strtotime(first_date_of_last_month()));
-        $lastDate = date('Y-m-t', strtotime($month));
-        $firstDate = date('Y-m-01', strtotime($month));
+        if ($can_load_other_employee_attendance == true) {
+            $month = isset($_REQUEST['month']) ? $_REQUEST['month'] : date('Y-m', strtotime(first_date_of_last_month()));
+            $lastDate = date('Y-m-t', strtotime($month));
+            $firstDate = date('Y-m-01', strtotime($month));
+        } else {
+            $month = date('Y-m');
+            $lastDate = date('Y-m-d', strtotime($month));
+            $firstDate = date('Y-m-01', strtotime($month));
+        }
 
         // $date_45_days_before = date('Y-m-d', strtotime($lastDate . '-45 days'));
         #removed on Santu's request to get all employee
@@ -617,15 +655,36 @@ class FinalPaidDays extends BaseController
 
         ######for filter######
         $data = [
-            'page_title'            => 'Final Paid Days',
+            'page_title'            => 'Final Paid Days - ' . date('F Y', strtotime($month)),
             'current_controller'    => $this->request->getUri()->getSegment(2),
             'current_method'        => $this->request->getUri()->getSegment(4),
             'month'                 => date('Y-m', strtotime($month)),
             'Companies'             => $Companies,
+            'can_load_other_employee_attendance'             => $can_load_other_employee_attendance,
         ];
 
         $data['HRSHEETData'] = $this->loadHrSheet($Employees, $data['month']);
+        if ($month == date('Y-m')) {
+            $today = date('Y-m-d');
+            $data['HRSHEETData'] = array_map(
+                static function ($employeeData) use ($today) {
 
+                    $employeeData['PreFinalPaidDays_Data'] = array_filter(
+                        $employeeData['PreFinalPaidDays_Data'] ?? [],
+                        static fn($date) => $date <= $today,
+                        ARRAY_FILTER_USE_KEY
+                    );
+
+                    $employeeData['dates'] = array_values(array_filter(
+                        $employeeData['dates'] ?? [],
+                        static fn($date) => $date <= $today
+                    ));
+
+                    return $employeeData;
+                },
+                $data['HRSHEETData']
+            );
+        }
         $where_company = "";
         if (isset($_REQUEST['company']) && !empty($_REQUEST['company']) && !in_array('all_companies', $_REQUEST['company'])) {
             $where_company .= " and d.company_id in ('" . implode("', '", $_REQUEST['company']) . "')";
@@ -699,15 +758,25 @@ class FinalPaidDays extends BaseController
             $employeeData['company_short_name'] = $Employee['company_short_name'];
 
             $PreFinalPaidDaysModel = new PreFinalPaidDaysModel();
-            $PreFinalPaidDays = $PreFinalPaidDaysModel
-                ->select('pre_final_paid_days.*')
-                ->select('trim(concat(settler.first_name, " ", settler.last_name)) as settled_by_name')
-                ->join('employees as settler', 'settler.id = pre_final_paid_days.settled_by', 'left')
-                ->where('pre_final_paid_days.employee_id =', $Employee["id"])
-                ->where("(pre_final_paid_days.date between '" . $range_from . "' and '" . $range_to . "')")
-                /*->groupBy('pre_final_paid_days.date')*/
-                ->orderBy('pre_final_paid_days.date', 'ASC')
-                ->findAll();
+            $PreFinalPaidDaysModel->select('pre_final_paid_days.*');
+            $PreFinalPaidDaysModel->select('trim(concat(settler.first_name, " ", settler.last_name)) as settled_by_name');
+            $PreFinalPaidDaysModel->join('employees as settler', 'settler.id = pre_final_paid_days.settled_by', 'left');
+
+            // if (
+            //     session()->get('current_user')['role'] == 'hr'
+            //     || session()->get('current_user')['employee_id'] == '20'
+            //     // || session()->get('current_user')['employee_id'] == '40'
+            //     || session()->get('current_user')['employee_id'] == '165'
+            // ) {
+            $PreFinalPaidDaysModel->where('pre_final_paid_days.employee_id =', $Employee["id"]);
+            // } else {
+            //     $PreFinalPaidDaysModel->where('pre_final_paid_days.employee_id =', session()->get('current_user')['employee_id']);
+            // }
+
+
+            $PreFinalPaidDaysModel->where("(pre_final_paid_days.date between '" . $range_from . "' and '" . $range_to . "')");
+            $PreFinalPaidDays = $PreFinalPaidDaysModel->orderBy('pre_final_paid_days.date', 'ASC');
+            $PreFinalPaidDays = $PreFinalPaidDaysModel->findAll();
             $PreFinalPaidDays_Data = array();
             foreach ($PreFinalPaidDays as $PaidDayData) {
                 #$employeeData[ $PaidDayData['date'] ] = $PaidDayData;
@@ -936,8 +1005,8 @@ class FinalPaidDays extends BaseController
             }
 
 
-            print_r($finalData);
-            die();
+            // print_r($finalData);
+            // die();
 
             // $employeeData[ 'PreFinalPaidDays_Data' ] = $PreFinalPaidDays_Data;
             // $employeeData[ 'dates' ] = array_column($PreFinalPaidDays, 'date');

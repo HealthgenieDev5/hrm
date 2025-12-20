@@ -311,6 +311,10 @@ class ApplyStatusCodeAndRemarks
             $data['paid']            = '0';
             $data['grace']           = '0';
         }
+
+        // if ($data['employee_id'] == '316' && $data['date'] == '2025-12-03') {
+        //     dd($data);
+        // }
         return $next($data);
     }
 }

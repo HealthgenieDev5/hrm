@@ -46,121 +46,125 @@
 <!--begin::Row-->
 <div class="row gy-5 g-xl-8">
 
-    <!--begin::Col-->
-    <div class="col-xl-12">
-        <!--begin::Mixed Widget 2-->
-        <div class="card">
-            <!--begin::Body-->
-            <div class="card-body">
-                <form id="filter_form" class="row gy-5 g-xl-8" enctype='multipart/form-data'>
-                    <div class="col-lg-8">
-                        <div class="row gy-5 g-xl-8">
+    <?php if ($can_load_other_employee_attendance == true) { ?>
 
-                            <div class="col-lg-3">
-                                <label class="form-label" for="company" class="mb-3">Company</label>
-                                <!-- <select class="form-select form-select-sm" id="company" name="company[]" multiple data-placeholder="Select a Company" > -->
-                                <select class="form-select form-select-sm" id="company" name="company[]" multiple data-control="select2" data-placeholder="Select a Company">
-                                    <option value=""></option>
-                                    <option value="all_companies" <?php echo (isset($_REQUEST['company']) && !empty($_REQUEST['company']) && in_array('all_companies', $_REQUEST['company'])) ? 'selected' : ''; ?>>All Companies</option>
-                                    <?php
-                                    if (isset($Companies) && !empty($Companies)) {
-                                        foreach ($Companies as $company_row) {
-                                    ?>
-                                            <option value="<?php echo $company_row['id']; ?>" <?php echo (isset($_REQUEST['company']) && !empty($_REQUEST['company']) && in_array($company_row['id'], $_REQUEST['company']) && !in_array('all_companies', $_REQUEST['company'])) ? 'selected' : ''; ?>><?php echo $company_row['company_name']; ?></option>
-                                    <?php
+        <!--begin::Col-->
+        <div class="col-xl-12">
+            <!--begin::Mixed Widget 2-->
+            <div class="card">
+                <!--begin::Body-->
+                <div class="card-body">
+                    <form id="filter_form" class="row gy-5 g-xl-8" enctype='multipart/form-data'>
+                        <div class="col-lg-8">
+                            <div class="row gy-5 g-xl-8">
+
+                                <div class="col-lg-3">
+                                    <label class="form-label" for="company" class="mb-3">Company</label>
+                                    <!-- <select class="form-select form-select-sm" id="company" name="company[]" multiple data-placeholder="Select a Company" > -->
+                                    <select class="form-select form-select-sm" id="company" name="company[]" multiple data-control="select2" data-placeholder="Select a Company">
+                                        <option value=""></option>
+                                        <option value="all_companies" <?php echo (isset($_REQUEST['company']) && !empty($_REQUEST['company']) && in_array('all_companies', $_REQUEST['company'])) ? 'selected' : ''; ?>>All Companies</option>
+                                        <?php
+                                        if (isset($Companies) && !empty($Companies)) {
+                                            foreach ($Companies as $company_row) {
+                                        ?>
+                                                <option value="<?php echo $company_row['id']; ?>" <?php echo (isset($_REQUEST['company']) && !empty($_REQUEST['company']) && in_array($company_row['id'], $_REQUEST['company']) && !in_array('all_companies', $_REQUEST['company'])) ? 'selected' : ''; ?>><?php echo $company_row['company_name']; ?></option>
+                                        <?php
+                                            }
                                         }
-                                    }
-                                    ?>
-                                </select>
-                                <br>
-                                <small class="text-danger error-text" id="company_error"></small>
-                            </div>
-
-                            <div class="col-lg-3">
-                                <label class="form-label" for="department" class="mb-3">Department</label>
-                                <select class="form-select form-select-sm" id="department" name="department[]" multiple data-control="select2" data-placeholder="Select a Department">
-                                    <option value=""></option>
-                                    <option value="all_departments" <?php echo (isset($_REQUEST['department']) && !empty($_REQUEST['department']) && in_array('all_departments', $_REQUEST['department'])) ? 'selected' : ''; ?>>All Departments</option>
-                                    <?php
-                                    if (isset($Departments) && !empty($Departments)) {
-                                        foreach ($Departments as $department_row) {
-                                    ?>
-                                            <option value="<?php echo $department_row['id']; ?>" <?php echo (isset($_REQUEST['department']) && !empty($_REQUEST['department']) && in_array($department_row['id'], $_REQUEST['department']) && !in_array('all_departments', $_REQUEST['department'])) ? 'selected' : ''; ?>><?php echo $department_row['department_name'] . ' - ' . $department_row['company_short_name']; ?></option>
-                                    <?php
-                                        }
-                                    }
-                                    ?>
-                                </select>
-                                <br>
-                                <small class="text-danger error-text" id="department_error"></small>
-                            </div>
-
-                            <div class="col-lg-4">
-                                <label class="form-label" for="employee" class="mb-3">Employee</label>
-                                <select class="form-select form-select-sm" id="employee" name="employee[]" multiple data-control="select2" data-placeholder="Select an Employee">
-                                    <option value=""></option>
-                                    <option value="all_employees" <?php echo (isset($_REQUEST['employee']) && !empty($_REQUEST['employee']) && in_array('all_employees', $_REQUEST['employee'])) ? 'selected' : ''; ?>>All Employees</option>
-                                    <?php
-                                    if (isset($Employees) && !empty($Employees)) {
-                                        foreach ($Employees as $employee_row) {
-                                    ?>
-                                            <option value="<?php echo $employee_row['id']; ?>" <?php echo (isset($_REQUEST['employee']) && !empty($_REQUEST['employee']) && in_array($employee_row['id'], $_REQUEST['employee']) && !in_array('all_employees', $_REQUEST['employee'])) ? 'selected' : ''; ?>><?php echo $employee_row['employee_name'] . '(' . $employee_row['internal_employee_id'] . ') - ' . $employee_row['department_name'] . ' -' . $employee_row['company_short_name']; ?><?php echo $employee_row['status'] != 'active' ? ' --' . $employee_row['status'] : ''; ?></option>
-                                    <?php
-                                        }
-                                    }
-                                    ?>
-                                </select>
-                                <small class="text-danger error-text" id="employee_error"></small>
-                            </div>
-
-                            <div class="col-lg-2">
-                                <label class="form-label" for="month" class="mb-3">Month</label>
-                                <div class="position-relative d-flex align-items-center ">
-                                    <!--begin::Icon-->
-                                    <span class="svg-icon svg-icon-2 position-absolute mx-2" style="z-index:1">
-                                        <!-- <i class="fas fa-clock"></i> -->
-                                        <i class="fa-solid fa-calendar-days"></i>
-                                    </span>
-                                    <input type="text" id="month" name="month" class="form-control form-control-sm form-control-solid ps-7" placeholder="Select month" value="<?php echo (isset($_REQUEST['month']) && !empty($_REQUEST['month'])) ? date('Y-m', strtotime($_REQUEST['month'])) : date('Y-m', strtotime(first_date_of_last_month())); ?>" />
+                                        ?>
+                                    </select>
+                                    <br>
+                                    <small class="text-danger error-text" id="company_error"></small>
                                 </div>
-                                <span class="text-danger error-text d-block" id="month_error"></span>
-                            </div>
 
+                                <div class="col-lg-3">
+                                    <label class="form-label" for="department" class="mb-3">Department</label>
+                                    <select class="form-select form-select-sm" id="department" name="department[]" multiple data-control="select2" data-placeholder="Select a Department">
+                                        <option value=""></option>
+                                        <option value="all_departments" <?php echo (isset($_REQUEST['department']) && !empty($_REQUEST['department']) && in_array('all_departments', $_REQUEST['department'])) ? 'selected' : ''; ?>>All Departments</option>
+                                        <?php
+                                        if (isset($Departments) && !empty($Departments)) {
+                                            foreach ($Departments as $department_row) {
+                                        ?>
+                                                <option value="<?php echo $department_row['id']; ?>" <?php echo (isset($_REQUEST['department']) && !empty($_REQUEST['department']) && in_array($department_row['id'], $_REQUEST['department']) && !in_array('all_departments', $_REQUEST['department'])) ? 'selected' : ''; ?>><?php echo $department_row['department_name'] . ' - ' . $department_row['company_short_name']; ?></option>
+                                        <?php
+                                            }
+                                        }
+                                        ?>
+                                    </select>
+                                    <br>
+                                    <small class="text-danger error-text" id="department_error"></small>
+                                </div>
+
+                                <div class="col-lg-4">
+                                    <label class="form-label" for="employee" class="mb-3">Employee</label>
+                                    <select class="form-select form-select-sm" id="employee" name="employee[]" multiple data-control="select2" data-placeholder="Select an Employee">
+                                        <option value=""></option>
+                                        <option value="all_employees" <?php echo (isset($_REQUEST['employee']) && !empty($_REQUEST['employee']) && in_array('all_employees', $_REQUEST['employee'])) ? 'selected' : ''; ?>>All Employees</option>
+                                        <?php
+                                        if (isset($Employees) && !empty($Employees)) {
+                                            foreach ($Employees as $employee_row) {
+                                        ?>
+                                                <option value="<?php echo $employee_row['id']; ?>" <?php echo (isset($_REQUEST['employee']) && !empty($_REQUEST['employee']) && in_array($employee_row['id'], $_REQUEST['employee']) && !in_array('all_employees', $_REQUEST['employee'])) ? 'selected' : ''; ?>><?php echo $employee_row['employee_name'] . '(' . $employee_row['internal_employee_id'] . ') - ' . $employee_row['department_name'] . ' -' . $employee_row['company_short_name']; ?><?php echo $employee_row['status'] != 'active' ? ' --' . $employee_row['status'] : ''; ?></option>
+                                        <?php
+                                            }
+                                        }
+                                        ?>
+                                    </select>
+                                    <small class="text-danger error-text" id="employee_error"></small>
+                                </div>
+
+                                <div class="col-lg-2">
+                                    <label class="form-label" for="month" class="mb-3">Month</label>
+                                    <div class="position-relative d-flex align-items-center ">
+                                        <!--begin::Icon-->
+                                        <span class="svg-icon svg-icon-2 position-absolute mx-2" style="z-index:1">
+                                            <!-- <i class="fas fa-clock"></i> -->
+                                            <i class="fa-solid fa-calendar-days"></i>
+                                        </span>
+                                        <input type="text" id="month" name="month" class="form-control form-control-sm form-control-solid ps-7" placeholder="Select month" value="<?php echo (isset($_REQUEST['month']) && !empty($_REQUEST['month'])) ? date('Y-m', strtotime($_REQUEST['month'])) : date('Y-m', strtotime(first_date_of_last_month())); ?>" />
+                                    </div>
+                                    <span class="text-danger error-text d-block" id="month_error"></span>
+                                </div>
+
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-lg-2">
-                        <label class="form-label"> &nbsp; </label><br>
-                        <button type="submit" id="filter_form_submit" class="btn btn-sm btn-primary d-inline">
-                            <span class="indicator-label">Filter</span>
-                            <span class="indicator-progress">
-                                Please wait...
-                                <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
-                            </span>
-                        </button>
-                    </div>
-                    <?php
-                    if (session()->get('current_user')['employee_id'] == '40' || session()->get('current_user')['employee_id'] == '93') {
-                    ?>
                         <div class="col-lg-2">
                             <label class="form-label"> &nbsp; </label><br>
-                            <button type="button" id="regenerate_final_paid_days" class="btn btn-sm btn-warning d-inline">
-                                <span class="indicator-label">Regenerate</span>
+                            <button type="submit" id="filter_form_submit" class="btn btn-sm btn-primary d-inline">
+                                <span class="indicator-label">Filter</span>
                                 <span class="indicator-progress">
                                     Please wait...
                                     <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
                                 </span>
                             </button>
                         </div>
-                    <?php
-                    }
-                    ?>
-                </form>
+                        <?php
+                        if (session()->get('current_user')['employee_id'] == '40' || session()->get('current_user')['employee_id'] == '93') {
+                        ?>
+                            <div class="col-lg-2">
+                                <label class="form-label"> &nbsp; </label><br>
+                                <button type="button" id="regenerate_final_paid_days" class="btn btn-sm btn-warning d-inline">
+                                    <span class="indicator-label">Regenerate</span>
+                                    <span class="indicator-progress">
+                                        Please wait...
+                                        <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                                    </span>
+                                </button>
+                            </div>
+                        <?php
+                        }
+                        ?>
+                    </form>
+                </div>
+                <!--end::Body-->
             </div>
-            <!--end::Body-->
+            <!--end::Card-->
         </div>
-        <!--end::Card-->
-    </div>
-    <!--end::Mixed Widget 2-->
+        <!--end::Mixed Widget 2-->
+    <?php } ?>
+
 
     <div class="col-12 table-responsive">
         <div class="alert alert-warning alert-dismissible fade show " role="alert">
@@ -2063,9 +2067,12 @@
         })
         const today = new Date();
         const previousMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+        const currentMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+        const month_from_filter = $("#month").val();
+        // const month = month_from_filter.length ? month_from_filter : previousMonth;
         $("#month").flatpickr({
-            defaultDate: previousMonth,
-            maxDate: previousMonth,
+            defaultDate: month_from_filter ?? month_from_filter,
+            maxDate: currentMonth,
             altInput: true,
             plugins: [
                 new monthSelectPlugin({

@@ -476,6 +476,7 @@ if (! function_exists('get_punching_data_del')) {
         $postData = "Empcode=" . $employee_id . "&FromDate=" . $from_date . "&ToDate=" . $to_date;
 
         $url = env('del.API_URL');
+
         $corporate_id = env('del.CORPORATE_ID');
         $username = env('del.USERNAME');
         $password = env('del.PASSWORD');
@@ -735,91 +736,129 @@ function orderResultSet($result_set, $column, $reverse = FALSE)
     return $result_set;
 }
 
-if (! function_exists('getLateMinutes')) {
-    function getLateMinutes($employee_data, $from, $to)
+if (! function_exists('getBalanceGrace')) {
+    function getBalanceGrace()
     {
-        $get_punching_data = json_decode(get_punching_data($employee_data['internal_employee_id'], $from, $to), true)['InOutPunchData'];
-        foreach ($get_punching_data as $punching_data_index => $punching_data_row) {
-            $day = date('l', strtotime($punching_data_row['DateString']));
-            $date_time = date('Y-m-d', strtotime($punching_data_row['DateString']));
-            $get_punching_data[$punching_data_index]['date_time'] = $date_time;
-            $get_punching_data[$punching_data_index]['day'] = $day;
-        }
-        $total_late_minutes = 0;
-        $total_present_days = 0;
-        foreach ($get_punching_data as $punching_row) {
-            if ($punching_row['Empcode'] == $employee_data['internal_employee_id'] && $punching_row['INTime'] !== '--:--') {
-                #make shift time array of current date
-                $shift_override = App\Pipes\AttendanceProcessor\ProcessorHelper::get_shift_override($employee_data['id'], $punching_row['date_time']);
-                if (!empty($shift_override)) {
-                    $shift = array_values($shift_override);
-                } else {
-                    if (isset($employee_data[$punching_row['day']]) && !empty($employee_data[$punching_row['day']])) {
-                        $shift = explode(',', $employee_data[$punching_row['day']]);
-                    } else {
-                        $shift = array('', '');
-                    }
-                }
+        $employee_id = session()->get('current_user')['employee_id'];
+        $GraceBalanceModel = new \App\Models\GraceBalanceModel();
+        $balance_grace_row = $GraceBalanceModel->where('employee_id', $employee_id)->where('year_month', date('Y-m'))->first();
+        $balance_grace = !empty($balance_grace_row) ? $balance_grace_row['minutes'] : 0;
+        return $balance_grace;
+    }
+}
 
-                #make shift time array of current date
-                $late_minutes_of_the_day = 0;
-                $INTime = date('H:i:s', strtotime($punching_row['INTime']));
-                if (!empty($shift[0])) {
-                    if (strtotime($INTime) > strtotime($shift[0])) {
-                        $shift_start = date_create($shift[0]);
-                        $in_time = date_create($punching_row['INTime']);
-                        $timediff = $shift_start->diff($in_time);
-                        $late_minutes   = (int)$timediff->format('%r%i');
-                        $late_hours     = (int)$timediff->format('%r%h');
-                        if ($late_minutes > 0 || $late_hours > 0) {
-                            $late_minutes_of_the_day = $late_minutes + ($late_hours * 60);
-                        }
-                    }
-                }
+if (! function_exists('getLateMinutes')) {
+    function getLateMinutes($from, $to)
+    {
+        $employee_id = session()->get('current_user')['employee_id'];
+        $PreFinalPaidDaysModel = new \App\Models\PreFinalPaidDaysModel;
+        $get_punching_data = $PreFinalPaidDaysModel
+            ->select('pre_final_paid_days.late_coming_minutes')
+            ->select('pre_final_paid_days.in_time_between_shift_with_od ')
+            ->where('pre_final_paid_days.employee_id =', $employee_id)
+            ->where("(pre_final_paid_days.date between '" . $from . "' and '" . $to . "')")
+            ->orderBy('date', 'desc')
+            ->findAll();
 
-                $early_going_minutes_of_the_day = 0;
-                if ($punching_row['OUTTime'] != '--:--') {
-                    $OUTTime = date('H:i:s', strtotime($punching_row['OUTTime']));
-                    if (!empty($shift[1])) {
-                        if (strtotime($OUTTime) < strtotime($shift[1])) {
-                            $shift_end = date_create($shift[1]);
-                            $out_time = date_create($punching_row['OUTTime']);
-                            $timediff = $out_time->diff($shift_end);
-                            $early_going_minutes   = (int)$timediff->format('%r%i');
-                            $early_going_hours     = (int)$timediff->format('%r%h');
-                            if ($early_going_minutes > 0 || $early_going_hours > 0) {
-                                $minutes_per_day[$punching_row['date_time']]['early'] = $early_going_minutes + ($early_going_hours * 60);
-                                $early_going_minutes_of_the_day = $early_going_minutes + ($early_going_hours * 60);
-                            }
-                        }
-                    }
-                }
+        // print_r($get_punching_data);
+        // die;
 
 
-                $leave_data = App\Pipes\AttendanceProcessor\ProcessorHelper::is_onLeave($punching_row['date_time'], $employee_data['id'], $punching_row['INTime']);
-                if (!empty($leave_data)) {
-                    if ($leave_data['number_of_days'] == '0.5') {
-                        if ($late_minutes_of_the_day > $early_going_minutes_of_the_day) {
-                            $late_minutes_of_the_day = '0';
-                        }
-                    } else {
-                        $late_minutes_of_the_day = $late_minutes_of_the_day;
-                    }
-                } elseif ($punching_row['date_time'] == '2023-03-07') {
-                    #$early_going_minutes_of_the_day = '0';          #company half day is in second half only
-                    $late_minutes_of_the_day = $late_minutes_of_the_day;
-                } else {
-                    $late_minutes_of_the_day = $late_minutes_of_the_day;
-                }
-
-                $total_late_minutes += $late_minutes_of_the_day;
-                $total_present_days++;
-            }
-        }
-        $late_minutes_avg = ($total_present_days > 0) ? round($total_late_minutes / $total_present_days) : '-';
+        $late_comings = array_column($get_punching_data, 'late_coming_minutes');
+        $in_time_between_shift_with_od_array = array_column($get_punching_data, 'in_time_between_shift_with_od');
+        $in_time_between_shift_with_od_array =  array_filter($in_time_between_shift_with_od_array);
+        $total_late_minutes = array_sum($late_comings);
+        $total_present_days = count($in_time_between_shift_with_od_array);
+        $late_minutes_avg = ($total_present_days > 0) ? round($total_late_minutes / $total_present_days) : '0';
         return array('total' => $total_late_minutes, 'average' => $late_minutes_avg);
     }
 }
+
+// if (! function_exists('getLateMinutes_bkp_2025_12_12')) {
+//     function getLateMinutes_bkp_2025_12_12($employee_data, $from, $to)
+//     {
+//         $get_punching_data = json_decode(get_punching_data($employee_data['internal_employee_id'], $from, $to), true)['InOutPunchData'];
+//         foreach ($get_punching_data as $punching_data_index => $punching_data_row) {
+//             $day = date('l', strtotime($punching_data_row['DateString']));
+//             $date_time = date('Y-m-d', strtotime($punching_data_row['DateString']));
+//             $get_punching_data[$punching_data_index]['date_time'] = $date_time;
+//             $get_punching_data[$punching_data_index]['day'] = $day;
+//         }
+//         $total_late_minutes = 0;
+//         $total_present_days = 0;
+//         foreach ($get_punching_data as $punching_row) {
+//             if ($punching_row['Empcode'] == $employee_data['internal_employee_id'] && $punching_row['INTime'] !== '--:--') {
+//                 #make shift time array of current date
+//                 $shift_override = App\Pipes\AttendanceProcessor\ProcessorHelper::get_shift_override($employee_data['id'], $punching_row['date_time']);
+//                 if (!empty($shift_override)) {
+//                     $shift = array_values($shift_override);
+//                 } else {
+//                     if (isset($employee_data[$punching_row['day']]) && !empty($employee_data[$punching_row['day']])) {
+//                         $shift = explode(',', $employee_data[$punching_row['day']]);
+//                     } else {
+//                         $shift = array('', '');
+//                     }
+//                 }
+
+//                 #make shift time array of current date
+//                 $late_minutes_of_the_day = 0;
+//                 $INTime = date('H:i:s', strtotime($punching_row['INTime']));
+//                 if (!empty($shift[0])) {
+//                     if (strtotime($INTime) > strtotime($shift[0])) {
+//                         $shift_start = date_create($shift[0]);
+//                         $in_time = date_create($punching_row['INTime']);
+//                         $timediff = $shift_start->diff($in_time);
+//                         $late_minutes   = (int)$timediff->format('%r%i');
+//                         $late_hours     = (int)$timediff->format('%r%h');
+//                         if ($late_minutes > 0 || $late_hours > 0) {
+//                             $late_minutes_of_the_day = $late_minutes + ($late_hours * 60);
+//                         }
+//                     }
+//                 }
+
+//                 $early_going_minutes_of_the_day = 0;
+//                 if ($punching_row['OUTTime'] != '--:--') {
+//                     $OUTTime = date('H:i:s', strtotime($punching_row['OUTTime']));
+//                     if (!empty($shift[1])) {
+//                         if (strtotime($OUTTime) < strtotime($shift[1])) {
+//                             $shift_end = date_create($shift[1]);
+//                             $out_time = date_create($punching_row['OUTTime']);
+//                             $timediff = $out_time->diff($shift_end);
+//                             $early_going_minutes   = (int)$timediff->format('%r%i');
+//                             $early_going_hours     = (int)$timediff->format('%r%h');
+//                             if ($early_going_minutes > 0 || $early_going_hours > 0) {
+//                                 $minutes_per_day[$punching_row['date_time']]['early'] = $early_going_minutes + ($early_going_hours * 60);
+//                                 $early_going_minutes_of_the_day = $early_going_minutes + ($early_going_hours * 60);
+//                             }
+//                         }
+//                     }
+//                 }
+
+
+//                 $leave_data = App\Pipes\AttendanceProcessor\ProcessorHelper::is_onLeave($punching_row['date_time'], $employee_data['id'], $punching_row['INTime']);
+//                 if (!empty($leave_data)) {
+//                     if ($leave_data['number_of_days'] == '0.5') {
+//                         if ($late_minutes_of_the_day > $early_going_minutes_of_the_day) {
+//                             $late_minutes_of_the_day = '0';
+//                         }
+//                     } else {
+//                         $late_minutes_of_the_day = $late_minutes_of_the_day;
+//                     }
+//                 } elseif ($punching_row['date_time'] == '2023-03-07') {
+//                     #$early_going_minutes_of_the_day = '0';          #company half day is in second half only
+//                     $late_minutes_of_the_day = $late_minutes_of_the_day;
+//                 } else {
+//                     $late_minutes_of_the_day = $late_minutes_of_the_day;
+//                 }
+
+//                 $total_late_minutes += $late_minutes_of_the_day;
+//                 $total_present_days++;
+//             }
+//         }
+//         $late_minutes_avg = ($total_present_days > 0) ? round($total_late_minutes / $total_present_days) : '-';
+//         return array('total' => $total_late_minutes, 'average' => $late_minutes_avg);
+//     }
+// }
 
 /*if ( ! function_exists('getAvgLateMinutes')){
     function getAvgLateMinutes($employee_data, $from, $to){
@@ -861,98 +900,121 @@ if (! function_exists('getLateMinutes')) {
 }*/
 
 if (! function_exists('getEarlyGoingMinutes')) {
-    function getEarlyGoingMinutes($employee_data, $from, $to)
+    function getEarlyGoingMinutes($from, $to)
     {
-        $get_punching_data = json_decode(get_punching_data($employee_data['internal_employee_id'], $from, $to), true)['InOutPunchData'];
-        foreach ($get_punching_data as $punching_data_index => $punching_data_row) {
-            $day = date('l', strtotime($punching_data_row['DateString']));
-            $date_time = date('Y-m-d', strtotime($punching_data_row['DateString']));
-            $get_punching_data[$punching_data_index]['date_time'] = $date_time;
-            $get_punching_data[$punching_data_index]['day'] = $day;
-        }
-        $total_late_minutes = 0;
-        $total_early_going_minutes = 0;
-        $total_present_days = 0;
-        $minutes_per_day = array();
+        $employee_id = session()->get('current_user')['employee_id'];
+        $PreFinalPaidDaysModel = new \App\Models\PreFinalPaidDaysModel;
+        $get_punching_data = $PreFinalPaidDaysModel
+            ->select('pre_final_paid_days.early_going_minutes')
+            ->select('pre_final_paid_days.in_time_between_shift_with_od')
+            ->where('pre_final_paid_days.employee_id =', $employee_id)
+            ->where("(pre_final_paid_days.date between '" . $from . "' and '" . $to . "')")
+            ->findAll();
 
-        foreach ($get_punching_data as $punching_row) {
-            if ($punching_row['Empcode'] == $employee_data['internal_employee_id'] && $punching_row['OUTTime'] !== '--:--') {
-                #make shift time array of current date
-                /*if( $employee_data['internal_employee_id'] == 588 ){*/
-                $shift_override = App\Pipes\AttendanceProcessor\ProcessorHelper::get_shift_override($employee_data['id'], $punching_row['date_time']);
-                if (!empty($shift_override)) {
-                    $shift = array_values($shift_override);
-                } else {
-                    if (isset($employee_data[$punching_row['day']]) && !empty($employee_data[$punching_row['day']])) {
-                        $shift = explode(',', $employee_data[$punching_row['day']]);
-                    } else {
-                        $shift = array('', '');
-                    }
-                }
-                /*}else{
-                    if( isset($employee_data[$punching_row['day']]) && !empty($employee_data[$punching_row['day']]) ){
-                        $shift = explode(',', $employee_data[$punching_row['day']]);
-                    }else{
-                        $shift = array('', '');
-                    }
-                }*/
-
-                #make shift time array of current date
-                $early_going_minutes_of_the_day = 0;
-                $OUTTime = date('H:i:s', strtotime($punching_row['OUTTime']));
-                if (!empty($shift[1])) {
-                    if (strtotime($OUTTime) < strtotime($shift[1])) {
-                        $shift_end = date_create($shift[1]);
-                        $out_time = date_create($punching_row['OUTTime']);
-                        $timediff = $out_time->diff($shift_end);
-                        $early_going_minutes   = (int)$timediff->format('%r%i');
-                        $early_going_hours     = (int)$timediff->format('%r%h');
-                        if ($early_going_minutes > 0 || $early_going_hours > 0) {
-                            $minutes_per_day[$punching_row['date_time']]['early'] = $early_going_minutes + ($early_going_hours * 60);
-                            $early_going_minutes_of_the_day = $early_going_minutes + ($early_going_hours * 60);
-                        }
-                    }
-                }
-
-                $late_minutes_of_the_day = 0;
-                $INTime = date('H:i:s', strtotime($punching_row['INTime']));
-                if (!empty($shift[0])) {
-                    if (strtotime($INTime) > strtotime($shift[0])) {
-                        $shift_start = date_create($shift[0]);
-                        $in_time = date_create($punching_row['INTime']);
-                        $timediff = $shift_start->diff($in_time);
-                        $late_minutes   = (int)$timediff->format('%r%i');
-                        $late_hours     = (int)$timediff->format('%r%h');
-                        if ($late_minutes > 0 || $late_hours > 0) {
-                            $late_minutes_of_the_day = $late_minutes + ($late_hours * 60);
-                        }
-                    }
-                }
-
-                $leave_data = App\Pipes\AttendanceProcessor\ProcessorHelper::is_onLeave($punching_row['date_time'], $employee_data['id'], $punching_row['INTime']);
-                if (!empty($leave_data)) {
-                    if ($leave_data['number_of_days'] == '0.5') {
-                        if ($early_going_minutes_of_the_day >= $late_minutes_of_the_day) {
-                            $early_going_minutes_of_the_day = '0';
-                        }
-                    } else {
-                        $early_going_minutes_of_the_day = $early_going_minutes_of_the_day;
-                    }
-                } elseif ($punching_row['date_time'] == '2023-03-07') {
-                    $early_going_minutes_of_the_day = '0';
-                } else {
-                    $early_going_minutes_of_the_day = $early_going_minutes_of_the_day;
-                }
-
-                $total_early_going_minutes += $early_going_minutes_of_the_day;
-                $total_present_days++;
-            }
-        }
-        $early_going_minutes_avg = ($total_present_days > 0) ? round($total_early_going_minutes / $total_present_days) : '-';
+        $early_going = array_column($get_punching_data, 'early_going_minutes');
+        $in_time_between_shift_with_od_array = array_column($get_punching_data, 'in_time_between_shift_with_od');
+        $in_time_between_shift_with_od_array =  array_filter($in_time_between_shift_with_od_array);
+        $total_early_going_minutes = array_sum($early_going);
+        $total_present_days = count($in_time_between_shift_with_od_array);
+        $early_going_minutes_avg = ($total_present_days > 0) ? round($total_early_going_minutes / $total_present_days) : '0';
         return array('total' => $total_early_going_minutes, 'average' => $early_going_minutes_avg);
-        #return array('minutes_per_day' => $minutes_per_day);
     }
 }
+
+// if (! function_exists('getEarlyGoingMinutes')) {
+//     function getEarlyGoingMinutes($employee_data, $from, $to)
+//     {
+//         $employee_id = session()->get('current_user')['employee_id'];
+//         $get_punching_data = json_decode(get_punching_data($employee_data['internal_employee_id'], $from, $to), true)['InOutPunchData'];
+//         foreach ($get_punching_data as $punching_data_index => $punching_data_row) {
+//             $day = date('l', strtotime($punching_data_row['DateString']));
+//             $date_time = date('Y-m-d', strtotime($punching_data_row['DateString']));
+//             $get_punching_data[$punching_data_index]['date_time'] = $date_time;
+//             $get_punching_data[$punching_data_index]['day'] = $day;
+//         }
+//         $total_late_minutes = 0;
+//         $total_early_going_minutes = 0;
+//         $total_present_days = 0;
+//         $minutes_per_day = array();
+
+//         foreach ($get_punching_data as $punching_row) {
+//             if ($punching_row['Empcode'] == $employee_data['internal_employee_id'] && $punching_row['OUTTime'] !== '--:--') {
+//                 #make shift time array of current date
+//                 /*if( $employee_data['internal_employee_id'] == 588 ){*/
+//                 $shift_override = App\Pipes\AttendanceProcessor\ProcessorHelper::get_shift_override($employee_data['id'], $punching_row['date_time']);
+//                 if (!empty($shift_override)) {
+//                     $shift = array_values($shift_override);
+//                 } else {
+//                     if (isset($employee_data[$punching_row['day']]) && !empty($employee_data[$punching_row['day']])) {
+//                         $shift = explode(',', $employee_data[$punching_row['day']]);
+//                     } else {
+//                         $shift = array('', '');
+//                     }
+//                 }
+//                 /*}else{
+//                     if( isset($employee_data[$punching_row['day']]) && !empty($employee_data[$punching_row['day']]) ){
+//                         $shift = explode(',', $employee_data[$punching_row['day']]);
+//                     }else{
+//                         $shift = array('', '');
+//                     }
+//                 }*/
+
+//                 #make shift time array of current date
+//                 $early_going_minutes_of_the_day = 0;
+//                 $OUTTime = date('H:i:s', strtotime($punching_row['OUTTime']));
+//                 if (!empty($shift[1])) {
+//                     if (strtotime($OUTTime) < strtotime($shift[1])) {
+//                         $shift_end = date_create($shift[1]);
+//                         $out_time = date_create($punching_row['OUTTime']);
+//                         $timediff = $out_time->diff($shift_end);
+//                         $early_going_minutes   = (int)$timediff->format('%r%i');
+//                         $early_going_hours     = (int)$timediff->format('%r%h');
+//                         if ($early_going_minutes > 0 || $early_going_hours > 0) {
+//                             $minutes_per_day[$punching_row['date_time']]['early'] = $early_going_minutes + ($early_going_hours * 60);
+//                             $early_going_minutes_of_the_day = $early_going_minutes + ($early_going_hours * 60);
+//                         }
+//                     }
+//                 }
+
+//                 $late_minutes_of_the_day = 0;
+//                 $INTime = date('H:i:s', strtotime($punching_row['INTime']));
+//                 if (!empty($shift[0])) {
+//                     if (strtotime($INTime) > strtotime($shift[0])) {
+//                         $shift_start = date_create($shift[0]);
+//                         $in_time = date_create($punching_row['INTime']);
+//                         $timediff = $shift_start->diff($in_time);
+//                         $late_minutes   = (int)$timediff->format('%r%i');
+//                         $late_hours     = (int)$timediff->format('%r%h');
+//                         if ($late_minutes > 0 || $late_hours > 0) {
+//                             $late_minutes_of_the_day = $late_minutes + ($late_hours * 60);
+//                         }
+//                     }
+//                 }
+
+//                 $leave_data = App\Pipes\AttendanceProcessor\ProcessorHelper::is_onLeave($punching_row['date_time'], $employee_data['id'], $punching_row['INTime']);
+//                 if (!empty($leave_data)) {
+//                     if ($leave_data['number_of_days'] == '0.5') {
+//                         if ($early_going_minutes_of_the_day >= $late_minutes_of_the_day) {
+//                             $early_going_minutes_of_the_day = '0';
+//                         }
+//                     } else {
+//                         $early_going_minutes_of_the_day = $early_going_minutes_of_the_day;
+//                     }
+//                 } elseif ($punching_row['date_time'] == '2023-03-07') {
+//                     $early_going_minutes_of_the_day = '0';
+//                 } else {
+//                     $early_going_minutes_of_the_day = $early_going_minutes_of_the_day;
+//                 }
+
+//                 $total_early_going_minutes += $early_going_minutes_of_the_day;
+//                 $total_present_days++;
+//             }
+//         }
+//         $early_going_minutes_avg = ($total_present_days > 0) ? round($total_early_going_minutes / $total_present_days) : '-';
+//         return array('total' => $total_early_going_minutes, 'average' => $early_going_minutes_avg);
+//         #return array('minutes_per_day' => $minutes_per_day);
+//     }
+// }
 
 /*if ( ! function_exists('getAvgEarlyGoingMinutes')){
     function getAvgEarlyGoingMinutes($employee_data, $from, $to){

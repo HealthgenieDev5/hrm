@@ -9,6 +9,8 @@ use App\Pipes\ProcessAttendance;
 use App\Pipes\GetAttendanceClean;
 use App\Pipes\SandwichSecondPass;
 use App\Controllers\BaseController;
+use App\Controllers\Reports\FinalPaidDays;
+use App\Libraries\AttendanceProcessor;
 use App\Pipes\FetchFreshAttendance;
 use App\Pipes\LateComingAdjustment;
 use App\Pipes\ShiftRulesAndDetails;
@@ -16,11 +18,13 @@ use App\Pipes\AdjustLastWorkingDate;
 use App\Pipes\ApplyAttendanceOverride;
 use App\Models\ShiftAttendanceRuleModel;
 use App\Models\GraceBalanceModel;
+use App\Models\PreFinalPaidDaysModel;
 use App\Pipes\AttendanceProcessor\ProcessorHelper;
 use App\Pipes\DashboardPipes\BasicDetails as DashboardPipesBasicDetails;
 use App\Pipes\DashboardPipes\GetAttendanceClean as DashboardPipesGetAttendanceClean;
 use App\Pipes\DashboardPipes\ProcessAttendance as DashboardPipesProcessAttendance;
 use App\Pipes\RecalculateForHeuer;
+use PhpParser\Node\Stmt\TryCatch;
 
 class Processor extends BaseController
 {
@@ -33,11 +37,93 @@ class Processor extends BaseController
         $this->session    = session();
     }
 
+    public static function getProcessedPunchingDataProfile($employee_id, $dateFrom, $dateTo, $do_sw_second_pass = true)
+    {
+        try {
+            // $startTime = microtime(true);
+            ob_start();
+            $processor = new AttendanceProcessor();
+            $processor->processAll(25, date('Y-m'), [$employee_id]);
+            $processor_output = ob_get_clean();
+            // $endTime = microtime(true);
+            // $diff =   ($endTime - $startTime) / 60;
+            $PreFinalPaidDaysModel = new PreFinalPaidDaysModel();
+            $PreFinalPaidDays = $PreFinalPaidDaysModel
+                ->select('pre_final_paid_days.*')
+                ->select('trim(concat(settler.first_name, " ", settler.last_name)) as settled_by_name')
+                ->join('employees as settler', 'settler.id = pre_final_paid_days.settled_by', 'left')
+                ->where('pre_final_paid_days.employee_id =', $employee_id)
+                ->where("(pre_final_paid_days.date between '" . $dateFrom . "' and '" . $dateTo . "')")
+                ->orderBy('pre_final_paid_days.date', 'ASC')
+                ->findAll();
+
+            if (!empty($PreFinalPaidDays)) {
+                foreach ($PreFinalPaidDays as $index => $row) {
+                    //echo $is_weekoff = ProcessorHelper::is_weekoff($row['shift_id'] ?? null, $row['date']);
+                    // print_r($PreFinalPaidDays[$index]['is_weekoff']);
+                    // if ($is_weekoff == 'yes') {
+                    //     $data['status']          = "W/O";
+                    //     $data['status_remarks']  = "Week Off";
+                    // }
+
+                    // $date = $PreFinalPaidDays[$index]['date'];
+                    $PreFinalPaidDays[$index]['shift_start'] = isset($row['shift_start']) && !empty($row['shift_start']) ? date('h:i A', strtotime($row['shift_start'])) : '';
+                    $PreFinalPaidDays[$index]['shift_end'] = isset($row['shift_end']) && !empty($row['shift_end']) ? date('h:i A', strtotime($row['shift_end'])) : '';
+                    $is_present = ProcessorHelper::is_present($row['punch_in_time'], $row['punch_out_time']);
+                    if ($is_present == 'no' && $row['status']  == 'W/O') {
+                        $PreFinalPaidDays[$index]['shift_start'] = '';
+                        $PreFinalPaidDays[$index]['shift_end'] = '';
+                    }
+                    if (date('Y-m-d', strtotime($row['date'])) == date('Y-m-d') && !empty($row['punch_in_time']) && empty($row['punch_out_time'])) {
+                        $PreFinalPaidDays[$index]['status'] = '';
+                        $PreFinalPaidDays[$index]['status_remarks'] = '';
+                    }
+
+                    $PreFinalPaidDays[$index]['date_time_new'] = [
+                        'formatted' => date('d M Y', strtotime($row['date'])),
+                        'ordering' => strtotime($row['date'])
+                    ];
+
+                    $PreFinalPaidDays[$index]['punch_in_time'] = isset($row['punch_in_time']) && !empty($row['punch_in_time']) ? date('h:i A', strtotime($row['punch_in_time'])) : '--';
+                    $PreFinalPaidDays[$index]['punch_out_time'] = isset($row['punch_out_time']) && !empty($row['punch_out_time']) ? date('h:i A', strtotime($row['punch_out_time'])) : '--';
+                    $PreFinalPaidDays[$index]['in_time_between_shift_with_od'] = isset($row['in_time_between_shift_with_od']) && !empty($row['in_time_between_shift_with_od']) ? date('h:i A', strtotime($row['in_time_between_shift_with_od'])) : '--';
+                    $PreFinalPaidDays[$index]['out_time_between_shift_with_od'] = isset($row['out_time_between_shift_with_od']) && !empty($row['out_time_between_shift_with_od']) ? date('h:i A', strtotime($row['out_time_between_shift_with_od'])) : '--';
+                    $PreFinalPaidDays[$index]['in_time_including_od'] = isset($row['in_time_including_od']) && !empty($row['in_time_including_od']) ? date('h:i A', strtotime($row['in_time_including_od'])) : '--';
+                    $PreFinalPaidDays[$index]['out_time_including_od'] = isset($row['out_time_including_od']) && !empty($row['out_time_including_od']) ? date('h:i A', strtotime($row['out_time_including_od'])) : '--';
+                    $PreFinalPaidDays[$index]['grace'] = $row['late_coming_grace'];
+
+
+
+                    if (!empty($row['in_time_between_shift_with_od']) && !empty($row['out_time_between_shift_with_od'])) {
+                        $in_time_between_shift_with_od = date('Y-m-d H:i:s', strtotime($row['in_time_between_shift_with_od']));
+                        $out_time_between_shift_with_od = date('Y-m-d H:i:s', strtotime($row['out_time_between_shift_with_od']));
+                        if (strtotime($row['in_time_between_shift_with_od']) > strtotime($row['out_time_between_shift_with_od'])) {
+                            $out_time_between_shift_with_od = date('Y-m-d H:i:s', strtotime($row['out_time_between_shift_with_od'] . " +1 days"));
+                        }
+
+                        $PreFinalPaidDays[$index]['work_hours_between_shifts_including_od'] = ProcessorHelper::get_time_difference($in_time_between_shift_with_od, $out_time_between_shift_with_od);
+                    } else {
+                        $PreFinalPaidDays[$index]['work_hours_between_shifts_including_od'] = '';
+                    }
+                }
+            }
+            // print_r($PreFinalPaidDays);
+            // die();
+            //return (['punching_data' => $PreFinalPaidDays]);
+
+            return $PreFinalPaidDays;
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+
+        // return $punching_data;
+    }
+
     public static function getProcessedPunchingData($employee_id, $dateFrom, $dateTo, $do_sw_second_pass = true)
     {
         $processedAttendanceArray = self::ProcessPunchingData($employee_id, $dateFrom, $dateTo, $do_sw_second_pass = true);
 
-        // print_r($processedAttendanceArray);
+        // print_r($processedAttendanceArray['balance_grace']);
         // die();
         $GraceBalanceModel = new GraceBalanceModel();
         $balance_grace = $processedAttendanceArray['balance_grace'];
@@ -45,6 +131,10 @@ class Processor extends BaseController
             ['employee_id' => $employee_id, 'year_month' => date('Y-m', strtotime($dateFrom ?? date('Y-m')))],
             ['employee_id' => $employee_id, 'year_month' => date('Y-m', strtotime($dateFrom ?? date('Y-m'))), 'minutes' => $balance_grace]
         );
+
+        // store in final paid days
+        // $processor = new AttendanceProcessor();
+        // $processor->processAll(25, $month, $employee);
         return $processedAttendanceArray['punching_data'];
     }
 
@@ -74,6 +164,9 @@ class Processor extends BaseController
             ->then(function ($data) {
                 return $data;
             });
+
+        // print_r($result['balance_grace']);
+        // die();
 
 
 

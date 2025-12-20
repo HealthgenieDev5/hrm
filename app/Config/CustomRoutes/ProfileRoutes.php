@@ -45,4 +45,5 @@ $routes->match(['get', 'post'], '/ajax/hr/employee/get-one-year-anniversary-empl
 $routes->match(['get', 'post'], '/ajax/profile/probation-completed-notification', [Profile::class, 'ProbationCompletedNotificationModel']);
 $routes->match(['get', 'post'], '/ajax/profile/acknowledge-probation', [Profile::class, 'acknowledgeProbation']);
 
-$routes->get('/ajax/profile/get-balance-grace', [Profile::class, 'getBalanceGrace']);
+// $routes->get('/ajax/profile/get-balance-grace', [Profile::class, 'getBalanceGrace']);
+$routes->get('/ajax/profile/get-attendance-stats', [Profile::class, 'getAttendanceStats']);

@@ -1,0 +1,487 @@
+CRITICAL - 2025-12-16 13:17:51 --> ErrorException: Maximum execution time of 300 seconds exceeded
+[Method: POST, Route: ajax/hr/employee/send-absent-without-leave-notification]
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 327.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-16 13:17:55 --> ErrorException: Maximum execution time of 300 seconds exceeded
+[Method: POST, Route: ajax/hr/employee/send-absent-without-leave-notification-heuer-only]
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 327.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-16 13:24:45 --> ErrorException: Maximum execution time of 300 seconds exceeded
+[Method: POST, Route: ajax/hr/employee/send-absent-without-leave-notification]
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 327.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-16 13:24:48 --> ErrorException: Maximum execution time of 300 seconds exceeded
+[Method: POST, Route: ajax/hr/employee/send-absent-without-leave-notification-heuer-only]
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 327.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-16 13:45:16 --> ErrorException: Maximum execution time of 300 seconds exceeded
+[Method: POST, Route: ajax/hr/employee/send-absent-without-leave-notification]
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 327.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-16 13:45:21 --> ErrorException: Maximum execution time of 300 seconds exceeded
+[Method: POST, Route: ajax/hr/employee/send-absent-without-leave-notification-heuer-only]
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 327.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-16 14:58:09 --> ErrorException: Maximum execution time of 300 seconds exceeded
+[Method: POST, Route: ajax/hr/employee/send-absent-without-leave-notification]
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 327.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-16 14:58:14 --> ErrorException: Maximum execution time of 300 seconds exceeded
+[Method: POST, Route: ajax/hr/employee/send-absent-without-leave-notification-heuer-only]
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 327.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+ERROR - 2025-12-16 15:31:57 --> mysqli_sql_exception: Operand should contain 1 column(s) in D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php(327): mysqli->query('SELECT *\nFROM `...', 0)
+#1 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('SELECT *\nFROM `...')
+#2 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT *\nFROM `...')
+#3 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT *\nFROM `...', Array, false)
+#4 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Model.php(330): CodeIgniter\Database\BaseBuilder->get()
+#5 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\BaseModel.php(715): CodeIgniter\Model->doFirst()
+#6 D:\LOCALHOST\hrm.healthgenie\app\Controllers\User\Profile.php(221): CodeIgniter\BaseModel->first()
+#7 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(933): App\Controllers\User\Profile->getAttendanceStats()
+#8 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\User\Profile))
+#9 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#10 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#11 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#12 D:\LOCALHOST\hrm.healthgenie\public\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#13 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hr...')
+#14 {main}
+CRITICAL - 2025-12-16 15:31:57 --> CodeIgniter\Database\Exceptions\DatabaseException: Operand should contain 1 column(s)
+[Method: GET, Route: ajax/profile/get-attendance-stats]
+in SYSTEMPATH\Database\BaseConnection.php on line 684.
+ 1 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT *
+FROM `grace_balance`
+WHERE `employee_id` = :employee_id:
+AND `year_month` = :year_month:
+ LIMIT 1', [...], false)
+ 2 SYSTEMPATH\Model.php(330): CodeIgniter\Database\BaseBuilder->get()
+ 3 SYSTEMPATH\BaseModel.php(715): CodeIgniter\Model->doFirst()
+ 4 APPPATH\Controllers\User\Profile.php(221): CodeIgniter\BaseModel->first()
+ 5 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\User\Profile->getAttendanceStats()
+ 6 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\User\Profile))
+ 7 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 8 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 9 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+10 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+11 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+CRITICAL - 2025-12-16 15:31:57 --> [Caused by] CodeIgniter\Database\Exceptions\DatabaseException: Operand should contain 1 column(s)
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 332.
+ 1 SYSTEMPATH\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('SELECT *
+FROM `grace_balance`
+WHERE `employee_id` = (\'40\',\'40\',\'active\',\'40\',\'125\',\'2\',\'20\',\'30\',\'588\',\'1\',\'no\',\'yes\',\'1/2\',\'2023-10-01\',\'no\',\'superuser\',\'2019-04-01\',\'confirmed\',\'90\',NULL,\'del\',\'7\',\'MD NAZRUL\',\'ISLAM\',\'B.Tech\',\'10 years\',\'Test\',\'Test\',\'Test\',\'test and test2\',\'1989-12-23\',\'Ward No: 04\',\'Gogri\',\'khagaria\',\'bihar\',\'851202\',\'FA-6 Abul Fazal Enclave part 2, Shaheen bagh okhla\',\'yes\',\'yes\',\'yes\',\'yes\',\'[{\\"member_name\\":\\"Alishba\\",\\"member_relation\\":\\"Daughter\\",\\"member_dob\\":\\"2020-10-08\\",\\"member_age\\":\\"4\\"},{\\"member_name\\":\\"Saba Tarannum\\",\\"member_relation\\":\\"Wife\\",\\"member_dob\\":\\"1995-09-03\\",\\"member_age\\":\\"29\\"}]\',\'[{\\"document_name\\":\\"test\\"}]\',\'Delhi\',\'delhi\',\'Delhi.\',\'110020\',\'healthgeniedev3@gmail.com\',\'developer3@healthgenie.in\',\'9826322352\',\'Md Muzaffarul Islam\',\'\',\'male\',\'married\',\'2019-06-09\',\'{\\"pan\\":{\\"file\\":\\"\\\\/uploads\\\\/2024\\\\/07\\\\/PAN_19.jpeg\\",\\"number\\":\\"AEGPI2327L\\"},\\"adhar\\":{\\"file\\":\\"\\",\\"number\\":\\"623514057240\\",\\"front\\":\\"\\",\\"back\\":\\"\\\\/uploads\\\\/2024\\\\/07\\\\/Adhar 2_29.jpeg\\"},\\"avatar\\":{\\"file\\":\\"\\\\/uploads\\\\/2023\\\\/05\\\\/nazrul-profile-picture.jpg\\"},\\"passport\\":{\\"number\\":null,\\"file\\":\\"\\"},\\"bank_account\\":{\\"number\\":\\"130730\\",\\"name\\":\\"Indian Overseas Bank\\",\\"file\\":\\"\\"},\\"banking_and_financial\\":{\\"remarks\\":\\"line 1 \\\\r\\\\nline 2\\\\r\\\\nline 3\\",\\"file\\":\\"\\\\/uploads\\\\/2023\\\\/03\\\\/invoice.pdf\\"},\\"family_details\\":{\\"remarks\\":null,\\"file\\":\\"\\\\/uploads\\\\/2024\\\\/07\\\\/family_4.jpeg\\"},\\"kye_documents\\":{\\"remarks\\":\\"LOA\\\\r\\\\n\\",\\"file\\":\\"\\\\/uploads\\\\/2024\\\\/07\\\\/LOA_38.jpeg\\"},\\"loan_documents\\":{\\"remarks\\":null,\\"file\\":\\"\\"},\\"educational_documents\\":{\\"remarks\\":\\"B.Tech\\",\\"file\\":\\"\\\\/uploads\\\\/2024\\\\/07\\\\/B.tech_3.jpeg\\"},\\"relieving_documents\\":{\\"remarks\\":null,\\"file\\":\\"\\"},\\"misc_documents\\":{\\"remarks\\":null,\\"file\\":\\"\\"},\\"uan\\":{\\"number\\":\\"testUAN\\",\\"file\\":\\"\\\\/uploads\\\\/2023\\\\/11\\\\/salary-slip-md-nazrul-islam-09-2023(2)_4.pdf\\"},\\"pdc_cheque\\":{\\"bank_name_1\\":null,\\"cheque_number_1\\":null,\\"bank_name_2\\":null,\\"cheque_number_2\\":null,\\"bank_name_3\\":null,\\"cheque_number_3\\":null,\\"enable_pdc\\":\\"no\\"}}\',\'8826322352\',\'452\',\'\',\'1st Floor\',\'8285299085\',\'2022-04-28 15:36:14\',NULL,\'MD NAZRUL ISLAM\')
+AND `year_month` = \'2025-12\'
+ LIMIT 1')
+ 2 SYSTEMPATH\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT *
+FROM `grace_balance`
+WHERE `employee_id` = (\'40\',\'40\',\'active\',\'40\',\'125\',\'2\',\'20\',\'30\',\'588\',\'1\',\'no\',\'yes\',\'1/2\',\'2023-10-01\',\'no\',\'superuser\',\'2019-04-01\',\'confirmed\',\'90\',NULL,\'del\',\'7\',\'MD NAZRUL\',\'ISLAM\',\'B.Tech\',\'10 years\',\'Test\',\'Test\',\'Test\',\'test and test2\',\'1989-12-23\',\'Ward No: 04\',\'Gogri\',\'khagaria\',\'bihar\',\'851202\',\'FA-6 Abul Fazal Enclave part 2, Shaheen bagh okhla\',\'yes\',\'yes\',\'yes\',\'yes\',\'[{\\"member_name\\":\\"Alishba\\",\\"member_relation\\":\\"Daughter\\",\\"member_dob\\":\\"2020-10-08\\",\\"member_age\\":\\"4\\"},{\\"member_name\\":\\"Saba Tarannum\\",\\"member_relation\\":\\"Wife\\",\\"member_dob\\":\\"1995-09-03\\",\\"member_age\\":\\"29\\"}]\',\'[{\\"document_name\\":\\"test\\"}]\',\'Delhi\',\'delhi\',\'Delhi.\',\'110020\',\'healthgeniedev3@gmail.com\',\'developer3@healthgenie.in\',\'9826322352\',\'Md Muzaffarul Islam\',\'\',\'male\',\'married\',\'2019-06-09\',\'{\\"pan\\":{\\"file\\":\\"\\\\/uploads\\\\/2024\\\\/07\\\\/PAN_19.jpeg\\",\\"number\\":\\"AEGPI2327L\\"},\\"adhar\\":{\\"file\\":\\"\\",\\"number\\":\\"623514057240\\",\\"front\\":\\"\\",\\"back\\":\\"\\\\/uploads\\\\/2024\\\\/07\\\\/Adhar 2_29.jpeg\\"},\\"avatar\\":{\\"file\\":\\"\\\\/uploads\\\\/2023\\\\/05\\\\/nazrul-profile-picture.jpg\\"},\\"passport\\":{\\"number\\":null,\\"file\\":\\"\\"},\\"bank_account\\":{\\"number\\":\\"130730\\",\\"name\\":\\"Indian Overseas Bank\\",\\"file\\":\\"\\"},\\"banking_and_financial\\":{\\"remarks\\":\\"line 1 \\\\r\\\\nline 2\\\\r\\\\nline 3\\",\\"file\\":\\"\\\\/uploads\\\\/2023\\\\/03\\\\/invoice.pdf\\"},\\"family_details\\":{\\"remarks\\":null,\\"file\\":\\"\\\\/uploads\\\\/2024\\\\/07\\\\/family_4.jpeg\\"},\\"kye_documents\\":{\\"remarks\\":\\"LOA\\\\r\\\\n\\",\\"file\\":\\"\\\\/uploads\\\\/2024\\\\/07\\\\/LOA_38.jpeg\\"},\\"loan_documents\\":{\\"remarks\\":null,\\"file\\":\\"\\"},\\"educational_documents\\":{\\"remarks\\":\\"B.Tech\\",\\"file\\":\\"\\\\/uploads\\\\/2024\\\\/07\\\\/B.tech_3.jpeg\\"},\\"relieving_documents\\":{\\"remarks\\":null,\\"file\\":\\"\\"},\\"misc_documents\\":{\\"remarks\\":null,\\"file\\":\\"\\"},\\"uan\\":{\\"number\\":\\"testUAN\\",\\"file\\":\\"\\\\/uploads\\\\/2023\\\\/11\\\\/salary-slip-md-nazrul-islam-09-2023(2)_4.pdf\\"},\\"pdc_cheque\\":{\\"bank_name_1\\":null,\\"cheque_number_1\\":null,\\"bank_name_2\\":null,\\"cheque_number_2\\":null,\\"bank_name_3\\":null,\\"cheque_number_3\\":null,\\"enable_pdc\\":\\"no\\"}}\',\'8826322352\',\'452\',\'\',\'1st Floor\',\'8285299085\',\'2022-04-28 15:36:14\',NULL,\'MD NAZRUL ISLAM\')
+AND `year_month` = \'2025-12\'
+ LIMIT 1')
+ 3 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT *
+FROM `grace_balance`
+WHERE `employee_id` = :employee_id:
+AND `year_month` = :year_month:
+ LIMIT 1', [...], false)
+ 4 SYSTEMPATH\Model.php(330): CodeIgniter\Database\BaseBuilder->get()
+ 5 SYSTEMPATH\BaseModel.php(715): CodeIgniter\Model->doFirst()
+ 6 APPPATH\Controllers\User\Profile.php(221): CodeIgniter\BaseModel->first()
+ 7 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\User\Profile->getAttendanceStats()
+ 8 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\User\Profile))
+ 9 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+10 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+11 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+12 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+13 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+CRITICAL - 2025-12-16 15:31:57 --> [Caused by] mysqli_sql_exception: Operand should contain 1 column(s)
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 327.
+ 1 SYSTEMPATH\Database\MySQLi\Connection.php(327): mysqli->query('SELECT *
+FROM `grace_balance`
+WHERE `employee_id` = (\'40\',\'40\',\'active\',\'40\',\'125\',\'2\',\'20\',\'30\',\'588\',\'1\',\'no\',\'yes\',\'1/2\',\'2023-10-01\',\'no\',\'superuser\',\'2019-04-01\',\'confirmed\',\'90\',NULL,\'del\',\'7\',\'MD NAZRUL\',\'ISLAM\',\'B.Tech\',\'10 years\',\'Test\',\'Test\',\'Test\',\'test and test2\',\'1989-12-23\',\'Ward No: 04\',\'Gogri\',\'khagaria\',\'bihar\',\'851202\',\'FA-6 Abul Fazal Enclave part 2, Shaheen bagh okhla\',\'yes\',\'yes\',\'yes\',\'yes\',\'[{\\"member_name\\":\\"Alishba\\",\\"member_relation\\":\\"Daughter\\",\\"member_dob\\":\\"2020-10-08\\",\\"member_age\\":\\"4\\"},{\\"member_name\\":\\"Saba Tarannum\\",\\"member_relation\\":\\"Wife\\",\\"member_dob\\":\\"1995-09-03\\",\\"member_age\\":\\"29\\"}]\',\'[{\\"document_name\\":\\"test\\"}]\',\'Delhi\',\'delhi\',\'Delhi.\',\'110020\',\'healthgeniedev3@gmail.com\',\'developer3@healthgenie.in\',\'9826322352\',\'Md Muzaffarul Islam\',\'\',\'male\',\'married\',\'2019-06-09\',\'{\\"pan\\":{\\"file\\":\\"\\\\/uploads\\\\/2024\\\\/07\\\\/PAN_19.jpeg\\",\\"number\\":\\"AEGPI2327L\\"},\\"adhar\\":{\\"file\\":\\"\\",\\"number\\":\\"623514057240\\",\\"front\\":\\"\\",\\"back\\":\\"\\\\/uploads\\\\/2024\\\\/07\\\\/Adhar 2_29.jpeg\\"},\\"avatar\\":{\\"file\\":\\"\\\\/uploads\\\\/2023\\\\/05\\\\/nazrul-profile-picture.jpg\\"},\\"passport\\":{\\"number\\":null,\\"file\\":\\"\\"},\\"bank_account\\":{\\"number\\":\\"130730\\",\\"name\\":\\"Indian Overseas Bank\\",\\"file\\":\\"\\"},\\"banking_and_financial\\":{\\"remarks\\":\\"line 1 \\\\r\\\\nline 2\\\\r\\\\nline 3\\",\\"file\\":\\"\\\\/uploads\\\\/2023\\\\/03\\\\/invoice.pdf\\"},\\"family_details\\":{\\"remarks\\":null,\\"file\\":\\"\\\\/uploads\\\\/2024\\\\/07\\\\/family_4.jpeg\\"},\\"kye_documents\\":{\\"remarks\\":\\"LOA\\\\r\\\\n\\",\\"file\\":\\"\\\\/uploads\\\\/2024\\\\/07\\\\/LOA_38.jpeg\\"},\\"loan_documents\\":{\\"remarks\\":null,\\"file\\":\\"\\"},\\"educational_documents\\":{\\"remarks\\":\\"B.Tech\\",\\"file\\":\\"\\\\/uploads\\\\/2024\\\\/07\\\\/B.tech_3.jpeg\\"},\\"relieving_documents\\":{\\"remarks\\":null,\\"file\\":\\"\\"},\\"misc_documents\\":{\\"remarks\\":null,\\"file\\":\\"\\"},\\"uan\\":{\\"number\\":\\"testUAN\\",\\"file\\":\\"\\\\/uploads\\\\/2023\\\\/11\\\\/salary-slip-md-nazrul-islam-09-2023(2)_4.pdf\\"},\\"pdc_cheque\\":{\\"bank_name_1\\":null,\\"cheque_number_1\\":null,\\"bank_name_2\\":null,\\"cheque_number_2\\":null,\\"bank_name_3\\":null,\\"cheque_number_3\\":null,\\"enable_pdc\\":\\"no\\"}}\',\'8826322352\',\'452\',\'\',\'1st Floor\',\'8285299085\',\'2022-04-28 15:36:14\',NULL,\'MD NAZRUL ISLAM\')
+AND `year_month` = \'2025-12\'
+ LIMIT 1', 0)
+ 2 SYSTEMPATH\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('SELECT *
+FROM `grace_balance`
+WHERE `employee_id` = (\'40\',\'40\',\'active\',\'40\',\'125\',\'2\',\'20\',\'30\',\'588\',\'1\',\'no\',\'yes\',\'1/2\',\'2023-10-01\',\'no\',\'superuser\',\'2019-04-01\',\'confirmed\',\'90\',NULL,\'del\',\'7\',\'MD NAZRUL\',\'ISLAM\',\'B.Tech\',\'10 years\',\'Test\',\'Test\',\'Test\',\'test and test2\',\'1989-12-23\',\'Ward No: 04\',\'Gogri\',\'khagaria\',\'bihar\',\'851202\',\'FA-6 Abul Fazal Enclave part 2, Shaheen bagh okhla\',\'yes\',\'yes\',\'yes\',\'yes\',\'[{\\"member_name\\":\\"Alishba\\",\\"member_relation\\":\\"Daughter\\",\\"member_dob\\":\\"2020-10-08\\",\\"member_age\\":\\"4\\"},{\\"member_name\\":\\"Saba Tarannum\\",\\"member_relation\\":\\"Wife\\",\\"member_dob\\":\\"1995-09-03\\",\\"member_age\\":\\"29\\"}]\',\'[{\\"document_name\\":\\"test\\"}]\',\'Delhi\',\'delhi\',\'Delhi.\',\'110020\',\'healthgeniedev3@gmail.com\',\'developer3@healthgenie.in\',\'9826322352\',\'Md Muzaffarul Islam\',\'\',\'male\',\'married\',\'2019-06-09\',\'{\\"pan\\":{\\"file\\":\\"\\\\/uploads\\\\/2024\\\\/07\\\\/PAN_19.jpeg\\",\\"number\\":\\"AEGPI2327L\\"},\\"adhar\\":{\\"file\\":\\"\\",\\"number\\":\\"623514057240\\",\\"front\\":\\"\\",\\"back\\":\\"\\\\/uploads\\\\/2024\\\\/07\\\\/Adhar 2_29.jpeg\\"},\\"avatar\\":{\\"file\\":\\"\\\\/uploads\\\\/2023\\\\/05\\\\/nazrul-profile-picture.jpg\\"},\\"passport\\":{\\"number\\":null,\\"file\\":\\"\\"},\\"bank_account\\":{\\"number\\":\\"130730\\",\\"name\\":\\"Indian Overseas Bank\\",\\"file\\":\\"\\"},\\"banking_and_financial\\":{\\"remarks\\":\\"line 1 \\\\r\\\\nline 2\\\\r\\\\nline 3\\",\\"file\\":\\"\\\\/uploads\\\\/2023\\\\/03\\\\/invoice.pdf\\"},\\"family_details\\":{\\"remarks\\":null,\\"file\\":\\"\\\\/uploads\\\\/2024\\\\/07\\\\/family_4.jpeg\\"},\\"kye_documents\\":{\\"remarks\\":\\"LOA\\\\r\\\\n\\",\\"file\\":\\"\\\\/uploads\\\\/2024\\\\/07\\\\/LOA_38.jpeg\\"},\\"loan_documents\\":{\\"remarks\\":null,\\"file\\":\\"\\"},\\"educational_documents\\":{\\"remarks\\":\\"B.Tech\\",\\"file\\":\\"\\\\/uploads\\\\/2024\\\\/07\\\\/B.tech_3.jpeg\\"},\\"relieving_documents\\":{\\"remarks\\":null,\\"file\\":\\"\\"},\\"misc_documents\\":{\\"remarks\\":null,\\"file\\":\\"\\"},\\"uan\\":{\\"number\\":\\"testUAN\\",\\"file\\":\\"\\\\/uploads\\\\/2023\\\\/11\\\\/salary-slip-md-nazrul-islam-09-2023(2)_4.pdf\\"},\\"pdc_cheque\\":{\\"bank_name_1\\":null,\\"cheque_number_1\\":null,\\"bank_name_2\\":null,\\"cheque_number_2\\":null,\\"bank_name_3\\":null,\\"cheque_number_3\\":null,\\"enable_pdc\\":\\"no\\"}}\',\'8826322352\',\'452\',\'\',\'1st Floor\',\'8285299085\',\'2022-04-28 15:36:14\',NULL,\'MD NAZRUL ISLAM\')
+AND `year_month` = \'2025-12\'
+ LIMIT 1')
+ 3 SYSTEMPATH\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT *
+FROM `grace_balance`
+WHERE `employee_id` = (\'40\',\'40\',\'active\',\'40\',\'125\',\'2\',\'20\',\'30\',\'588\',\'1\',\'no\',\'yes\',\'1/2\',\'2023-10-01\',\'no\',\'superuser\',\'2019-04-01\',\'confirmed\',\'90\',NULL,\'del\',\'7\',\'MD NAZRUL\',\'ISLAM\',\'B.Tech\',\'10 years\',\'Test\',\'Test\',\'Test\',\'test and test2\',\'1989-12-23\',\'Ward No: 04\',\'Gogri\',\'khagaria\',\'bihar\',\'851202\',\'FA-6 Abul Fazal Enclave part 2, Shaheen bagh okhla\',\'yes\',\'yes\',\'yes\',\'yes\',\'[{\\"member_name\\":\\"Alishba\\",\\"member_relation\\":\\"Daughter\\",\\"member_dob\\":\\"2020-10-08\\",\\"member_age\\":\\"4\\"},{\\"member_name\\":\\"Saba Tarannum\\",\\"member_relation\\":\\"Wife\\",\\"member_dob\\":\\"1995-09-03\\",\\"member_age\\":\\"29\\"}]\',\'[{\\"document_name\\":\\"test\\"}]\',\'Delhi\',\'delhi\',\'Delhi.\',\'110020\',\'healthgeniedev3@gmail.com\',\'developer3@healthgenie.in\',\'9826322352\',\'Md Muzaffarul Islam\',\'\',\'male\',\'married\',\'2019-06-09\',\'{\\"pan\\":{\\"file\\":\\"\\\\/uploads\\\\/2024\\\\/07\\\\/PAN_19.jpeg\\",\\"number\\":\\"AEGPI2327L\\"},\\"adhar\\":{\\"file\\":\\"\\",\\"number\\":\\"623514057240\\",\\"front\\":\\"\\",\\"back\\":\\"\\\\/uploads\\\\/2024\\\\/07\\\\/Adhar 2_29.jpeg\\"},\\"avatar\\":{\\"file\\":\\"\\\\/uploads\\\\/2023\\\\/05\\\\/nazrul-profile-picture.jpg\\"},\\"passport\\":{\\"number\\":null,\\"file\\":\\"\\"},\\"bank_account\\":{\\"number\\":\\"130730\\",\\"name\\":\\"Indian Overseas Bank\\",\\"file\\":\\"\\"},\\"banking_and_financial\\":{\\"remarks\\":\\"line 1 \\\\r\\\\nline 2\\\\r\\\\nline 3\\",\\"file\\":\\"\\\\/uploads\\\\/2023\\\\/03\\\\/invoice.pdf\\"},\\"family_details\\":{\\"remarks\\":null,\\"file\\":\\"\\\\/uploads\\\\/2024\\\\/07\\\\/family_4.jpeg\\"},\\"kye_documents\\":{\\"remarks\\":\\"LOA\\\\r\\\\n\\",\\"file\\":\\"\\\\/uploads\\\\/2024\\\\/07\\\\/LOA_38.jpeg\\"},\\"loan_documents\\":{\\"remarks\\":null,\\"file\\":\\"\\"},\\"educational_documents\\":{\\"remarks\\":\\"B.Tech\\",\\"file\\":\\"\\\\/uploads\\\\/2024\\\\/07\\\\/B.tech_3.jpeg\\"},\\"relieving_documents\\":{\\"remarks\\":null,\\"file\\":\\"\\"},\\"misc_documents\\":{\\"remarks\\":null,\\"file\\":\\"\\"},\\"uan\\":{\\"number\\":\\"testUAN\\",\\"file\\":\\"\\\\/uploads\\\\/2023\\\\/11\\\\/salary-slip-md-nazrul-islam-09-2023(2)_4.pdf\\"},\\"pdc_cheque\\":{\\"bank_name_1\\":null,\\"cheque_number_1\\":null,\\"bank_name_2\\":null,\\"cheque_number_2\\":null,\\"bank_name_3\\":null,\\"cheque_number_3\\":null,\\"enable_pdc\\":\\"no\\"}}\',\'8826322352\',\'452\',\'\',\'1st Floor\',\'8285299085\',\'2022-04-28 15:36:14\',NULL,\'MD NAZRUL ISLAM\')
+AND `year_month` = \'2025-12\'
+ LIMIT 1')
+ 4 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT *
+FROM `grace_balance`
+WHERE `employee_id` = :employee_id:
+AND `year_month` = :year_month:
+ LIMIT 1', [...], false)
+ 5 SYSTEMPATH\Model.php(330): CodeIgniter\Database\BaseBuilder->get()
+ 6 SYSTEMPATH\BaseModel.php(715): CodeIgniter\Model->doFirst()
+ 7 APPPATH\Controllers\User\Profile.php(221): CodeIgniter\BaseModel->first()
+ 8 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\User\Profile->getAttendanceStats()
+ 9 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\User\Profile))
+10 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+11 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+12 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+13 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+14 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+CRITICAL - 2025-12-16 15:36:59 --> ErrorException: Maximum execution time of 300 seconds exceeded
+[Method: POST, Route: ajax/hr/employee/send-absent-without-leave-notification]
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 327.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-16 15:37:04 --> ErrorException: Maximum execution time of 300 seconds exceeded
+[Method: POST, Route: ajax/hr/employee/send-absent-without-leave-notification-heuer-only]
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 327.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+ERROR - 2025-12-16 16:55:18 --> mysqli_sql_exception: Operand should contain 1 column(s) in D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php(327): mysqli->query('SELECT *\nFROM `...', 0)
+#1 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('SELECT *\nFROM `...')
+#2 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT *\nFROM `...')
+#3 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT *\nFROM `...', Array, false)
+#4 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Model.php(330): CodeIgniter\Database\BaseBuilder->get()
+#5 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\BaseModel.php(715): CodeIgniter\Model->doFirst()
+#6 D:\LOCALHOST\hrm.healthgenie\app\Controllers\User\Profile.php(221): CodeIgniter\BaseModel->first()
+#7 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(933): App\Controllers\User\Profile->getAttendanceStats()
+#8 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\User\Profile))
+#9 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#10 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#11 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#12 D:\LOCALHOST\hrm.healthgenie\public\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#13 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hr...')
+#14 {main}
+CRITICAL - 2025-12-16 16:55:18 --> CodeIgniter\Database\Exceptions\DatabaseException: Operand should contain 1 column(s)
+[Method: GET, Route: ajax/profile/get-attendance-stats]
+in SYSTEMPATH\Database\BaseConnection.php on line 684.
+ 1 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT *
+FROM `grace_balance`
+WHERE `employee_id` = :employee_id:
+AND `year_month` = :year_month:
+ LIMIT 1', [...], false)
+ 2 SYSTEMPATH\Model.php(330): CodeIgniter\Database\BaseBuilder->get()
+ 3 SYSTEMPATH\BaseModel.php(715): CodeIgniter\Model->doFirst()
+ 4 APPPATH\Controllers\User\Profile.php(221): CodeIgniter\BaseModel->first()
+ 5 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\User\Profile->getAttendanceStats()
+ 6 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\User\Profile))
+ 7 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 8 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 9 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+10 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+11 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+CRITICAL - 2025-12-16 16:55:18 --> [Caused by] CodeIgniter\Database\Exceptions\DatabaseException: Operand should contain 1 column(s)
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 332.
+ 1 SYSTEMPATH\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('SELECT *
+FROM `grace_balance`
+WHERE `employee_id` = (\'1\',\'1\',\'active\',\'1\',\'46\',\'2\',\'1\',\'38\',\'1\',\'1\',\'no\',\'no\',\'\',\'\',\'no\',\'superuser\',\'2014-02-01\',\'confirmed\',\'0\',NULL,\'del\',NULL,\'MANU\',\'GROVER\',\'\',\'\',\'\',\'\',\'\',\'\',\'1973-01-25\',\'GK\',\'New Delhi\',\'Delhi\',\'Delhi\',\'110048\',\'GK\',\'yes\',\'yes\',\'yes\',\'yes\',NULL,NULL,\'New Delhi\',\'Delhi\',\'Delhi\',\'110048\',\'manu@gstc.com\',\'\',\'9810145500\',\'\',\'\',\'male\',\'married\',NULL,\'{\\"avatar\\":{\\"file\\":\\"\\\\/uploads\\\\/2022\\\\/12\\\\/WhatsApp Image 2022-12-02 at 12.39.28 PM_1.jpeg\\"},\\"pan\\":{\\"number\\":null},\\"adhar\\":{\\"number\\":null},\\"bank_account\\":{\\"name\\":null,\\"number\\":null},\\"passport\\":{\\"number\\":null}}\',\'\',\'\',\'\',\'\',\'\',\'2022-04-28 15:36:14\',NULL,\'MANU GROVER\')
+AND `year_month` = \'2025-12\'
+ LIMIT 1')
+ 2 SYSTEMPATH\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT *
+FROM `grace_balance`
+WHERE `employee_id` = (\'1\',\'1\',\'active\',\'1\',\'46\',\'2\',\'1\',\'38\',\'1\',\'1\',\'no\',\'no\',\'\',\'\',\'no\',\'superuser\',\'2014-02-01\',\'confirmed\',\'0\',NULL,\'del\',NULL,\'MANU\',\'GROVER\',\'\',\'\',\'\',\'\',\'\',\'\',\'1973-01-25\',\'GK\',\'New Delhi\',\'Delhi\',\'Delhi\',\'110048\',\'GK\',\'yes\',\'yes\',\'yes\',\'yes\',NULL,NULL,\'New Delhi\',\'Delhi\',\'Delhi\',\'110048\',\'manu@gstc.com\',\'\',\'9810145500\',\'\',\'\',\'male\',\'married\',NULL,\'{\\"avatar\\":{\\"file\\":\\"\\\\/uploads\\\\/2022\\\\/12\\\\/WhatsApp Image 2022-12-02 at 12.39.28 PM_1.jpeg\\"},\\"pan\\":{\\"number\\":null},\\"adhar\\":{\\"number\\":null},\\"bank_account\\":{\\"name\\":null,\\"number\\":null},\\"passport\\":{\\"number\\":null}}\',\'\',\'\',\'\',\'\',\'\',\'2022-04-28 15:36:14\',NULL,\'MANU GROVER\')
+AND `year_month` = \'2025-12\'
+ LIMIT 1')
+ 3 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT *
+FROM `grace_balance`
+WHERE `employee_id` = :employee_id:
+AND `year_month` = :year_month:
+ LIMIT 1', [...], false)
+ 4 SYSTEMPATH\Model.php(330): CodeIgniter\Database\BaseBuilder->get()
+ 5 SYSTEMPATH\BaseModel.php(715): CodeIgniter\Model->doFirst()
+ 6 APPPATH\Controllers\User\Profile.php(221): CodeIgniter\BaseModel->first()
+ 7 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\User\Profile->getAttendanceStats()
+ 8 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\User\Profile))
+ 9 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+10 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+11 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+12 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+13 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+CRITICAL - 2025-12-16 16:55:18 --> [Caused by] mysqli_sql_exception: Operand should contain 1 column(s)
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 327.
+ 1 SYSTEMPATH\Database\MySQLi\Connection.php(327): mysqli->query('SELECT *
+FROM `grace_balance`
+WHERE `employee_id` = (\'1\',\'1\',\'active\',\'1\',\'46\',\'2\',\'1\',\'38\',\'1\',\'1\',\'no\',\'no\',\'\',\'\',\'no\',\'superuser\',\'2014-02-01\',\'confirmed\',\'0\',NULL,\'del\',NULL,\'MANU\',\'GROVER\',\'\',\'\',\'\',\'\',\'\',\'\',\'1973-01-25\',\'GK\',\'New Delhi\',\'Delhi\',\'Delhi\',\'110048\',\'GK\',\'yes\',\'yes\',\'yes\',\'yes\',NULL,NULL,\'New Delhi\',\'Delhi\',\'Delhi\',\'110048\',\'manu@gstc.com\',\'\',\'9810145500\',\'\',\'\',\'male\',\'married\',NULL,\'{\\"avatar\\":{\\"file\\":\\"\\\\/uploads\\\\/2022\\\\/12\\\\/WhatsApp Image 2022-12-02 at 12.39.28 PM_1.jpeg\\"},\\"pan\\":{\\"number\\":null},\\"adhar\\":{\\"number\\":null},\\"bank_account\\":{\\"name\\":null,\\"number\\":null},\\"passport\\":{\\"number\\":null}}\',\'\',\'\',\'\',\'\',\'\',\'2022-04-28 15:36:14\',NULL,\'MANU GROVER\')
+AND `year_month` = \'2025-12\'
+ LIMIT 1', 0)
+ 2 SYSTEMPATH\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('SELECT *
+FROM `grace_balance`
+WHERE `employee_id` = (\'1\',\'1\',\'active\',\'1\',\'46\',\'2\',\'1\',\'38\',\'1\',\'1\',\'no\',\'no\',\'\',\'\',\'no\',\'superuser\',\'2014-02-01\',\'confirmed\',\'0\',NULL,\'del\',NULL,\'MANU\',\'GROVER\',\'\',\'\',\'\',\'\',\'\',\'\',\'1973-01-25\',\'GK\',\'New Delhi\',\'Delhi\',\'Delhi\',\'110048\',\'GK\',\'yes\',\'yes\',\'yes\',\'yes\',NULL,NULL,\'New Delhi\',\'Delhi\',\'Delhi\',\'110048\',\'manu@gstc.com\',\'\',\'9810145500\',\'\',\'\',\'male\',\'married\',NULL,\'{\\"avatar\\":{\\"file\\":\\"\\\\/uploads\\\\/2022\\\\/12\\\\/WhatsApp Image 2022-12-02 at 12.39.28 PM_1.jpeg\\"},\\"pan\\":{\\"number\\":null},\\"adhar\\":{\\"number\\":null},\\"bank_account\\":{\\"name\\":null,\\"number\\":null},\\"passport\\":{\\"number\\":null}}\',\'\',\'\',\'\',\'\',\'\',\'2022-04-28 15:36:14\',NULL,\'MANU GROVER\')
+AND `year_month` = \'2025-12\'
+ LIMIT 1')
+ 3 SYSTEMPATH\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT *
+FROM `grace_balance`
+WHERE `employee_id` = (\'1\',\'1\',\'active\',\'1\',\'46\',\'2\',\'1\',\'38\',\'1\',\'1\',\'no\',\'no\',\'\',\'\',\'no\',\'superuser\',\'2014-02-01\',\'confirmed\',\'0\',NULL,\'del\',NULL,\'MANU\',\'GROVER\',\'\',\'\',\'\',\'\',\'\',\'\',\'1973-01-25\',\'GK\',\'New Delhi\',\'Delhi\',\'Delhi\',\'110048\',\'GK\',\'yes\',\'yes\',\'yes\',\'yes\',NULL,NULL,\'New Delhi\',\'Delhi\',\'Delhi\',\'110048\',\'manu@gstc.com\',\'\',\'9810145500\',\'\',\'\',\'male\',\'married\',NULL,\'{\\"avatar\\":{\\"file\\":\\"\\\\/uploads\\\\/2022\\\\/12\\\\/WhatsApp Image 2022-12-02 at 12.39.28 PM_1.jpeg\\"},\\"pan\\":{\\"number\\":null},\\"adhar\\":{\\"number\\":null},\\"bank_account\\":{\\"name\\":null,\\"number\\":null},\\"passport\\":{\\"number\\":null}}\',\'\',\'\',\'\',\'\',\'\',\'2022-04-28 15:36:14\',NULL,\'MANU GROVER\')
+AND `year_month` = \'2025-12\'
+ LIMIT 1')
+ 4 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT *
+FROM `grace_balance`
+WHERE `employee_id` = :employee_id:
+AND `year_month` = :year_month:
+ LIMIT 1', [...], false)
+ 5 SYSTEMPATH\Model.php(330): CodeIgniter\Database\BaseBuilder->get()
+ 6 SYSTEMPATH\BaseModel.php(715): CodeIgniter\Model->doFirst()
+ 7 APPPATH\Controllers\User\Profile.php(221): CodeIgniter\BaseModel->first()
+ 8 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\User\Profile->getAttendanceStats()
+ 9 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\User\Profile))
+10 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+11 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+12 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+13 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+14 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+ERROR - 2025-12-16 16:56:37 --> mysqli_sql_exception: Operand should contain 1 column(s) in D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php(327): mysqli->query('SELECT *\nFROM `...', 0)
+#1 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('SELECT *\nFROM `...')
+#2 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT *\nFROM `...')
+#3 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT *\nFROM `...', Array, false)
+#4 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Model.php(330): CodeIgniter\Database\BaseBuilder->get()
+#5 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\BaseModel.php(715): CodeIgniter\Model->doFirst()
+#6 D:\LOCALHOST\hrm.healthgenie\app\Controllers\User\Profile.php(221): CodeIgniter\BaseModel->first()
+#7 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(933): App\Controllers\User\Profile->getAttendanceStats()
+#8 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\User\Profile))
+#9 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#10 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#11 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#12 D:\LOCALHOST\hrm.healthgenie\public\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#13 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hr...')
+#14 {main}
+CRITICAL - 2025-12-16 16:56:37 --> CodeIgniter\Database\Exceptions\DatabaseException: Operand should contain 1 column(s)
+[Method: GET, Route: ajax/profile/get-attendance-stats]
+in SYSTEMPATH\Database\BaseConnection.php on line 684.
+ 1 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT *
+FROM `grace_balance`
+WHERE `employee_id` = :employee_id:
+AND `year_month` = :year_month:
+ LIMIT 1', [...], false)
+ 2 SYSTEMPATH\Model.php(330): CodeIgniter\Database\BaseBuilder->get()
+ 3 SYSTEMPATH\BaseModel.php(715): CodeIgniter\Model->doFirst()
+ 4 APPPATH\Controllers\User\Profile.php(221): CodeIgniter\BaseModel->first()
+ 5 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\User\Profile->getAttendanceStats()
+ 6 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\User\Profile))
+ 7 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 8 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 9 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+10 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+11 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+CRITICAL - 2025-12-16 16:56:37 --> [Caused by] CodeIgniter\Database\Exceptions\DatabaseException: Operand should contain 1 column(s)
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 332.
+ 1 SYSTEMPATH\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('SELECT *
+FROM `grace_balance`
+WHERE `employee_id` = (\'40\',\'40\',\'active\',\'40\',\'125\',\'2\',\'20\',\'30\',\'588\',\'1\',\'no\',\'yes\',\'1/2\',\'2023-10-01\',\'no\',\'superuser\',\'2019-04-01\',\'confirmed\',\'90\',NULL,\'del\',\'7\',\'MD NAZRUL\',\'ISLAM\',\'B.Tech\',\'10 years\',\'Test\',\'Test\',\'Test\',\'test and test2\',\'1989-12-23\',\'Ward No: 04\',\'Gogri\',\'khagaria\',\'bihar\',\'851202\',\'FA-6 Abul Fazal Enclave part 2, Shaheen bagh okhla\',\'yes\',\'yes\',\'yes\',\'yes\',\'[{\\"member_name\\":\\"Alishba\\",\\"member_relation\\":\\"Daughter\\",\\"member_dob\\":\\"2020-10-08\\",\\"member_age\\":\\"4\\"},{\\"member_name\\":\\"Saba Tarannum\\",\\"member_relation\\":\\"Wife\\",\\"member_dob\\":\\"1995-09-03\\",\\"member_age\\":\\"29\\"}]\',\'[{\\"document_name\\":\\"test\\"}]\',\'Delhi\',\'delhi\',\'Delhi.\',\'110020\',\'healthgeniedev3@gmail.com\',\'developer3@healthgenie.in\',\'9826322352\',\'Md Muzaffarul Islam\',\'\',\'male\',\'married\',\'2019-06-09\',\'{\\"pan\\":{\\"file\\":\\"\\\\/uploads\\\\/2024\\\\/07\\\\/PAN_19.jpeg\\",\\"number\\":\\"AEGPI2327L\\"},\\"adhar\\":{\\"file\\":\\"\\",\\"number\\":\\"623514057240\\",\\"front\\":\\"\\",\\"back\\":\\"\\\\/uploads\\\\/2024\\\\/07\\\\/Adhar 2_29.jpeg\\"},\\"avatar\\":{\\"file\\":\\"\\\\/uploads\\\\/2023\\\\/05\\\\/nazrul-profile-picture.jpg\\"},\\"passport\\":{\\"number\\":null,\\"file\\":\\"\\"},\\"bank_account\\":{\\"number\\":\\"130730\\",\\"name\\":\\"Indian Overseas Bank\\",\\"file\\":\\"\\"},\\"banking_and_financial\\":{\\"remarks\\":\\"line 1 \\\\r\\\\nline 2\\\\r\\\\nline 3\\",\\"file\\":\\"\\\\/uploads\\\\/2023\\\\/03\\\\/invoice.pdf\\"},\\"family_details\\":{\\"remarks\\":null,\\"file\\":\\"\\\\/uploads\\\\/2024\\\\/07\\\\/family_4.jpeg\\"},\\"kye_documents\\":{\\"remarks\\":\\"LOA\\\\r\\\\n\\",\\"file\\":\\"\\\\/uploads\\\\/2024\\\\/07\\\\/LOA_38.jpeg\\"},\\"loan_documents\\":{\\"remarks\\":null,\\"file\\":\\"\\"},\\"educational_documents\\":{\\"remarks\\":\\"B.Tech\\",\\"file\\":\\"\\\\/uploads\\\\/2024\\\\/07\\\\/B.tech_3.jpeg\\"},\\"relieving_documents\\":{\\"remarks\\":null,\\"file\\":\\"\\"},\\"misc_documents\\":{\\"remarks\\":null,\\"file\\":\\"\\"},\\"uan\\":{\\"number\\":\\"testUAN\\",\\"file\\":\\"\\\\/uploads\\\\/2023\\\\/11\\\\/salary-slip-md-nazrul-islam-09-2023(2)_4.pdf\\"},\\"pdc_cheque\\":{\\"bank_name_1\\":null,\\"cheque_number_1\\":null,\\"bank_name_2\\":null,\\"cheque_number_2\\":null,\\"bank_name_3\\":null,\\"cheque_number_3\\":null,\\"enable_pdc\\":\\"no\\"}}\',\'8826322352\',\'452\',\'\',\'1st Floor\',\'8285299085\',\'2022-04-28 15:36:14\',NULL,\'MD NAZRUL ISLAM\')
+AND `year_month` = \'2025-12\'
+ LIMIT 1')
+ 2 SYSTEMPATH\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT *
+FROM `grace_balance`
+WHERE `employee_id` = (\'40\',\'40\',\'active\',\'40\',\'125\',\'2\',\'20\',\'30\',\'588\',\'1\',\'no\',\'yes\',\'1/2\',\'2023-10-01\',\'no\',\'superuser\',\'2019-04-01\',\'confirmed\',\'90\',NULL,\'del\',\'7\',\'MD NAZRUL\',\'ISLAM\',\'B.Tech\',\'10 years\',\'Test\',\'Test\',\'Test\',\'test and test2\',\'1989-12-23\',\'Ward No: 04\',\'Gogri\',\'khagaria\',\'bihar\',\'851202\',\'FA-6 Abul Fazal Enclave part 2, Shaheen bagh okhla\',\'yes\',\'yes\',\'yes\',\'yes\',\'[{\\"member_name\\":\\"Alishba\\",\\"member_relation\\":\\"Daughter\\",\\"member_dob\\":\\"2020-10-08\\",\\"member_age\\":\\"4\\"},{\\"member_name\\":\\"Saba Tarannum\\",\\"member_relation\\":\\"Wife\\",\\"member_dob\\":\\"1995-09-03\\",\\"member_age\\":\\"29\\"}]\',\'[{\\"document_name\\":\\"test\\"}]\',\'Delhi\',\'delhi\',\'Delhi.\',\'110020\',\'healthgeniedev3@gmail.com\',\'developer3@healthgenie.in\',\'9826322352\',\'Md Muzaffarul Islam\',\'\',\'male\',\'married\',\'2019-06-09\',\'{\\"pan\\":{\\"file\\":\\"\\\\/uploads\\\\/2024\\\\/07\\\\/PAN_19.jpeg\\",\\"number\\":\\"AEGPI2327L\\"},\\"adhar\\":{\\"file\\":\\"\\",\\"number\\":\\"623514057240\\",\\"front\\":\\"\\",\\"back\\":\\"\\\\/uploads\\\\/2024\\\\/07\\\\/Adhar 2_29.jpeg\\"},\\"avatar\\":{\\"file\\":\\"\\\\/uploads\\\\/2023\\\\/05\\\\/nazrul-profile-picture.jpg\\"},\\"passport\\":{\\"number\\":null,\\"file\\":\\"\\"},\\"bank_account\\":{\\"number\\":\\"130730\\",\\"name\\":\\"Indian Overseas Bank\\",\\"file\\":\\"\\"},\\"banking_and_financial\\":{\\"remarks\\":\\"line 1 \\\\r\\\\nline 2\\\\r\\\\nline 3\\",\\"file\\":\\"\\\\/uploads\\\\/2023\\\\/03\\\\/invoice.pdf\\"},\\"family_details\\":{\\"remarks\\":null,\\"file\\":\\"\\\\/uploads\\\\/2024\\\\/07\\\\/family_4.jpeg\\"},\\"kye_documents\\":{\\"remarks\\":\\"LOA\\\\r\\\\n\\",\\"file\\":\\"\\\\/uploads\\\\/2024\\\\/07\\\\/LOA_38.jpeg\\"},\\"loan_documents\\":{\\"remarks\\":null,\\"file\\":\\"\\"},\\"educational_documents\\":{\\"remarks\\":\\"B.Tech\\",\\"file\\":\\"\\\\/uploads\\\\/2024\\\\/07\\\\/B.tech_3.jpeg\\"},\\"relieving_documents\\":{\\"remarks\\":null,\\"file\\":\\"\\"},\\"misc_documents\\":{\\"remarks\\":null,\\"file\\":\\"\\"},\\"uan\\":{\\"number\\":\\"testUAN\\",\\"file\\":\\"\\\\/uploads\\\\/2023\\\\/11\\\\/salary-slip-md-nazrul-islam-09-2023(2)_4.pdf\\"},\\"pdc_cheque\\":{\\"bank_name_1\\":null,\\"cheque_number_1\\":null,\\"bank_name_2\\":null,\\"cheque_number_2\\":null,\\"bank_name_3\\":null,\\"cheque_number_3\\":null,\\"enable_pdc\\":\\"no\\"}}\',\'8826322352\',\'452\',\'\',\'1st Floor\',\'8285299085\',\'2022-04-28 15:36:14\',NULL,\'MD NAZRUL ISLAM\')
+AND `year_month` = \'2025-12\'
+ LIMIT 1')
+ 3 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT *
+FROM `grace_balance`
+WHERE `employee_id` = :employee_id:
+AND `year_month` = :year_month:
+ LIMIT 1', [...], false)
+ 4 SYSTEMPATH\Model.php(330): CodeIgniter\Database\BaseBuilder->get()
+ 5 SYSTEMPATH\BaseModel.php(715): CodeIgniter\Model->doFirst()
+ 6 APPPATH\Controllers\User\Profile.php(221): CodeIgniter\BaseModel->first()
+ 7 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\User\Profile->getAttendanceStats()
+ 8 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\User\Profile))
+ 9 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+10 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+11 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+12 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+13 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+CRITICAL - 2025-12-16 16:56:37 --> [Caused by] mysqli_sql_exception: Operand should contain 1 column(s)
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 327.
+ 1 SYSTEMPATH\Database\MySQLi\Connection.php(327): mysqli->query('SELECT *
+FROM `grace_balance`
+WHERE `employee_id` = (\'40\',\'40\',\'active\',\'40\',\'125\',\'2\',\'20\',\'30\',\'588\',\'1\',\'no\',\'yes\',\'1/2\',\'2023-10-01\',\'no\',\'superuser\',\'2019-04-01\',\'confirmed\',\'90\',NULL,\'del\',\'7\',\'MD NAZRUL\',\'ISLAM\',\'B.Tech\',\'10 years\',\'Test\',\'Test\',\'Test\',\'test and test2\',\'1989-12-23\',\'Ward No: 04\',\'Gogri\',\'khagaria\',\'bihar\',\'851202\',\'FA-6 Abul Fazal Enclave part 2, Shaheen bagh okhla\',\'yes\',\'yes\',\'yes\',\'yes\',\'[{\\"member_name\\":\\"Alishba\\",\\"member_relation\\":\\"Daughter\\",\\"member_dob\\":\\"2020-10-08\\",\\"member_age\\":\\"4\\"},{\\"member_name\\":\\"Saba Tarannum\\",\\"member_relation\\":\\"Wife\\",\\"member_dob\\":\\"1995-09-03\\",\\"member_age\\":\\"29\\"}]\',\'[{\\"document_name\\":\\"test\\"}]\',\'Delhi\',\'delhi\',\'Delhi.\',\'110020\',\'healthgeniedev3@gmail.com\',\'developer3@healthgenie.in\',\'9826322352\',\'Md Muzaffarul Islam\',\'\',\'male\',\'married\',\'2019-06-09\',\'{\\"pan\\":{\\"file\\":\\"\\\\/uploads\\\\/2024\\\\/07\\\\/PAN_19.jpeg\\",\\"number\\":\\"AEGPI2327L\\"},\\"adhar\\":{\\"file\\":\\"\\",\\"number\\":\\"623514057240\\",\\"front\\":\\"\\",\\"back\\":\\"\\\\/uploads\\\\/2024\\\\/07\\\\/Adhar 2_29.jpeg\\"},\\"avatar\\":{\\"file\\":\\"\\\\/uploads\\\\/2023\\\\/05\\\\/nazrul-profile-picture.jpg\\"},\\"passport\\":{\\"number\\":null,\\"file\\":\\"\\"},\\"bank_account\\":{\\"number\\":\\"130730\\",\\"name\\":\\"Indian Overseas Bank\\",\\"file\\":\\"\\"},\\"banking_and_financial\\":{\\"remarks\\":\\"line 1 \\\\r\\\\nline 2\\\\r\\\\nline 3\\",\\"file\\":\\"\\\\/uploads\\\\/2023\\\\/03\\\\/invoice.pdf\\"},\\"family_details\\":{\\"remarks\\":null,\\"file\\":\\"\\\\/uploads\\\\/2024\\\\/07\\\\/family_4.jpeg\\"},\\"kye_documents\\":{\\"remarks\\":\\"LOA\\\\r\\\\n\\",\\"file\\":\\"\\\\/uploads\\\\/2024\\\\/07\\\\/LOA_38.jpeg\\"},\\"loan_documents\\":{\\"remarks\\":null,\\"file\\":\\"\\"},\\"educational_documents\\":{\\"remarks\\":\\"B.Tech\\",\\"file\\":\\"\\\\/uploads\\\\/2024\\\\/07\\\\/B.tech_3.jpeg\\"},\\"relieving_documents\\":{\\"remarks\\":null,\\"file\\":\\"\\"},\\"misc_documents\\":{\\"remarks\\":null,\\"file\\":\\"\\"},\\"uan\\":{\\"number\\":\\"testUAN\\",\\"file\\":\\"\\\\/uploads\\\\/2023\\\\/11\\\\/salary-slip-md-nazrul-islam-09-2023(2)_4.pdf\\"},\\"pdc_cheque\\":{\\"bank_name_1\\":null,\\"cheque_number_1\\":null,\\"bank_name_2\\":null,\\"cheque_number_2\\":null,\\"bank_name_3\\":null,\\"cheque_number_3\\":null,\\"enable_pdc\\":\\"no\\"}}\',\'8826322352\',\'452\',\'\',\'1st Floor\',\'8285299085\',\'2022-04-28 15:36:14\',NULL,\'MD NAZRUL ISLAM\')
+AND `year_month` = \'2025-12\'
+ LIMIT 1', 0)
+ 2 SYSTEMPATH\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('SELECT *
+FROM `grace_balance`
+WHERE `employee_id` = (\'40\',\'40\',\'active\',\'40\',\'125\',\'2\',\'20\',\'30\',\'588\',\'1\',\'no\',\'yes\',\'1/2\',\'2023-10-01\',\'no\',\'superuser\',\'2019-04-01\',\'confirmed\',\'90\',NULL,\'del\',\'7\',\'MD NAZRUL\',\'ISLAM\',\'B.Tech\',\'10 years\',\'Test\',\'Test\',\'Test\',\'test and test2\',\'1989-12-23\',\'Ward No: 04\',\'Gogri\',\'khagaria\',\'bihar\',\'851202\',\'FA-6 Abul Fazal Enclave part 2, Shaheen bagh okhla\',\'yes\',\'yes\',\'yes\',\'yes\',\'[{\\"member_name\\":\\"Alishba\\",\\"member_relation\\":\\"Daughter\\",\\"member_dob\\":\\"2020-10-08\\",\\"member_age\\":\\"4\\"},{\\"member_name\\":\\"Saba Tarannum\\",\\"member_relation\\":\\"Wife\\",\\"member_dob\\":\\"1995-09-03\\",\\"member_age\\":\\"29\\"}]\',\'[{\\"document_name\\":\\"test\\"}]\',\'Delhi\',\'delhi\',\'Delhi.\',\'110020\',\'healthgeniedev3@gmail.com\',\'developer3@healthgenie.in\',\'9826322352\',\'Md Muzaffarul Islam\',\'\',\'male\',\'married\',\'2019-06-09\',\'{\\"pan\\":{\\"file\\":\\"\\\\/uploads\\\\/2024\\\\/07\\\\/PAN_19.jpeg\\",\\"number\\":\\"AEGPI2327L\\"},\\"adhar\\":{\\"file\\":\\"\\",\\"number\\":\\"623514057240\\",\\"front\\":\\"\\",\\"back\\":\\"\\\\/uploads\\\\/2024\\\\/07\\\\/Adhar 2_29.jpeg\\"},\\"avatar\\":{\\"file\\":\\"\\\\/uploads\\\\/2023\\\\/05\\\\/nazrul-profile-picture.jpg\\"},\\"passport\\":{\\"number\\":null,\\"file\\":\\"\\"},\\"bank_account\\":{\\"number\\":\\"130730\\",\\"name\\":\\"Indian Overseas Bank\\",\\"file\\":\\"\\"},\\"banking_and_financial\\":{\\"remarks\\":\\"line 1 \\\\r\\\\nline 2\\\\r\\\\nline 3\\",\\"file\\":\\"\\\\/uploads\\\\/2023\\\\/03\\\\/invoice.pdf\\"},\\"family_details\\":{\\"remarks\\":null,\\"file\\":\\"\\\\/uploads\\\\/2024\\\\/07\\\\/family_4.jpeg\\"},\\"kye_documents\\":{\\"remarks\\":\\"LOA\\\\r\\\\n\\",\\"file\\":\\"\\\\/uploads\\\\/2024\\\\/07\\\\/LOA_38.jpeg\\"},\\"loan_documents\\":{\\"remarks\\":null,\\"file\\":\\"\\"},\\"educational_documents\\":{\\"remarks\\":\\"B.Tech\\",\\"file\\":\\"\\\\/uploads\\\\/2024\\\\/07\\\\/B.tech_3.jpeg\\"},\\"relieving_documents\\":{\\"remarks\\":null,\\"file\\":\\"\\"},\\"misc_documents\\":{\\"remarks\\":null,\\"file\\":\\"\\"},\\"uan\\":{\\"number\\":\\"testUAN\\",\\"file\\":\\"\\\\/uploads\\\\/2023\\\\/11\\\\/salary-slip-md-nazrul-islam-09-2023(2)_4.pdf\\"},\\"pdc_cheque\\":{\\"bank_name_1\\":null,\\"cheque_number_1\\":null,\\"bank_name_2\\":null,\\"cheque_number_2\\":null,\\"bank_name_3\\":null,\\"cheque_number_3\\":null,\\"enable_pdc\\":\\"no\\"}}\',\'8826322352\',\'452\',\'\',\'1st Floor\',\'8285299085\',\'2022-04-28 15:36:14\',NULL,\'MD NAZRUL ISLAM\')
+AND `year_month` = \'2025-12\'
+ LIMIT 1')
+ 3 SYSTEMPATH\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT *
+FROM `grace_balance`
+WHERE `employee_id` = (\'40\',\'40\',\'active\',\'40\',\'125\',\'2\',\'20\',\'30\',\'588\',\'1\',\'no\',\'yes\',\'1/2\',\'2023-10-01\',\'no\',\'superuser\',\'2019-04-01\',\'confirmed\',\'90\',NULL,\'del\',\'7\',\'MD NAZRUL\',\'ISLAM\',\'B.Tech\',\'10 years\',\'Test\',\'Test\',\'Test\',\'test and test2\',\'1989-12-23\',\'Ward No: 04\',\'Gogri\',\'khagaria\',\'bihar\',\'851202\',\'FA-6 Abul Fazal Enclave part 2, Shaheen bagh okhla\',\'yes\',\'yes\',\'yes\',\'yes\',\'[{\\"member_name\\":\\"Alishba\\",\\"member_relation\\":\\"Daughter\\",\\"member_dob\\":\\"2020-10-08\\",\\"member_age\\":\\"4\\"},{\\"member_name\\":\\"Saba Tarannum\\",\\"member_relation\\":\\"Wife\\",\\"member_dob\\":\\"1995-09-03\\",\\"member_age\\":\\"29\\"}]\',\'[{\\"document_name\\":\\"test\\"}]\',\'Delhi\',\'delhi\',\'Delhi.\',\'110020\',\'healthgeniedev3@gmail.com\',\'developer3@healthgenie.in\',\'9826322352\',\'Md Muzaffarul Islam\',\'\',\'male\',\'married\',\'2019-06-09\',\'{\\"pan\\":{\\"file\\":\\"\\\\/uploads\\\\/2024\\\\/07\\\\/PAN_19.jpeg\\",\\"number\\":\\"AEGPI2327L\\"},\\"adhar\\":{\\"file\\":\\"\\",\\"number\\":\\"623514057240\\",\\"front\\":\\"\\",\\"back\\":\\"\\\\/uploads\\\\/2024\\\\/07\\\\/Adhar 2_29.jpeg\\"},\\"avatar\\":{\\"file\\":\\"\\\\/uploads\\\\/2023\\\\/05\\\\/nazrul-profile-picture.jpg\\"},\\"passport\\":{\\"number\\":null,\\"file\\":\\"\\"},\\"bank_account\\":{\\"number\\":\\"130730\\",\\"name\\":\\"Indian Overseas Bank\\",\\"file\\":\\"\\"},\\"banking_and_financial\\":{\\"remarks\\":\\"line 1 \\\\r\\\\nline 2\\\\r\\\\nline 3\\",\\"file\\":\\"\\\\/uploads\\\\/2023\\\\/03\\\\/invoice.pdf\\"},\\"family_details\\":{\\"remarks\\":null,\\"file\\":\\"\\\\/uploads\\\\/2024\\\\/07\\\\/family_4.jpeg\\"},\\"kye_documents\\":{\\"remarks\\":\\"LOA\\\\r\\\\n\\",\\"file\\":\\"\\\\/uploads\\\\/2024\\\\/07\\\\/LOA_38.jpeg\\"},\\"loan_documents\\":{\\"remarks\\":null,\\"file\\":\\"\\"},\\"educational_documents\\":{\\"remarks\\":\\"B.Tech\\",\\"file\\":\\"\\\\/uploads\\\\/2024\\\\/07\\\\/B.tech_3.jpeg\\"},\\"relieving_documents\\":{\\"remarks\\":null,\\"file\\":\\"\\"},\\"misc_documents\\":{\\"remarks\\":null,\\"file\\":\\"\\"},\\"uan\\":{\\"number\\":\\"testUAN\\",\\"file\\":\\"\\\\/uploads\\\\/2023\\\\/11\\\\/salary-slip-md-nazrul-islam-09-2023(2)_4.pdf\\"},\\"pdc_cheque\\":{\\"bank_name_1\\":null,\\"cheque_number_1\\":null,\\"bank_name_2\\":null,\\"cheque_number_2\\":null,\\"bank_name_3\\":null,\\"cheque_number_3\\":null,\\"enable_pdc\\":\\"no\\"}}\',\'8826322352\',\'452\',\'\',\'1st Floor\',\'8285299085\',\'2022-04-28 15:36:14\',NULL,\'MD NAZRUL ISLAM\')
+AND `year_month` = \'2025-12\'
+ LIMIT 1')
+ 4 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT *
+FROM `grace_balance`
+WHERE `employee_id` = :employee_id:
+AND `year_month` = :year_month:
+ LIMIT 1', [...], false)
+ 5 SYSTEMPATH\Model.php(330): CodeIgniter\Database\BaseBuilder->get()
+ 6 SYSTEMPATH\BaseModel.php(715): CodeIgniter\Model->doFirst()
+ 7 APPPATH\Controllers\User\Profile.php(221): CodeIgniter\BaseModel->first()
+ 8 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\User\Profile->getAttendanceStats()
+ 9 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\User\Profile))
+10 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+11 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+12 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+13 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+14 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+CRITICAL - 2025-12-16 17:01:40 --> ErrorException: Maximum execution time of 300 seconds exceeded
+[Method: POST, Route: ajax/hr/employee/send-absent-without-leave-notification]
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 327.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-16 17:01:45 --> ErrorException: Maximum execution time of 300 seconds exceeded
+[Method: POST, Route: ajax/hr/employee/send-absent-without-leave-notification-heuer-only]
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 327.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+ERROR - 2025-12-16 17:05:49 --> mysqli_sql_exception: Operand should contain 1 column(s) in D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php(327): mysqli->query('SELECT *\nFROM `...', 0)
+#1 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('SELECT *\nFROM `...')
+#2 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT *\nFROM `...')
+#3 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT *\nFROM `...', Array, false)
+#4 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Model.php(330): CodeIgniter\Database\BaseBuilder->get()
+#5 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\BaseModel.php(715): CodeIgniter\Model->doFirst()
+#6 D:\LOCALHOST\hrm.healthgenie\app\Controllers\User\Profile.php(221): CodeIgniter\BaseModel->first()
+#7 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(933): App\Controllers\User\Profile->getAttendanceStats()
+#8 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\User\Profile))
+#9 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#10 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#11 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#12 D:\LOCALHOST\hrm.healthgenie\public\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#13 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hr...')
+#14 {main}
+CRITICAL - 2025-12-16 17:05:49 --> CodeIgniter\Database\Exceptions\DatabaseException: Operand should contain 1 column(s)
+[Method: GET, Route: ajax/profile/get-attendance-stats]
+in SYSTEMPATH\Database\BaseConnection.php on line 684.
+ 1 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT *
+FROM `grace_balance`
+WHERE `employee_id` = :employee_id:
+AND `year_month` = :year_month:
+ LIMIT 1', [...], false)
+ 2 SYSTEMPATH\Model.php(330): CodeIgniter\Database\BaseBuilder->get()
+ 3 SYSTEMPATH\BaseModel.php(715): CodeIgniter\Model->doFirst()
+ 4 APPPATH\Controllers\User\Profile.php(221): CodeIgniter\BaseModel->first()
+ 5 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\User\Profile->getAttendanceStats()
+ 6 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\User\Profile))
+ 7 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 8 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 9 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+10 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+11 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+CRITICAL - 2025-12-16 17:05:49 --> [Caused by] CodeIgniter\Database\Exceptions\DatabaseException: Operand should contain 1 column(s)
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 332.
+ 1 SYSTEMPATH\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('SELECT *
+FROM `grace_balance`
+WHERE `employee_id` = (\'1\',\'1\',\'active\',\'1\',\'46\',\'2\',\'1\',\'38\',\'1\',\'1\',\'no\',\'no\',\'\',\'\',\'no\',\'superuser\',\'2014-02-01\',\'confirmed\',\'0\',NULL,\'del\',NULL,\'MANU\',\'GROVER\',\'\',\'\',\'\',\'\',\'\',\'\',\'1973-01-25\',\'GK\',\'New Delhi\',\'Delhi\',\'Delhi\',\'110048\',\'GK\',\'yes\',\'yes\',\'yes\',\'yes\',NULL,NULL,\'New Delhi\',\'Delhi\',\'Delhi\',\'110048\',\'manu@gstc.com\',\'\',\'9810145500\',\'\',\'\',\'male\',\'married\',NULL,\'{\\"avatar\\":{\\"file\\":\\"\\\\/uploads\\\\/2022\\\\/12\\\\/WhatsApp Image 2022-12-02 at 12.39.28 PM_1.jpeg\\"},\\"pan\\":{\\"number\\":null},\\"adhar\\":{\\"number\\":null},\\"bank_account\\":{\\"name\\":null,\\"number\\":null},\\"passport\\":{\\"number\\":null}}\',\'\',\'\',\'\',\'\',\'\',\'2022-04-28 15:36:14\',NULL,\'MANU GROVER\')
+AND `year_month` = \'2025-12\'
+ LIMIT 1')
+ 2 SYSTEMPATH\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT *
+FROM `grace_balance`
+WHERE `employee_id` = (\'1\',\'1\',\'active\',\'1\',\'46\',\'2\',\'1\',\'38\',\'1\',\'1\',\'no\',\'no\',\'\',\'\',\'no\',\'superuser\',\'2014-02-01\',\'confirmed\',\'0\',NULL,\'del\',NULL,\'MANU\',\'GROVER\',\'\',\'\',\'\',\'\',\'\',\'\',\'1973-01-25\',\'GK\',\'New Delhi\',\'Delhi\',\'Delhi\',\'110048\',\'GK\',\'yes\',\'yes\',\'yes\',\'yes\',NULL,NULL,\'New Delhi\',\'Delhi\',\'Delhi\',\'110048\',\'manu@gstc.com\',\'\',\'9810145500\',\'\',\'\',\'male\',\'married\',NULL,\'{\\"avatar\\":{\\"file\\":\\"\\\\/uploads\\\\/2022\\\\/12\\\\/WhatsApp Image 2022-12-02 at 12.39.28 PM_1.jpeg\\"},\\"pan\\":{\\"number\\":null},\\"adhar\\":{\\"number\\":null},\\"bank_account\\":{\\"name\\":null,\\"number\\":null},\\"passport\\":{\\"number\\":null}}\',\'\',\'\',\'\',\'\',\'\',\'2022-04-28 15:36:14\',NULL,\'MANU GROVER\')
+AND `year_month` = \'2025-12\'
+ LIMIT 1')
+ 3 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT *
+FROM `grace_balance`
+WHERE `employee_id` = :employee_id:
+AND `year_month` = :year_month:
+ LIMIT 1', [...], false)
+ 4 SYSTEMPATH\Model.php(330): CodeIgniter\Database\BaseBuilder->get()
+ 5 SYSTEMPATH\BaseModel.php(715): CodeIgniter\Model->doFirst()
+ 6 APPPATH\Controllers\User\Profile.php(221): CodeIgniter\BaseModel->first()
+ 7 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\User\Profile->getAttendanceStats()
+ 8 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\User\Profile))
+ 9 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+10 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+11 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+12 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+13 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+CRITICAL - 2025-12-16 17:05:49 --> [Caused by] mysqli_sql_exception: Operand should contain 1 column(s)
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 327.
+ 1 SYSTEMPATH\Database\MySQLi\Connection.php(327): mysqli->query('SELECT *
+FROM `grace_balance`
+WHERE `employee_id` = (\'1\',\'1\',\'active\',\'1\',\'46\',\'2\',\'1\',\'38\',\'1\',\'1\',\'no\',\'no\',\'\',\'\',\'no\',\'superuser\',\'2014-02-01\',\'confirmed\',\'0\',NULL,\'del\',NULL,\'MANU\',\'GROVER\',\'\',\'\',\'\',\'\',\'\',\'\',\'1973-01-25\',\'GK\',\'New Delhi\',\'Delhi\',\'Delhi\',\'110048\',\'GK\',\'yes\',\'yes\',\'yes\',\'yes\',NULL,NULL,\'New Delhi\',\'Delhi\',\'Delhi\',\'110048\',\'manu@gstc.com\',\'\',\'9810145500\',\'\',\'\',\'male\',\'married\',NULL,\'{\\"avatar\\":{\\"file\\":\\"\\\\/uploads\\\\/2022\\\\/12\\\\/WhatsApp Image 2022-12-02 at 12.39.28 PM_1.jpeg\\"},\\"pan\\":{\\"number\\":null},\\"adhar\\":{\\"number\\":null},\\"bank_account\\":{\\"name\\":null,\\"number\\":null},\\"passport\\":{\\"number\\":null}}\',\'\',\'\',\'\',\'\',\'\',\'2022-04-28 15:36:14\',NULL,\'MANU GROVER\')
+AND `year_month` = \'2025-12\'
+ LIMIT 1', 0)
+ 2 SYSTEMPATH\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('SELECT *
+FROM `grace_balance`
+WHERE `employee_id` = (\'1\',\'1\',\'active\',\'1\',\'46\',\'2\',\'1\',\'38\',\'1\',\'1\',\'no\',\'no\',\'\',\'\',\'no\',\'superuser\',\'2014-02-01\',\'confirmed\',\'0\',NULL,\'del\',NULL,\'MANU\',\'GROVER\',\'\',\'\',\'\',\'\',\'\',\'\',\'1973-01-25\',\'GK\',\'New Delhi\',\'Delhi\',\'Delhi\',\'110048\',\'GK\',\'yes\',\'yes\',\'yes\',\'yes\',NULL,NULL,\'New Delhi\',\'Delhi\',\'Delhi\',\'110048\',\'manu@gstc.com\',\'\',\'9810145500\',\'\',\'\',\'male\',\'married\',NULL,\'{\\"avatar\\":{\\"file\\":\\"\\\\/uploads\\\\/2022\\\\/12\\\\/WhatsApp Image 2022-12-02 at 12.39.28 PM_1.jpeg\\"},\\"pan\\":{\\"number\\":null},\\"adhar\\":{\\"number\\":null},\\"bank_account\\":{\\"name\\":null,\\"number\\":null},\\"passport\\":{\\"number\\":null}}\',\'\',\'\',\'\',\'\',\'\',\'2022-04-28 15:36:14\',NULL,\'MANU GROVER\')
+AND `year_month` = \'2025-12\'
+ LIMIT 1')
+ 3 SYSTEMPATH\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT *
+FROM `grace_balance`
+WHERE `employee_id` = (\'1\',\'1\',\'active\',\'1\',\'46\',\'2\',\'1\',\'38\',\'1\',\'1\',\'no\',\'no\',\'\',\'\',\'no\',\'superuser\',\'2014-02-01\',\'confirmed\',\'0\',NULL,\'del\',NULL,\'MANU\',\'GROVER\',\'\',\'\',\'\',\'\',\'\',\'\',\'1973-01-25\',\'GK\',\'New Delhi\',\'Delhi\',\'Delhi\',\'110048\',\'GK\',\'yes\',\'yes\',\'yes\',\'yes\',NULL,NULL,\'New Delhi\',\'Delhi\',\'Delhi\',\'110048\',\'manu@gstc.com\',\'\',\'9810145500\',\'\',\'\',\'male\',\'married\',NULL,\'{\\"avatar\\":{\\"file\\":\\"\\\\/uploads\\\\/2022\\\\/12\\\\/WhatsApp Image 2022-12-02 at 12.39.28 PM_1.jpeg\\"},\\"pan\\":{\\"number\\":null},\\"adhar\\":{\\"number\\":null},\\"bank_account\\":{\\"name\\":null,\\"number\\":null},\\"passport\\":{\\"number\\":null}}\',\'\',\'\',\'\',\'\',\'\',\'2022-04-28 15:36:14\',NULL,\'MANU GROVER\')
+AND `year_month` = \'2025-12\'
+ LIMIT 1')
+ 4 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT *
+FROM `grace_balance`
+WHERE `employee_id` = :employee_id:
+AND `year_month` = :year_month:
+ LIMIT 1', [...], false)
+ 5 SYSTEMPATH\Model.php(330): CodeIgniter\Database\BaseBuilder->get()
+ 6 SYSTEMPATH\BaseModel.php(715): CodeIgniter\Model->doFirst()
+ 7 APPPATH\Controllers\User\Profile.php(221): CodeIgniter\BaseModel->first()
+ 8 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\User\Profile->getAttendanceStats()
+ 9 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\User\Profile))
+10 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+11 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+12 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+13 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+14 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+CRITICAL - 2025-12-16 17:10:51 --> ErrorException: Maximum execution time of 300 seconds exceeded
+[Method: POST, Route: ajax/hr/employee/send-absent-without-leave-notification]
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 327.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-16 17:10:56 --> ErrorException: Maximum execution time of 300 seconds exceeded
+[Method: POST, Route: ajax/hr/employee/send-absent-without-leave-notification-heuer-only]
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 327.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-16 17:22:59 --> ErrorException: Trying to access array offset on null
+[Method: POST, Route: ajax/check-gate-pass-request-today]
+in APPPATH\Controllers\Requests\GatePass.php on line 208.
+ 1 APPPATH\Controllers\Requests\GatePass.php(208): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Trying to access array offset on null', 'D:\\LOCALHOST\\hrm.healthgenie\\app\\Controllers\\Requests\\GatePass.php', 208)
+ 2 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Requests\GatePass->getGatePassRequestToday()
+ 3 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Requests\GatePass))
+ 4 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ 8 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+CRITICAL - 2025-12-16 17:37:59 --> ErrorException: Trying to access array offset on null
+[Method: POST, Route: ajax/check-gate-pass-request-today]
+in APPPATH\Controllers\Requests\GatePass.php on line 208.
+ 1 APPPATH\Controllers\Requests\GatePass.php(208): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Trying to access array offset on null', 'D:\\LOCALHOST\\hrm.healthgenie\\app\\Controllers\\Requests\\GatePass.php', 208)
+ 2 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Requests\GatePass->getGatePassRequestToday()
+ 3 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Requests\GatePass))
+ 4 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ 8 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+CRITICAL - 2025-12-16 17:52:59 --> ErrorException: Trying to access array offset on null
+[Method: POST, Route: ajax/check-gate-pass-request-today]
+in APPPATH\Controllers\Requests\GatePass.php on line 208.
+ 1 APPPATH\Controllers\Requests\GatePass.php(208): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Trying to access array offset on null', 'D:\\LOCALHOST\\hrm.healthgenie\\app\\Controllers\\Requests\\GatePass.php', 208)
+ 2 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Requests\GatePass->getGatePassRequestToday()
+ 3 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Requests\GatePass))
+ 4 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ 8 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+CRITICAL - 2025-12-16 18:08:00 --> ErrorException: Trying to access array offset on null
+[Method: POST, Route: ajax/check-gate-pass-request-today]
+in APPPATH\Controllers\Requests\GatePass.php on line 208.
+ 1 APPPATH\Controllers\Requests\GatePass.php(208): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Trying to access array offset on null', 'D:\\LOCALHOST\\hrm.healthgenie\\app\\Controllers\\Requests\\GatePass.php', 208)
+ 2 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Requests\GatePass->getGatePassRequestToday()
+ 3 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Requests\GatePass))
+ 4 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ 8 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+CRITICAL - 2025-12-16 18:23:00 --> ErrorException: Trying to access array offset on null
+[Method: POST, Route: ajax/check-gate-pass-request-today]
+in APPPATH\Controllers\Requests\GatePass.php on line 208.
+ 1 APPPATH\Controllers\Requests\GatePass.php(208): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Trying to access array offset on null', 'D:\\LOCALHOST\\hrm.healthgenie\\app\\Controllers\\Requests\\GatePass.php', 208)
+ 2 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Requests\GatePass->getGatePassRequestToday()
+ 3 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Requests\GatePass))
+ 4 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ 8 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')

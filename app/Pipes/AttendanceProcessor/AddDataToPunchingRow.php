@@ -172,6 +172,10 @@ class AddDataToPunchingRow
             $punching_row['absent_because_of_work_hours'] = "no";
         }
 
+        // if ($punching_row['employee_id'] == '316' && $punching_row['date'] == '2025-12-03') {
+        //     dd($punching_row);
+        // }
+
         return $next($punching_row);
     }
 }
