@@ -126,8 +126,11 @@ class Ncl extends BaseController
                     $ncl_to = (isset($salary_structure['non_compete_loan_to']) && !empty($salary_structure['non_compete_loan_to'])) ? $salary_structure['non_compete_loan_to'] : "";
                     $ncl_amount = (isset($salary_structure['non_compete_loan_amount_per_month']) && !empty($salary_structure['non_compete_loan_amount_per_month'])) ? $salary_structure['non_compete_loan_amount_per_month'] : 0;
                     $salary_month = $row['year'] . '-' . $row['month'] . '01';
+
+                    
                     if (
-                        $row['non_compete_loan'] > 0 ||
+                        $row['non_compete_loan'] > 0 
+                        ||
                         (
                             ($ncl_enabled == true && $ncl_amount > 0 && strtotime($salary_month) >= strtotime($ncl_from) && empty($ncl_to))
                             ||

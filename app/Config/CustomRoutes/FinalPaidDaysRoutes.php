@@ -1,5 +1,6 @@
 <?php
-/*begin::Final Paid Days*/
+
+/* begin::Final Paid Days */
 
 use App\Controllers\Reports\FinalAttendance;
 use App\Controllers\Reports\FinalPaidDays;

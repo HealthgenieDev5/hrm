@@ -2,6 +2,9 @@
 
 namespace App\Pipes;
 
+
+use App\Models\EmployeeModel;
+use App\Models\GraceBalanceModel;
 use App\Pipes\AttendanceProcessor\ProcessorHelper;
 use Closure;
 
@@ -662,10 +665,6 @@ class LateComingAdjustment
                 $dataRow['status_remarks'] = $dataRow['status_remarks'] . '<br> <span class="text-danger" style="font-size:1.5rem">Worked continue for 2 days</span><br><span class="text-danger">if you think this is a mistake, please contact developer or HR</span>';
             }
             $punchingDataSorted[$index] = $dataRow;
-
-            // if ($dataRow['employee_id'] == '316' && $dataRow['date'] == '2025-12-03') {
-            //     dd($dataRow);
-            // }
         }
 
         $data['balance_grace'] = $totalGrace;

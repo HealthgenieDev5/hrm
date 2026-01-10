@@ -13,7 +13,7 @@ class RecalculateForHeuer
         $punching_data_sorted = $data['punching_data'];
 
         foreach ($punching_data_sorted as $index => $punching_row) {
-            // if ($punching_row['employee_id'] == '337' && $punching_row['date'] == '2025-12-01') {
+            // if ($punching_row['employee_id'] == '400' && $punching_row['date'] == '2025-12-01') {
             //     dd($punching_row);
             // }
             if ($punching_row['shift_type'] == 'reduce') {
@@ -221,6 +221,7 @@ class RecalculateForHeuer
 
 
 
+
                     // if ($punching_row['employee_id'] == '316' && $punching_row['date'] == '2025-12-03') {
 
                     // dd($punching_row);
@@ -295,7 +296,7 @@ class RecalculateForHeuer
 
                     $punching_row['late_coming_minutes'] = $late_coming_minutes;
                     $punching_row['early_going_minutes'] = $early_going_minutes;
-                    // $punching_row['late_coming_plus_early_going_minutes'] = (string)($late_coming_minutes + $early_going_minutes + $deduction_minutes);
+                    $punching_row['late_coming_plus_early_going_minutes'] = (string)($late_coming_minutes + $early_going_minutes + $deduction_minutes);
 
                     $punching_data_sorted[$index] = $punching_row;
                 } else {
@@ -485,56 +486,55 @@ class RecalculateForHeuer
 
 
 
-                    /* if ($punching_row['employee_id'] == '337' && $punching_row['date'] == '2025-12-09') {
+                    // if ($punching_row['employee_id'] == '316' && $punching_row['date'] == '2025-12-03') {
 
-                        // dd($punching_row);
-                        print_r(
-                            [
-                                'date' => $punching_row['date'],
-                                //         'shift_duration_original' => $shift_duration_original,
-                                //         'shift_duration_reduced' => $shift_duration_reduced,
-                                //         'shift_start' => $shift_start,
-                                //         'shift_end_reduced_timestamp' => $shift_end_reduced_timestamp,
-                                //         'shift_end' => $shift_end,
-                                //         'early_coming_minutes_original' => $early_coming_minutes_original,
-                                //         'early_coming_minutes' => $early_coming_minutes,
-                                //         'late_coming_minutes_original' => $late_coming_minutes_original,
-                                //         'late_coming_minutes' => $late_coming_minutes,
-                                //         'INTime_original' => $INTime_original,
-                                //         'INTime' => $INTime,
-                                //         'OUTTime_original' => $OUTTime_original,
-                                //         'OUTTime' => $OUTTime,
-                                //         'late_coming_between_shift_including_od_original' => $late_coming_between_shift_including_od_original,
-                                //         'late_coming_between_shift_including_od' => $late_coming_between_shift_including_od,
-                                //         // 'in_time_between_shift_including_od' => $in_time_between_shift_including_od,
-                                //         'in_time_between_shift_with_od' => $in_time_between_shift_with_od,
-                                //         'early_going_between_shift_including_od_original' => $early_going_between_shift_including_od_original,
-                                //         'early_going_between_shift_including_od' => $early_going_between_shift_including_od,
-                                //         // 'out_time_between_shift_including_od' => $out_time_between_shift_including_od,
-                                //         'out_time_between_shift_with_od' => $out_time_between_shift_with_od,
-                                //         'punching_time_between_shift_including_od' => $punching_time_between_shift_including_od,
+                    // dd($punching_row);
+                    // dd(
+                    //     [
+                    //         'date' => $punching_row['date'],
+                    //         'shift_duration_original' => $shift_duration_original,
+                    //         'shift_duration_reduced' => $shift_duration_reduced,
+                    //         'shift_start' => $shift_start,
+                    //         'shift_end_reduced_timestamp' => $shift_end_reduced_timestamp,
+                    //         'shift_end' => $shift_end,
+                    //         'early_coming_minutes_original' => $early_coming_minutes_original,
+                    //         'early_coming_minutes' => $early_coming_minutes,
+                    //         'late_coming_minutes_original' => $late_coming_minutes_original,
+                    //         'late_coming_minutes' => $late_coming_minutes,
+                    //         'INTime_original' => $INTime_original,
+                    //         'INTime' => $INTime,
+                    //         'OUTTime_original' => $OUTTime_original,
+                    //         'OUTTime' => $OUTTime,
+                    //         'late_coming_between_shift_including_od_original' => $late_coming_between_shift_including_od_original,
+                    //         'late_coming_between_shift_including_od' => $late_coming_between_shift_including_od,
+                    //         // 'in_time_between_shift_including_od' => $in_time_between_shift_including_od,
+                    //         'in_time_between_shift_with_od' => $in_time_between_shift_with_od,
+                    //         'early_going_between_shift_including_od_original' => $early_going_between_shift_including_od_original,
+                    //         'early_going_between_shift_including_od' => $early_going_between_shift_including_od,
+                    //         // 'out_time_between_shift_including_od' => $out_time_between_shift_including_od,
+                    //         'out_time_between_shift_with_od' => $out_time_between_shift_with_od,
+                    //         'punching_time_between_shift_including_od' => $punching_time_between_shift_including_od,
 
-                                'late_coming_including_od_original' => $late_coming_including_od_original,
-                                'late_coming_including_od' => $late_coming_including_od,
-                                //         'early_coming_including_od_original' => $early_coming_including_od_original,
-                                //         'early_coming_including_od' => $early_coming_including_od,
-                                //         'in_time_including_od' => $in_time_including_od,
+                    //         'late_coming_including_od_original' => $late_coming_including_od_original,
+                    //         'late_coming_including_od' => $late_coming_including_od,
+                    //         'early_coming_including_od_original' => $early_coming_including_od_original,
+                    //         'early_coming_including_od' => $early_coming_including_od,
+                    //         'in_time_including_od' => $in_time_including_od,
 
-                                //         'out_time_including_od_original' => $out_time_including_od_original,
-                                'early_going_including_od_original' => $early_going_including_od_original,
-                                'early_going_including_od' => $early_going_including_od,
-                                //         'late_going_including_od_original' => $late_going_including_od_original,
-                                //         'late_going_including_od' => $late_going_including_od,
-                                //         'out_time_including_od' => $out_time_including_od,
+                    //         'out_time_including_od_original' => $out_time_including_od_original,
+                    //         'early_going_including_od_original' => $early_going_including_od_original,
+                    //         'early_going_including_od' => $early_going_including_od,
+                    //         'late_going_including_od_original' => $late_going_including_od_original,
+                    //         'late_going_including_od' => $late_going_including_od,
+                    //         'out_time_including_od' => $out_time_including_od,
 
-                                //         'punch_time_including_od' => $punch_time_including_od,
+                    //         'punch_time_including_od' => $punch_time_including_od,
 
-                                //         'grace_original' => $grace_original,
-                                //         'grace' => $grace,
-                            ]
-                        );
-                        die();
-                    } */
+                    //         'grace_original' => $grace_original,
+                    //         'grace' => $grace,
+                    //     ]
+                    // );
+                    // }
 
                     $punching_row['shift_start'] = $shift_start;
                     $punching_row['shift_end'] = $shift_end;
@@ -560,8 +560,7 @@ class RecalculateForHeuer
 
                     $punching_row['late_coming_minutes'] = $late_coming_minutes;
                     $punching_row['early_going_minutes'] = $early_going_minutes;
-                    // $punching_row['late_coming_plus_early_going_minutes'] = (string)($late_coming_minutes + $early_going_minutes + $deduction_minutes);
-                    $punching_row['late_coming_plus_early_going_minutes'] = round(ProcessorHelper::twoByThree($late_coming_plus_early_going_minutes_original), 0);
+                    $punching_row['late_coming_plus_early_going_minutes'] = (string)($late_coming_minutes + $early_going_minutes + $deduction_minutes);
 
                     $punching_data_sorted[$index] = $punching_row;
                 }

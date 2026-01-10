@@ -1235,17 +1235,13 @@ class Profile extends BaseController
 
 
                 $email->setMessage($email_message);
-                // $email_send = $email->send();
-                $email_send = true; #bypass send email check 
+                $email_send = $email->send();
                 if (!$email_send) {
                     $response_array = array();
                     $response_array['response_type'] = 'failed';
                     $response_array['response_description'] = 'Sending email to HR was failed. Please Inform Developer on extension 452';
                     return $this->response->setJSON($response_array);
                 }
-                //}
-
-
                 $data = [
                     'employee_id' => $employee_id,
                     'hod_id' => $this->session->get('current_user')['employee_id'],

@@ -33,7 +33,7 @@ class AppraisalsController extends BaseController
     public function index()
     {
         $employee_id = session()->get('current_user')['employee_id'];
-        if (!in_array($employee_id, ['40', '93'])) {
+        if (!in_array($employee_id, ['40', '93', '1'])) {
             return redirect()->to(base_url('/unauthorised'));
         }
 
@@ -153,7 +153,7 @@ class AppraisalsController extends BaseController
     public function create($employee_id = null)
     {
 
-        if (!in_array(session()->get('current_user')['employee_id'], ['40', '93'])) {
+        if (!in_array(session()->get('current_user')['employee_id'], ['40', '93', '1'])) {
             return redirect()->to(base_url('/unauthorised'));
         }
 
@@ -242,7 +242,7 @@ class AppraisalsController extends BaseController
 
     public function store()
     {
-        if (!in_array(session()->get('current_user')['employee_id'], ['40', '93'])) {
+        if (!in_array(session()->get('current_user')['employee_id'], ['40', '93', '1'])) {
             return redirect()->to(base_url('/unauthorised'));
         }
         $response_array = array();
@@ -488,7 +488,7 @@ class AppraisalsController extends BaseController
 
     public function edit($id = null)
     {
-        if (!in_array(session()->get('current_user')['employee_id'], ['40', '93'])) {
+        if (!in_array(session()->get('current_user')['employee_id'], ['40', '93', '1'])) {
             return redirect()->to(base_url('/unauthorised'));
         }
 
@@ -579,7 +579,7 @@ class AppraisalsController extends BaseController
 
     public function update($id)
     {
-        if (!in_array(session()->get('current_user')['employee_id'], ['40', '93'])) {
+        if (!in_array(session()->get('current_user')['employee_id'], ['40', '93', '1'])) {
             return redirect()->to(base_url('/unauthorised'));
         }
         $response_array = array();
@@ -642,7 +642,7 @@ class AppraisalsController extends BaseController
 
     public function delete($id)
     {
-        if (!in_array(session()->get('current_user')['employee_id'], ['40', '93'])) {
+        if (!in_array(session()->get('current_user')['employee_id'], ['40', '93', '1'])) {
             return redirect()->to(base_url('/unauthorised'));
         }
         $id = $this->request->getPost('id');

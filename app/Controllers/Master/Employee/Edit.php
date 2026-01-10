@@ -20,6 +20,7 @@ use App\Controllers\Master\MinWagesCategory;
 use App\Models\ProbationHodResponseModel;
 use CodeIgniter\Exceptions\PageNotFoundException;
 use App\Models\ProbationNotificationModel;
+use App\Models\EmployeeAttachmentModel;
 use DateTime;
 use DateInterval;
 
@@ -157,6 +158,16 @@ class Edit extends BaseController
         }
         $data['attachment'] = $attachment;
         $data['probation_response'] = isset($probation_response['response']) ? $probation_response['response'] : '';
+
+        $EmployeeAttachmentModel = new EmployeeAttachmentModel();
+        $employee_attachments = $EmployeeAttachmentModel->getEmployeeAttachments($id);
+
+        if (!empty($employee_attachments)) {
+            foreach ($employee_attachments as &$attachment_item) {
+                $attachment_item['file_path'] = str_replace(WRITEPATH, "/", $attachment_item['file_path']);
+            }
+        }
+        $data['employee_attachments'] = $employee_attachments;
         #print_r($data['attachment']);
         #$pan_file = $data['attachment']['pan']['file'];
         #print_r($pan_file);
@@ -824,6 +835,62 @@ class Edit extends BaseController
                 }
             }
             #misc_documents
+
+            #additional_attachments repeater-based attachments
+            try {
+                $EmployeeAttachmentModel = new EmployeeAttachmentModel();
+                $attachments_to_delete = $this->request->getPost('attachments_to_delete');
+                if (!empty($attachments_to_delete)) {
+                    $delete_ids = explode(',', $attachments_to_delete);
+                    foreach ($delete_ids as $delete_id) {
+                        if (!empty($delete_id) && is_numeric($delete_id)) {
+                            $EmployeeAttachmentModel->delete($delete_id);
+                        }
+                    }
+                }
+
+                $attachment_titles = $this->request->getPost('additional_attachments');
+                if (!empty($attachment_titles) && is_array($attachment_titles)) {
+                    $upload_folder = WRITEPATH . 'uploads/' . date('Y') . '/' . date('m');
+                    foreach ($attachment_titles as $index => $attachment_data) {
+                        if (!empty($attachment_data['attachment_title'])) {
+                            $file_key = "additional_attachments.{$index}.attachment_file";
+                            $uploaded_file = $this->request->getFile($file_key);
+
+                            if ($uploaded_file && $uploaded_file->isValid() && !$uploaded_file->hasMoved()) {
+                                $allowed_extensions = ['png', 'jpg', 'jpeg', 'pdf', 'doc', 'docx', 'xls', 'xlsx', 'zip', 'rar'];
+                                $file_extension = $uploaded_file->getExtension();
+                                if (!in_array(strtolower($file_extension), $allowed_extensions)) {
+                                    continue;
+                                }
+                                $max_size = 5 * 1024 * 1024;
+                                $file_size = $uploaded_file->getSize();
+                                if ($file_size > $max_size) {
+                                    continue;
+                                }
+                                $original_filename = $uploaded_file->getClientName();
+                                $new_filename = $uploaded_file->getRandomName();
+                                if ($uploaded_file->move($upload_folder, $new_filename)) {
+                                    $attachment_record = [
+                                        'employee_id' => $employee_id,
+                                        'title' => trim($attachment_data['attachment_title']),
+                                        'file_path' => str_replace(WRITEPATH, "/", $upload_folder . '/' . $new_filename),
+                                        'file_name' => $original_filename,
+                                        'file_extension' => $file_extension,
+                                        'file_size' => $file_size,
+                                        'uploaded_by' => $this->session->get('current_user')['employee_id'] ?? null
+                                    ];
+
+                                    $EmployeeAttachmentModel->insert($attachment_record);
+                                }
+                            }
+                        }
+                    }
+                }
+            } catch (\Exception $e) {
+                log_message('error', 'Employee Attachment Upload Error: ' . $e->getMessage());
+            }
+            #additional_attachments
 
             #pdc_cheque
             // unset($attachment['pdc_cheque']['numbers']);

@@ -205,13 +205,13 @@ class Holiday extends BaseController
         );
         if (!$validation) {
             $response_array['response_type'] = 'error';
-            $response_array['response_description'] = $this->validator->getError('shift_id');
+            $response_array['response_description'] = $this->validator->getError('holiday_id');
         } else {
             $holiday_id   = $this->request->getPost('holiday_id');
             $HolidayModel = new HolidayModel();
             $Holiday = $HolidayModel->find($holiday_id);
             if (!empty($Holiday)) {
-                $Holiday['employees'] = explode(",", $Holiday['employees']);
+                // $Holiday['employees'] = explode(",", $Holiday['employees']);
                 $response_array['response_type'] = 'success';
                 $response_array['response_description'] = 'Holiday Found';
                 $response_array['response_data']['holiday'] = $Holiday;
@@ -324,7 +324,7 @@ class Holiday extends BaseController
                 'holiday_code' => $this->request->getPost('holiday_code'),
                 'holiday_name' => $this->request->getPost('holiday_name'),
                 'holiday_type' => $this->request->getPost('holiday_type'),
-                'employees' => !empty($this->request->getPost('employee_id')) ? implode(",", $this->request->getPost('employee_id')) : '',
+                // 'employees' => !empty($this->request->getPost('employee_id')) ? implode(",", $this->request->getPost('employee_id')) : '',
                 'holiday_date' => (!empty($this->request->getPost('holiday_date')) && $this->request->getPost('holiday_date') !== '') ? $this->request->getPost('holiday_date') : null
             ];
             $HolidayModel = new HolidayModel();

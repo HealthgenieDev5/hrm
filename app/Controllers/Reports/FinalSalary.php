@@ -26,6 +26,7 @@ class FinalSalary extends BaseController
     public function index()
     {
         $selectedMonth = isset($_REQUEST['year_month']) ? date('Y-m-01', strtotime($_REQUEST['year_month'])) : date('Y-m-01', strtotime(first_date_of_last_month()));
+
         if (!in_array($this->session->get('current_user')['role'], ['superuser', 'admin', 'hr', 'hod', 'tl'])) {
             return redirect()->to(base_url('/unauthorised'));
         }
@@ -42,9 +43,11 @@ class FinalSalary extends BaseController
             'page_title'            => 'Final Salary [Coming Soon]',
             'current_controller'    => $this->request->getUri()->getSegment(2),
             'current_method'        => $this->request->getUri()->getSegment(4),
-            'year_month'            => isset($_REQUEST['year_month']) ? $_REQUEST['year_month'] : date('F, Y', strtotime(first_date_of_last_month())),
+            'year_month'            => isset($_REQUEST['year_month']) ? $_REQUEST['year_month'] : date('F Y', strtotime(first_date_of_last_month())),
             'Companies'             => $Companies,
         ];
+        // print_r($data);
+        // die();
 
         $where_company = " ";
         if (isset($_REQUEST['company']) && !empty($_REQUEST['company']) && !in_array('all_companies', $_REQUEST['company'])) {

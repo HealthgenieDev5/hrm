@@ -26,11 +26,6 @@ class GetAttendanceClean
             $get_punching_data[$punching_data_index]['date_time']               = $date_time;
             $get_punching_data[$punching_data_index]['date_time_new']           = $date_time;
             $get_punching_data[$punching_data_index]['day']                     = $day;
-
-            // if ($get_punching_data[$punching_data_index]['date'] == '2025-12-02') {
-            //     $get_punching_data[$punching_data_index]['INTime'] = '10:00';
-            //     $get_punching_data[$punching_data_index]['OUTTime'] = '18:30';
-            // }
         }
 
         $data['get_punching_data'] = $get_punching_data;

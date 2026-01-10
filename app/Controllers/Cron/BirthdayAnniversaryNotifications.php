@@ -20,14 +20,22 @@ class BirthdayAnniversaryNotifications extends BaseController
     /**
      * Create monthly birthday and anniversary notifications
      * This should run once per month (on 1st day of month)
-     * Creates notifications for all days in the current month
+     * Creates notifications for all days in the specified month
      *
+     * @param string|null $yearMonth Year-month in YYYY-MM format (e.g., "2025-11"), or null for current month
      * @return array Statistics of notifications created
      */
-    public function createMonthlyNotifications()
+    public function createMonthlyNotifications($yearMonth = null)
     {
-        $currentYear = date('Y');
-        $currentMonth = date('m');
+        // Parse year-month parameter or use current month
+        if ($yearMonth && preg_match('/^(\d{4})-(\d{2})$/', $yearMonth, $matches)) {
+            $currentYear = $matches[1];
+            $currentMonth = $matches[2];
+        } else {
+            $currentYear = date('Y');
+            $currentMonth = date('m');
+        }
+
         $daysInMonth = cal_days_in_month(CAL_GREGORIAN, (int)$currentMonth, (int)$currentYear);
 
         $totalBirthdaysCreated = 0;
@@ -59,7 +67,7 @@ class BirthdayAnniversaryNotifications extends BaseController
 
             // Create anniversary notification for each employee
             foreach ($anniversaryEmployees as $employee) {
-                $created = $this->createAnniversaryNotification([$employee], $date);
+                $created = $this->createAnniversaryNotification([$employee], $date, $currentYear);
                 $totalAnniversariesCreated += $created;
                 if ($created > 0) {
                     $totalAnniversaryEmployees++;
@@ -296,9 +304,10 @@ class BirthdayAnniversaryNotifications extends BaseController
      *
      * @param array $employees Employees with wedding anniversaries
      * @param string $today Today's date
+     * @param string|null $yearForCalculation Year to use for anniversary calculation (defaults to current year)
      * @return int Number of notifications created (0 or 2)
      */
-    private function createAnniversaryNotification($employees, $today)
+    private function createAnniversaryNotification($employees, $today, $yearForCalculation = null)
     {
         if (empty($employees)) {
             return 0;
@@ -307,7 +316,8 @@ class BirthdayAnniversaryNotifications extends BaseController
         $employee = $employees[0];
         $employeeId = $employee['id'];
         $anniversaryDate = $employee['date_of_anniversary'];
-        $years = date('Y') - date('Y', strtotime($anniversaryDate));
+        $calculationYear = $yearForCalculation ?? date('Y');
+        $years = (int)$calculationYear - date('Y', strtotime($anniversaryDate));
         $name = trim($employee['first_name'] . ' ' . $employee['last_name']);
         $empCode = !empty($employee['internal_employee_id']) ? $employee['internal_employee_id'] : 'N/A';
         $designation = !empty($employee['designation_name']) ? $employee['designation_name'] : 'N/A';

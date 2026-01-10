@@ -410,7 +410,8 @@
                                             </div>
 
                                             <div class="separater" style="width: 3px; background: #f0f0f0; height: 100%;"></div> -->
-                                            <input type="hidden" id="enable_bonus" name="enable_bonus" value="<?= isset($lastAppraisal) && $lastAppraisal->enable_bonus == 'yes' ? 'yes' : 'no' ?>" />
+
+                                            <input type="hidden" id="enable_bonus" name="enable_bonus" value="<?= !empty($lastAppraisal) ? ($lastAppraisal->enable_bonus == 'yes' ? 'yes' : 'no') : ($appraisal['enable_bonus'] == 'yes' ? 'yes' : 'no') ?>" />
 
                                             <div class="form-group mb-3">
                                                 <label class="form-label fs-7 mb-0 w-100 text-center">PF</label>

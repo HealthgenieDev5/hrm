@@ -405,9 +405,13 @@ if (! function_exists('get_raw_punching_data')) {
 
                 $InOutPunchData__Del__GGN_Noida[$i]['override_machine'] = '';
                 if (strtotime($InOutPunchData__Del__GGN_Noida[$i]['DateString_2']) < strtotime($JoiningDates[$d['Empcode']] ?? '')) {
-                    unset($InOutPunchData__Del__GGN_Noida[$i]);
+                    // unset($InOutPunchData__Del__GGN_Noida[$i]);
+                    $InOutPunchData__Del__GGN_Noida[$i]['INTime'] = '--:--';
+                    $InOutPunchData__Del__GGN_Noida[$i]['OUTTime'] = '--:--';
                 } elseif (!empty($DateOfLeavings[$d['Empcode']]) && strtotime($InOutPunchData__Del__GGN_Noida[$i]['DateString_2']) > strtotime($DateOfLeavings[$d['Empcode']])) {
-                    unset($InOutPunchData__Del__GGN_Noida[$i]);
+                    // unset($InOutPunchData__Del__GGN_Noida[$i]);
+                    $InOutPunchData__Del__GGN_Noida[$i]['INTime'] = '--:--';
+                    $InOutPunchData__Del__GGN_Noida[$i]['OUTTime'] = '--:--';
                 }
             }
 
@@ -476,7 +480,6 @@ if (! function_exists('get_punching_data_del')) {
         $postData = "Empcode=" . $employee_id . "&FromDate=" . $from_date . "&ToDate=" . $to_date;
 
         $url = env('del.API_URL');
-
         $corporate_id = env('del.CORPORATE_ID');
         $username = env('del.USERNAME');
         $password = env('del.PASSWORD');
@@ -774,8 +777,117 @@ if (! function_exists('getLateMinutes')) {
     }
 }
 
-// if (! function_exists('getLateMinutes_bkp_2025_12_12')) {
-//     function getLateMinutes_bkp_2025_12_12($employee_data, $from, $to)
+// if (! function_exists('getLateMinutes')) {
+//     function getLateMinutes($employee_data, $from, $to)
+//     {
+
+//         // print_r($employee_data);
+//         // die;
+//         // $get_punching_data = json_decode(get_punching_data($employee_data['internal_employee_id'], $from, $to), true)['InOutPunchData'];
+
+//         $PreFinalPaidDaysModel = new \App\Models\PreFinalPaidDaysModel;
+//         $get_punching_data = $PreFinalPaidDaysModel
+//             ->select('pre_final_paid_days.*')
+//             ->select('trim(concat(settler.first_name, " ", settler.last_name)) as settled_by_name')
+//             ->join('employees as settler', 'settler.id = pre_final_paid_days.settled_by', 'left')
+//             ->where('pre_final_paid_days.employee_id =', $employee_data['id'])
+//             ->where("(pre_final_paid_days.date between '" . $from . "' and '" . $to . "')")
+//             ->orderBy('pre_final_paid_days.date', 'ASC')
+//             ->findAll();
+
+//         // echo $PreFinalPaidDaysModel->getLastQuery()->getQuery();
+//         // echo "\n\nCount: " . count($get_punching_data) . "\n\n";
+//         // if (!empty($get_punching_data)) {
+//         //     echo "First row:\n";
+//         //     print_r($get_punching_data[0]);
+//         // }
+//         // echo "\n\nEmployee data:\n";
+//         // print_r(['id' => $employee_data['id'], 'internal_id' => $employee_data['internal_employee_id'] ?? 'N/A']);
+//         // die;
+
+//         foreach ($get_punching_data as $punching_data_index => $punching_data_row) {
+//             $day = date('l', strtotime($punching_data_row['date']));
+//             $date_time = $punching_data_row['date'];
+//             $get_punching_data[$punching_data_index]['date_time'] = $date_time;
+//             $get_punching_data[$punching_data_index]['day'] = $day;
+//         }
+//         $total_late_minutes = 0;
+//         $total_present_days = 0;
+//         foreach ($get_punching_data as $punching_row) {
+//             if ($punching_row['employee_id'] == $employee_data['id'] && $punching_row['punch_in_time'] !== '--:--' && !empty($punching_row['punch_in_time'])) {
+//                 #make shift time array of current date
+//                 $shift = array(
+//                     !empty($punching_row['shift_start']) ? $punching_row['shift_start'] : '',
+//                     !empty($punching_row['shift_end']) ? $punching_row['shift_end'] : ''
+//                 );
+
+//                 #make shift time array of current date
+//                 $late_minutes_of_the_day = 0;
+//                 $INTime = !empty($punching_row['punch_in_time']) ? $punching_row['punch_in_time'] : null;
+//                 if (!empty($shift[0]) && !empty($INTime)) {
+//                     if (strtotime($INTime) > strtotime($shift[0])) {
+//                         $shift_start = date_create($shift[0]);
+//                         $in_time = date_create($INTime);
+//                         $timediff = $shift_start->diff($in_time);
+//                         $late_minutes   = (int)$timediff->format('%r%i');
+//                         $late_hours     = (int)$timediff->format('%r%h');
+//                         if ($late_minutes > 0 || $late_hours > 0) {
+//                             $late_minutes_of_the_day = $late_minutes + ($late_hours * 60);
+//                         }
+//                     }
+//                 }
+
+//                 $early_going_minutes_of_the_day = 0;
+//                 if (!empty($punching_row['punch_out_time']) && $punching_row['punch_out_time'] != '--:--') {
+//                     $OUTTime = $punching_row['punch_out_time'];
+//                     if (!empty($shift[1])) {
+//                         if (strtotime($OUTTime) < strtotime($shift[1])) {
+//                             $shift_end = date_create($shift[1]);
+//                             $out_time = date_create($OUTTime);
+//                             $timediff = $out_time->diff($shift_end);
+//                             $early_going_minutes   = (int)$timediff->format('%r%i');
+//                             $early_going_hours     = (int)$timediff->format('%r%h');
+//                             if ($early_going_minutes > 0 || $early_going_hours > 0) {
+//                                 $minutes_per_day[$punching_row['date_time']]['early'] = $early_going_minutes + ($early_going_hours * 60);
+//                                 $early_going_minutes_of_the_day = $early_going_minutes + ($early_going_hours * 60);
+//                             }
+//                         }
+//                     }
+//                 }
+
+
+//                 // Check leave data from pre_final_paid_days
+//                 $leave_amount = !empty($punching_row['leave_request_amount']) ? $punching_row['leave_request_amount'] : 0;
+//                 $leave_type = !empty($punching_row['leave_request_type']) ? $punching_row['leave_request_type'] : '';
+
+//                 if (!empty($leave_type)) {
+//                     if ($leave_amount == '0.5') {
+//                         if ($late_minutes_of_the_day > $early_going_minutes_of_the_day) {
+//                             $late_minutes_of_the_day = '0';
+//                         }
+//                     } else {
+//                         $late_minutes_of_the_day = $late_minutes_of_the_day;
+//                     }
+//                 } elseif ($punching_row['date_time'] == '2023-03-07') {
+//                     #$early_going_minutes_of_the_day = '0';          #company half day is in second half only
+//                     $late_minutes_of_the_day = $late_minutes_of_the_day;
+//                 } else {
+//                     $late_minutes_of_the_day = $late_minutes_of_the_day;
+//                 }
+
+//                 $total_late_minutes += $late_minutes_of_the_day;
+//                 $total_present_days++;
+//             }
+//         }
+//         $late_minutes_avg = ($total_present_days > 0) ? round($total_late_minutes / $total_present_days) : '-';
+//         // print_r(array('total' => $total_late_minutes, 'average' => $late_minutes_avg));
+//         // die;
+//         return array('total' => $total_late_minutes, 'average' => $late_minutes_avg);
+//     }
+// }
+
+// if (! function_exists('getLateMinutes')) {
+//     function getLateMinutes($employee_data, $from, $to)
 //     {
 //         $get_punching_data = json_decode(get_punching_data($employee_data['internal_employee_id'], $from, $to), true)['InOutPunchData'];
 //         foreach ($get_punching_data as $punching_data_index => $punching_data_row) {
@@ -924,7 +1036,6 @@ if (! function_exists('getEarlyGoingMinutes')) {
 // if (! function_exists('getEarlyGoingMinutes')) {
 //     function getEarlyGoingMinutes($employee_data, $from, $to)
 //     {
-//         $employee_id = session()->get('current_user')['employee_id'];
 //         $get_punching_data = json_decode(get_punching_data($employee_data['internal_employee_id'], $from, $to), true)['InOutPunchData'];
 //         foreach ($get_punching_data as $punching_data_index => $punching_data_row) {
 //             $day = date('l', strtotime($punching_data_row['DateString']));

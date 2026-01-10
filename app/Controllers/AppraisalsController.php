@@ -33,7 +33,7 @@ class AppraisalsController extends BaseController
     public function index()
     {
         $employee_id = session()->get('current_user')['employee_id'];
-        if (!in_array($employee_id, ['40', '93'])) {
+        if (!in_array($employee_id, ['40', '93', '1'])) {
             return redirect()->to(base_url('/unauthorised'));
         }
 
@@ -153,7 +153,7 @@ class AppraisalsController extends BaseController
     public function create($employee_id = null)
     {
 
-        if (!in_array(session()->get('current_user')['employee_id'], ['40', '93'])) {
+        if (!in_array(session()->get('current_user')['employee_id'], ['40', '93', '1'])) {
             return redirect()->to(base_url('/unauthorised'));
         }
 
@@ -242,7 +242,7 @@ class AppraisalsController extends BaseController
 
     public function store()
     {
-        if (!in_array(session()->get('current_user')['employee_id'], ['40', '93'])) {
+        if (!in_array(session()->get('current_user')['employee_id'], ['40', '93', '1'])) {
             return redirect()->to(base_url('/unauthorised'));
         }
         $response_array = array();
@@ -427,14 +427,14 @@ class AppraisalsController extends BaseController
 
         $data['lwf'] = $data['lwf'] ?? 'no';
         if ($data['lwf'] === 'yes') {
-            $total_lwf_employee_needed = ((($total_gross_salary * 0.2) / 100 <= 31) ? round(($total_gross_salary * 0.2) / 100, 2) : 31);
+            $total_lwf_employee_needed = ((($total_gross_salary * 0.2) / 100 <= 34) ? round(($total_gross_salary * 0.2) / 100, 2) : 34);
             $total_lwf_employer_needed = round($total_lwf_employee_needed * 2, 2);
             if ($appraisalsCount >= 1) {
                 $data['lwf_employee_contribution'] = max(0, $total_lwf_employee_needed - $previousTotals['lwf_employee_contribution']);
                 $data['lwf_employer_contribution'] = max(0, $total_lwf_employer_needed - $previousTotals['lwf_employer_contribution']);
             } else {
-                $data['lwf_employee_contribution'] = max(0, round(((($data['gross_salary'] * 0.2) / 100 <= 31) ? round(($data['gross_salary'] * 0.2) / 100, 2) : 31)));
-                $data['lwf_employer_contribution'] = max(0, round(((($data['gross_salary'] * 0.2) / 100 <= 31) ? round(($data['gross_salary'] * 0.2) / 100, 2) : 31) * 2, 2));
+                $data['lwf_employee_contribution'] = max(0, round(((($data['gross_salary'] * 0.2) / 100 <= 34) ? round(($data['gross_salary'] * 0.2) / 100, 2) : 34)));
+                $data['lwf_employer_contribution'] = max(0, round(((($data['gross_salary'] * 0.2) / 100 <= 34) ? round(($data['gross_salary'] * 0.2) / 100, 2) : 34) * 2, 2));
             }
         } else {
             $data['lwf_employee_contribution'] = 0;
@@ -488,7 +488,7 @@ class AppraisalsController extends BaseController
 
     public function edit($id = null)
     {
-        if (!in_array(session()->get('current_user')['employee_id'], ['40', '93'])) {
+        if (!in_array(session()->get('current_user')['employee_id'], ['40', '93', '1'])) {
             return redirect()->to(base_url('/unauthorised'));
         }
 
@@ -579,7 +579,7 @@ class AppraisalsController extends BaseController
 
     public function update($id)
     {
-        if (!in_array(session()->get('current_user')['employee_id'], ['40', '93'])) {
+        if (!in_array(session()->get('current_user')['employee_id'], ['40', '93', '1'])) {
             return redirect()->to(base_url('/unauthorised'));
         }
         $response_array = array();
@@ -642,7 +642,7 @@ class AppraisalsController extends BaseController
 
     public function delete($id)
     {
-        if (!in_array(session()->get('current_user')['employee_id'], ['40', '93'])) {
+        if (!in_array(session()->get('current_user')['employee_id'], ['40', '93', '1'])) {
             return redirect()->to(base_url('/unauthorised'));
         }
         $id = $this->request->getPost('id');
@@ -693,6 +693,7 @@ class AppraisalsController extends BaseController
             ->select('designations.designation_name')
             ->select('companies.company_name, companies.logo_url')
             ->select('employee_salary.gratuity as gratuity')
+            ->select('employee_salary.enable_bonus as enable_bonus')
             ->join('employees', 'employees.id = appraisals.employee_id')
             ->join('designations', 'designations.id = employees.designation_id')
             ->join('departments', 'departments.id = employees.department_id')
@@ -906,6 +907,7 @@ class AppraisalsController extends BaseController
         $dompdf->loadHtml($content);
         $dompdf->setPaper('A3', 'landscape');
         $dompdf->render();
-        $dompdf->stream("appraisal-report-" . strtolower($data['first_name'] . '-' . $data['last_name']) . "-.pdf");
+        $dompdf->stream("appraisal-report-" . strtolower($data['first_name'] . '-' . $data['last_name'] . '-' . $employee_id) . ".pdf");
+        //$dompdf->stream("appraisal-report-" . strtolower($data['first_name'] . '-' . $data['last_name']) . "-.pdf");
     }
 }

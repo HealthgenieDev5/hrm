@@ -1,0 +1,729 @@
+CRITICAL - 2025-12-22 04:54:49 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Photo_9.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+ERROR - 2025-12-22 10:24:52 --> Email: sendWithMail throwed ErrorException: mail(): Failed to connect to mailserver at &quot;localhost&quot; port 25, verify your &quot;SMTP&quot; and &quot;smtp_port&quot; setting in php.ini or use ini_set() in D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php:1771
+Stack trace:
+#0 [internal function]: CodeIgniter\Debug\Exceptions->errorHandler(2, 'mail(): Failed ...', 'D:\\LOCALHOST\\hr...', 1771)
+#1 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php(1771): mail('payroll1@gstc.c...', '=?UTF-8?Q?One=2...', '<div style="fon...', 'Date: Mon, 22 D...', '-f app.hrm@heal...')
+#2 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php(1703): CodeIgniter\Email\Email->sendWithMail()
+#3 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php(1597): CodeIgniter\Email\Email->spoolEmail()
+#4 D:\LOCALHOST\hrm.healthgenie\app\Controllers\Master\Employee\Edit.php(1654): CodeIgniter\Email\Email->send()
+#5 D:\LOCALHOST\hrm.healthgenie\app\Controllers\Master\Employee\Edit.php(1566): App\Controllers\Master\Employee\Edit->sendOneYearAnniversaryEmailToHr(Array)
+#6 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(933): App\Controllers\Master\Employee\Edit->getOneYearAnniversaryEmployees()
+#7 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Master\Employee\Edit))
+#8 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#9 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#10 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#11 D:\LOCALHOST\hrm.healthgenie\public\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#12 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hr...')
+#13 {main}
+ERROR - 2025-12-22 10:24:52 --> Email: Unable to send email using PHP mail(). Your server might not be configured to send mail using this method.
+ERROR - 2025-12-22 10:24:52 --> 
+CRITICAL - 2025-12-22 05:13:59 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Photo_9.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+ERROR - 2025-12-22 05:19:48 --> mysqli_sql_exception: Table 'rc_job_listing' already exists in D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php(327): mysqli->query('CREATE TABLE `r...', 0)
+#1 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('CREATE TABLE `r...')
+#2 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('CREATE TABLE `r...')
+#3 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\Forge.php(570): CodeIgniter\Database\BaseConnection->query('CREATE TABLE `r...')
+#4 D:\LOCALHOST\hrm.healthgenie\app\Database\Migrations\2025-07-14-092953_CreateRcJobListing.php(56): CodeIgniter\Database\Forge->createTable('rc_job_listing')
+#5 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\MigrationRunner.php(876): App\Database\Migrations\CreateRcJobListing->up()
+#6 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\MigrationRunner.php(182): CodeIgniter\Database\MigrationRunner->migrate('up', Object(stdClass))
+#7 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Commands\Database\Migrate.php(85): CodeIgniter\Database\MigrationRunner->latest(NULL)
+#8 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CLI\Commands.php(74): CodeIgniter\Commands\Database\Migrate->run(Array)
+#9 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CLI\Console.php(47): CodeIgniter\CLI\Commands->run('migrate', Array)
+#10 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(388): CodeIgniter\CLI\Console->run()
+#11 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(133): CodeIgniter\Boot::runCommand(Object(CodeIgniter\CLI\Console))
+#12 D:\LOCALHOST\hrm.healthgenie\spark(84): CodeIgniter\Boot::bootSpark(Object(Config\Paths))
+#13 {main}
+CRITICAL - 2025-12-22 05:22:48 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Photo_9.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:23:01 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2023/05/nazrul-profile-picture.jpg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:23:18 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2023/05/nazrul-profile-picture.jpg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:24:08 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2023/05/nazrul-profile-picture.jpg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:24:08 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Photo_9.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:24:08 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/IOB%20Passbook.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:24:09 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/PAN_8.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:24:09 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Adhar%202_10.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:24:09 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Adhar%201_10.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:24:09 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/LOA_1.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:24:10 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Family_9.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:24:10 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Graduation_1.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:24:10 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Cheques_9.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:24:10 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Photo_9.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:24:35 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/PAN_8.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:24:35 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Photo_9.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:24:35 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/IOB%20Passbook.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:24:35 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Adhar%201_10.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:24:35 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/LOA_1.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:24:35 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Adhar%202_10.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:24:35 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Graduation_1.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:24:35 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Family_9.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:24:36 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Cheques_9.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:24:51 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Photo_9.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:24:51 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2023/05/nazrul-profile-picture.jpg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:24:51 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/PAN_8.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:24:52 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Photo_9.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:24:52 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/IOB%20Passbook.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:24:52 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Adhar%201_10.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:24:52 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Adhar%202_10.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:24:52 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/LOA_1.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:24:53 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Family_9.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:24:53 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Graduation_1.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:24:53 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Cheques_9.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:25:00 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/PAN_8.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:25:00 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Adhar%201_10.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:25:00 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Photo_9.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:25:00 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/IOB%20Passbook.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:25:01 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/LOA_1.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:25:01 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Graduation_1.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:25:01 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Adhar%202_10.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:25:01 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Family_9.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:25:01 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Cheques_9.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:29:36 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2023/05/nazrul-profile-picture.jpg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:29:36 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Photo_9.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:29:37 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Photo_9.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:29:37 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/PAN_8.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:29:37 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Adhar%201_10.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:29:37 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/IOB%20Passbook.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:29:38 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Adhar%202_10.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:29:38 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/LOA_1.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:29:38 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Family_9.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:29:38 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Graduation_1.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:29:39 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Cheques_9.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:29:41 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Photo_9.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:29:41 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/PAN_8.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:29:41 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/IOB%20Passbook.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:29:41 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Adhar%201_10.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:29:42 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Adhar%202_10.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:29:42 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/LOA_1.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:29:42 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Family_9.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:29:42 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Graduation_1.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:29:42 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Cheques_9.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:29:58 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Photo_9.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:29:58 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2023/05/nazrul-profile-picture.jpg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:29:58 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Photo_9.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:29:58 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/PAN_8.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:29:59 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/IOB%20Passbook.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:29:59 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Adhar%201_10.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:29:59 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Adhar%202_10.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:29:59 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/LOA_1.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:29:59 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Family_9.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:29:59 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Graduation_1.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:29:59 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Cheques_9.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:30:04 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/PAN_8.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:30:04 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Photo_9.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:30:04 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Adhar%201_10.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:30:04 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/IOB%20Passbook.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:30:05 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Adhar%202_10.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:30:05 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Graduation_1.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:30:05 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/LOA_1.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:30:05 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Family_9.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:30:05 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Cheques_9.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 11:04:52 --> Error: Call to a member function getFilename() on true
+[Method: POST, Route: ajax/master/employee/edit/validate]
+in APPPATH\Controllers\Master\Employee\Edit.php on line 900.
+ 1 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Master\Employee\Edit->update()
+ 2 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Master\Employee\Edit))
+ 3 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 4 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 5 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 6 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ 7 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+CRITICAL - 2025-12-22 05:37:43 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Photo_9.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:37:43 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2023/05/nazrul-profile-picture.jpg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:37:43 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Photo_9.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:37:43 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/PAN_8.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:37:44 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/IOB%20Passbook.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:37:44 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Adhar%201_10.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:37:44 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Adhar%202_10.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:37:44 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/LOA_1.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:37:45 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Family_9.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:37:45 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Graduation_1.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:37:45 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Cheques_9.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:38:03 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/IOB%20Passbook.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:38:03 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/PAN_8.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:38:03 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Photo_9.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:38:03 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Adhar%201_10.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:38:04 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Graduation_1.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:38:04 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/LOA_1.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:38:04 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Adhar%202_10.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:38:04 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Family_9.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:38:04 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Cheques_9.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:38:20 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2023/05/nazrul-profile-picture.jpg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:38:20 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Photo_9.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:38:20 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/PAN_8.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:38:20 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Photo_9.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:38:21 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/IOB%20Passbook.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:38:21 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Adhar%201_10.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:38:21 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Adhar%202_10.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:38:21 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/LOA_1.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:38:22 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Family_9.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:38:22 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Graduation_1.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:38:22 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Cheques_9.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:38:24 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/PAN_8.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:38:24 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Adhar%201_10.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:38:24 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/IOB%20Passbook.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:38:24 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Photo_9.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:38:25 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Adhar%202_10.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:38:25 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Family_9.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:38:25 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/LOA_1.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:38:25 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Graduation_1.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:38:25 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Cheques_9.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:43:06 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2023/05/nazrul-profile-picture.jpg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:43:06 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Photo_9.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:43:08 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2023/05/nazrul-profile-picture.jpg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:43:08 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Photo_9.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:43:08 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/PAN_8.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:43:08 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Photo_9.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:43:09 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/IOB%20Passbook.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:43:09 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Adhar%201_10.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:43:09 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Adhar%202_10.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:43:10 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/LOA_1.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:43:10 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Family_9.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:43:10 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Graduation_1.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:43:10 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Cheques_9.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:43:12 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Photo_9.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:43:13 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/PAN_8.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:43:13 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/IOB%20Passbook.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:43:13 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Adhar%202_10.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:43:13 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Adhar%201_10.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:43:13 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/LOA_1.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:43:14 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Family_9.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:43:14 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Graduation_1.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:43:14 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Cheques_9.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:44:15 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2023/05/nazrul-profile-picture.jpg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:44:15 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Photo_9.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:44:15 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Photo_9.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:44:15 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/PAN_8.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:44:16 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/IOB%20Passbook.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:44:16 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Adhar%201_10.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:44:16 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Adhar%202_10.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:44:16 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/LOA_1.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:44:17 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Family_9.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:44:17 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Graduation_1.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:44:17 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Cheques_9.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:44:19 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Photo_9.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:44:19 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/PAN_8.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:44:19 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/IOB%20Passbook.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:44:19 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Adhar%201_10.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:44:19 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Adhar%202_10.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:44:20 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/LOA_1.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:44:20 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Family_9.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:44:20 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Cheques_9.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:44:20 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2024/09/Graduation_1.jpeg]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 05:44:30 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: uploads/2025/12/1766382214_b0ee02d1c9e187ab89d9.pdf]
+in APPPATH\Controllers\Additional\FileController.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2025-12-22 13:04:34 --> ParseError: syntax error, unexpected token ";"
+[Method: GET, Route: backend/master/employee/edit/id/385]
+in APPPATH\Views\Master\EmployeeEdit.php on line 2072.
+ 1 SYSTEMPATH\View\View.php(229): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 2 SYSTEMPATH\Common.php(1167): CodeIgniter\View\View->render('Master/EmployeeEdit', [], true)
+ 3 APPPATH\Controllers\Master\Employee\Edit.php(314): view('Master/EmployeeEdit', [...])
+ 4 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Master\Employee\Edit->index('385', '385')
+ 5 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Master\Employee\Edit))
+ 6 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 8 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 9 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+10 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')

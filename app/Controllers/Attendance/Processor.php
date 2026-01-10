@@ -37,6 +37,7 @@ class Processor extends BaseController
         $this->session    = session();
     }
 
+
     public static function getProcessedPunchingDataProfile($employee_id, $dateFrom, $dateTo, $do_sw_second_pass = true)
     {
         try {
@@ -75,10 +76,9 @@ class Processor extends BaseController
                         $PreFinalPaidDays[$index]['shift_end'] = '';
                     }
                     if (date('Y-m-d', strtotime($row['date'])) == date('Y-m-d') && !empty($row['punch_in_time']) && empty($row['punch_out_time'])) {
-                        $PreFinalPaidDays[$index]['status'] = '';
+                        $PreFinalPaidDays[$index]['status'] = '--';
                         $PreFinalPaidDays[$index]['status_remarks'] = '';
                     }
-
                     $PreFinalPaidDays[$index]['date_time_new'] = [
                         'formatted' => date('d M Y', strtotime($row['date'])),
                         'ordering' => strtotime($row['date'])
@@ -91,8 +91,6 @@ class Processor extends BaseController
                     $PreFinalPaidDays[$index]['in_time_including_od'] = isset($row['in_time_including_od']) && !empty($row['in_time_including_od']) ? date('h:i A', strtotime($row['in_time_including_od'])) : '--';
                     $PreFinalPaidDays[$index]['out_time_including_od'] = isset($row['out_time_including_od']) && !empty($row['out_time_including_od']) ? date('h:i A', strtotime($row['out_time_including_od'])) : '--';
                     $PreFinalPaidDays[$index]['grace'] = $row['late_coming_grace'];
-
-
 
                     if (!empty($row['in_time_between_shift_with_od']) && !empty($row['out_time_between_shift_with_od'])) {
                         $in_time_between_shift_with_od = date('Y-m-d H:i:s', strtotime($row['in_time_between_shift_with_od']));
@@ -119,11 +117,12 @@ class Processor extends BaseController
         // return $punching_data;
     }
 
+
     public static function getProcessedPunchingData($employee_id, $dateFrom, $dateTo, $do_sw_second_pass = true)
     {
         $processedAttendanceArray = self::ProcessPunchingData($employee_id, $dateFrom, $dateTo, $do_sw_second_pass = true);
 
-        // print_r($processedAttendanceArray['balance_grace']);
+        // print_r($processedAttendanceArray);
         // die();
         $GraceBalanceModel = new GraceBalanceModel();
         $balance_grace = $processedAttendanceArray['balance_grace'];
@@ -131,10 +130,6 @@ class Processor extends BaseController
             ['employee_id' => $employee_id, 'year_month' => date('Y-m', strtotime($dateFrom ?? date('Y-m')))],
             ['employee_id' => $employee_id, 'year_month' => date('Y-m', strtotime($dateFrom ?? date('Y-m'))), 'minutes' => $balance_grace]
         );
-
-        // store in final paid days
-        // $processor = new AttendanceProcessor();
-        // $processor->processAll(25, $month, $employee);
         return $processedAttendanceArray['punching_data'];
     }
 
@@ -164,9 +159,6 @@ class Processor extends BaseController
             ->then(function ($data) {
                 return $data;
             });
-
-        // print_r($result['balance_grace']);
-        // die();
 
 
 

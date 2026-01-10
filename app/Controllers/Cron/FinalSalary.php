@@ -157,10 +157,10 @@ class FinalSalary extends BaseController
 
 
 				if ($salary['lwf'] == 'yes') {
-					if ((($gross_salary * 0.2) / 100) <= 31) {
+					if ((($gross_salary * 0.2) / 100) <= 34) {
 						$final_salary['lwf_employee_contribution'] = ($gross_salary * 0.2) / 100;
 					} else {
-						$final_salary['lwf_employee_contribution'] = 31;
+						$final_salary['lwf_employee_contribution'] = 34;
 					}
 				} else {
 					$final_salary['lwf_employee_contribution'] = 0;
@@ -170,7 +170,7 @@ class FinalSalary extends BaseController
 				// 	: 0;
 
 				$final_salary['lwf_employer_contribution'] 	= ($salary['lwf'] == 'yes')
-					? ((($gross_salary * 0.2) / 100 <= 31) ? ($gross_salary * 0.2) / 100 : 31) * 2
+					? ((($gross_salary * 0.2) / 100 <= 34) ? ($gross_salary * 0.2) / 100 : 34) * 2
 					: 0;
 
 				if ($salary['loyalty_incentive'] == 'yes'  && $salary['loyalty_incentive_amount_per_month'] > 0) {

@@ -628,7 +628,8 @@ class Create extends BaseController
                     $role = $this->request->getPost('role');
                     $status = 'active';
 
-                    $sql = "insert into users (employee_id, username, password, role, status) values ('" . $employee_id . "', '" . $username . "', '" . $password . "', '" . $role . "', '" . $status . "')";
+                    // $sql = "insert into users (employee_id, username, password, role, status) values ('" . $employee_id . "', '" . $username . "', '" . $password . "', '" . $role . "', '" . $status . "')";
+                    $sql = "insert into users (employee_id, username, role, status) values ('" . $employee_id . "', '" . $username . "', '" . $role . "', '" . $status . "')";
                     $CustomModel = new CustomModel();
                     $query = $CustomModel->CustomQuery($sql);
                     if (!$query) {
@@ -637,7 +638,7 @@ class Create extends BaseController
                         $response_array['returned_id'] = $employee_id;
                     } else {
                         $response_array['response_type'] = 'success';
-                        $response_array['response_description'] = 'Employee Added Successfully, username: ' . $username . ' and password: ' . $username;
+                        $response_array['response_description'] = 'Employee Added Successfully, username: ' . $username;
                         $response_array['returned_id'] = $employee_id;
                     }
                 } else {

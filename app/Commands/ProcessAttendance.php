@@ -49,15 +49,13 @@ class ProcessAttendance extends BaseCommand
      * @var array
      */
     protected $options = [
-        '--chunk'     => 'Chunk size per batch (default: 25)',
-        '--month'     => 'Target month for processing (e.g. 2024-05)',
-        '--employee'  => 'Specific employee ID to process only that user'
+        '--chunk' => 'Chunk size per batch (default: 25)',
+        '--month' => 'Target month for processing (e.g. 2024-05)',
+        '--employee' => 'Specific employee ID to process only that user',
     ];
 
     /**
      * Actually execute a command.
-     *
-     * @param array $params
      */
     public function run(array $params)
     {
@@ -72,13 +70,13 @@ class ProcessAttendance extends BaseCommand
         }
         // dd($options);
         $first_date_of_current_month = date('Y-m-01');
-        $first_date_of_last_month = date('Y-m-01', strtotime($first_date_of_current_month . "-1 days"));
+        $first_date_of_last_month = date('Y-m-01', strtotime($first_date_of_current_month.'-1 days'));
 
         // print_r($first_date_of_last_month);
         // die();
 
-        $chunkSize   = $options['chunk'] ?? 25;
-        $month       = $options['month'] ?? date('Y-m', strtotime($first_date_of_last_month));
+        $chunkSize = $options['chunk'] ?? 25;
+        $month = $options['month'] ?? date('Y-m', strtotime($first_date_of_last_month));
         $employeeIds = isset($options['employee']) ? explode(',', $options['employee']) : null;
 
         // dd([
@@ -87,15 +85,15 @@ class ProcessAttendance extends BaseCommand
         //     'employeeIds' => $employeeIds
         // ]);
 
-        CLI::write("Starting employee processing", 'yellow');
+        CLI::write('Starting employee processing', 'yellow');
         CLI::write("Chunk Size : {$chunkSize}", 'light_gray');
         CLI::write("Month      : {$month}", 'light_gray');
-        CLI::write("Employee ID: " . ($employeeId ?? 'All'), 'light_gray');
+        CLI::write('Employee ID: '.($employeeId ?? 'All'), 'light_gray');
 
-        $processor = new AttendanceProcessor();
+        $processor = new AttendanceProcessor;
         $processor->processAll((int) $chunkSize, $month, $employeeIds);
-        sleep(5);
+        sleep(1);
 
-        CLI::write("Done processing.", 'green');
+        CLI::write('Done processing.', 'green');
     }
 }

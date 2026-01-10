@@ -926,8 +926,8 @@
 								href="<?php echo base_url('/backend/reports/attendance-report/attendance-sheet?company[]=all_companies&department[]=all_departments&employee[]=' . session()->get("current_user")['employee_id']); ?>"> -->
 
 							<a class="menu-link <?php if (isset($current_method) && $current_method == 'final-paid-days-sheet') {
-														echo 'active';
-													} ?>" href="<?php echo base_url('/backend/reports/final-paid-days/final-paid-days-sheet?company[]=all_companies&department[]=all_departments&employee[]=' . session()->get("current_user")['employee_id'].'&month='.date('Y-m')); ?>">
+													echo 'active';
+												} ?>" href="<?php echo base_url('/backend/reports/final-paid-days/final-paid-days-sheet?company[]=all_companies&department[]=all_departments&employee[]=' . session()->get("current_user")['employee_id'] . '&month=' . date('Y-m')); ?>">
 
 								<span class="menu-bullet">
 									<span class="bullet bullet-dot"></span>

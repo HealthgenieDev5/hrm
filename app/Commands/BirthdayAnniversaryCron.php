@@ -13,24 +13,37 @@ class BirthdayAnniversaryCron extends BaseCommand
     protected $description = 'Create birthday and work anniversary notifications';
     protected $usage = 'cron:birthday-anniversary [options]';
     protected $options = [
-        '--monthly' => 'Generate notifications for the entire current month',
+        '--month' => 'Generate notifications for the entire month (optionally specify YYYY-MM format, e.g., --month=2025-11)',
     ];
 
     public function run(array $params)
     {
-        // Check if monthly flag is passed
-        $isMonthly = CLI::getOption('monthly');
+        $yearMonth = null;
+        $isMonthlyMode = false;
 
-        if ($isMonthly) {
-            return $this->runMonthly();
+        if (isset($params['month'])) {
+            $isMonthlyMode = true;
+            $yearMonth = $params['month'] ?: null;
+        }
+
+        foreach (array_keys($params) as $key) {
+            if (strpos($key, 'month=') === 0) {
+                $isMonthlyMode = true;
+                $yearMonth = substr($key, strlen('month='));
+                break;
+            } elseif ($key === 'month') {
+                $isMonthlyMode = true;
+                break;
+            }
+        }
+
+        if ($isMonthlyMode) {
+            return $this->runMonthly($yearMonth);
         } else {
             return $this->runDaily();
         }
     }
 
-    /**
-     * Run daily notification creation
-     */
     private function runDaily()
     {
         CLI::write('Starting Birthday & Anniversary notification creation (DAILY)...', 'yellow');
@@ -50,7 +63,6 @@ class BirthdayAnniversaryCron extends BaseCommand
                 return EXIT_SUCCESS;
             }
 
-            // Birthday summary
             if ($result['birthdays_created'] > 0) {
                 CLI::write('🎂 BIRTHDAYS:', 'cyan');
                 CLI::write('   Employees celebrating: ' . $result['birthday_employees'], 'white');
@@ -60,7 +72,6 @@ class BirthdayAnniversaryCron extends BaseCommand
             }
             CLI::newLine();
 
-            // Anniversary summary
             if ($result['anniversaries_created'] > 0) {
                 CLI::write('🎉 WORK ANNIVERSARIES:', 'cyan');
                 CLI::write('   Employees celebrating: ' . $result['anniversary_employees'], 'white');
@@ -70,7 +81,6 @@ class BirthdayAnniversaryCron extends BaseCommand
             }
             CLI::newLine();
 
-            // Overall summary
             $total = $result['birthdays_created'] + $result['anniversaries_created'];
             if ($total > 0) {
                 CLI::write('✓ ' . $total . ' notification(s) created successfully', 'green');
@@ -78,7 +88,6 @@ class BirthdayAnniversaryCron extends BaseCommand
             } else {
                 CLI::write('No birthdays or anniversaries today', 'white');
             }
-
         } catch (\Exception $e) {
             CLI::error('Error: ' . $e->getMessage());
             CLI::write('Stack trace:', 'red');
@@ -92,17 +101,19 @@ class BirthdayAnniversaryCron extends BaseCommand
 
     /**
      * Run monthly notification creation
+     *
+     * @param string|null $yearMonth Year-month in YYYY-MM format (e.g., "2025-11"), or null for current month
      */
-    private function runMonthly()
+    private function runMonthly($yearMonth = null)
     {
+        $monthText = $yearMonth ? $yearMonth : 'current month';
         CLI::write('Starting Birthday & Anniversary notification creation (MONTHLY)...', 'yellow');
-        CLI::write('This will create notifications for ALL days in the current month', 'white');
+        CLI::write("This will create notifications for ALL days in {$monthText}", 'white');
         CLI::newLine();
 
         try {
             $controller = new BirthdayAnniversaryNotifications();
-            $result = $controller->createMonthlyNotifications();
-
+            $result = $controller->createMonthlyNotifications($yearMonth);
             CLI::write('Process completed successfully!', 'green');
             CLI::write('Month: ' . $result['month'], 'white');
             CLI::write('Days processed: ' . $result['days_processed'], 'white');
@@ -120,11 +131,11 @@ class BirthdayAnniversaryCron extends BaseCommand
 
             // Anniversary summary
             if ($result['anniversaries_created'] > 0) {
-                CLI::write('🎉 WORK ANNIVERSARIES:', 'cyan');
+                CLI::write('🎉  ANNIVERSARIES:', 'cyan');
                 CLI::write('   Total employees celebrating this month: ' . $result['total_anniversary_employees'], 'white');
                 CLI::write('   Notifications created: ' . $result['anniversaries_created'], 'green');
             } else {
-                CLI::write('🎉 WORK ANNIVERSARIES: None this month', 'white');
+                CLI::write('🎉  ANNIVERSARIES: None this month', 'white');
             }
             CLI::newLine();
 
@@ -136,7 +147,6 @@ class BirthdayAnniversaryCron extends BaseCommand
             } else {
                 CLI::write('No birthdays or anniversaries this month', 'white');
             }
-
         } catch (\Exception $e) {
             CLI::error('Error: ' . $e->getMessage());
             CLI::write('Stack trace:', 'red');

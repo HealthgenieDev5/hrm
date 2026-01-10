@@ -32,6 +32,20 @@
     .drawer .card .card-header {
         min-height: 80px;
     }
+
+    .form-control.is-invalid {
+        border-color: #f1416c;
+        padding-right: calc(1.5em + 0.75rem);
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23f1416c'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23f1416c' stroke='none'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right calc(0.375em + 0.1875rem) center;
+        background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+    }
+
+    .form-control.is-invalid:focus {
+        border-color: #f1416c;
+        box-shadow: 0 0 0 0.25rem rgba(241, 65, 108, 0.25);
+    }
 </style>
 <!--begin::Row-->
 <div class="row gy-5 g-xl-8">
@@ -375,8 +389,8 @@
                                 <?php
                                 } else {
                                 ?><span class="notice d-flex bg-light-primary rounded border-primary border border-dashed mb-9 px-6 py-3">Please update salary to download LOA</span><?php
-                                                                                                                                                                                                                                                                                                                                    }
-                                                                                                                                                                                                                                                                                                                                        ?>
+                                                                                                                                                                                    }
+                                                                                                                                                                                        ?>
 
                                 <!--end::Notice-->
 
@@ -2034,6 +2048,181 @@
                                                 </div>
                                             </div>
 
+                                            <!-- Additional Documents Section (Repeater) -->
+                                            <div class="col-md-12 mb-4">
+                                                <div class="separator separator-dashed my-6"></div>
+
+                                                <div class="d-flex justify-content-between align-items-center mb-4">
+                                                    <h4 class="fw-bold text-gray-800">Additional Documents</h4>
+                                                    <!-- <span class="badge badge-light-info">Multiple files allowed</span> -->
+                                                </div>
+
+                                                <div id="existing_attachments_container" class="mb-5">
+                                                    <?php if (!empty($employee_attachments) && is_array($employee_attachments)): ?>
+                                                        <div class="row g-5">
+                                                            <?php foreach ($employee_attachments as $attachment_item):
+                                                                $extension = strtolower($attachment_item['file_extension'] ?? '');
+                                                                $file_path = $attachment_item['file_path'];
+                                                                if ($extension == 'pdf') {
+                                                                    $bg_image = base_url() . '/assets/media/svg/files/pdf.svg';
+                                                                } elseif (in_array($extension, ['zip', 'rar'])) {
+                                                                    $bg_image = base_url() . '/assets/media/svg/files/zip-file-icon.svg';
+                                                                } elseif (in_array($extension, ['doc', 'docx'])) {
+                                                                    $bg_image = base_url() . '/assets/media/svg/files/doc.svg';
+                                                                } elseif (in_array($extension, ['xls', 'xlsx'])) {
+                                                                    $bg_image = base_url() . '/assets/media/svg/files/csv.svg';
+                                                                } elseif (in_array($extension, ['png', 'jpg', 'jpeg'])) {
+                                                                    $bg_image = base_url() . $file_path;
+                                                                } else {
+                                                                    $bg_image = base_url() . '/assets/media/svg/files/blank-image.svg';
+                                                                }
+                                                            ?>
+                                                                <div class="col-md-4 col-lg-3" data-attachment-id="<?= $attachment_item['id'] ?>">
+                                                                    <div class="card card-bordered shadow-sm h-100">
+                                                                        <div class="card-body p-5">
+                                                                            <div class="form-group text-center mb-0">
+                                                                                <div class="">
+                                                                                    <h6 class="fw-bold text-gray-800 mb-0" style="min-height: 40px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                                                                                        <?= esc($attachment_item['title']) ?>
+                                                                                    </h6>
+                                                                                </div>
+
+                                                                                <div class="image-input image-input-outline" data-kt-image-input="true" style="background-image: url(<?= base_url() ?>assets/media/svg/files/blank-image.svg)">
+                                                                                    <div class="image-input-wrapper w-150px h-150px" style="background-image: url('<?= $bg_image ?>')">
+                                                                                        <div class="w-100 h-100 overlay preview-button">
+                                                                                            <div class="overlay-layer card-rounded bg-dark bg-opacity-25 shadow">
+                                                                                                <i class="bi bi-eye-fill text-white fs-2x cursor-pointer <?= in_array($extension, ['zip', 'rar']) ? 'd-none' : '' ?>"
+                                                                                                    data-bs-target="#attachment_lightbox_<?= $attachment_item['id'] ?>"
+                                                                                                    data-bs-toggle="modal"></i>
+                                                                                                <a href="<?= base_url($file_path) ?>" target="_blank">
+                                                                                                    <i class="bi bi-download text-white fs-2x"></i>
+                                                                                                </a>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+
+                                                                                    <span class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow delete-attachment-btn"
+                                                                                        data-attachment-id="<?= $attachment_item['id'] ?>"
+                                                                                        data-bs-toggle="tooltip"
+                                                                                        title="Remove attachment">
+                                                                                        <i class="bi bi-x fs-2"></i>
+                                                                                    </span>
+
+                                                                                    <div class="modal fade" id="attachment_lightbox_<?= $attachment_item['id'] ?>" tabindex="-1" data-bs-backdrop="static" aria-hidden="true">
+                                                                                        <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+                                                                                            <div class="modal-content">
+                                                                                                <div class="modal-header">
+                                                                                                    <h5 class="modal-title"><?= esc($attachment_item['title']) ?></h5>
+                                                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                                                </div>
+                                                                                                <div class="modal-body d-flex" style="min-height: 70vh;">
+                                                                                                    <iframe class="loaded_content" width="100%" src="<?= base_url($file_path) ?>"></iframe>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+
+                                                                                <div class="separator separator-dashed my-4"></div>
+
+                                                                                <!-- <div class="d-flex justify-content-between align-items-center mb-2">
+                                                                                    <span class="text-muted fs-8 fw-semibold">Type:</span>
+                                                                                    <span class="badge badge-light-primary fw-bold">.<?= strtoupper($extension) ?></span>
+                                                                                </div> -->
+
+                                                                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                                                                    <span class="text-muted fs-8 fw-semibold">Size:</span>
+                                                                                    <span class="text-gray-800 fw-bold fs-8">
+                                                                                        <?php if (!empty($attachment_item['file_size'])): ?>
+                                                                                            <?= number_format($attachment_item['file_size'] / 1024, 2) ?> KB
+                                                                                        <?php else: ?>
+                                                                                            N/A
+                                                                                        <?php endif; ?>
+                                                                                    </span>
+                                                                                </div>
+
+                                                                                <div class="d-flex justify-content-between align-items-center">
+                                                                                    <span class="text-muted fs-8 fw-semibold">Uploaded:</span>
+                                                                                    <span class="text-gray-800 fw-bold fs-8">
+                                                                                        <?= date('d M Y', strtotime($attachment_item['created_at'])) ?>
+                                                                                    </span>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            <?php endforeach; ?>
+                                                        </div>
+                                                    <?php else: ?>
+                                                        <div class="alert alert-dismissible bg-light-info d-flex flex-column flex-sm-row p-5 mb-5">
+                                                            <i class="bi bi-info-circle fs-2x text-info me-4 mb-5 mb-sm-0"></i>
+                                                            <div class="d-flex flex-column pe-0 pe-sm-10">
+                                                                <span class="text-gray-700">No additional documents uploaded yet.</span>
+                                                            </div>
+                                                        </div>
+                                                    <?php endif; ?>
+                                                </div>
+
+                                                <div class="card card-bordered shadow-sm">
+                                                    <!-- <div class="card-header ribbon ribbon-top">
+                                                        <h3 class="card-title">Upload New Documents</h3>
+                                                    </div> -->
+                                                    <div class="card-body">
+                                                        <div id="employee_additional_attachments">
+                                                            <div class="form-group">
+                                                                <div data-repeater-list="additional_attachments">
+                                                                    <div data-repeater-item>
+                                                                        <div class="form-group row mb-5 align-items-center">
+                                                                            <div class="col-md-4">
+                                                                                <label class="form-label fw-semibold">Document Title</label>
+                                                                                <input type="text"
+                                                                                    class="form-control form-control-sm form-control-solid"
+                                                                                    name="attachment_title"
+                                                                                    placeholder="e.g., Educational Certificate, Experience Letter" />
+                                                                                <small class="text-muted form-text" style="font-size:0.75rem">
+                                                                                    <i class="bi bi-info-circle me-1"></i>Enter a descriptive title to identify this document
+                                                                                </small>
+                                                                            </div>
+                                                                            <div class="col-md-6">
+                                                                                <label class="form-label fw-semibold">Choose File</label>
+                                                                                <input type="file"
+                                                                                    class="form-control form-control-sm attachment-file-input"
+                                                                                    name="attachment_file"
+                                                                                    accept=".png,.jpg,.jpeg,.pdf,.doc,.docx,.xls,.xlsx,.zip,.rar" />
+                                                                                <small class="text-muted form-text" style="font-size:0.75rem">
+                                                                                    Allowed: PNG, JPG, PDF, DOC, DOCX, XLS, XLSX, ZIP, RAR (Max: 5MB)
+                                                                                </small>
+                                                                            </div>
+                                                                            <div class="col-md-2">
+                                                                                <label class="form-label">&nbsp;</label><br>
+                                                                                <div class="d-flex align-items-center justify-content-end">
+                                                                                    <a href="javascript:;"
+                                                                                        data-repeater-delete
+                                                                                        class="btn btn-sm btn-light-danger">
+                                                                                        <i class="la la-trash-o"></i>Remove
+                                                                                    </a>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="form-group">
+                                                                <a href="javascript:;"
+                                                                    data-repeater-create
+                                                                    class="btn btn-sm btn-light-primary">
+                                                                    <i class="la la-plus"></i>Add Another Document
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <input type="hidden" id="attachments_to_delete" name="attachments_to_delete" value="" />
+                                            </div>
+                                            <!-- End Additional Documents Section -->
+
                                             <div class="col-md-12 mb-4">
                                                 <div class="row">
                                                     <div class="col-md-4">
@@ -3083,6 +3272,39 @@
 
         $(document).on('click', '#submit_update_employee', function(e) {
             e.preventDefault();
+
+            var hasValidationError = false;
+            var errorMessage = '';
+            $('#employee_additional_attachments [data-repeater-item]').each(function() {
+                var $row = $(this);
+                var titleInput = $row.find('input[type="text"]').first();
+                var fileInput = $row.find('input.attachment-file-input');
+
+                if (titleInput.length > 0 && fileInput.length > 0) {
+                    var titleValue = titleInput.val() ? titleInput.val().trim() : '';
+                    var fileValue = fileInput.val() ? fileInput.val() : '';
+
+                    if (fileValue && !titleValue) {
+                        hasValidationError = true;
+                        errorMessage = 'Please enter a document title for all uploaded files.';
+                        titleInput.addClass('is-invalid');
+                    } else {
+                        titleInput.removeClass('is-invalid');
+                    }
+                }
+            });
+
+            if (hasValidationError) {
+                Swal.fire({
+                    title: 'Validation Error',
+                    text: errorMessage,
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+                return false;
+            }
+
+
             var old_probation = $("#old_probation").text();
             var new_probation = $("#probation").val();
 
@@ -3254,10 +3476,14 @@
 
         $('.image-input').each(function() {
             var id = $(this).attr('id');
-            var imageInputElement = document.querySelector("#" + id);
-            var imageInput = KTImageInput.getInstance(imageInputElement);
-
+            // var imageInputElement = document.querySelector("#" + id);
+            // var imageInput = KTImageInput.getInstance(imageInputElement);
+            var id = this.id;
+            if (!id) return;
+            var imageInput = KTImageInput.getInstance(this);
+            if (!imageInput) return;
             var iframe_src_backup = '';
+
 
             imageInput.on("kt.imageinput.changed", function() {
                 var fileInput = $("#" + id).find("input[type=file]")[0];
@@ -3344,6 +3570,121 @@
         });
 
         $family_members.setList(<?php echo $family_members; ?>);
+
+        // Additional Attachments Repeater
+        var $additional_attachments = $('#employee_additional_attachments').repeater({
+            initEmpty: false,
+            show: function() {
+                $(this).slideDown();
+                validateAttachmentFileInputs();
+            },
+            hide: function(deleteElement) {
+                $(this).slideUp(deleteElement);
+            },
+            ready: function() {
+                validateAttachmentFileInputs();
+            }
+        });
+
+        // File input validation for attachments
+        function validateAttachmentFileInputs() {
+            $('.attachment-file-input').off('change').on('change', function() {
+                var file = this.files[0];
+                var $input = $(this);
+                var maxSize = 5 * 1024 * 1024; // 5MB in bytes
+                var allowedExtensions = ['png', 'jpg', 'jpeg', 'pdf', 'doc', 'docx', 'xls', 'xlsx', 'zip', 'rar'];
+
+                if (file) {
+                    // Check file size
+                    if (file.size > maxSize) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'File Too Large',
+                            text: 'File size must not exceed 5MB. Selected file: ' + (file.size / 1024 / 1024).toFixed(2) + 'MB',
+                            buttonsStyling: false,
+                            confirmButtonText: 'OK',
+                            customClass: {
+                                confirmButton: "btn btn-primary"
+                            }
+                        });
+                        $input.val(''); // Clear the input
+                        return false;
+                    }
+
+                    // Check file extension
+                    var extension = file.name.split('.').pop().toLowerCase();
+                    if (allowedExtensions.indexOf(extension) === -1) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Invalid File Type',
+                            text: 'Only PNG, JPG, JPEG, PDF, DOC, DOCX, XLS, XLSX, ZIP, and RAR files are allowed.',
+                            buttonsStyling: false,
+                            confirmButtonText: 'OK',
+                            customClass: {
+                                confirmButton: "btn btn-primary"
+                            }
+                        });
+                        $input.val(''); // Clear the input
+                        return false;
+                    }
+                }
+            });
+        }
+
+        validateAttachmentFileInputs();
+
+        // Delete existing attachment handler
+        $(document).on('click', '.delete-attachment-btn', function(e) {
+            e.preventDefault();
+            var attachmentId = $(this).data('attachment-id');
+            var $container = $('#existing_attachments_container').find('.col-md-4[data-attachment-id="' + attachmentId + '"], .col-lg-3[data-attachment-id="' + attachmentId + '"]').first();
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "This document will be removed from the page and deleted when you save the form!",
+                icon: 'warning',
+                showCancelButton: true,
+                buttonsStyling: false,
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'Cancel',
+                customClass: {
+                    confirmButton: "btn btn-danger",
+                    cancelButton: "btn btn-secondary"
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    console.log('User confirmed deletion');
+                    var currentDeleteList = $('#attachments_to_delete').val();
+                    var deleteArray = currentDeleteList ? currentDeleteList.split(',') : [];
+                    if (deleteArray.indexOf(attachmentId.toString()) === -1) {
+                        deleteArray.push(attachmentId);
+                    }
+                    $('#attachments_to_delete').val(deleteArray.join(','));
+                    $container.slideUp(400, function() {
+                        $(this).remove();
+                        var remainingCount = $('#existing_attachments_container [data-attachment-id]').length;
+                        if (remainingCount === 0) {
+                            console.log('No more attachments, showing empty message');
+                            $('#existing_attachments_container').html(
+                                '<div class="alert alert-dismissible bg-light-info d-flex flex-column flex-sm-row p-5 mb-5">' +
+                                '<i class="bi bi-info-circle fs-2x text-info me-4 mb-5 mb-sm-0"></i>' +
+                                '<div class="d-flex flex-column pe-0 pe-sm-10">' +
+                                '<span class="text-gray-700">No additional documents uploaded yet.</span>' +
+                                '</div>' +
+                                '</div>'
+                            );
+                        }
+                    });
+                    Swal.fire({
+                        title: 'Removed!',
+                        text: 'The document has been removed and will be deleted when you save.',
+                        icon: 'success',
+                        timer: 2000,
+                        showConfirmButton: false,
+                        timerProgressBar: true
+                    });
+                }
+            });
+        });
 
         $(document).on('change', '#update_employee input#enable_pdc', function(e) {
             if ($(this).is(':checked')) {

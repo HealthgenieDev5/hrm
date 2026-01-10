@@ -205,6 +205,8 @@
                                                         <span class="text-danger error-text d-block" id="holiday_id_error"></span>
                                                         <!--end::Error Message-->
                                                     </div>
+                                                </div>
+                                                <div class="col-lg-4">
                                                     <div class="mb-3">
                                                         <label class="required form-label">Holiday Name</label>
                                                         <input type="text" id="holiday_name" name="holiday_name" class="form-control form-control-sm" placeholder="Holiday Name" value="" oninput="$(this).next().html('')" />
@@ -212,6 +214,8 @@
                                                         <span class="text-danger d-block" id="holiday_name_error"></span>
                                                         <!--end::Error Message-->
                                                     </div>
+                                                </div>
+                                                <div class="col-lg-4">
                                                     <div class="mb-3">
                                                         <label class="required form-label">Holiday Type</label>
                                                         <input type="text" id="holiday_type" name="holiday_type" class="form-control form-control-sm" placeholder="Holiday Type" value="" oninput="$(this).next().html('')" />
@@ -219,6 +223,8 @@
                                                         <span class="text-danger d-block" id="holiday_type_error"></span>
                                                         <!--end::Error Message-->
                                                     </div>
+                                                </div>
+                                                <div class="col-lg-4">
                                                     <div class="mb-3">
                                                         <label class="required form-label">Is Special Holiday</label>
                                                         <div class="switch-toggle form-control form-control-sm form-control-solid d-flex p-0 position-relative">
@@ -236,6 +242,8 @@
                                                         <span class="text-danger d-block" id="is_special_holiday_error"></span>
                                                         <!--end::Error Message-->
                                                     </div>
+                                                </div>
+                                                <div class="col-lg-4">
                                                     <div class="mb-3">
                                                         <label class="required form-label">Holiday Date</label>
                                                         <div class="input-group">
@@ -249,7 +257,7 @@
                                                         <!--end::Error Message-->
                                                     </div>
                                                 </div>
-                                                <div class="col-lg-8" style="overflow-y: auto; max-height: 50vh;">
+                                                <!-- <div class="col-lg-8" style="overflow-y: auto; max-height: 50vh;">
                                                     <div class="d-flex flex-wrap">
                                                         <?php
                                                         if( !empty($companies) ){
@@ -288,7 +296,7 @@
                                                             ?>
                                                         </tbody>
                                                     </table>
-                                                </div>
+                                                </div> -->
                                             </div>
                                         </div>
 
@@ -506,10 +514,11 @@
                                     confirmButtonText: "Ok, got it!",
                                     customClass: { confirmButton: "btn btn-primary" },
                                 }).then(function (e) {
-                                    window.location.replace(`<?php echo base_url('/backend/master/holiday/single'); ?>/${response.holiday_id}`);
+                                    // window.location.replace(`<?php echo base_url('/backend/master/holiday/single'); ?>/${response.holiday_id}`);
                                     // form[0].reset();
                                     // form.closest('.modal').modal('hide');
                                     // $("#holidays_table").DataTable().ajax.reload();
+                                    window.location.reload();
                                 });
                             }
                         }                  
