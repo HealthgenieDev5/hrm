@@ -11,6 +11,7 @@ use App\Controllers\Reports\Ncl;
 use App\Controllers\Reports\Od;
 use App\Controllers\Reports\Punching;
 use App\Controllers\Reports\ReportAjax;
+use App\Controllers\Reports\WagesRegister;
 
 $routes->match(['get', 'post'], '/backend/reports/leave-balance-all', [LeaveBalance::class, 'getAllBalance']);
 /*end::*/
@@ -34,6 +35,7 @@ $routes->match(['get', 'post'], '/ajax/backend/reports/get-loyalty-incentive-rep
 
 /*begin::Attendance Sumamry*/
 $routes->get('/backend/reports/attendance-summary', [FinalPaidDays::class, 'attendanceSummary']);
+// $routes->get('/backend/reports/download-register', [FinalPaidDays::class, 'downloadRegister']);
 /*end::Attendance Sumamry*/
 
 
@@ -49,3 +51,6 @@ $routes->match(['get', 'post'], '/ajax/backend/reports/get-leave-report', [Leave
 // $routes->match(['get', 'post'], '/backend/reports/od-report', [Od::class, 'index']);
 $routes->match(['get', 'post'], '/ajax/backend/reports/get-od-report', [Od::class, 'getOdReports']);
 /*end::Detailed Dashboard*/
+
+
+$routes->get('/backend/reports/labour-register', [WagesRegister::class, 'index']);

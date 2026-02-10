@@ -46,6 +46,9 @@ class FinalSalary extends BaseController
 			->findAll();
 		// print_r($get_final_paid_days[0]['designation_id']);
 		// 	die();
+
+		dd($get_final_paid_days);
+		die;
 		if (!empty($get_final_paid_days)) {
 			$final_paid_days = array_sum(array_column($get_final_paid_days, 'paid'));
 			$final_salary = array();

@@ -1,0 +1,12 @@
+CRITICAL - 2026-02-04 05:56:21 --> ErrorException: Maximum execution time of 60 seconds exceeded
+[Method: CLI, Route: attendance:parallel]
+in APPPATH\Commands\ProcessAttendanceParallel.php on line 163.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2026-02-04 05:58:50 --> ErrorException: Maximum execution time of 120 seconds exceeded
+[Method: CLI, Route: attendance:parallel]
+in APPPATH\Commands\ProcessAttendanceParallel.php on line 166.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2026-02-04 05:59:43 --> ErrorException: Maximum execution time of 60 seconds exceeded
+[Method: CLI, Route: attendance:worker]
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 327.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()

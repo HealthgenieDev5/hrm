@@ -55,6 +55,7 @@
                             <option value="H/D+COMP OFF/2" <?= @edit_set_select('attendance', 'H/D+COMP OFF/2', $attendance) ?>>H/D+COMP OFF/2</option>
 
                             <option value="ML" <?= @edit_set_select('attendance', 'ML', $attendance) ?>>ML</option>
+                            <option value="INC" <?= @edit_set_select('attendance', 'INC', $attendance) ?>>INC</option>
                         </select>
                         <small class="text-danger error-text" id="attendance_error"><?= isset($validation) ? display_error($validation, 'attendance') : '' ?></small>
                     </div>
@@ -140,10 +141,10 @@
         });
 
         $(document).on('change', '#employee_id', function(e) {
-            $date_range_pickr.clear();
-            $('#attendance_date').val('').trigger('change');
-            $('#attendance').val('').trigger('change');
-            $('#remarks').val('').trigger('change');
+            //$date_range_pickr.clear();
+            /// $('#attendance_date').val('').trigger('change');
+            // $('#attendance').val('').trigger('change');
+            //  $('#remarks').val('').trigger('change');
             $("#existing_overrides").DataTable().ajax.reload();
         })
 

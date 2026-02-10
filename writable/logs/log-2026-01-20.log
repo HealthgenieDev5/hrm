@@ -1,0 +1,106 @@
+CRITICAL - 2026-01-20 10:16:00 --> ErrorException: Undefined array key "records"
+[Method: GET, Route: backend/reports/wages-register]
+in APPPATH\Views\Pdf\LeaveRegister.php on line 232.
+ 1 APPPATH\Views\Pdf\LeaveRegister.php(232): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "records"', 'D:\\LOCALHOST\\hrm.healthgenie\\app\\Views\\Pdf\\LeaveRegister.php', 232)
+ 2 SYSTEMPATH\View\View.php(226): include('D:\\LOCALHOST\\hrm.healthgenie\\app\\Views\\Pdf\\LeaveRegister.php')
+ 3 SYSTEMPATH\View\View.php(229): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1167): CodeIgniter\View\View->render('Pdf/LeaveRegister', [], true)
+ 5 APPPATH\Controllers\Reports\WagesRegister.php(729): view('Pdf/LeaveRegister', [...])
+ 6 APPPATH\Controllers\Reports\WagesRegister.php(170): App\Controllers\Reports\WagesRegister->getLeaveRegisterData([...], '2025-12')
+ 7 APPPATH\Controllers\Reports\WagesRegister.php(133): App\Controllers\Reports\WagesRegister->downloadRegister([...])
+ 8 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Reports\WagesRegister->index()
+ 9 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Reports\WagesRegister))
+10 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+11 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+12 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+13 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+14 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+CRITICAL - 2026-01-20 10:19:40 --> ErrorException: Undefined array key "date"
+[Method: GET, Route: backend/reports/wages-register]
+in APPPATH\Views\Pdf\LeaveRegister.php on line 234.
+ 1 APPPATH\Views\Pdf\LeaveRegister.php(234): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "date"', 'D:\\LOCALHOST\\hrm.healthgenie\\app\\Views\\Pdf\\LeaveRegister.php', 234)
+ 2 SYSTEMPATH\View\View.php(226): include('D:\\LOCALHOST\\hrm.healthgenie\\app\\Views\\Pdf\\LeaveRegister.php')
+ 3 SYSTEMPATH\View\View.php(229): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1167): CodeIgniter\View\View->render('Pdf/LeaveRegister', [], true)
+ 5 APPPATH\Controllers\Reports\WagesRegister.php(729): view('Pdf/LeaveRegister', [...])
+ 6 APPPATH\Controllers\Reports\WagesRegister.php(170): App\Controllers\Reports\WagesRegister->getLeaveRegisterData([...], '2025-12')
+ 7 APPPATH\Controllers\Reports\WagesRegister.php(133): App\Controllers\Reports\WagesRegister->downloadRegister([...])
+ 8 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Reports\WagesRegister->index()
+ 9 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Reports\WagesRegister))
+10 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+11 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+12 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+13 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+14 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+CRITICAL - 2026-01-20 10:19:45 --> ErrorException: Undefined array key "date"
+[Method: GET, Route: backend/reports/wages-register]
+in APPPATH\Views\Pdf\LeaveRegister.php on line 234.
+ 1 APPPATH\Views\Pdf\LeaveRegister.php(234): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "date"', 'D:\\LOCALHOST\\hrm.healthgenie\\app\\Views\\Pdf\\LeaveRegister.php', 234)
+ 2 SYSTEMPATH\View\View.php(226): include('D:\\LOCALHOST\\hrm.healthgenie\\app\\Views\\Pdf\\LeaveRegister.php')
+ 3 SYSTEMPATH\View\View.php(229): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1167): CodeIgniter\View\View->render('Pdf/LeaveRegister', [], true)
+ 5 APPPATH\Controllers\Reports\WagesRegister.php(729): view('Pdf/LeaveRegister', [...])
+ 6 APPPATH\Controllers\Reports\WagesRegister.php(170): App\Controllers\Reports\WagesRegister->getLeaveRegisterData([...], '2025-12')
+ 7 APPPATH\Controllers\Reports\WagesRegister.php(133): App\Controllers\Reports\WagesRegister->downloadRegister([...])
+ 8 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Reports\WagesRegister->index()
+ 9 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Reports\WagesRegister))
+10 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+11 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+12 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+13 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+14 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+CRITICAL - 2026-01-20 10:19:49 --> ErrorException: Undefined array key "date"
+[Method: GET, Route: backend/reports/wages-register]
+in APPPATH\Views\Pdf\LeaveRegister.php on line 234.
+ 1 APPPATH\Views\Pdf\LeaveRegister.php(234): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "date"', 'D:\\LOCALHOST\\hrm.healthgenie\\app\\Views\\Pdf\\LeaveRegister.php', 234)
+ 2 SYSTEMPATH\View\View.php(226): include('D:\\LOCALHOST\\hrm.healthgenie\\app\\Views\\Pdf\\LeaveRegister.php')
+ 3 SYSTEMPATH\View\View.php(229): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1167): CodeIgniter\View\View->render('Pdf/LeaveRegister', [], true)
+ 5 APPPATH\Controllers\Reports\WagesRegister.php(729): view('Pdf/LeaveRegister', [...])
+ 6 APPPATH\Controllers\Reports\WagesRegister.php(170): App\Controllers\Reports\WagesRegister->getLeaveRegisterData([...], '2025-12')
+ 7 APPPATH\Controllers\Reports\WagesRegister.php(133): App\Controllers\Reports\WagesRegister->downloadRegister([...])
+ 8 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Reports\WagesRegister->index()
+ 9 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Reports\WagesRegister))
+10 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+11 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+12 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+13 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+14 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+CRITICAL - 2026-01-20 10:19:51 --> ErrorException: Undefined array key "date"
+[Method: GET, Route: backend/reports/wages-register]
+in APPPATH\Views\Pdf\LeaveRegister.php on line 234.
+ 1 APPPATH\Views\Pdf\LeaveRegister.php(234): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "date"', 'D:\\LOCALHOST\\hrm.healthgenie\\app\\Views\\Pdf\\LeaveRegister.php', 234)
+ 2 SYSTEMPATH\View\View.php(226): include('D:\\LOCALHOST\\hrm.healthgenie\\app\\Views\\Pdf\\LeaveRegister.php')
+ 3 SYSTEMPATH\View\View.php(229): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1167): CodeIgniter\View\View->render('Pdf/LeaveRegister', [], true)
+ 5 APPPATH\Controllers\Reports\WagesRegister.php(729): view('Pdf/LeaveRegister', [...])
+ 6 APPPATH\Controllers\Reports\WagesRegister.php(170): App\Controllers\Reports\WagesRegister->getLeaveRegisterData([...], '2025-12')
+ 7 APPPATH\Controllers\Reports\WagesRegister.php(133): App\Controllers\Reports\WagesRegister->downloadRegister([...])
+ 8 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Reports\WagesRegister->index()
+ 9 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Reports\WagesRegister))
+10 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+11 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+12 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+13 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+14 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+CRITICAL - 2026-01-20 12:00:22 --> ErrorException: Undefined array key "company_name"
+[Method: GET, Route: backend/reports/wages-register]
+in APPPATH\Views\Pdf\LeaveRegister.php on line 177.
+ 1 APPPATH\Views\Pdf\LeaveRegister.php(177): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "company_name"', 'D:\\LOCALHOST\\hrm.healthgenie\\app\\Views\\Pdf\\LeaveRegister.php', 177)
+ 2 SYSTEMPATH\View\View.php(226): include('D:\\LOCALHOST\\hrm.healthgenie\\app\\Views\\Pdf\\LeaveRegister.php')
+ 3 SYSTEMPATH\View\View.php(229): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1167): CodeIgniter\View\View->render('Pdf/LeaveRegister', [], true)
+ 5 APPPATH\Controllers\Reports\WagesRegister.php(767): view('Pdf/LeaveRegister', [...])
+ 6 APPPATH\Controllers\Reports\WagesRegister.php(177): App\Controllers\Reports\WagesRegister->getLeaveRegisterData([...], '2025-12')
+ 7 APPPATH\Controllers\Reports\WagesRegister.php(140): App\Controllers\Reports\WagesRegister->downloadRegister([...])
+ 8 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Reports\WagesRegister->index()
+ 9 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Reports\WagesRegister))
+10 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+11 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+12 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+13 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+14 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+CRITICAL - 2026-01-20 17:04:55 --> ErrorException: Maximum execution time of 300 seconds exceeded
+[Method: GET, Route: backend/reports/wages-register]
+in VENDORPATH\dompdf\dompdf\src\Frame\FrameListIterator.php on line 45.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()

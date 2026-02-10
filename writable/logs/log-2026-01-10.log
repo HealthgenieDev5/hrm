@@ -50,3 +50,748 @@ Stack trace:
 #12 {main}
 ERROR - 2026-01-10 15:34:41 --> Email: Unable to send email using PHP mail(). Your server might not be configured to send mail using this method.
 ERROR - 2026-01-10 15:34:41 --> 
+CRITICAL - 2026-01-10 10:24:47 --> Error: Call to undefined function App\Commands\save_raw_punching_data()
+[Method: CLI, Route: attendance:parallel]
+in APPPATH\Commands\ProcessAttendanceParallel.php on line 51.
+ 1 SYSTEMPATH\CLI\Commands.php(74): App\Commands\ProcessAttendanceParallel->run([...])
+ 2 SYSTEMPATH\CLI\Console.php(47): CodeIgniter\CLI\Commands->run('attendance:parallel', [...])
+ 3 SYSTEMPATH\Boot.php(388): CodeIgniter\CLI\Console->run()
+ 4 SYSTEMPATH\Boot.php(133): CodeIgniter\Boot::runCommand(Object(CodeIgniter\CLI\Console))
+ 5 ROOTPATH\spark(84): CodeIgniter\Boot::bootSpark(Object(Config\Paths))
+CRITICAL - 2026-01-10 10:27:15 --> ArgumentCountError: Too few arguments to function CodeIgniter\CLI\BaseCommand::__construct(), 0 passed in D:\LOCALHOST\hrm.healthgenie\app\Commands\ProcessAttendanceParallel.php on line 24 and exactly 2 expected
+[Method: CLI, Route: attendance:parallel]
+in SYSTEMPATH\CLI\BaseCommand.php on line 93.
+ 1 APPPATH\Commands\ProcessAttendanceParallel.php(24): CodeIgniter\CLI\BaseCommand->__construct()
+ 2 SYSTEMPATH\CLI\Commands.php(130): App\Commands\ProcessAttendanceParallel->__construct(Object(CodeIgniter\Log\Logger), Object(CodeIgniter\CLI\Commands))
+ 3 SYSTEMPATH\CLI\Commands.php(51): CodeIgniter\CLI\Commands->discoverCommands()
+ 4 SYSTEMPATH\Config\Services.php(178): CodeIgniter\CLI\Commands->__construct()
+ 5 SYSTEMPATH\Config\BaseService.php(312): CodeIgniter\Config\Services::commands(false)
+ 6 SYSTEMPATH\Config\BaseService.php(251): CodeIgniter\Config\BaseService::__callStatic('commands', [...])
+ 7 SYSTEMPATH\Config\Services.php(175): CodeIgniter\Config\BaseService::getSharedInstance('commands')
+ 8 SYSTEMPATH\Config\BaseService.php(321): CodeIgniter\Config\Services::commands()
+ 9 SYSTEMPATH\Config\BaseService.php(202): CodeIgniter\Config\BaseService::__callStatic('commands', [])
+10 SYSTEMPATH\Common.php(995): CodeIgniter\Config\BaseService::get('commands')
+11 SYSTEMPATH\CLI\Console.php(47): service('commands')
+12 SYSTEMPATH\Boot.php(388): CodeIgniter\CLI\Console->run()
+13 SYSTEMPATH\Boot.php(133): CodeIgniter\Boot::runCommand(Object(CodeIgniter\CLI\Console))
+14 ROOTPATH\spark(84): CodeIgniter\Boot::bootSpark(Object(Config\Paths))
+CRITICAL - 2026-01-10 10:27:58 --> ArgumentCountError: Too few arguments to function CodeIgniter\CLI\BaseCommand::__construct(), 0 passed in D:\LOCALHOST\hrm.healthgenie\app\Commands\ProcessAttendanceParallel.php on line 24 and exactly 2 expected
+[Method: CLI, Route: attendance:parallel]
+in SYSTEMPATH\CLI\BaseCommand.php on line 93.
+ 1 APPPATH\Commands\ProcessAttendanceParallel.php(24): CodeIgniter\CLI\BaseCommand->__construct()
+ 2 SYSTEMPATH\CLI\Commands.php(130): App\Commands\ProcessAttendanceParallel->__construct(Object(CodeIgniter\Log\Logger), Object(CodeIgniter\CLI\Commands))
+ 3 SYSTEMPATH\CLI\Commands.php(51): CodeIgniter\CLI\Commands->discoverCommands()
+ 4 SYSTEMPATH\Config\Services.php(178): CodeIgniter\CLI\Commands->__construct()
+ 5 SYSTEMPATH\Config\BaseService.php(312): CodeIgniter\Config\Services::commands(false)
+ 6 SYSTEMPATH\Config\BaseService.php(251): CodeIgniter\Config\BaseService::__callStatic('commands', [...])
+ 7 SYSTEMPATH\Config\Services.php(175): CodeIgniter\Config\BaseService::getSharedInstance('commands')
+ 8 SYSTEMPATH\Config\BaseService.php(321): CodeIgniter\Config\Services::commands()
+ 9 SYSTEMPATH\Config\BaseService.php(202): CodeIgniter\Config\BaseService::__callStatic('commands', [])
+10 SYSTEMPATH\Common.php(995): CodeIgniter\Config\BaseService::get('commands')
+11 SYSTEMPATH\CLI\Console.php(47): service('commands')
+12 SYSTEMPATH\Boot.php(388): CodeIgniter\CLI\Console->run()
+13 SYSTEMPATH\Boot.php(133): CodeIgniter\Boot::runCommand(Object(CodeIgniter\CLI\Console))
+14 ROOTPATH\spark(84): CodeIgniter\Boot::bootSpark(Object(Config\Paths))
+CRITICAL - 2026-01-10 10:28:46 --> ArgumentCountError: Too few arguments to function CodeIgniter\CLI\BaseCommand::__construct(), 0 passed in D:\LOCALHOST\hrm.healthgenie\app\Commands\ProcessAttendanceParallel.php on line 24 and exactly 2 expected
+[Method: CLI, Route: attendance:parallel]
+in SYSTEMPATH\CLI\BaseCommand.php on line 93.
+ 1 APPPATH\Commands\ProcessAttendanceParallel.php(24): CodeIgniter\CLI\BaseCommand->__construct()
+ 2 SYSTEMPATH\CLI\Commands.php(130): App\Commands\ProcessAttendanceParallel->__construct(Object(CodeIgniter\Log\Logger), Object(CodeIgniter\CLI\Commands))
+ 3 SYSTEMPATH\CLI\Commands.php(51): CodeIgniter\CLI\Commands->discoverCommands()
+ 4 SYSTEMPATH\Config\Services.php(178): CodeIgniter\CLI\Commands->__construct()
+ 5 SYSTEMPATH\Config\BaseService.php(312): CodeIgniter\Config\Services::commands(false)
+ 6 SYSTEMPATH\Config\BaseService.php(251): CodeIgniter\Config\BaseService::__callStatic('commands', [...])
+ 7 SYSTEMPATH\Config\Services.php(175): CodeIgniter\Config\BaseService::getSharedInstance('commands')
+ 8 SYSTEMPATH\Config\BaseService.php(321): CodeIgniter\Config\Services::commands()
+ 9 SYSTEMPATH\Config\BaseService.php(202): CodeIgniter\Config\BaseService::__callStatic('commands', [])
+10 SYSTEMPATH\Common.php(995): CodeIgniter\Config\BaseService::get('commands')
+11 SYSTEMPATH\CLI\Console.php(47): service('commands')
+12 SYSTEMPATH\Boot.php(388): CodeIgniter\CLI\Console->run()
+13 SYSTEMPATH\Boot.php(133): CodeIgniter\Boot::runCommand(Object(CodeIgniter\CLI\Console))
+14 ROOTPATH\spark(84): CodeIgniter\Boot::bootSpark(Object(Config\Paths))
+ERROR - 2026-01-10 16:57:46 --> Email: sendWithMail throwed ErrorException: mail(): Failed to connect to mailserver at &quot;localhost&quot; port 25, verify your &quot;SMTP&quot; and &quot;smtp_port&quot; setting in php.ini or use ini_set() in D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php:1771
+Stack trace:
+#0 [internal function]: CodeIgniter\Debug\Exceptions->errorHandler(2, 'mail(): Failed ...', 'D:\\LOCALHOST\\hr...', 1771)
+#1 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php(1771): mail('payroll1@gstc.c...', '=?UTF-8?Q?Absen...', '\r\n             ...', 'Date: Sat, 10 J...', '-f app.hrm@heal...')
+#2 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php(1703): CodeIgniter\Email\Email->sendWithMail()
+#3 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php(1597): CodeIgniter\Email\Email->spoolEmail()
+#4 D:\LOCALHOST\hrm.healthgenie\app\Controllers\Cron\ServerCron.php(273): CodeIgniter\Email\Email->send()
+#5 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(933): App\Controllers\Cron\ServerCron->sendAbsentWithoutLeaveNotification()
+#6 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Cron\ServerCron))
+#7 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#9 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 D:\LOCALHOST\hrm.healthgenie\public\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hr...')
+#12 {main}
+ERROR - 2026-01-10 16:57:46 --> Email: Unable to send email using PHP mail(). Your server might not be configured to send mail using this method.
+ERROR - 2026-01-10 16:57:46 --> 
+ERROR - 2026-01-10 16:57:46 --> Email: sendWithMail throwed ErrorException: mail(): Failed to connect to mailserver at &quot;localhost&quot; port 25, verify your &quot;SMTP&quot; and &quot;smtp_port&quot; setting in php.ini or use ini_set() in D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php:1771
+Stack trace:
+#0 [internal function]: CodeIgniter\Debug\Exceptions->errorHandler(2, 'mail(): Failed ...', 'D:\\LOCALHOST\\hr...', 1771)
+#1 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php(1771): mail('hrd@heuerintern...', '=?UTF-8?Q?Absen...', '<div style="fon...', 'Date: Sat, 10 J...', '-f app.hrm@heal...')
+#2 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php(1703): CodeIgniter\Email\Email->sendWithMail()
+#3 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php(1597): CodeIgniter\Email\Email->spoolEmail()
+#4 D:\LOCALHOST\hrm.healthgenie\app\Controllers\Cron\ServerCron.php(390): CodeIgniter\Email\Email->send()
+#5 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(933): App\Controllers\Cron\ServerCron->sendAbsentWithoutLeaveNotificationHeuerOnly()
+#6 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Cron\ServerCron))
+#7 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#9 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 D:\LOCALHOST\hrm.healthgenie\public\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hr...')
+#12 {main}
+ERROR - 2026-01-10 16:57:46 --> Email: Unable to send email using PHP mail(). Your server might not be configured to send mail using this method.
+ERROR - 2026-01-10 16:57:46 --> 
+ERROR - 2026-01-10 17:28:24 --> Email: sendWithMail throwed ErrorException: mail(): Failed to connect to mailserver at &quot;localhost&quot; port 25, verify your &quot;SMTP&quot; and &quot;smtp_port&quot; setting in php.ini or use ini_set() in D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php:1771
+Stack trace:
+#0 [internal function]: CodeIgniter\Debug\Exceptions->errorHandler(2, 'mail(): Failed ...', 'D:\\LOCALHOST\\hr...', 1771)
+#1 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php(1771): mail('hrd@heuerintern...', '=?UTF-8?Q?Absen...', '<div style="fon...', 'Date: Sat, 10 J...', '-f app.hrm@heal...')
+#2 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php(1703): CodeIgniter\Email\Email->sendWithMail()
+#3 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php(1597): CodeIgniter\Email\Email->spoolEmail()
+#4 D:\LOCALHOST\hrm.healthgenie\app\Controllers\Cron\ServerCron.php(390): CodeIgniter\Email\Email->send()
+#5 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(933): App\Controllers\Cron\ServerCron->sendAbsentWithoutLeaveNotificationHeuerOnly()
+#6 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Cron\ServerCron))
+#7 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#9 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 D:\LOCALHOST\hrm.healthgenie\public\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hr...')
+#12 {main}
+ERROR - 2026-01-10 17:28:24 --> Email: Unable to send email using PHP mail(). Your server might not be configured to send mail using this method.
+ERROR - 2026-01-10 17:28:24 --> 
+ERROR - 2026-01-10 17:28:25 --> Email: sendWithMail throwed ErrorException: mail(): Failed to connect to mailserver at &quot;localhost&quot; port 25, verify your &quot;SMTP&quot; and &quot;smtp_port&quot; setting in php.ini or use ini_set() in D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php:1771
+Stack trace:
+#0 [internal function]: CodeIgniter\Debug\Exceptions->errorHandler(2, 'mail(): Failed ...', 'D:\\LOCALHOST\\hr...', 1771)
+#1 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php(1771): mail('payroll1@gstc.c...', '=?UTF-8?Q?Absen...', '\r\n             ...', 'Date: Sat, 10 J...', '-f app.hrm@heal...')
+#2 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php(1703): CodeIgniter\Email\Email->sendWithMail()
+#3 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php(1597): CodeIgniter\Email\Email->spoolEmail()
+#4 D:\LOCALHOST\hrm.healthgenie\app\Controllers\Cron\ServerCron.php(273): CodeIgniter\Email\Email->send()
+#5 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(933): App\Controllers\Cron\ServerCron->sendAbsentWithoutLeaveNotification()
+#6 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Cron\ServerCron))
+#7 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#9 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 D:\LOCALHOST\hrm.healthgenie\public\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hr...')
+#12 {main}
+ERROR - 2026-01-10 17:28:25 --> Email: Unable to send email using PHP mail(). Your server might not be configured to send mail using this method.
+ERROR - 2026-01-10 17:28:25 --> 
+ERROR - 2026-01-10 17:35:37 --> mysqli_sql_exception: Table 'hrm.healthgenie.in.holidays' doesn't exist in D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php(327): mysqli->query('SELECT *\nFROM `...', 0)
+#1 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('SELECT *\nFROM `...')
+#2 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT *\nFROM `...')
+#3 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT *\nFROM `...', Array, false)
+#4 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Model.php(330): CodeIgniter\Database\BaseBuilder->get()
+#5 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\BaseModel.php(715): CodeIgniter\Model->doFirst()
+#6 D:\LOCALHOST\hrm.healthgenie\app\Pipes\AttendanceProcessor\ProcessorHelper.php(52): CodeIgniter\BaseModel->first()
+#7 D:\LOCALHOST\hrm.healthgenie\app\Pipes\AttendanceProcessor\ProcessorHelper.php(754): App\Pipes\AttendanceProcessor\ProcessorHelper::is_holiday('2026-01-10', 'bool', 'hn', '4')
+#8 D:\LOCALHOST\hrm.healthgenie\app\Pipes\AttendanceProcessor\AddDataToPunchingRow.php(90): App\Pipes\AttendanceProcessor\ProcessorHelper::is_sandwitch('104', '2026-01-09', 'HN947', '400')
+#9 D:\LOCALHOST\hrm.healthgenie\app\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\AddDataToPunchingRow->handle(Array, Object(Closure))
+#10 D:\LOCALHOST\hrm.healthgenie\app\Pipes\AttendanceProcessor\CheckFraudPunchesAndOverride.php(76): App\Libraries\Pipeline->App\Libraries\{closure}(Array)
+#11 D:\LOCALHOST\hrm.healthgenie\app\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\CheckFraudPunchesAndOverride->handle(Array, Object(Closure))
+#12 D:\LOCALHOST\hrm.healthgenie\app\Pipes\AttendanceProcessor\PunchTimeCleanup.php(65): App\Libraries\Pipeline->App\Libraries\{closure}(Array)
+#13 D:\LOCALHOST\hrm.healthgenie\app\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\PunchTimeCleanup->handle(Array, Object(Closure))
+#14 D:\LOCALHOST\hrm.healthgenie\app\Pipes\AttendanceProcessor\ApplyManualPunching.php(32): App\Libraries\Pipeline->App\Libraries\{closure}(Array)
+#15 D:\LOCALHOST\hrm.healthgenie\app\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\ApplyManualPunching->handle(Array, Object(Closure))
+#16 D:\LOCALHOST\hrm.healthgenie\app\Pipes\AttendanceProcessor\AdjustDayShiftAfterNightShift.php(66): App\Libraries\Pipeline->App\Libraries\{closure}(Array)
+#17 D:\LOCALHOST\hrm.healthgenie\app\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\AdjustDayShiftAfterNightShift->handle(Array, Object(Closure))
+#18 D:\LOCALHOST\hrm.healthgenie\app\Pipes\AttendanceProcessor\AdjustNightShiftAndSwitchToDay.php(79): App\Libraries\Pipeline->App\Libraries\{closure}(Array)
+#19 D:\LOCALHOST\hrm.healthgenie\app\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\AdjustNightShiftAndSwitchToDay->handle(Array, Object(Closure))
+#20 D:\LOCALHOST\hrm.healthgenie\app\Pipes\AttendanceProcessor\RefactorPunchingRow.php(80): App\Libraries\Pipeline->App\Libraries\{closure}(Array)
+#21 D:\LOCALHOST\hrm.healthgenie\app\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\RefactorPunchingRow->handle(Array, Object(Closure))
+#22 D:\LOCALHOST\hrm.healthgenie\app\Pipes\AttendanceProcessor\ApplyShiftOverride.php(47): App\Libraries\Pipeline->App\Libraries\{closure}(Array)
+#23 D:\LOCALHOST\hrm.healthgenie\app\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\ApplyShiftOverride->handle(Array, Object(Closure))
+#24 D:\LOCALHOST\hrm.healthgenie\app\Libraries\Pipeline.php(36): App\Libraries\Pipeline->App\Libraries\{closure}(Array)
+#25 D:\LOCALHOST\hrm.healthgenie\app\Pipes\ProcessAttendance.php(52): App\Libraries\Pipeline->then(Object(Closure))
+#26 D:\LOCALHOST\hrm.healthgenie\app\Libraries\Pipeline.php(30): App\Pipes\ProcessAttendance->handle(Array, Object(Closure))
+#27 D:\LOCALHOST\hrm.healthgenie\app\Pipes\GetAttendanceClean.php(33): App\Libraries\Pipeline->App\Libraries\{closure}(Array)
+#28 D:\LOCALHOST\hrm.healthgenie\app\Libraries\Pipeline.php(30): App\Pipes\GetAttendanceClean->handle(Array, Object(Closure))
+#29 D:\LOCALHOST\hrm.healthgenie\app\Pipes\ShiftRulesAndDetails.php(39): App\Libraries\Pipeline->App\Libraries\{closure}(Array)
+#30 D:\LOCALHOST\hrm.healthgenie\app\Libraries\Pipeline.php(30): App\Pipes\ShiftRulesAndDetails->handle(Array, Object(Closure))
+#31 D:\LOCALHOST\hrm.healthgenie\app\Pipes\BasicDetails.php(37): App\Libraries\Pipeline->App\Libraries\{closure}(Array)
+#32 D:\LOCALHOST\hrm.healthgenie\app\Libraries\Pipeline.php(30): App\Pipes\BasicDetails->handle(Array, Object(Closure))
+#33 D:\LOCALHOST\hrm.healthgenie\app\Libraries\Pipeline.php(36): App\Libraries\Pipeline->App\Libraries\{closure}(Array)
+#34 D:\LOCALHOST\hrm.healthgenie\app\Controllers\Attendance\Processor.php(159): App\Libraries\Pipeline->then(Object(Closure))
+#35 D:\LOCALHOST\hrm.healthgenie\app\Controllers\Attendance\Processor.php(123): App\Controllers\Attendance\Processor::ProcessPunchingData('400', '2026-01-08', '2026-01-10', true)
+#36 D:\LOCALHOST\hrm.healthgenie\app\Controllers\Cron\ServerCron.php(82): App\Controllers\Attendance\Processor::getProcessedPunchingData('400', '2026-01-08', '2026-01-10')
+#37 D:\LOCALHOST\hrm.healthgenie\app\Controllers\Cron\ServerCron.php(169): App\Controllers\Cron\ServerCron->checkEmployeeAbseanceWithoutApplingLeave()
+#38 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(933): App\Controllers\Cron\ServerCron->sendAbsentWithoutLeaveNotification()
+#39 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Cron\ServerCron))
+#40 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#41 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#42 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#43 D:\LOCALHOST\hrm.healthgenie\public\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#44 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hr...')
+#45 {main}
+ERROR - 2026-01-10 17:35:37 --> mysqli_sql_exception: Table 'hrm.healthgenie.in.holidays' doesn't exist in D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php(327): mysqli->query('SELECT *\nFROM `...', 0)
+#1 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('SELECT *\nFROM `...')
+#2 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT *\nFROM `...')
+#3 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT *\nFROM `...', Array, false)
+#4 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Model.php(330): CodeIgniter\Database\BaseBuilder->get()
+#5 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\BaseModel.php(715): CodeIgniter\Model->doFirst()
+#6 D:\LOCALHOST\hrm.healthgenie\app\Pipes\AttendanceProcessor\ProcessorHelper.php(52): CodeIgniter\BaseModel->first()
+#7 D:\LOCALHOST\hrm.healthgenie\app\Pipes\AttendanceProcessor\AddDataToPunchingRow.php(70): App\Pipes\AttendanceProcessor\ProcessorHelper::is_holiday('2026-01-09', 'bool', 'hn', '4')
+#8 D:\LOCALHOST\hrm.healthgenie\app\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\AddDataToPunchingRow->handle(Array, Object(Closure))
+#9 D:\LOCALHOST\hrm.healthgenie\app\Pipes\AttendanceProcessor\CheckFraudPunchesAndOverride.php(76): App\Libraries\Pipeline->App\Libraries\{closure}(Array)
+#10 D:\LOCALHOST\hrm.healthgenie\app\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\CheckFraudPunchesAndOverride->handle(Array, Object(Closure))
+#11 D:\LOCALHOST\hrm.healthgenie\app\Pipes\AttendanceProcessor\PunchTimeCleanup.php(65): App\Libraries\Pipeline->App\Libraries\{closure}(Array)
+#12 D:\LOCALHOST\hrm.healthgenie\app\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\PunchTimeCleanup->handle(Array, Object(Closure))
+#13 D:\LOCALHOST\hrm.healthgenie\app\Pipes\AttendanceProcessor\ApplyManualPunching.php(32): App\Libraries\Pipeline->App\Libraries\{closure}(Array)
+#14 D:\LOCALHOST\hrm.healthgenie\app\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\ApplyManualPunching->handle(Array, Object(Closure))
+#15 D:\LOCALHOST\hrm.healthgenie\app\Pipes\AttendanceProcessor\AdjustDayShiftAfterNightShift.php(66): App\Libraries\Pipeline->App\Libraries\{closure}(Array)
+#16 D:\LOCALHOST\hrm.healthgenie\app\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\AdjustDayShiftAfterNightShift->handle(Array, Object(Closure))
+#17 D:\LOCALHOST\hrm.healthgenie\app\Pipes\AttendanceProcessor\AdjustNightShiftAndSwitchToDay.php(79): App\Libraries\Pipeline->App\Libraries\{closure}(Array)
+#18 D:\LOCALHOST\hrm.healthgenie\app\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\AdjustNightShiftAndSwitchToDay->handle(Array, Object(Closure))
+#19 D:\LOCALHOST\hrm.healthgenie\app\Pipes\AttendanceProcessor\RefactorPunchingRow.php(80): App\Libraries\Pipeline->App\Libraries\{closure}(Array)
+#20 D:\LOCALHOST\hrm.healthgenie\app\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\RefactorPunchingRow->handle(Array, Object(Closure))
+#21 D:\LOCALHOST\hrm.healthgenie\app\Pipes\AttendanceProcessor\ApplyShiftOverride.php(47): App\Libraries\Pipeline->App\Libraries\{closure}(Array)
+#22 D:\LOCALHOST\hrm.healthgenie\app\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\ApplyShiftOverride->handle(Array, Object(Closure))
+#23 D:\LOCALHOST\hrm.healthgenie\app\Libraries\Pipeline.php(36): App\Libraries\Pipeline->App\Libraries\{closure}(Array)
+#24 D:\LOCALHOST\hrm.healthgenie\app\Pipes\ProcessAttendance.php(52): App\Libraries\Pipeline->then(Object(Closure))
+#25 D:\LOCALHOST\hrm.healthgenie\app\Libraries\Pipeline.php(30): App\Pipes\ProcessAttendance->handle(Array, Object(Closure))
+#26 D:\LOCALHOST\hrm.healthgenie\app\Pipes\GetAttendanceClean.php(33): App\Libraries\Pipeline->App\Libraries\{closure}(Array)
+#27 D:\LOCALHOST\hrm.healthgenie\app\Libraries\Pipeline.php(30): App\Pipes\GetAttendanceClean->handle(Array, Object(Closure))
+#28 D:\LOCALHOST\hrm.healthgenie\app\Pipes\ShiftRulesAndDetails.php(39): App\Libraries\Pipeline->App\Libraries\{closure}(Array)
+#29 D:\LOCALHOST\hrm.healthgenie\app\Libraries\Pipeline.php(30): App\Pipes\ShiftRulesAndDetails->handle(Array, Object(Closure))
+#30 D:\LOCALHOST\hrm.healthgenie\app\Pipes\BasicDetails.php(37): App\Libraries\Pipeline->App\Libraries\{closure}(Array)
+#31 D:\LOCALHOST\hrm.healthgenie\app\Libraries\Pipeline.php(30): App\Pipes\BasicDetails->handle(Array, Object(Closure))
+#32 D:\LOCALHOST\hrm.healthgenie\app\Libraries\Pipeline.php(36): App\Libraries\Pipeline->App\Libraries\{closure}(Array)
+#33 D:\LOCALHOST\hrm.healthgenie\app\Controllers\Attendance\Processor.php(159): App\Libraries\Pipeline->then(Object(Closure))
+#34 D:\LOCALHOST\hrm.healthgenie\app\Controllers\Attendance\Processor.php(123): App\Controllers\Attendance\Processor::ProcessPunchingData('399', '2026-01-08', '2026-01-10', true)
+#35 D:\LOCALHOST\hrm.healthgenie\app\Controllers\Cron\ServerCron.php(82): App\Controllers\Attendance\Processor::getProcessedPunchingData('399', '2026-01-08', '2026-01-10')
+#36 D:\LOCALHOST\hrm.healthgenie\app\Controllers\Cron\ServerCron.php(297): App\Controllers\Cron\ServerCron->checkEmployeeAbseanceWithoutApplingLeave()
+#37 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(933): App\Controllers\Cron\ServerCron->sendAbsentWithoutLeaveNotificationHeuerOnly()
+#38 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Cron\ServerCron))
+#39 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#40 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#41 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#42 D:\LOCALHOST\hrm.healthgenie\public\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#43 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hr...')
+#44 {main}
+CRITICAL - 2026-01-10 17:35:37 --> CodeIgniter\Database\Exceptions\DatabaseException: Table 'hrm.healthgenie.in.holidays' doesn't exist
+[Method: POST, Route: ajax/hr/employee/send-absent-without-leave-notification-heuer-only]
+in SYSTEMPATH\Database\BaseConnection.php on line 684.
+ 1 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT *
+FROM `holidays`
+WHERE `holiday_date` = :holiday_date:
+AND `holiday_code` != :holiday_code:
+AND `holiday_code` != :holiday_code.1:
+ LIMIT 1', [...], false)
+ 2 SYSTEMPATH\Model.php(330): CodeIgniter\Database\BaseBuilder->get()
+ 3 SYSTEMPATH\BaseModel.php(715): CodeIgniter\Model->doFirst()
+ 4 APPPATH\Pipes\AttendanceProcessor\ProcessorHelper.php(52): CodeIgniter\BaseModel->first()
+ 5 APPPATH\Pipes\AttendanceProcessor\AddDataToPunchingRow.php(70): App\Pipes\AttendanceProcessor\ProcessorHelper::is_holiday('2026-01-09', 'bool', 'hn', '4')
+ 6 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\AddDataToPunchingRow->handle([...], Object(Closure))
+ 7 APPPATH\Pipes\AttendanceProcessor\CheckFraudPunchesAndOverride.php(76): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+ 8 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\CheckFraudPunchesAndOverride->handle([...], Object(Closure))
+ 9 APPPATH\Pipes\AttendanceProcessor\PunchTimeCleanup.php(65): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+10 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\PunchTimeCleanup->handle([...], Object(Closure))
+11 APPPATH\Pipes\AttendanceProcessor\ApplyManualPunching.php(32): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+12 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\ApplyManualPunching->handle([...], Object(Closure))
+13 APPPATH\Pipes\AttendanceProcessor\AdjustDayShiftAfterNightShift.php(66): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+14 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\AdjustDayShiftAfterNightShift->handle([...], Object(Closure))
+15 APPPATH\Pipes\AttendanceProcessor\AdjustNightShiftAndSwitchToDay.php(79): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+16 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\AdjustNightShiftAndSwitchToDay->handle([...], Object(Closure))
+17 APPPATH\Pipes\AttendanceProcessor\RefactorPunchingRow.php(80): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+18 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\RefactorPunchingRow->handle([...], Object(Closure))
+19 APPPATH\Pipes\AttendanceProcessor\ApplyShiftOverride.php(47): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+20 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\ApplyShiftOverride->handle([...], Object(Closure))
+21 APPPATH\Libraries\Pipeline.php(36): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+22 APPPATH\Pipes\ProcessAttendance.php(52): App\Libraries\Pipeline->then(Object(Closure))
+23 APPPATH\Libraries\Pipeline.php(30): App\Pipes\ProcessAttendance->handle([...], Object(Closure))
+24 APPPATH\Pipes\GetAttendanceClean.php(33): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+25 APPPATH\Libraries\Pipeline.php(30): App\Pipes\GetAttendanceClean->handle([...], Object(Closure))
+26 APPPATH\Pipes\ShiftRulesAndDetails.php(39): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+27 APPPATH\Libraries\Pipeline.php(30): App\Pipes\ShiftRulesAndDetails->handle([...], Object(Closure))
+28 APPPATH\Pipes\BasicDetails.php(37): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+29 APPPATH\Libraries\Pipeline.php(30): App\Pipes\BasicDetails->handle([...], Object(Closure))
+30 APPPATH\Libraries\Pipeline.php(36): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+31 APPPATH\Controllers\Attendance\Processor.php(159): App\Libraries\Pipeline->then(Object(Closure))
+32 APPPATH\Controllers\Attendance\Processor.php(123): App\Controllers\Attendance\Processor::ProcessPunchingData('399', '2026-01-08', '2026-01-10', true)
+33 APPPATH\Controllers\Cron\ServerCron.php(82): App\Controllers\Attendance\Processor::getProcessedPunchingData('399', '2026-01-08', '2026-01-10')
+34 APPPATH\Controllers\Cron\ServerCron.php(297): App\Controllers\Cron\ServerCron->checkEmployeeAbseanceWithoutApplingLeave()
+35 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Cron\ServerCron->sendAbsentWithoutLeaveNotificationHeuerOnly()
+36 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Cron\ServerCron))
+37 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+38 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+39 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+40 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+41 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+CRITICAL - 2026-01-10 17:35:37 --> CodeIgniter\Database\Exceptions\DatabaseException: Table 'hrm.healthgenie.in.holidays' doesn't exist
+[Method: POST, Route: ajax/hr/employee/send-absent-without-leave-notification]
+in SYSTEMPATH\Database\BaseConnection.php on line 684.
+ 1 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT *
+FROM `holidays`
+WHERE `holiday_date` = :holiday_date:
+AND `holiday_code` != :holiday_code:
+AND `holiday_code` != :holiday_code.1:
+ LIMIT 1', [...], false)
+ 2 SYSTEMPATH\Model.php(330): CodeIgniter\Database\BaseBuilder->get()
+ 3 SYSTEMPATH\BaseModel.php(715): CodeIgniter\Model->doFirst()
+ 4 APPPATH\Pipes\AttendanceProcessor\ProcessorHelper.php(52): CodeIgniter\BaseModel->first()
+ 5 APPPATH\Pipes\AttendanceProcessor\ProcessorHelper.php(754): App\Pipes\AttendanceProcessor\ProcessorHelper::is_holiday('2026-01-10', 'bool', 'hn', '4')
+ 6 APPPATH\Pipes\AttendanceProcessor\AddDataToPunchingRow.php(90): App\Pipes\AttendanceProcessor\ProcessorHelper::is_sandwitch('104', '2026-01-09', 'HN947', '400')
+ 7 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\AddDataToPunchingRow->handle([...], Object(Closure))
+ 8 APPPATH\Pipes\AttendanceProcessor\CheckFraudPunchesAndOverride.php(76): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+ 9 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\CheckFraudPunchesAndOverride->handle([...], Object(Closure))
+10 APPPATH\Pipes\AttendanceProcessor\PunchTimeCleanup.php(65): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+11 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\PunchTimeCleanup->handle([...], Object(Closure))
+12 APPPATH\Pipes\AttendanceProcessor\ApplyManualPunching.php(32): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+13 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\ApplyManualPunching->handle([...], Object(Closure))
+14 APPPATH\Pipes\AttendanceProcessor\AdjustDayShiftAfterNightShift.php(66): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+15 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\AdjustDayShiftAfterNightShift->handle([...], Object(Closure))
+16 APPPATH\Pipes\AttendanceProcessor\AdjustNightShiftAndSwitchToDay.php(79): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+17 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\AdjustNightShiftAndSwitchToDay->handle([...], Object(Closure))
+18 APPPATH\Pipes\AttendanceProcessor\RefactorPunchingRow.php(80): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+19 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\RefactorPunchingRow->handle([...], Object(Closure))
+20 APPPATH\Pipes\AttendanceProcessor\ApplyShiftOverride.php(47): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+21 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\ApplyShiftOverride->handle([...], Object(Closure))
+22 APPPATH\Libraries\Pipeline.php(36): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+23 APPPATH\Pipes\ProcessAttendance.php(52): App\Libraries\Pipeline->then(Object(Closure))
+24 APPPATH\Libraries\Pipeline.php(30): App\Pipes\ProcessAttendance->handle([...], Object(Closure))
+25 APPPATH\Pipes\GetAttendanceClean.php(33): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+26 APPPATH\Libraries\Pipeline.php(30): App\Pipes\GetAttendanceClean->handle([...], Object(Closure))
+27 APPPATH\Pipes\ShiftRulesAndDetails.php(39): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+28 APPPATH\Libraries\Pipeline.php(30): App\Pipes\ShiftRulesAndDetails->handle([...], Object(Closure))
+29 APPPATH\Pipes\BasicDetails.php(37): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+30 APPPATH\Libraries\Pipeline.php(30): App\Pipes\BasicDetails->handle([...], Object(Closure))
+31 APPPATH\Libraries\Pipeline.php(36): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+32 APPPATH\Controllers\Attendance\Processor.php(159): App\Libraries\Pipeline->then(Object(Closure))
+33 APPPATH\Controllers\Attendance\Processor.php(123): App\Controllers\Attendance\Processor::ProcessPunchingData('400', '2026-01-08', '2026-01-10', true)
+34 APPPATH\Controllers\Cron\ServerCron.php(82): App\Controllers\Attendance\Processor::getProcessedPunchingData('400', '2026-01-08', '2026-01-10')
+35 APPPATH\Controllers\Cron\ServerCron.php(169): App\Controllers\Cron\ServerCron->checkEmployeeAbseanceWithoutApplingLeave()
+36 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Cron\ServerCron->sendAbsentWithoutLeaveNotification()
+37 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Cron\ServerCron))
+38 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+39 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+40 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+41 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+42 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+CRITICAL - 2026-01-10 17:35:37 --> [Caused by] CodeIgniter\Database\Exceptions\DatabaseException: Table 'hrm.healthgenie.in.holidays' doesn't exist
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 332.
+ 1 SYSTEMPATH\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('SELECT *
+FROM `holidays`
+WHERE `holiday_date` = \'2026-01-09\'
+AND `holiday_code` != \'RH\'
+AND `holiday_code` != \'SPL HL\'
+ LIMIT 1')
+ 2 SYSTEMPATH\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT *
+FROM `holidays`
+WHERE `holiday_date` = \'2026-01-09\'
+AND `holiday_code` != \'RH\'
+AND `holiday_code` != \'SPL HL\'
+ LIMIT 1')
+ 3 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT *
+FROM `holidays`
+WHERE `holiday_date` = :holiday_date:
+AND `holiday_code` != :holiday_code:
+AND `holiday_code` != :holiday_code.1:
+ LIMIT 1', [...], false)
+ 4 SYSTEMPATH\Model.php(330): CodeIgniter\Database\BaseBuilder->get()
+ 5 SYSTEMPATH\BaseModel.php(715): CodeIgniter\Model->doFirst()
+ 6 APPPATH\Pipes\AttendanceProcessor\ProcessorHelper.php(52): CodeIgniter\BaseModel->first()
+ 7 APPPATH\Pipes\AttendanceProcessor\AddDataToPunchingRow.php(70): App\Pipes\AttendanceProcessor\ProcessorHelper::is_holiday('2026-01-09', 'bool', 'hn', '4')
+ 8 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\AddDataToPunchingRow->handle([...], Object(Closure))
+ 9 APPPATH\Pipes\AttendanceProcessor\CheckFraudPunchesAndOverride.php(76): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+10 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\CheckFraudPunchesAndOverride->handle([...], Object(Closure))
+11 APPPATH\Pipes\AttendanceProcessor\PunchTimeCleanup.php(65): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+12 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\PunchTimeCleanup->handle([...], Object(Closure))
+13 APPPATH\Pipes\AttendanceProcessor\ApplyManualPunching.php(32): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+14 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\ApplyManualPunching->handle([...], Object(Closure))
+15 APPPATH\Pipes\AttendanceProcessor\AdjustDayShiftAfterNightShift.php(66): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+16 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\AdjustDayShiftAfterNightShift->handle([...], Object(Closure))
+17 APPPATH\Pipes\AttendanceProcessor\AdjustNightShiftAndSwitchToDay.php(79): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+18 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\AdjustNightShiftAndSwitchToDay->handle([...], Object(Closure))
+19 APPPATH\Pipes\AttendanceProcessor\RefactorPunchingRow.php(80): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+20 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\RefactorPunchingRow->handle([...], Object(Closure))
+21 APPPATH\Pipes\AttendanceProcessor\ApplyShiftOverride.php(47): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+22 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\ApplyShiftOverride->handle([...], Object(Closure))
+23 APPPATH\Libraries\Pipeline.php(36): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+24 APPPATH\Pipes\ProcessAttendance.php(52): App\Libraries\Pipeline->then(Object(Closure))
+25 APPPATH\Libraries\Pipeline.php(30): App\Pipes\ProcessAttendance->handle([...], Object(Closure))
+26 APPPATH\Pipes\GetAttendanceClean.php(33): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+27 APPPATH\Libraries\Pipeline.php(30): App\Pipes\GetAttendanceClean->handle([...], Object(Closure))
+28 APPPATH\Pipes\ShiftRulesAndDetails.php(39): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+29 APPPATH\Libraries\Pipeline.php(30): App\Pipes\ShiftRulesAndDetails->handle([...], Object(Closure))
+30 APPPATH\Pipes\BasicDetails.php(37): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+31 APPPATH\Libraries\Pipeline.php(30): App\Pipes\BasicDetails->handle([...], Object(Closure))
+32 APPPATH\Libraries\Pipeline.php(36): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+33 APPPATH\Controllers\Attendance\Processor.php(159): App\Libraries\Pipeline->then(Object(Closure))
+34 APPPATH\Controllers\Attendance\Processor.php(123): App\Controllers\Attendance\Processor::ProcessPunchingData('399', '2026-01-08', '2026-01-10', true)
+35 APPPATH\Controllers\Cron\ServerCron.php(82): App\Controllers\Attendance\Processor::getProcessedPunchingData('399', '2026-01-08', '2026-01-10')
+36 APPPATH\Controllers\Cron\ServerCron.php(297): App\Controllers\Cron\ServerCron->checkEmployeeAbseanceWithoutApplingLeave()
+37 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Cron\ServerCron->sendAbsentWithoutLeaveNotificationHeuerOnly()
+38 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Cron\ServerCron))
+39 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+40 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+41 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+42 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+43 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+CRITICAL - 2026-01-10 17:35:37 --> [Caused by] CodeIgniter\Database\Exceptions\DatabaseException: Table 'hrm.healthgenie.in.holidays' doesn't exist
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 332.
+ 1 SYSTEMPATH\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('SELECT *
+FROM `holidays`
+WHERE `holiday_date` = \'2026-01-10\'
+AND `holiday_code` != \'RH\'
+AND `holiday_code` != \'SPL HL\'
+ LIMIT 1')
+ 2 SYSTEMPATH\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT *
+FROM `holidays`
+WHERE `holiday_date` = \'2026-01-10\'
+AND `holiday_code` != \'RH\'
+AND `holiday_code` != \'SPL HL\'
+ LIMIT 1')
+ 3 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT *
+FROM `holidays`
+WHERE `holiday_date` = :holiday_date:
+AND `holiday_code` != :holiday_code:
+AND `holiday_code` != :holiday_code.1:
+ LIMIT 1', [...], false)
+ 4 SYSTEMPATH\Model.php(330): CodeIgniter\Database\BaseBuilder->get()
+ 5 SYSTEMPATH\BaseModel.php(715): CodeIgniter\Model->doFirst()
+ 6 APPPATH\Pipes\AttendanceProcessor\ProcessorHelper.php(52): CodeIgniter\BaseModel->first()
+ 7 APPPATH\Pipes\AttendanceProcessor\ProcessorHelper.php(754): App\Pipes\AttendanceProcessor\ProcessorHelper::is_holiday('2026-01-10', 'bool', 'hn', '4')
+ 8 APPPATH\Pipes\AttendanceProcessor\AddDataToPunchingRow.php(90): App\Pipes\AttendanceProcessor\ProcessorHelper::is_sandwitch('104', '2026-01-09', 'HN947', '400')
+ 9 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\AddDataToPunchingRow->handle([...], Object(Closure))
+10 APPPATH\Pipes\AttendanceProcessor\CheckFraudPunchesAndOverride.php(76): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+11 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\CheckFraudPunchesAndOverride->handle([...], Object(Closure))
+12 APPPATH\Pipes\AttendanceProcessor\PunchTimeCleanup.php(65): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+13 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\PunchTimeCleanup->handle([...], Object(Closure))
+14 APPPATH\Pipes\AttendanceProcessor\ApplyManualPunching.php(32): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+15 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\ApplyManualPunching->handle([...], Object(Closure))
+16 APPPATH\Pipes\AttendanceProcessor\AdjustDayShiftAfterNightShift.php(66): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+17 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\AdjustDayShiftAfterNightShift->handle([...], Object(Closure))
+18 APPPATH\Pipes\AttendanceProcessor\AdjustNightShiftAndSwitchToDay.php(79): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+19 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\AdjustNightShiftAndSwitchToDay->handle([...], Object(Closure))
+20 APPPATH\Pipes\AttendanceProcessor\RefactorPunchingRow.php(80): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+21 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\RefactorPunchingRow->handle([...], Object(Closure))
+22 APPPATH\Pipes\AttendanceProcessor\ApplyShiftOverride.php(47): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+23 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\ApplyShiftOverride->handle([...], Object(Closure))
+24 APPPATH\Libraries\Pipeline.php(36): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+25 APPPATH\Pipes\ProcessAttendance.php(52): App\Libraries\Pipeline->then(Object(Closure))
+26 APPPATH\Libraries\Pipeline.php(30): App\Pipes\ProcessAttendance->handle([...], Object(Closure))
+27 APPPATH\Pipes\GetAttendanceClean.php(33): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+28 APPPATH\Libraries\Pipeline.php(30): App\Pipes\GetAttendanceClean->handle([...], Object(Closure))
+29 APPPATH\Pipes\ShiftRulesAndDetails.php(39): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+30 APPPATH\Libraries\Pipeline.php(30): App\Pipes\ShiftRulesAndDetails->handle([...], Object(Closure))
+31 APPPATH\Pipes\BasicDetails.php(37): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+32 APPPATH\Libraries\Pipeline.php(30): App\Pipes\BasicDetails->handle([...], Object(Closure))
+33 APPPATH\Libraries\Pipeline.php(36): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+34 APPPATH\Controllers\Attendance\Processor.php(159): App\Libraries\Pipeline->then(Object(Closure))
+35 APPPATH\Controllers\Attendance\Processor.php(123): App\Controllers\Attendance\Processor::ProcessPunchingData('400', '2026-01-08', '2026-01-10', true)
+36 APPPATH\Controllers\Cron\ServerCron.php(82): App\Controllers\Attendance\Processor::getProcessedPunchingData('400', '2026-01-08', '2026-01-10')
+37 APPPATH\Controllers\Cron\ServerCron.php(169): App\Controllers\Cron\ServerCron->checkEmployeeAbseanceWithoutApplingLeave()
+38 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Cron\ServerCron->sendAbsentWithoutLeaveNotification()
+39 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Cron\ServerCron))
+40 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+41 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+42 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+43 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+44 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+CRITICAL - 2026-01-10 17:35:37 --> [Caused by] mysqli_sql_exception: Table 'hrm.healthgenie.in.holidays' doesn't exist
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 327.
+ 1 SYSTEMPATH\Database\MySQLi\Connection.php(327): mysqli->query('SELECT *
+FROM `holidays`
+WHERE `holiday_date` = \'2026-01-09\'
+AND `holiday_code` != \'RH\'
+AND `holiday_code` != \'SPL HL\'
+ LIMIT 1', 0)
+ 2 SYSTEMPATH\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('SELECT *
+FROM `holidays`
+WHERE `holiday_date` = \'2026-01-09\'
+AND `holiday_code` != \'RH\'
+AND `holiday_code` != \'SPL HL\'
+ LIMIT 1')
+ 3 SYSTEMPATH\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT *
+FROM `holidays`
+WHERE `holiday_date` = \'2026-01-09\'
+AND `holiday_code` != \'RH\'
+AND `holiday_code` != \'SPL HL\'
+ LIMIT 1')
+ 4 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT *
+FROM `holidays`
+WHERE `holiday_date` = :holiday_date:
+AND `holiday_code` != :holiday_code:
+AND `holiday_code` != :holiday_code.1:
+ LIMIT 1', [...], false)
+ 5 SYSTEMPATH\Model.php(330): CodeIgniter\Database\BaseBuilder->get()
+ 6 SYSTEMPATH\BaseModel.php(715): CodeIgniter\Model->doFirst()
+ 7 APPPATH\Pipes\AttendanceProcessor\ProcessorHelper.php(52): CodeIgniter\BaseModel->first()
+ 8 APPPATH\Pipes\AttendanceProcessor\AddDataToPunchingRow.php(70): App\Pipes\AttendanceProcessor\ProcessorHelper::is_holiday('2026-01-09', 'bool', 'hn', '4')
+ 9 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\AddDataToPunchingRow->handle([...], Object(Closure))
+10 APPPATH\Pipes\AttendanceProcessor\CheckFraudPunchesAndOverride.php(76): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+11 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\CheckFraudPunchesAndOverride->handle([...], Object(Closure))
+12 APPPATH\Pipes\AttendanceProcessor\PunchTimeCleanup.php(65): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+13 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\PunchTimeCleanup->handle([...], Object(Closure))
+14 APPPATH\Pipes\AttendanceProcessor\ApplyManualPunching.php(32): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+15 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\ApplyManualPunching->handle([...], Object(Closure))
+16 APPPATH\Pipes\AttendanceProcessor\AdjustDayShiftAfterNightShift.php(66): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+17 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\AdjustDayShiftAfterNightShift->handle([...], Object(Closure))
+18 APPPATH\Pipes\AttendanceProcessor\AdjustNightShiftAndSwitchToDay.php(79): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+19 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\AdjustNightShiftAndSwitchToDay->handle([...], Object(Closure))
+20 APPPATH\Pipes\AttendanceProcessor\RefactorPunchingRow.php(80): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+21 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\RefactorPunchingRow->handle([...], Object(Closure))
+22 APPPATH\Pipes\AttendanceProcessor\ApplyShiftOverride.php(47): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+23 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\ApplyShiftOverride->handle([...], Object(Closure))
+24 APPPATH\Libraries\Pipeline.php(36): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+25 APPPATH\Pipes\ProcessAttendance.php(52): App\Libraries\Pipeline->then(Object(Closure))
+26 APPPATH\Libraries\Pipeline.php(30): App\Pipes\ProcessAttendance->handle([...], Object(Closure))
+27 APPPATH\Pipes\GetAttendanceClean.php(33): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+28 APPPATH\Libraries\Pipeline.php(30): App\Pipes\GetAttendanceClean->handle([...], Object(Closure))
+29 APPPATH\Pipes\ShiftRulesAndDetails.php(39): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+30 APPPATH\Libraries\Pipeline.php(30): App\Pipes\ShiftRulesAndDetails->handle([...], Object(Closure))
+31 APPPATH\Pipes\BasicDetails.php(37): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+32 APPPATH\Libraries\Pipeline.php(30): App\Pipes\BasicDetails->handle([...], Object(Closure))
+33 APPPATH\Libraries\Pipeline.php(36): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+34 APPPATH\Controllers\Attendance\Processor.php(159): App\Libraries\Pipeline->then(Object(Closure))
+35 APPPATH\Controllers\Attendance\Processor.php(123): App\Controllers\Attendance\Processor::ProcessPunchingData('399', '2026-01-08', '2026-01-10', true)
+36 APPPATH\Controllers\Cron\ServerCron.php(82): App\Controllers\Attendance\Processor::getProcessedPunchingData('399', '2026-01-08', '2026-01-10')
+37 APPPATH\Controllers\Cron\ServerCron.php(297): App\Controllers\Cron\ServerCron->checkEmployeeAbseanceWithoutApplingLeave()
+38 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Cron\ServerCron->sendAbsentWithoutLeaveNotificationHeuerOnly()
+39 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Cron\ServerCron))
+40 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+41 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+42 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+43 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+44 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+CRITICAL - 2026-01-10 17:35:37 --> [Caused by] mysqli_sql_exception: Table 'hrm.healthgenie.in.holidays' doesn't exist
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 327.
+ 1 SYSTEMPATH\Database\MySQLi\Connection.php(327): mysqli->query('SELECT *
+FROM `holidays`
+WHERE `holiday_date` = \'2026-01-10\'
+AND `holiday_code` != \'RH\'
+AND `holiday_code` != \'SPL HL\'
+ LIMIT 1', 0)
+ 2 SYSTEMPATH\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('SELECT *
+FROM `holidays`
+WHERE `holiday_date` = \'2026-01-10\'
+AND `holiday_code` != \'RH\'
+AND `holiday_code` != \'SPL HL\'
+ LIMIT 1')
+ 3 SYSTEMPATH\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT *
+FROM `holidays`
+WHERE `holiday_date` = \'2026-01-10\'
+AND `holiday_code` != \'RH\'
+AND `holiday_code` != \'SPL HL\'
+ LIMIT 1')
+ 4 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT *
+FROM `holidays`
+WHERE `holiday_date` = :holiday_date:
+AND `holiday_code` != :holiday_code:
+AND `holiday_code` != :holiday_code.1:
+ LIMIT 1', [...], false)
+ 5 SYSTEMPATH\Model.php(330): CodeIgniter\Database\BaseBuilder->get()
+ 6 SYSTEMPATH\BaseModel.php(715): CodeIgniter\Model->doFirst()
+ 7 APPPATH\Pipes\AttendanceProcessor\ProcessorHelper.php(52): CodeIgniter\BaseModel->first()
+ 8 APPPATH\Pipes\AttendanceProcessor\ProcessorHelper.php(754): App\Pipes\AttendanceProcessor\ProcessorHelper::is_holiday('2026-01-10', 'bool', 'hn', '4')
+ 9 APPPATH\Pipes\AttendanceProcessor\AddDataToPunchingRow.php(90): App\Pipes\AttendanceProcessor\ProcessorHelper::is_sandwitch('104', '2026-01-09', 'HN947', '400')
+10 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\AddDataToPunchingRow->handle([...], Object(Closure))
+11 APPPATH\Pipes\AttendanceProcessor\CheckFraudPunchesAndOverride.php(76): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+12 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\CheckFraudPunchesAndOverride->handle([...], Object(Closure))
+13 APPPATH\Pipes\AttendanceProcessor\PunchTimeCleanup.php(65): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+14 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\PunchTimeCleanup->handle([...], Object(Closure))
+15 APPPATH\Pipes\AttendanceProcessor\ApplyManualPunching.php(32): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+16 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\ApplyManualPunching->handle([...], Object(Closure))
+17 APPPATH\Pipes\AttendanceProcessor\AdjustDayShiftAfterNightShift.php(66): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+18 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\AdjustDayShiftAfterNightShift->handle([...], Object(Closure))
+19 APPPATH\Pipes\AttendanceProcessor\AdjustNightShiftAndSwitchToDay.php(79): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+20 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\AdjustNightShiftAndSwitchToDay->handle([...], Object(Closure))
+21 APPPATH\Pipes\AttendanceProcessor\RefactorPunchingRow.php(80): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+22 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\RefactorPunchingRow->handle([...], Object(Closure))
+23 APPPATH\Pipes\AttendanceProcessor\ApplyShiftOverride.php(47): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+24 APPPATH\Libraries\Pipeline.php(30): App\Pipes\AttendanceProcessor\ApplyShiftOverride->handle([...], Object(Closure))
+25 APPPATH\Libraries\Pipeline.php(36): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+26 APPPATH\Pipes\ProcessAttendance.php(52): App\Libraries\Pipeline->then(Object(Closure))
+27 APPPATH\Libraries\Pipeline.php(30): App\Pipes\ProcessAttendance->handle([...], Object(Closure))
+28 APPPATH\Pipes\GetAttendanceClean.php(33): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+29 APPPATH\Libraries\Pipeline.php(30): App\Pipes\GetAttendanceClean->handle([...], Object(Closure))
+30 APPPATH\Pipes\ShiftRulesAndDetails.php(39): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+31 APPPATH\Libraries\Pipeline.php(30): App\Pipes\ShiftRulesAndDetails->handle([...], Object(Closure))
+32 APPPATH\Pipes\BasicDetails.php(37): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+33 APPPATH\Libraries\Pipeline.php(30): App\Pipes\BasicDetails->handle([...], Object(Closure))
+34 APPPATH\Libraries\Pipeline.php(36): App\Libraries\Pipeline->App\Libraries\{closure}([...])
+35 APPPATH\Controllers\Attendance\Processor.php(159): App\Libraries\Pipeline->then(Object(Closure))
+36 APPPATH\Controllers\Attendance\Processor.php(123): App\Controllers\Attendance\Processor::ProcessPunchingData('400', '2026-01-08', '2026-01-10', true)
+37 APPPATH\Controllers\Cron\ServerCron.php(82): App\Controllers\Attendance\Processor::getProcessedPunchingData('400', '2026-01-08', '2026-01-10')
+38 APPPATH\Controllers\Cron\ServerCron.php(169): App\Controllers\Cron\ServerCron->checkEmployeeAbseanceWithoutApplingLeave()
+39 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Cron\ServerCron->sendAbsentWithoutLeaveNotification()
+40 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Cron\ServerCron))
+41 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+42 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+43 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+44 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+45 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+ERROR - 2026-01-10 17:39:35 --> Email: sendWithMail throwed ErrorException: mail(): Failed to connect to mailserver at &quot;localhost&quot; port 25, verify your &quot;SMTP&quot; and &quot;smtp_port&quot; setting in php.ini or use ini_set() in D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php:1771
+Stack trace:
+#0 [internal function]: CodeIgniter\Debug\Exceptions->errorHandler(2, 'mail(): Failed ...', 'D:\\LOCALHOST\\hr...', 1771)
+#1 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php(1771): mail('payroll1@gstc.c...', '=?UTF-8?Q?Absen...', '\r\n             ...', 'Date: Sat, 10 J...', '-f app.hrm@heal...')
+#2 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php(1703): CodeIgniter\Email\Email->sendWithMail()
+#3 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php(1597): CodeIgniter\Email\Email->spoolEmail()
+#4 D:\LOCALHOST\hrm.healthgenie\app\Controllers\Cron\ServerCron.php(273): CodeIgniter\Email\Email->send()
+#5 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(933): App\Controllers\Cron\ServerCron->sendAbsentWithoutLeaveNotification()
+#6 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Cron\ServerCron))
+#7 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#9 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 D:\LOCALHOST\hrm.healthgenie\public\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hr...')
+#12 {main}
+ERROR - 2026-01-10 17:39:35 --> Email: Unable to send email using PHP mail(). Your server might not be configured to send mail using this method.
+ERROR - 2026-01-10 17:39:35 --> 
+ERROR - 2026-01-10 17:39:37 --> Email: sendWithMail throwed ErrorException: mail(): Failed to connect to mailserver at &quot;localhost&quot; port 25, verify your &quot;SMTP&quot; and &quot;smtp_port&quot; setting in php.ini or use ini_set() in D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php:1771
+Stack trace:
+#0 [internal function]: CodeIgniter\Debug\Exceptions->errorHandler(2, 'mail(): Failed ...', 'D:\\LOCALHOST\\hr...', 1771)
+#1 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php(1771): mail('hrd@heuerintern...', '=?UTF-8?Q?Absen...', '<div style="fon...', 'Date: Sat, 10 J...', '-f app.hrm@heal...')
+#2 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php(1703): CodeIgniter\Email\Email->sendWithMail()
+#3 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php(1597): CodeIgniter\Email\Email->spoolEmail()
+#4 D:\LOCALHOST\hrm.healthgenie\app\Controllers\Cron\ServerCron.php(390): CodeIgniter\Email\Email->send()
+#5 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(933): App\Controllers\Cron\ServerCron->sendAbsentWithoutLeaveNotificationHeuerOnly()
+#6 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Cron\ServerCron))
+#7 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#9 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 D:\LOCALHOST\hrm.healthgenie\public\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hr...')
+#12 {main}
+ERROR - 2026-01-10 17:39:37 --> Email: Unable to send email using PHP mail(). Your server might not be configured to send mail using this method.
+ERROR - 2026-01-10 17:39:37 --> 
+ERROR - 2026-01-10 17:43:04 --> Email: sendWithMail throwed ErrorException: mail(): Failed to connect to mailserver at &quot;localhost&quot; port 25, verify your &quot;SMTP&quot; and &quot;smtp_port&quot; setting in php.ini or use ini_set() in D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php:1771
+Stack trace:
+#0 [internal function]: CodeIgniter\Debug\Exceptions->errorHandler(2, 'mail(): Failed ...', 'D:\\LOCALHOST\\hr...', 1771)
+#1 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php(1771): mail('payroll1@gstc.c...', '=?UTF-8?Q?Absen...', '\r\n             ...', 'Date: Sat, 10 J...', '-f app.hrm@heal...')
+#2 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php(1703): CodeIgniter\Email\Email->sendWithMail()
+#3 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php(1597): CodeIgniter\Email\Email->spoolEmail()
+#4 D:\LOCALHOST\hrm.healthgenie\app\Controllers\Cron\ServerCron.php(273): CodeIgniter\Email\Email->send()
+#5 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(933): App\Controllers\Cron\ServerCron->sendAbsentWithoutLeaveNotification()
+#6 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Cron\ServerCron))
+#7 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#9 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 D:\LOCALHOST\hrm.healthgenie\public\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hr...')
+#12 {main}
+ERROR - 2026-01-10 17:43:04 --> Email: Unable to send email using PHP mail(). Your server might not be configured to send mail using this method.
+ERROR - 2026-01-10 17:43:04 --> 
+ERROR - 2026-01-10 17:43:05 --> Email: sendWithMail throwed ErrorException: mail(): Failed to connect to mailserver at &quot;localhost&quot; port 25, verify your &quot;SMTP&quot; and &quot;smtp_port&quot; setting in php.ini or use ini_set() in D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php:1771
+Stack trace:
+#0 [internal function]: CodeIgniter\Debug\Exceptions->errorHandler(2, 'mail(): Failed ...', 'D:\\LOCALHOST\\hr...', 1771)
+#1 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php(1771): mail('hrd@heuerintern...', '=?UTF-8?Q?Absen...', '<div style="fon...', 'Date: Sat, 10 J...', '-f app.hrm@heal...')
+#2 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php(1703): CodeIgniter\Email\Email->sendWithMail()
+#3 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php(1597): CodeIgniter\Email\Email->spoolEmail()
+#4 D:\LOCALHOST\hrm.healthgenie\app\Controllers\Cron\ServerCron.php(390): CodeIgniter\Email\Email->send()
+#5 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(933): App\Controllers\Cron\ServerCron->sendAbsentWithoutLeaveNotificationHeuerOnly()
+#6 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Cron\ServerCron))
+#7 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#9 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 D:\LOCALHOST\hrm.healthgenie\public\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hr...')
+#12 {main}
+ERROR - 2026-01-10 17:43:05 --> Email: Unable to send email using PHP mail(). Your server might not be configured to send mail using this method.
+ERROR - 2026-01-10 17:43:05 --> 
+ERROR - 2026-01-10 17:50:50 --> Email: sendWithMail throwed ErrorException: mail(): Failed to connect to mailserver at &quot;localhost&quot; port 25, verify your &quot;SMTP&quot; and &quot;smtp_port&quot; setting in php.ini or use ini_set() in D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php:1771
+Stack trace:
+#0 [internal function]: CodeIgniter\Debug\Exceptions->errorHandler(2, 'mail(): Failed ...', 'D:\\LOCALHOST\\hr...', 1771)
+#1 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php(1771): mail('hrd@heuerintern...', '=?UTF-8?Q?Absen...', '<div style="fon...', 'Date: Sat, 10 J...', '-f app.hrm@heal...')
+#2 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php(1703): CodeIgniter\Email\Email->sendWithMail()
+#3 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php(1597): CodeIgniter\Email\Email->spoolEmail()
+#4 D:\LOCALHOST\hrm.healthgenie\app\Controllers\Cron\ServerCron.php(390): CodeIgniter\Email\Email->send()
+#5 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(933): App\Controllers\Cron\ServerCron->sendAbsentWithoutLeaveNotificationHeuerOnly()
+#6 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Cron\ServerCron))
+#7 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#9 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 D:\LOCALHOST\hrm.healthgenie\public\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hr...')
+#12 {main}
+ERROR - 2026-01-10 17:50:50 --> Email: Unable to send email using PHP mail(). Your server might not be configured to send mail using this method.
+ERROR - 2026-01-10 17:50:50 --> 
+ERROR - 2026-01-10 17:50:50 --> Email: sendWithMail throwed ErrorException: mail(): Failed to connect to mailserver at &quot;localhost&quot; port 25, verify your &quot;SMTP&quot; and &quot;smtp_port&quot; setting in php.ini or use ini_set() in D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php:1771
+Stack trace:
+#0 [internal function]: CodeIgniter\Debug\Exceptions->errorHandler(2, 'mail(): Failed ...', 'D:\\LOCALHOST\\hr...', 1771)
+#1 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php(1771): mail('payroll1@gstc.c...', '=?UTF-8?Q?Absen...', '\r\n             ...', 'Date: Sat, 10 J...', '-f app.hrm@heal...')
+#2 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php(1703): CodeIgniter\Email\Email->sendWithMail()
+#3 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php(1597): CodeIgniter\Email\Email->spoolEmail()
+#4 D:\LOCALHOST\hrm.healthgenie\app\Controllers\Cron\ServerCron.php(273): CodeIgniter\Email\Email->send()
+#5 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(933): App\Controllers\Cron\ServerCron->sendAbsentWithoutLeaveNotification()
+#6 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Cron\ServerCron))
+#7 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#9 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 D:\LOCALHOST\hrm.healthgenie\public\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hr...')
+#12 {main}
+ERROR - 2026-01-10 17:50:50 --> Email: Unable to send email using PHP mail(). Your server might not be configured to send mail using this method.
+ERROR - 2026-01-10 17:50:50 --> 
+ERROR - 2026-01-10 18:09:04 --> Email: sendWithMail throwed ErrorException: mail(): Failed to connect to mailserver at &quot;localhost&quot; port 25, verify your &quot;SMTP&quot; and &quot;smtp_port&quot; setting in php.ini or use ini_set() in D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php:1771
+Stack trace:
+#0 [internal function]: CodeIgniter\Debug\Exceptions->errorHandler(2, 'mail(): Failed ...', 'D:\\LOCALHOST\\hr...', 1771)
+#1 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php(1771): mail('hrd@heuerintern...', '=?UTF-8?Q?Absen...', '<div style="fon...', 'Date: Sat, 10 J...', '-f app.hrm@heal...')
+#2 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php(1703): CodeIgniter\Email\Email->sendWithMail()
+#3 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php(1597): CodeIgniter\Email\Email->spoolEmail()
+#4 D:\LOCALHOST\hrm.healthgenie\app\Controllers\Cron\ServerCron.php(390): CodeIgniter\Email\Email->send()
+#5 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(933): App\Controllers\Cron\ServerCron->sendAbsentWithoutLeaveNotificationHeuerOnly()
+#6 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Cron\ServerCron))
+#7 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#9 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 D:\LOCALHOST\hrm.healthgenie\public\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hr...')
+#12 {main}
+ERROR - 2026-01-10 18:09:04 --> Email: Unable to send email using PHP mail(). Your server might not be configured to send mail using this method.
+ERROR - 2026-01-10 18:09:04 --> 
+ERROR - 2026-01-10 18:09:04 --> Email: sendWithMail throwed ErrorException: mail(): Failed to connect to mailserver at &quot;localhost&quot; port 25, verify your &quot;SMTP&quot; and &quot;smtp_port&quot; setting in php.ini or use ini_set() in D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php:1771
+Stack trace:
+#0 [internal function]: CodeIgniter\Debug\Exceptions->errorHandler(2, 'mail(): Failed ...', 'D:\\LOCALHOST\\hr...', 1771)
+#1 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php(1771): mail('payroll1@gstc.c...', '=?UTF-8?Q?Absen...', '\r\n             ...', 'Date: Sat, 10 J...', '-f app.hrm@heal...')
+#2 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php(1703): CodeIgniter\Email\Email->sendWithMail()
+#3 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php(1597): CodeIgniter\Email\Email->spoolEmail()
+#4 D:\LOCALHOST\hrm.healthgenie\app\Controllers\Cron\ServerCron.php(273): CodeIgniter\Email\Email->send()
+#5 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(933): App\Controllers\Cron\ServerCron->sendAbsentWithoutLeaveNotification()
+#6 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Cron\ServerCron))
+#7 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#9 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 D:\LOCALHOST\hrm.healthgenie\public\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hr...')
+#12 {main}
+ERROR - 2026-01-10 18:09:04 --> Email: Unable to send email using PHP mail(). Your server might not be configured to send mail using this method.
+ERROR - 2026-01-10 18:09:04 --> 
+ERROR - 2026-01-10 18:22:12 --> Email: sendWithMail throwed ErrorException: mail(): Failed to connect to mailserver at &quot;localhost&quot; port 25, verify your &quot;SMTP&quot; and &quot;smtp_port&quot; setting in php.ini or use ini_set() in D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php:1771
+Stack trace:
+#0 [internal function]: CodeIgniter\Debug\Exceptions->errorHandler(2, 'mail(): Failed ...', 'D:\\LOCALHOST\\hr...', 1771)
+#1 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php(1771): mail('hrd@heuerintern...', '=?UTF-8?Q?Absen...', '<div style="fon...', 'Date: Sat, 10 J...', '-f app.hrm@heal...')
+#2 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php(1703): CodeIgniter\Email\Email->sendWithMail()
+#3 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php(1597): CodeIgniter\Email\Email->spoolEmail()
+#4 D:\LOCALHOST\hrm.healthgenie\app\Controllers\Cron\ServerCron.php(390): CodeIgniter\Email\Email->send()
+#5 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(933): App\Controllers\Cron\ServerCron->sendAbsentWithoutLeaveNotificationHeuerOnly()
+#6 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Cron\ServerCron))
+#7 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#9 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 D:\LOCALHOST\hrm.healthgenie\public\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hr...')
+#12 {main}
+ERROR - 2026-01-10 18:22:13 --> Email: Unable to send email using PHP mail(). Your server might not be configured to send mail using this method.
+ERROR - 2026-01-10 18:22:13 --> 
+ERROR - 2026-01-10 18:22:13 --> Email: sendWithMail throwed ErrorException: mail(): Failed to connect to mailserver at &quot;localhost&quot; port 25, verify your &quot;SMTP&quot; and &quot;smtp_port&quot; setting in php.ini or use ini_set() in D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php:1771
+Stack trace:
+#0 [internal function]: CodeIgniter\Debug\Exceptions->errorHandler(2, 'mail(): Failed ...', 'D:\\LOCALHOST\\hr...', 1771)
+#1 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php(1771): mail('payroll1@gstc.c...', '=?UTF-8?Q?Absen...', '\r\n             ...', 'Date: Sat, 10 J...', '-f app.hrm@heal...')
+#2 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php(1703): CodeIgniter\Email\Email->sendWithMail()
+#3 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php(1597): CodeIgniter\Email\Email->spoolEmail()
+#4 D:\LOCALHOST\hrm.healthgenie\app\Controllers\Cron\ServerCron.php(273): CodeIgniter\Email\Email->send()
+#5 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(933): App\Controllers\Cron\ServerCron->sendAbsentWithoutLeaveNotification()
+#6 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Cron\ServerCron))
+#7 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#9 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 D:\LOCALHOST\hrm.healthgenie\public\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hr...')
+#12 {main}
+ERROR - 2026-01-10 18:22:13 --> Email: Unable to send email using PHP mail(). Your server might not be configured to send mail using this method.
+ERROR - 2026-01-10 18:22:13 --> 

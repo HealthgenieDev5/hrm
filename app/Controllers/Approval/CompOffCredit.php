@@ -216,7 +216,61 @@ class CompOffCredit extends BaseController
             $CompOffCreditModel->whereIn('e1.id', $employee_id);
         }
         if (!empty($status) && !in_array('all_status', $status)) {
-            $CompOffCreditModel->whereIn('comp_off_credit_requests.status', $status);
+            //$CompOffCreditModel->whereIn('comp_off_credit_requests.status', $status);
+            // Handle custom status filters for Manu
+            $regular_statuses = [];
+            $has_stage_1_aryan = false;
+            $has_approved_aryan = false;
+
+            foreach ($status as $stat) {
+                if ($stat == 'stage_1_aryan') {
+                    $has_stage_1_aryan = true;
+                } elseif ($stat == 'approved_aryan') {
+                    $has_approved_aryan = true;
+                } else {
+                    $regular_statuses[] = $stat;
+                }
+            }
+
+            // Build complex where clause if we have custom filters
+            if ($has_stage_1_aryan || $has_approved_aryan) {
+                $CompOffCreditModel->groupStart();
+
+                // Add regular status filters
+                if (!empty($regular_statuses)) {
+                    $CompOffCreditModel->groupStart();
+                    $CompOffCreditModel->whereIn('comp_off_credit_requests.status', $regular_statuses);
+                    $CompOffCreditModel->groupEnd();
+                }
+
+                // Add custom filters with OR conditions
+                if ($has_stage_1_aryan) {
+                    if (!empty($regular_statuses)) {
+                        $CompOffCreditModel->orGroupStart();
+                    } else {
+                        $CompOffCreditModel->groupStart();
+                    }
+                    $CompOffCreditModel->where('comp_off_credit_requests.status', 'stage_1');
+                    // Requests in Aryan's queue: HN location OR Aryan is reporting manager
+                    $CompOffCreditModel->groupStart();
+                    $CompOffCreditModel->where('e1.machine', 'hn');
+                    $CompOffCreditModel->orWhere('e1.reporting_manager_id', '54');
+                    $CompOffCreditModel->groupEnd();
+                    $CompOffCreditModel->groupEnd();
+                }
+
+                if ($has_approved_aryan) {
+                    $CompOffCreditModel->orGroupStart();
+                    $CompOffCreditModel->where('comp_off_credit_requests.status', 'approved');
+                    $CompOffCreditModel->where('comp_off_credit_requests.reviewed_by', '54');
+                    $CompOffCreditModel->groupEnd();
+                }
+
+                $CompOffCreditModel->groupEnd();
+            } else {
+                // Regular status filtering
+                $CompOffCreditModel->whereIn('comp_off_credit_requests.status', $status);
+            }
         }
         if (!empty($from_date) && !empty($to_date)) {
             $CompOffCreditModel->groupStart();
@@ -291,13 +345,16 @@ class CompOffCredit extends BaseController
 
         foreach ($CompOffCreditRequests as $index => $dataRow) {
 
-            if ($current_user['employee_id'] == '1') {
-                if ($dataRow['employee_machine_location'] == 'hn') {
-                    continue;
-                } elseif ($dataRow['status'] == 'pending' && $dataRow['reporting_manager_id'] != '1') {
-                    continue;
-                }
-            } elseif ($current_user['employee_id'] == '54') {
+            // if ($current_user['employee_id'] == '1') {
+            //     if ($dataRow['employee_machine_location'] == 'hn') {
+            //         continue;
+            //     } elseif ($dataRow['status'] == 'pending' && $dataRow['reporting_manager_id'] != '1') {
+            //         continue;
+            //     }
+            // }
+            //  else
+
+            if ($current_user['employee_id'] == '54') {
                 if (
                     $dataRow['employee_machine_location'] != 'hn' && $dataRow['reporting_manager_id'] != '54'
 

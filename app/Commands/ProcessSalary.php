@@ -60,8 +60,8 @@ class ProcessSalary extends BaseCommand
     {
         helper(['url', 'form', 'Form_helper', 'Config_defaults_helper']);
         $EmployeeModel = new EmployeeModel();
-        // $allEmployees = $EmployeeModel->where('id=', 40)->findAll();
-        $allEmployees = $EmployeeModel->findAll();
+        $allEmployees = $EmployeeModel->where('id=', 587)->findAll();
+        // $allEmployees = $EmployeeModel->findAll();
 
         $employees = array();
 
@@ -97,6 +97,7 @@ class ProcessSalary extends BaseCommand
                 $FinalSalary = new FinalSalary();
                 ob_start();
                 $FinalSalary->calculateSalary($employee_row['id'], date('Y-m', strtotime(first_date_of_last_month())));
+
                 $response = ob_get_clean();
                 $response = json_decode($response, true);
 

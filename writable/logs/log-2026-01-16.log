@@ -1,0 +1,318 @@
+ERROR - 2026-01-16 11:31:48 --> mysqli_sql_exception: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '`, "H/D+HL/2", "H/D+EL/2") THEN 1 ELSE 0 END) as present_days, SUM(CASE WHEN pre' at line 1 in D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php(327): mysqli->query('SELECT `employe...', 0)
+#1 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `employe...')
+#2 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `employe...')
+#3 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `employe...', Array, false)
+#4 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Model.php(286): CodeIgniter\Database\BaseBuilder->get()
+#5 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\BaseModel.php(677): CodeIgniter\Model->doFindAll(0, 0)
+#6 D:\LOCALHOST\hrm.healthgenie\app\Controllers\Reports\FinalPaidDays.php(1628): CodeIgniter\BaseModel->findAll()
+#7 D:\LOCALHOST\hrm.healthgenie\app\Controllers\Reports\FinalPaidDays.php(1481): App\Controllers\Reports\FinalPaidDays->getMusterRollData(Array, '2025-12-01', '2025-12-31')
+#8 D:\LOCALHOST\hrm.healthgenie\app\Controllers\Reports\FinalPaidDays.php(1392): App\Controllers\Reports\FinalPaidDays->getRegisterData('muster_roll', Array, '2025-12-01', '2025-12-31')
+#9 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(933): App\Controllers\Reports\FinalPaidDays->downloadRegister()
+#10 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Reports\FinalPaidDays))
+#11 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#12 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#13 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#14 D:\LOCALHOST\hrm.healthgenie\public\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#15 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hr...')
+#16 {main}
+CRITICAL - 2026-01-16 11:31:48 --> CodeIgniter\Database\Exceptions\DatabaseException: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '`, "H/D+HL/2", "H/D+EL/2") THEN 1 ELSE 0 END) as present_days, SUM(CASE WHEN pre' at line 1
+[Method: GET, Route: backend/reports/download-register]
+in SYSTEMPATH\Database\BaseConnection.php on line 684.
+ 1 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `employees`.`id` as `employee_id`, trim(concat(employees.first_name, " ", employees.last_name)) as employee_name, `employees`.`internal_employee_id`, `departments`.`department_name`, `companies`.`company_short_name`, SUM(CASE WHEN pre_final_paid_days.status IN ("P", "H/D", "H/D+CL/2", "H/D+UL/2", "H/D+COMP `OFF/2"`, "H/D+HL/2", "H/D+EL/2") THEN 1 ELSE 0 END) as present_days, SUM(CASE WHEN pre_final_paid_days.status IN ("OD", "P on `OD"`, "P+OD", "H/D on `OD"`, "H/D on `OD+UL/2"`, "OD/2", "OD/2+CL/2", "OD/2+UL/2") THEN 1 ELSE 0 END) as od_days, SUM(CASE WHEN pre_final_paid_days.status = "W/O" THEN 1 ELSE 0 END) as weekoff_days, SUM(CASE WHEN pre_final_paid_days.status IN ("A", "S/W", "M/P", "UL") THEN 1 ELSE 0 END) as absent_days, SUM(CASE WHEN pre_final_paid_days.leave_request_type IS NOT NULL THEN pre_final_paid_days.leave_request_amount ELSE 0 END) as leave_days, SUM(CASE WHEN pre_final_paid_days.status IN ("NH", "HL", "SPL HL") THEN 1 ELSE 0 END) as holiday_days, SUM(pre_final_paid_days.paid) as paid_days, YEAR(pre_final_paid_days.date) as year, MONTH(pre_final_paid_days.date) as month
+FROM `employees`
+LEFT JOIN `pre_final_paid_days` ON `employees`.`id` = `pre_final_paid_days`.`employee_id`
+LEFT JOIN `departments` ON `departments`.`id` = `employees`.`department_id`
+LEFT JOIN `companies` ON `companies`.`id` = `employees`.`company_id`
+WHERE `employees`.`id` IN :employees.id:
+AND `pre_final_paid_days`.`date` >= :pre_final_paid_days.date:
+AND `pre_final_paid_days`.`date` <= :pre_final_paid_days.date.1:
+GROUP BY `employees`.`id`, YEAR(pre_final_paid_days.date), MONTH(pre_final_paid_days.date)
+ORDER BY `employees`.`first_name` ASC', [...], false)
+ 2 SYSTEMPATH\Model.php(286): CodeIgniter\Database\BaseBuilder->get()
+ 3 SYSTEMPATH\BaseModel.php(677): CodeIgniter\Model->doFindAll(0, 0)
+ 4 APPPATH\Controllers\Reports\FinalPaidDays.php(1628): CodeIgniter\BaseModel->findAll()
+ 5 APPPATH\Controllers\Reports\FinalPaidDays.php(1481): App\Controllers\Reports\FinalPaidDays->getMusterRollData([...], '2025-12-01', '2025-12-31')
+ 6 APPPATH\Controllers\Reports\FinalPaidDays.php(1392): App\Controllers\Reports\FinalPaidDays->getRegisterData('muster_roll', [...], '2025-12-01', '2025-12-31')
+ 7 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Reports\FinalPaidDays->downloadRegister()
+ 8 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Reports\FinalPaidDays))
+ 9 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+10 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+11 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+12 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+13 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+CRITICAL - 2026-01-16 11:31:48 --> [Caused by] CodeIgniter\Database\Exceptions\DatabaseException: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '`, "H/D+HL/2", "H/D+EL/2") THEN 1 ELSE 0 END) as present_days, SUM(CASE WHEN pre' at line 1
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 332.
+ 1 SYSTEMPATH\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `employees`.`id` as `employee_id`, trim(concat(employees.first_name, " ", employees.last_name)) as employee_name, `employees`.`internal_employee_id`, `departments`.`department_name`, `companies`.`company_short_name`, SUM(CASE WHEN pre_final_paid_days.status IN ("P", "H/D", "H/D+CL/2", "H/D+UL/2", "H/D+COMP `OFF/2"`, "H/D+HL/2", "H/D+EL/2") THEN 1 ELSE 0 END) as present_days, SUM(CASE WHEN pre_final_paid_days.status IN ("OD", "P on `OD"`, "P+OD", "H/D on `OD"`, "H/D on `OD+UL/2"`, "OD/2", "OD/2+CL/2", "OD/2+UL/2") THEN 1 ELSE 0 END) as od_days, SUM(CASE WHEN pre_final_paid_days.status = "W/O" THEN 1 ELSE 0 END) as weekoff_days, SUM(CASE WHEN pre_final_paid_days.status IN ("A", "S/W", "M/P", "UL") THEN 1 ELSE 0 END) as absent_days, SUM(CASE WHEN pre_final_paid_days.leave_request_type IS NOT NULL THEN pre_final_paid_days.leave_request_amount ELSE 0 END) as leave_days, SUM(CASE WHEN pre_final_paid_days.status IN ("NH", "HL", "SPL HL") THEN 1 ELSE 0 END) as holiday_days, SUM(pre_final_paid_days.paid) as paid_days, YEAR(pre_final_paid_days.date) as year, MONTH(pre_final_paid_days.date) as month
+FROM `employees`
+LEFT JOIN `pre_final_paid_days` ON `employees`.`id` = `pre_final_paid_days`.`employee_id`
+LEFT JOIN `departments` ON `departments`.`id` = `employees`.`department_id`
+LEFT JOIN `companies` ON `companies`.`id` = `employees`.`company_id`
+WHERE `employees`.`id` IN (\'40\',\'385\')
+AND `pre_final_paid_days`.`date` >= \'2025-12-01\'
+AND `pre_final_paid_days`.`date` <= \'2025-12-31\'
+GROUP BY `employees`.`id`, YEAR(pre_final_paid_days.date), MONTH(pre_final_paid_days.date)
+ORDER BY `employees`.`first_name` ASC')
+ 2 SYSTEMPATH\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `employees`.`id` as `employee_id`, trim(concat(employees.first_name, " ", employees.last_name)) as employee_name, `employees`.`internal_employee_id`, `departments`.`department_name`, `companies`.`company_short_name`, SUM(CASE WHEN pre_final_paid_days.status IN ("P", "H/D", "H/D+CL/2", "H/D+UL/2", "H/D+COMP `OFF/2"`, "H/D+HL/2", "H/D+EL/2") THEN 1 ELSE 0 END) as present_days, SUM(CASE WHEN pre_final_paid_days.status IN ("OD", "P on `OD"`, "P+OD", "H/D on `OD"`, "H/D on `OD+UL/2"`, "OD/2", "OD/2+CL/2", "OD/2+UL/2") THEN 1 ELSE 0 END) as od_days, SUM(CASE WHEN pre_final_paid_days.status = "W/O" THEN 1 ELSE 0 END) as weekoff_days, SUM(CASE WHEN pre_final_paid_days.status IN ("A", "S/W", "M/P", "UL") THEN 1 ELSE 0 END) as absent_days, SUM(CASE WHEN pre_final_paid_days.leave_request_type IS NOT NULL THEN pre_final_paid_days.leave_request_amount ELSE 0 END) as leave_days, SUM(CASE WHEN pre_final_paid_days.status IN ("NH", "HL", "SPL HL") THEN 1 ELSE 0 END) as holiday_days, SUM(pre_final_paid_days.paid) as paid_days, YEAR(pre_final_paid_days.date) as year, MONTH(pre_final_paid_days.date) as month
+FROM `employees`
+LEFT JOIN `pre_final_paid_days` ON `employees`.`id` = `pre_final_paid_days`.`employee_id`
+LEFT JOIN `departments` ON `departments`.`id` = `employees`.`department_id`
+LEFT JOIN `companies` ON `companies`.`id` = `employees`.`company_id`
+WHERE `employees`.`id` IN (\'40\',\'385\')
+AND `pre_final_paid_days`.`date` >= \'2025-12-01\'
+AND `pre_final_paid_days`.`date` <= \'2025-12-31\'
+GROUP BY `employees`.`id`, YEAR(pre_final_paid_days.date), MONTH(pre_final_paid_days.date)
+ORDER BY `employees`.`first_name` ASC')
+ 3 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `employees`.`id` as `employee_id`, trim(concat(employees.first_name, " ", employees.last_name)) as employee_name, `employees`.`internal_employee_id`, `departments`.`department_name`, `companies`.`company_short_name`, SUM(CASE WHEN pre_final_paid_days.status IN ("P", "H/D", "H/D+CL/2", "H/D+UL/2", "H/D+COMP `OFF/2"`, "H/D+HL/2", "H/D+EL/2") THEN 1 ELSE 0 END) as present_days, SUM(CASE WHEN pre_final_paid_days.status IN ("OD", "P on `OD"`, "P+OD", "H/D on `OD"`, "H/D on `OD+UL/2"`, "OD/2", "OD/2+CL/2", "OD/2+UL/2") THEN 1 ELSE 0 END) as od_days, SUM(CASE WHEN pre_final_paid_days.status = "W/O" THEN 1 ELSE 0 END) as weekoff_days, SUM(CASE WHEN pre_final_paid_days.status IN ("A", "S/W", "M/P", "UL") THEN 1 ELSE 0 END) as absent_days, SUM(CASE WHEN pre_final_paid_days.leave_request_type IS NOT NULL THEN pre_final_paid_days.leave_request_amount ELSE 0 END) as leave_days, SUM(CASE WHEN pre_final_paid_days.status IN ("NH", "HL", "SPL HL") THEN 1 ELSE 0 END) as holiday_days, SUM(pre_final_paid_days.paid) as paid_days, YEAR(pre_final_paid_days.date) as year, MONTH(pre_final_paid_days.date) as month
+FROM `employees`
+LEFT JOIN `pre_final_paid_days` ON `employees`.`id` = `pre_final_paid_days`.`employee_id`
+LEFT JOIN `departments` ON `departments`.`id` = `employees`.`department_id`
+LEFT JOIN `companies` ON `companies`.`id` = `employees`.`company_id`
+WHERE `employees`.`id` IN :employees.id:
+AND `pre_final_paid_days`.`date` >= :pre_final_paid_days.date:
+AND `pre_final_paid_days`.`date` <= :pre_final_paid_days.date.1:
+GROUP BY `employees`.`id`, YEAR(pre_final_paid_days.date), MONTH(pre_final_paid_days.date)
+ORDER BY `employees`.`first_name` ASC', [...], false)
+ 4 SYSTEMPATH\Model.php(286): CodeIgniter\Database\BaseBuilder->get()
+ 5 SYSTEMPATH\BaseModel.php(677): CodeIgniter\Model->doFindAll(0, 0)
+ 6 APPPATH\Controllers\Reports\FinalPaidDays.php(1628): CodeIgniter\BaseModel->findAll()
+ 7 APPPATH\Controllers\Reports\FinalPaidDays.php(1481): App\Controllers\Reports\FinalPaidDays->getMusterRollData([...], '2025-12-01', '2025-12-31')
+ 8 APPPATH\Controllers\Reports\FinalPaidDays.php(1392): App\Controllers\Reports\FinalPaidDays->getRegisterData('muster_roll', [...], '2025-12-01', '2025-12-31')
+ 9 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Reports\FinalPaidDays->downloadRegister()
+10 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Reports\FinalPaidDays))
+11 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+12 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+13 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+14 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+15 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+CRITICAL - 2026-01-16 11:31:48 --> [Caused by] mysqli_sql_exception: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '`, "H/D+HL/2", "H/D+EL/2") THEN 1 ELSE 0 END) as present_days, SUM(CASE WHEN pre' at line 1
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 327.
+ 1 SYSTEMPATH\Database\MySQLi\Connection.php(327): mysqli->query('SELECT `employees`.`id` as `employee_id`, trim(concat(employees.first_name, " ", employees.last_name)) as employee_name, `employees`.`internal_employee_id`, `departments`.`department_name`, `companies`.`company_short_name`, SUM(CASE WHEN pre_final_paid_days.status IN ("P", "H/D", "H/D+CL/2", "H/D+UL/2", "H/D+COMP `OFF/2"`, "H/D+HL/2", "H/D+EL/2") THEN 1 ELSE 0 END) as present_days, SUM(CASE WHEN pre_final_paid_days.status IN ("OD", "P on `OD"`, "P+OD", "H/D on `OD"`, "H/D on `OD+UL/2"`, "OD/2", "OD/2+CL/2", "OD/2+UL/2") THEN 1 ELSE 0 END) as od_days, SUM(CASE WHEN pre_final_paid_days.status = "W/O" THEN 1 ELSE 0 END) as weekoff_days, SUM(CASE WHEN pre_final_paid_days.status IN ("A", "S/W", "M/P", "UL") THEN 1 ELSE 0 END) as absent_days, SUM(CASE WHEN pre_final_paid_days.leave_request_type IS NOT NULL THEN pre_final_paid_days.leave_request_amount ELSE 0 END) as leave_days, SUM(CASE WHEN pre_final_paid_days.status IN ("NH", "HL", "SPL HL") THEN 1 ELSE 0 END) as holiday_days, SUM(pre_final_paid_days.paid) as paid_days, YEAR(pre_final_paid_days.date) as year, MONTH(pre_final_paid_days.date) as month
+FROM `employees`
+LEFT JOIN `pre_final_paid_days` ON `employees`.`id` = `pre_final_paid_days`.`employee_id`
+LEFT JOIN `departments` ON `departments`.`id` = `employees`.`department_id`
+LEFT JOIN `companies` ON `companies`.`id` = `employees`.`company_id`
+WHERE `employees`.`id` IN (\'40\',\'385\')
+AND `pre_final_paid_days`.`date` >= \'2025-12-01\'
+AND `pre_final_paid_days`.`date` <= \'2025-12-31\'
+GROUP BY `employees`.`id`, YEAR(pre_final_paid_days.date), MONTH(pre_final_paid_days.date)
+ORDER BY `employees`.`first_name` ASC', 0)
+ 2 SYSTEMPATH\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `employees`.`id` as `employee_id`, trim(concat(employees.first_name, " ", employees.last_name)) as employee_name, `employees`.`internal_employee_id`, `departments`.`department_name`, `companies`.`company_short_name`, SUM(CASE WHEN pre_final_paid_days.status IN ("P", "H/D", "H/D+CL/2", "H/D+UL/2", "H/D+COMP `OFF/2"`, "H/D+HL/2", "H/D+EL/2") THEN 1 ELSE 0 END) as present_days, SUM(CASE WHEN pre_final_paid_days.status IN ("OD", "P on `OD"`, "P+OD", "H/D on `OD"`, "H/D on `OD+UL/2"`, "OD/2", "OD/2+CL/2", "OD/2+UL/2") THEN 1 ELSE 0 END) as od_days, SUM(CASE WHEN pre_final_paid_days.status = "W/O" THEN 1 ELSE 0 END) as weekoff_days, SUM(CASE WHEN pre_final_paid_days.status IN ("A", "S/W", "M/P", "UL") THEN 1 ELSE 0 END) as absent_days, SUM(CASE WHEN pre_final_paid_days.leave_request_type IS NOT NULL THEN pre_final_paid_days.leave_request_amount ELSE 0 END) as leave_days, SUM(CASE WHEN pre_final_paid_days.status IN ("NH", "HL", "SPL HL") THEN 1 ELSE 0 END) as holiday_days, SUM(pre_final_paid_days.paid) as paid_days, YEAR(pre_final_paid_days.date) as year, MONTH(pre_final_paid_days.date) as month
+FROM `employees`
+LEFT JOIN `pre_final_paid_days` ON `employees`.`id` = `pre_final_paid_days`.`employee_id`
+LEFT JOIN `departments` ON `departments`.`id` = `employees`.`department_id`
+LEFT JOIN `companies` ON `companies`.`id` = `employees`.`company_id`
+WHERE `employees`.`id` IN (\'40\',\'385\')
+AND `pre_final_paid_days`.`date` >= \'2025-12-01\'
+AND `pre_final_paid_days`.`date` <= \'2025-12-31\'
+GROUP BY `employees`.`id`, YEAR(pre_final_paid_days.date), MONTH(pre_final_paid_days.date)
+ORDER BY `employees`.`first_name` ASC')
+ 3 SYSTEMPATH\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `employees`.`id` as `employee_id`, trim(concat(employees.first_name, " ", employees.last_name)) as employee_name, `employees`.`internal_employee_id`, `departments`.`department_name`, `companies`.`company_short_name`, SUM(CASE WHEN pre_final_paid_days.status IN ("P", "H/D", "H/D+CL/2", "H/D+UL/2", "H/D+COMP `OFF/2"`, "H/D+HL/2", "H/D+EL/2") THEN 1 ELSE 0 END) as present_days, SUM(CASE WHEN pre_final_paid_days.status IN ("OD", "P on `OD"`, "P+OD", "H/D on `OD"`, "H/D on `OD+UL/2"`, "OD/2", "OD/2+CL/2", "OD/2+UL/2") THEN 1 ELSE 0 END) as od_days, SUM(CASE WHEN pre_final_paid_days.status = "W/O" THEN 1 ELSE 0 END) as weekoff_days, SUM(CASE WHEN pre_final_paid_days.status IN ("A", "S/W", "M/P", "UL") THEN 1 ELSE 0 END) as absent_days, SUM(CASE WHEN pre_final_paid_days.leave_request_type IS NOT NULL THEN pre_final_paid_days.leave_request_amount ELSE 0 END) as leave_days, SUM(CASE WHEN pre_final_paid_days.status IN ("NH", "HL", "SPL HL") THEN 1 ELSE 0 END) as holiday_days, SUM(pre_final_paid_days.paid) as paid_days, YEAR(pre_final_paid_days.date) as year, MONTH(pre_final_paid_days.date) as month
+FROM `employees`
+LEFT JOIN `pre_final_paid_days` ON `employees`.`id` = `pre_final_paid_days`.`employee_id`
+LEFT JOIN `departments` ON `departments`.`id` = `employees`.`department_id`
+LEFT JOIN `companies` ON `companies`.`id` = `employees`.`company_id`
+WHERE `employees`.`id` IN (\'40\',\'385\')
+AND `pre_final_paid_days`.`date` >= \'2025-12-01\'
+AND `pre_final_paid_days`.`date` <= \'2025-12-31\'
+GROUP BY `employees`.`id`, YEAR(pre_final_paid_days.date), MONTH(pre_final_paid_days.date)
+ORDER BY `employees`.`first_name` ASC')
+ 4 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `employees`.`id` as `employee_id`, trim(concat(employees.first_name, " ", employees.last_name)) as employee_name, `employees`.`internal_employee_id`, `departments`.`department_name`, `companies`.`company_short_name`, SUM(CASE WHEN pre_final_paid_days.status IN ("P", "H/D", "H/D+CL/2", "H/D+UL/2", "H/D+COMP `OFF/2"`, "H/D+HL/2", "H/D+EL/2") THEN 1 ELSE 0 END) as present_days, SUM(CASE WHEN pre_final_paid_days.status IN ("OD", "P on `OD"`, "P+OD", "H/D on `OD"`, "H/D on `OD+UL/2"`, "OD/2", "OD/2+CL/2", "OD/2+UL/2") THEN 1 ELSE 0 END) as od_days, SUM(CASE WHEN pre_final_paid_days.status = "W/O" THEN 1 ELSE 0 END) as weekoff_days, SUM(CASE WHEN pre_final_paid_days.status IN ("A", "S/W", "M/P", "UL") THEN 1 ELSE 0 END) as absent_days, SUM(CASE WHEN pre_final_paid_days.leave_request_type IS NOT NULL THEN pre_final_paid_days.leave_request_amount ELSE 0 END) as leave_days, SUM(CASE WHEN pre_final_paid_days.status IN ("NH", "HL", "SPL HL") THEN 1 ELSE 0 END) as holiday_days, SUM(pre_final_paid_days.paid) as paid_days, YEAR(pre_final_paid_days.date) as year, MONTH(pre_final_paid_days.date) as month
+FROM `employees`
+LEFT JOIN `pre_final_paid_days` ON `employees`.`id` = `pre_final_paid_days`.`employee_id`
+LEFT JOIN `departments` ON `departments`.`id` = `employees`.`department_id`
+LEFT JOIN `companies` ON `companies`.`id` = `employees`.`company_id`
+WHERE `employees`.`id` IN :employees.id:
+AND `pre_final_paid_days`.`date` >= :pre_final_paid_days.date:
+AND `pre_final_paid_days`.`date` <= :pre_final_paid_days.date.1:
+GROUP BY `employees`.`id`, YEAR(pre_final_paid_days.date), MONTH(pre_final_paid_days.date)
+ORDER BY `employees`.`first_name` ASC', [...], false)
+ 5 SYSTEMPATH\Model.php(286): CodeIgniter\Database\BaseBuilder->get()
+ 6 SYSTEMPATH\BaseModel.php(677): CodeIgniter\Model->doFindAll(0, 0)
+ 7 APPPATH\Controllers\Reports\FinalPaidDays.php(1628): CodeIgniter\BaseModel->findAll()
+ 8 APPPATH\Controllers\Reports\FinalPaidDays.php(1481): App\Controllers\Reports\FinalPaidDays->getMusterRollData([...], '2025-12-01', '2025-12-31')
+ 9 APPPATH\Controllers\Reports\FinalPaidDays.php(1392): App\Controllers\Reports\FinalPaidDays->getRegisterData('muster_roll', [...], '2025-12-01', '2025-12-31')
+10 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Reports\FinalPaidDays->downloadRegister()
+11 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Reports\FinalPaidDays))
+12 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+13 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+14 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+15 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+16 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+ERROR - 2026-01-16 12:42:49 --> mysqli_sql_exception: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '`, "H/D+HL/2", "H/D+EL/2") THEN 1 ELSE 0 END) as present_days, SUM(CASE WHEN pre' at line 1 in D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php(327): mysqli->query('SELECT `employe...', 0)
+#1 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `employe...')
+#2 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `employe...')
+#3 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `employe...', Array, false)
+#4 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Model.php(286): CodeIgniter\Database\BaseBuilder->get()
+#5 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\BaseModel.php(677): CodeIgniter\Model->doFindAll(0, 0)
+#6 D:\LOCALHOST\hrm.healthgenie\app\Controllers\Reports\FinalPaidDays.php(1628): CodeIgniter\BaseModel->findAll()
+#7 D:\LOCALHOST\hrm.healthgenie\app\Controllers\Reports\FinalPaidDays.php(1481): App\Controllers\Reports\FinalPaidDays->getMusterRollData(Array, '2025-12-01', '2025-12-31')
+#8 D:\LOCALHOST\hrm.healthgenie\app\Controllers\Reports\FinalPaidDays.php(1392): App\Controllers\Reports\FinalPaidDays->getRegisterData('muster_roll', Array, '2025-12-01', '2025-12-31')
+#9 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(933): App\Controllers\Reports\FinalPaidDays->downloadRegister()
+#10 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Reports\FinalPaidDays))
+#11 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#12 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#13 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#14 D:\LOCALHOST\hrm.healthgenie\public\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#15 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hr...')
+#16 {main}
+CRITICAL - 2026-01-16 12:42:49 --> CodeIgniter\Database\Exceptions\DatabaseException: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '`, "H/D+HL/2", "H/D+EL/2") THEN 1 ELSE 0 END) as present_days, SUM(CASE WHEN pre' at line 1
+[Method: GET, Route: backend/reports/download-register]
+in SYSTEMPATH\Database\BaseConnection.php on line 684.
+ 1 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `employees`.`id` as `employee_id`, trim(concat(employees.first_name, " ", employees.last_name)) as employee_name, `employees`.`internal_employee_id`, `departments`.`department_name`, `companies`.`company_short_name`, SUM(CASE WHEN pre_final_paid_days.status IN ("P", "H/D", "H/D+CL/2", "H/D+UL/2", "H/D+COMP `OFF/2"`, "H/D+HL/2", "H/D+EL/2") THEN 1 ELSE 0 END) as present_days, SUM(CASE WHEN pre_final_paid_days.status IN ("OD", "P on `OD"`, "P+OD", "H/D on `OD"`, "H/D on `OD+UL/2"`, "OD/2", "OD/2+CL/2", "OD/2+UL/2") THEN 1 ELSE 0 END) as od_days, SUM(CASE WHEN pre_final_paid_days.status = "W/O" THEN 1 ELSE 0 END) as weekoff_days, SUM(CASE WHEN pre_final_paid_days.status IN ("A", "S/W", "M/P", "UL") THEN 1 ELSE 0 END) as absent_days, SUM(CASE WHEN pre_final_paid_days.leave_request_type IS NOT NULL THEN pre_final_paid_days.leave_request_amount ELSE 0 END) as leave_days, SUM(CASE WHEN pre_final_paid_days.status IN ("NH", "HL", "SPL HL") THEN 1 ELSE 0 END) as holiday_days, SUM(pre_final_paid_days.paid) as paid_days, YEAR(pre_final_paid_days.date) as year, MONTH(pre_final_paid_days.date) as month
+FROM `employees`
+LEFT JOIN `pre_final_paid_days` ON `employees`.`id` = `pre_final_paid_days`.`employee_id`
+LEFT JOIN `departments` ON `departments`.`id` = `employees`.`department_id`
+LEFT JOIN `companies` ON `companies`.`id` = `employees`.`company_id`
+WHERE `employees`.`id` IN :employees.id:
+AND `pre_final_paid_days`.`date` >= :pre_final_paid_days.date:
+AND `pre_final_paid_days`.`date` <= :pre_final_paid_days.date.1:
+GROUP BY `employees`.`id`, YEAR(pre_final_paid_days.date), MONTH(pre_final_paid_days.date)
+ORDER BY `employees`.`first_name` ASC', [...], false)
+ 2 SYSTEMPATH\Model.php(286): CodeIgniter\Database\BaseBuilder->get()
+ 3 SYSTEMPATH\BaseModel.php(677): CodeIgniter\Model->doFindAll(0, 0)
+ 4 APPPATH\Controllers\Reports\FinalPaidDays.php(1628): CodeIgniter\BaseModel->findAll()
+ 5 APPPATH\Controllers\Reports\FinalPaidDays.php(1481): App\Controllers\Reports\FinalPaidDays->getMusterRollData([...], '2025-12-01', '2025-12-31')
+ 6 APPPATH\Controllers\Reports\FinalPaidDays.php(1392): App\Controllers\Reports\FinalPaidDays->getRegisterData('muster_roll', [...], '2025-12-01', '2025-12-31')
+ 7 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Reports\FinalPaidDays->downloadRegister()
+ 8 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Reports\FinalPaidDays))
+ 9 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+10 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+11 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+12 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+13 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+CRITICAL - 2026-01-16 12:42:49 --> [Caused by] CodeIgniter\Database\Exceptions\DatabaseException: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '`, "H/D+HL/2", "H/D+EL/2") THEN 1 ELSE 0 END) as present_days, SUM(CASE WHEN pre' at line 1
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 332.
+ 1 SYSTEMPATH\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `employees`.`id` as `employee_id`, trim(concat(employees.first_name, " ", employees.last_name)) as employee_name, `employees`.`internal_employee_id`, `departments`.`department_name`, `companies`.`company_short_name`, SUM(CASE WHEN pre_final_paid_days.status IN ("P", "H/D", "H/D+CL/2", "H/D+UL/2", "H/D+COMP `OFF/2"`, "H/D+HL/2", "H/D+EL/2") THEN 1 ELSE 0 END) as present_days, SUM(CASE WHEN pre_final_paid_days.status IN ("OD", "P on `OD"`, "P+OD", "H/D on `OD"`, "H/D on `OD+UL/2"`, "OD/2", "OD/2+CL/2", "OD/2+UL/2") THEN 1 ELSE 0 END) as od_days, SUM(CASE WHEN pre_final_paid_days.status = "W/O" THEN 1 ELSE 0 END) as weekoff_days, SUM(CASE WHEN pre_final_paid_days.status IN ("A", "S/W", "M/P", "UL") THEN 1 ELSE 0 END) as absent_days, SUM(CASE WHEN pre_final_paid_days.leave_request_type IS NOT NULL THEN pre_final_paid_days.leave_request_amount ELSE 0 END) as leave_days, SUM(CASE WHEN pre_final_paid_days.status IN ("NH", "HL", "SPL HL") THEN 1 ELSE 0 END) as holiday_days, SUM(pre_final_paid_days.paid) as paid_days, YEAR(pre_final_paid_days.date) as year, MONTH(pre_final_paid_days.date) as month
+FROM `employees`
+LEFT JOIN `pre_final_paid_days` ON `employees`.`id` = `pre_final_paid_days`.`employee_id`
+LEFT JOIN `departments` ON `departments`.`id` = `employees`.`department_id`
+LEFT JOIN `companies` ON `companies`.`id` = `employees`.`company_id`
+WHERE `employees`.`id` IN (\'40\',\'385\')
+AND `pre_final_paid_days`.`date` >= \'2025-12-01\'
+AND `pre_final_paid_days`.`date` <= \'2025-12-31\'
+GROUP BY `employees`.`id`, YEAR(pre_final_paid_days.date), MONTH(pre_final_paid_days.date)
+ORDER BY `employees`.`first_name` ASC')
+ 2 SYSTEMPATH\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `employees`.`id` as `employee_id`, trim(concat(employees.first_name, " ", employees.last_name)) as employee_name, `employees`.`internal_employee_id`, `departments`.`department_name`, `companies`.`company_short_name`, SUM(CASE WHEN pre_final_paid_days.status IN ("P", "H/D", "H/D+CL/2", "H/D+UL/2", "H/D+COMP `OFF/2"`, "H/D+HL/2", "H/D+EL/2") THEN 1 ELSE 0 END) as present_days, SUM(CASE WHEN pre_final_paid_days.status IN ("OD", "P on `OD"`, "P+OD", "H/D on `OD"`, "H/D on `OD+UL/2"`, "OD/2", "OD/2+CL/2", "OD/2+UL/2") THEN 1 ELSE 0 END) as od_days, SUM(CASE WHEN pre_final_paid_days.status = "W/O" THEN 1 ELSE 0 END) as weekoff_days, SUM(CASE WHEN pre_final_paid_days.status IN ("A", "S/W", "M/P", "UL") THEN 1 ELSE 0 END) as absent_days, SUM(CASE WHEN pre_final_paid_days.leave_request_type IS NOT NULL THEN pre_final_paid_days.leave_request_amount ELSE 0 END) as leave_days, SUM(CASE WHEN pre_final_paid_days.status IN ("NH", "HL", "SPL HL") THEN 1 ELSE 0 END) as holiday_days, SUM(pre_final_paid_days.paid) as paid_days, YEAR(pre_final_paid_days.date) as year, MONTH(pre_final_paid_days.date) as month
+FROM `employees`
+LEFT JOIN `pre_final_paid_days` ON `employees`.`id` = `pre_final_paid_days`.`employee_id`
+LEFT JOIN `departments` ON `departments`.`id` = `employees`.`department_id`
+LEFT JOIN `companies` ON `companies`.`id` = `employees`.`company_id`
+WHERE `employees`.`id` IN (\'40\',\'385\')
+AND `pre_final_paid_days`.`date` >= \'2025-12-01\'
+AND `pre_final_paid_days`.`date` <= \'2025-12-31\'
+GROUP BY `employees`.`id`, YEAR(pre_final_paid_days.date), MONTH(pre_final_paid_days.date)
+ORDER BY `employees`.`first_name` ASC')
+ 3 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `employees`.`id` as `employee_id`, trim(concat(employees.first_name, " ", employees.last_name)) as employee_name, `employees`.`internal_employee_id`, `departments`.`department_name`, `companies`.`company_short_name`, SUM(CASE WHEN pre_final_paid_days.status IN ("P", "H/D", "H/D+CL/2", "H/D+UL/2", "H/D+COMP `OFF/2"`, "H/D+HL/2", "H/D+EL/2") THEN 1 ELSE 0 END) as present_days, SUM(CASE WHEN pre_final_paid_days.status IN ("OD", "P on `OD"`, "P+OD", "H/D on `OD"`, "H/D on `OD+UL/2"`, "OD/2", "OD/2+CL/2", "OD/2+UL/2") THEN 1 ELSE 0 END) as od_days, SUM(CASE WHEN pre_final_paid_days.status = "W/O" THEN 1 ELSE 0 END) as weekoff_days, SUM(CASE WHEN pre_final_paid_days.status IN ("A", "S/W", "M/P", "UL") THEN 1 ELSE 0 END) as absent_days, SUM(CASE WHEN pre_final_paid_days.leave_request_type IS NOT NULL THEN pre_final_paid_days.leave_request_amount ELSE 0 END) as leave_days, SUM(CASE WHEN pre_final_paid_days.status IN ("NH", "HL", "SPL HL") THEN 1 ELSE 0 END) as holiday_days, SUM(pre_final_paid_days.paid) as paid_days, YEAR(pre_final_paid_days.date) as year, MONTH(pre_final_paid_days.date) as month
+FROM `employees`
+LEFT JOIN `pre_final_paid_days` ON `employees`.`id` = `pre_final_paid_days`.`employee_id`
+LEFT JOIN `departments` ON `departments`.`id` = `employees`.`department_id`
+LEFT JOIN `companies` ON `companies`.`id` = `employees`.`company_id`
+WHERE `employees`.`id` IN :employees.id:
+AND `pre_final_paid_days`.`date` >= :pre_final_paid_days.date:
+AND `pre_final_paid_days`.`date` <= :pre_final_paid_days.date.1:
+GROUP BY `employees`.`id`, YEAR(pre_final_paid_days.date), MONTH(pre_final_paid_days.date)
+ORDER BY `employees`.`first_name` ASC', [...], false)
+ 4 SYSTEMPATH\Model.php(286): CodeIgniter\Database\BaseBuilder->get()
+ 5 SYSTEMPATH\BaseModel.php(677): CodeIgniter\Model->doFindAll(0, 0)
+ 6 APPPATH\Controllers\Reports\FinalPaidDays.php(1628): CodeIgniter\BaseModel->findAll()
+ 7 APPPATH\Controllers\Reports\FinalPaidDays.php(1481): App\Controllers\Reports\FinalPaidDays->getMusterRollData([...], '2025-12-01', '2025-12-31')
+ 8 APPPATH\Controllers\Reports\FinalPaidDays.php(1392): App\Controllers\Reports\FinalPaidDays->getRegisterData('muster_roll', [...], '2025-12-01', '2025-12-31')
+ 9 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Reports\FinalPaidDays->downloadRegister()
+10 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Reports\FinalPaidDays))
+11 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+12 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+13 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+14 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+15 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+CRITICAL - 2026-01-16 12:42:49 --> [Caused by] mysqli_sql_exception: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '`, "H/D+HL/2", "H/D+EL/2") THEN 1 ELSE 0 END) as present_days, SUM(CASE WHEN pre' at line 1
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 327.
+ 1 SYSTEMPATH\Database\MySQLi\Connection.php(327): mysqli->query('SELECT `employees`.`id` as `employee_id`, trim(concat(employees.first_name, " ", employees.last_name)) as employee_name, `employees`.`internal_employee_id`, `departments`.`department_name`, `companies`.`company_short_name`, SUM(CASE WHEN pre_final_paid_days.status IN ("P", "H/D", "H/D+CL/2", "H/D+UL/2", "H/D+COMP `OFF/2"`, "H/D+HL/2", "H/D+EL/2") THEN 1 ELSE 0 END) as present_days, SUM(CASE WHEN pre_final_paid_days.status IN ("OD", "P on `OD"`, "P+OD", "H/D on `OD"`, "H/D on `OD+UL/2"`, "OD/2", "OD/2+CL/2", "OD/2+UL/2") THEN 1 ELSE 0 END) as od_days, SUM(CASE WHEN pre_final_paid_days.status = "W/O" THEN 1 ELSE 0 END) as weekoff_days, SUM(CASE WHEN pre_final_paid_days.status IN ("A", "S/W", "M/P", "UL") THEN 1 ELSE 0 END) as absent_days, SUM(CASE WHEN pre_final_paid_days.leave_request_type IS NOT NULL THEN pre_final_paid_days.leave_request_amount ELSE 0 END) as leave_days, SUM(CASE WHEN pre_final_paid_days.status IN ("NH", "HL", "SPL HL") THEN 1 ELSE 0 END) as holiday_days, SUM(pre_final_paid_days.paid) as paid_days, YEAR(pre_final_paid_days.date) as year, MONTH(pre_final_paid_days.date) as month
+FROM `employees`
+LEFT JOIN `pre_final_paid_days` ON `employees`.`id` = `pre_final_paid_days`.`employee_id`
+LEFT JOIN `departments` ON `departments`.`id` = `employees`.`department_id`
+LEFT JOIN `companies` ON `companies`.`id` = `employees`.`company_id`
+WHERE `employees`.`id` IN (\'40\',\'385\')
+AND `pre_final_paid_days`.`date` >= \'2025-12-01\'
+AND `pre_final_paid_days`.`date` <= \'2025-12-31\'
+GROUP BY `employees`.`id`, YEAR(pre_final_paid_days.date), MONTH(pre_final_paid_days.date)
+ORDER BY `employees`.`first_name` ASC', 0)
+ 2 SYSTEMPATH\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `employees`.`id` as `employee_id`, trim(concat(employees.first_name, " ", employees.last_name)) as employee_name, `employees`.`internal_employee_id`, `departments`.`department_name`, `companies`.`company_short_name`, SUM(CASE WHEN pre_final_paid_days.status IN ("P", "H/D", "H/D+CL/2", "H/D+UL/2", "H/D+COMP `OFF/2"`, "H/D+HL/2", "H/D+EL/2") THEN 1 ELSE 0 END) as present_days, SUM(CASE WHEN pre_final_paid_days.status IN ("OD", "P on `OD"`, "P+OD", "H/D on `OD"`, "H/D on `OD+UL/2"`, "OD/2", "OD/2+CL/2", "OD/2+UL/2") THEN 1 ELSE 0 END) as od_days, SUM(CASE WHEN pre_final_paid_days.status = "W/O" THEN 1 ELSE 0 END) as weekoff_days, SUM(CASE WHEN pre_final_paid_days.status IN ("A", "S/W", "M/P", "UL") THEN 1 ELSE 0 END) as absent_days, SUM(CASE WHEN pre_final_paid_days.leave_request_type IS NOT NULL THEN pre_final_paid_days.leave_request_amount ELSE 0 END) as leave_days, SUM(CASE WHEN pre_final_paid_days.status IN ("NH", "HL", "SPL HL") THEN 1 ELSE 0 END) as holiday_days, SUM(pre_final_paid_days.paid) as paid_days, YEAR(pre_final_paid_days.date) as year, MONTH(pre_final_paid_days.date) as month
+FROM `employees`
+LEFT JOIN `pre_final_paid_days` ON `employees`.`id` = `pre_final_paid_days`.`employee_id`
+LEFT JOIN `departments` ON `departments`.`id` = `employees`.`department_id`
+LEFT JOIN `companies` ON `companies`.`id` = `employees`.`company_id`
+WHERE `employees`.`id` IN (\'40\',\'385\')
+AND `pre_final_paid_days`.`date` >= \'2025-12-01\'
+AND `pre_final_paid_days`.`date` <= \'2025-12-31\'
+GROUP BY `employees`.`id`, YEAR(pre_final_paid_days.date), MONTH(pre_final_paid_days.date)
+ORDER BY `employees`.`first_name` ASC')
+ 3 SYSTEMPATH\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `employees`.`id` as `employee_id`, trim(concat(employees.first_name, " ", employees.last_name)) as employee_name, `employees`.`internal_employee_id`, `departments`.`department_name`, `companies`.`company_short_name`, SUM(CASE WHEN pre_final_paid_days.status IN ("P", "H/D", "H/D+CL/2", "H/D+UL/2", "H/D+COMP `OFF/2"`, "H/D+HL/2", "H/D+EL/2") THEN 1 ELSE 0 END) as present_days, SUM(CASE WHEN pre_final_paid_days.status IN ("OD", "P on `OD"`, "P+OD", "H/D on `OD"`, "H/D on `OD+UL/2"`, "OD/2", "OD/2+CL/2", "OD/2+UL/2") THEN 1 ELSE 0 END) as od_days, SUM(CASE WHEN pre_final_paid_days.status = "W/O" THEN 1 ELSE 0 END) as weekoff_days, SUM(CASE WHEN pre_final_paid_days.status IN ("A", "S/W", "M/P", "UL") THEN 1 ELSE 0 END) as absent_days, SUM(CASE WHEN pre_final_paid_days.leave_request_type IS NOT NULL THEN pre_final_paid_days.leave_request_amount ELSE 0 END) as leave_days, SUM(CASE WHEN pre_final_paid_days.status IN ("NH", "HL", "SPL HL") THEN 1 ELSE 0 END) as holiday_days, SUM(pre_final_paid_days.paid) as paid_days, YEAR(pre_final_paid_days.date) as year, MONTH(pre_final_paid_days.date) as month
+FROM `employees`
+LEFT JOIN `pre_final_paid_days` ON `employees`.`id` = `pre_final_paid_days`.`employee_id`
+LEFT JOIN `departments` ON `departments`.`id` = `employees`.`department_id`
+LEFT JOIN `companies` ON `companies`.`id` = `employees`.`company_id`
+WHERE `employees`.`id` IN (\'40\',\'385\')
+AND `pre_final_paid_days`.`date` >= \'2025-12-01\'
+AND `pre_final_paid_days`.`date` <= \'2025-12-31\'
+GROUP BY `employees`.`id`, YEAR(pre_final_paid_days.date), MONTH(pre_final_paid_days.date)
+ORDER BY `employees`.`first_name` ASC')
+ 4 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `employees`.`id` as `employee_id`, trim(concat(employees.first_name, " ", employees.last_name)) as employee_name, `employees`.`internal_employee_id`, `departments`.`department_name`, `companies`.`company_short_name`, SUM(CASE WHEN pre_final_paid_days.status IN ("P", "H/D", "H/D+CL/2", "H/D+UL/2", "H/D+COMP `OFF/2"`, "H/D+HL/2", "H/D+EL/2") THEN 1 ELSE 0 END) as present_days, SUM(CASE WHEN pre_final_paid_days.status IN ("OD", "P on `OD"`, "P+OD", "H/D on `OD"`, "H/D on `OD+UL/2"`, "OD/2", "OD/2+CL/2", "OD/2+UL/2") THEN 1 ELSE 0 END) as od_days, SUM(CASE WHEN pre_final_paid_days.status = "W/O" THEN 1 ELSE 0 END) as weekoff_days, SUM(CASE WHEN pre_final_paid_days.status IN ("A", "S/W", "M/P", "UL") THEN 1 ELSE 0 END) as absent_days, SUM(CASE WHEN pre_final_paid_days.leave_request_type IS NOT NULL THEN pre_final_paid_days.leave_request_amount ELSE 0 END) as leave_days, SUM(CASE WHEN pre_final_paid_days.status IN ("NH", "HL", "SPL HL") THEN 1 ELSE 0 END) as holiday_days, SUM(pre_final_paid_days.paid) as paid_days, YEAR(pre_final_paid_days.date) as year, MONTH(pre_final_paid_days.date) as month
+FROM `employees`
+LEFT JOIN `pre_final_paid_days` ON `employees`.`id` = `pre_final_paid_days`.`employee_id`
+LEFT JOIN `departments` ON `departments`.`id` = `employees`.`department_id`
+LEFT JOIN `companies` ON `companies`.`id` = `employees`.`company_id`
+WHERE `employees`.`id` IN :employees.id:
+AND `pre_final_paid_days`.`date` >= :pre_final_paid_days.date:
+AND `pre_final_paid_days`.`date` <= :pre_final_paid_days.date.1:
+GROUP BY `employees`.`id`, YEAR(pre_final_paid_days.date), MONTH(pre_final_paid_days.date)
+ORDER BY `employees`.`first_name` ASC', [...], false)
+ 5 SYSTEMPATH\Model.php(286): CodeIgniter\Database\BaseBuilder->get()
+ 6 SYSTEMPATH\BaseModel.php(677): CodeIgniter\Model->doFindAll(0, 0)
+ 7 APPPATH\Controllers\Reports\FinalPaidDays.php(1628): CodeIgniter\BaseModel->findAll()
+ 8 APPPATH\Controllers\Reports\FinalPaidDays.php(1481): App\Controllers\Reports\FinalPaidDays->getMusterRollData([...], '2025-12-01', '2025-12-31')
+ 9 APPPATH\Controllers\Reports\FinalPaidDays.php(1392): App\Controllers\Reports\FinalPaidDays->getRegisterData('muster_roll', [...], '2025-12-01', '2025-12-31')
+10 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Reports\FinalPaidDays->downloadRegister()
+11 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Reports\FinalPaidDays))
+12 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+13 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+14 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+15 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+16 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hrm.healthgenie\\public\\index.php')
+ERROR - 2026-01-16 16:58:48 --> Email: sendWithMail throwed ErrorException: mail(): Failed to connect to mailserver at &quot;localhost&quot; port 25, verify your &quot;SMTP&quot; and &quot;smtp_port&quot; setting in php.ini or use ini_set() in D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php:1771
+Stack trace:
+#0 [internal function]: CodeIgniter\Debug\Exceptions->errorHandler(2, 'mail(): Failed ...', 'D:\\LOCALHOST\\hr...', 1771)
+#1 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php(1771): mail('payroll1@gstc.c...', '=?UTF-8?Q?Absen...', '\r\n             ...', 'Date: Fri, 16 J...', '-f app.hrm@heal...')
+#2 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php(1703): CodeIgniter\Email\Email->sendWithMail()
+#3 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php(1597): CodeIgniter\Email\Email->spoolEmail()
+#4 D:\LOCALHOST\hrm.healthgenie\app\Controllers\Cron\ServerCron.php(273): CodeIgniter\Email\Email->send()
+#5 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(933): App\Controllers\Cron\ServerCron->sendAbsentWithoutLeaveNotification()
+#6 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Cron\ServerCron))
+#7 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#9 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 D:\LOCALHOST\hrm.healthgenie\public\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hr...')
+#12 {main}
+ERROR - 2026-01-16 16:58:48 --> Email: sendWithMail throwed ErrorException: mail(): Failed to connect to mailserver at &quot;localhost&quot; port 25, verify your &quot;SMTP&quot; and &quot;smtp_port&quot; setting in php.ini or use ini_set() in D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php:1771
+Stack trace:
+#0 [internal function]: CodeIgniter\Debug\Exceptions->errorHandler(2, 'mail(): Failed ...', 'D:\\LOCALHOST\\hr...', 1771)
+#1 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php(1771): mail('hrd@heuerintern...', '=?UTF-8?Q?Absen...', '<div style="fon...', 'Date: Fri, 16 J...', '-f app.hrm@heal...')
+#2 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php(1703): CodeIgniter\Email\Email->sendWithMail()
+#3 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Email\Email.php(1597): CodeIgniter\Email\Email->spoolEmail()
+#4 D:\LOCALHOST\hrm.healthgenie\app\Controllers\Cron\ServerCron.php(390): CodeIgniter\Email\Email->send()
+#5 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(933): App\Controllers\Cron\ServerCron->sendAbsentWithoutLeaveNotificationHeuerOnly()
+#6 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Cron\ServerCron))
+#7 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#9 D:\LOCALHOST\hrm.healthgenie\vendor\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 D:\LOCALHOST\hrm.healthgenie\public\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 C:\Program Files\Herd\resources\app.asar.unpacked\resources\valet\server.php(139): require('D:\\LOCALHOST\\hr...')
+#12 {main}
+ERROR - 2026-01-16 16:58:48 --> Email: Unable to send email using PHP mail(). Your server might not be configured to send mail using this method.
+ERROR - 2026-01-16 16:58:48 --> 
+ERROR - 2026-01-16 16:58:48 --> Email: Unable to send email using PHP mail(). Your server might not be configured to send mail using this method.
+ERROR - 2026-01-16 16:58:48 --> 

@@ -1143,6 +1143,19 @@
 									<span class="menu-title">Loyalty Incentive Report</span>
 								</a>
 							</div>
+							<div class="menu-item">
+								<a class="menu-link 
+									<?php
+									if (isset($current_method) && $current_method == 'labour-register') {
+										echo 'active';
+									}
+									?>" href="<?php echo base_url('/backend/reports/labour-register'); ?>">
+									<span class="menu-bullet">
+										<span class="bullet bullet-dot"></span>
+									</span>
+									<span class="menu-title">Labour Registers</span>
+								</a>
+							</div>
 
 
 						<?php } ?>
@@ -1158,6 +1171,34 @@
 								<span class="menu-title">Notifications</span>
 							</a>
 						</div>
+
+						<?php if (in_array(session()->get('current_user')['employee_id'], ['40']) || in_array(session()->get('current_user')['role'], ['hr', 'superuser'])) { ?>
+							<div class="menu-item">
+								<a class="menu-link <?php if (isset($current_controller) && $current_controller == 'resignation') {
+														echo 'active';
+													} ?>"
+									href="<?php echo base_url('resignation'); ?>">
+									<span class="menu-bullet">
+										<span class="bullet bullet-dot"></span>
+									</span>
+									<span class="menu-title">Resignation</span>
+									<?php
+									if (function_exists('get_active_resignation_count')) {
+										$resignation_count = get_active_resignation_count();
+										if ($resignation_count > 0) {
+									?>
+											<span class="menu-badge">
+												<span class="badge badge-sm badge-light-danger rounded-pill fs-9">
+													<?php echo $resignation_count; ?>
+												</span>
+											</span>
+									<?php
+										}
+									}
+									?>
+								</a>
+							</div>
+						<?php } ?>
 
 					</div>
 				</div>

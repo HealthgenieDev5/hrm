@@ -82,29 +82,31 @@ class EmployeeNotificationController extends BaseController
 
     public function create()
     {
-        // if (
-        //     !in_array(session()->get('current_user')['role'], ['superuser', 'hr'])
-        //     && !in_array(session()->get('current_user')['employee_id'], ['40', '93'])
-        // ) {
-        //     return redirect()->to(base_url('/unauthorised'));
-        // }
+
         $currentUser = session()->get('current_user');
         $employeeId = $currentUser['employee_id'];
-        $isAdmin = in_array($currentUser['role'], ['superuser', 'hr']) || in_array($employeeId, ['40', '93']);
-
-
-
+        $canSeeAllEmployees = in_array($currentUser['role'], ['superuser', 'admin', 'hr', 'hod', 'tl', 'manager']) || in_array($employeeId, ['385']);
         $employeeModel = new EmployeeModel();
         $employees = $employeeModel->select('id, internal_employee_id, first_name, last_name, work_email')
             ->orderBy('first_name', 'ASC')
             ->findAll();
+
+        if ($canSeeAllEmployees) {
+            $employees = $employeeModel->select('id, internal_employee_id, first_name, last_name, work_email')
+                ->orderBy('first_name', 'ASC')
+                ->findAll();
+        } else {
+            $employees = $employeeModel->select('id, internal_employee_id, first_name, last_name, work_email')
+                ->where('id', $employeeId)
+                ->findAll();
+        }
 
         $data = [
             'page_title'            => 'Create Notification',
             'current_controller'    => $this->request->getUri()->getSegment(2),
             'current_method'        => $this->request->getUri()->getSegment(3),
             'employees'             => $employees,
-            'is_admin'              => $isAdmin,
+            'canSeeAllEmployees'    => $canSeeAllEmployees,
             'current_employee_id'   => $employeeId,
         ];
 

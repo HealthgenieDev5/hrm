@@ -291,99 +291,103 @@ class Dashboard extends BaseController
 
     public function getLateComingReports()
     {
-        $punching_data2 = array();
         $current_user = $this->session->get('current_user');
         $current_date_of_month = current_date_of_month();
-        $current_day_of_month = strtolower(current_day_of_month());
         $company_id = $this->request->getVar('company_id');
         $current_employee_id = $current_user['employee_id'];
-        $EmployeeModel = new EmployeeModel();
         $date_today = date('Y-m-d');
-        $all_employee_data_query = $EmployeeModel
-            ->select('employees.id as id')
-            ->select('trim(concat(employees.first_name, " ", employees.last_name)) as employee_name')
-            ->select('employees.internal_employee_id as internal_employee_id')
-            ->select('d.department_name as department_name')
-            ->select('c.company_short_name as company_short_name')
-            ->select('s.shift_name as shift_name')
-            ->select('(select concat(shift_start, ",",shift_end) from shift_per_day where day = "monday" and shift_id = employees.shift_id) as Monday')
-            ->select('(select concat(shift_start, ",",shift_end) from shift_per_day where day = "tuesday" and shift_id = employees.shift_id) as Tuesday')
-            ->select('(select concat(shift_start, ",",shift_end) from shift_per_day where day = "wednesday" and shift_id = employees.shift_id) as Wednesday')
-            ->select('(select concat(shift_start, ",",shift_end) from shift_per_day where day = "thursday" and shift_id = employees.shift_id) as Thursday')
-            ->select('(select concat(shift_start, ",",shift_end) from shift_per_day where day = "friday" and shift_id = employees.shift_id) as Friday')
-            ->select('(select concat(shift_start, ",",shift_end) from shift_per_day where day = "saturday" and shift_id = employees.shift_id) as Saturday')
-            ->select('(select concat(shift_start, ",",shift_end) from shift_per_day where day = "sunday" and shift_id = employees.shift_id) as Sunday')
-            ->join('departments d', 'd.id = employees.department_id', 'left')
-            ->join('companies c', 'c.id = employees.company_id', 'left')
-            ->join('shifts s', 's.id = employees.shift_id', 'left')
-            ->groupStart()
-            ->where('employees.date_of_leaving is null')
-            ->orWhere("employees.date_of_leaving >= ('" . $date_today . "')")
-            ->groupEnd()
-            ->where('(employees.id = "' . $current_employee_id . '" or employees.reporting_manager_id = "' . $current_employee_id . '" or d.hod_employee_id = "' . $current_employee_id . '" or "' . $current_user['role'] . '" in ("admin", "superuser", "hr"))');
+
+        $CustomModel = new CustomModel();
+
+        // Build permission filter
+        $permission_filter = "(e.id = '{$current_employee_id}'
+            OR e.reporting_manager_id = '{$current_employee_id}'
+            OR d.hod_employee_id = '{$current_employee_id}'
+            OR '{$current_user['role']}' IN ('admin', 'superuser', 'hr'))";
+
+        // Build company filter
+        $company_filter = '';
         if ($company_id != 'all_companies' && $company_id != '') {
-            $EmployeeModel->where('employees.company_id = ', $company_id);
+            $company_filter = " AND e.company_id = '{$company_id}'";
         }
 
-        $all_employee_data = $all_employee_data_query->findAll();
+        // Optimized query using pre_final_paid_days table
+        $sql = "
+            SELECT
+                pfd.employee_id,
+                e.internal_employee_id,
+                TRIM(CONCAT(e.first_name, ' ', e.last_name)) AS employee_name,
+                d.department_name,
+                c.company_short_name,
+                pfd.date AS date_time,
+                pfd.punch_in_time AS in_time,
+                pfd.shift_start,
+                pfd.late_coming_minutes AS late_minutes,
 
-        $get_punching_data = json_decode(get_punching_data(), true)['InOutPunchData'];
+                -- 7-day average
+                (SELECT AVG(late_coming_minutes)
+                 FROM `pre_final_paid_days`
+                 WHERE employee_id = pfd.employee_id
+                 AND date BETWEEN DATE_SUB('{$current_date_of_month}', INTERVAL 7 DAY) AND '{$current_date_of_month}'
+                 AND late_coming_minutes > 0
+                ) AS avg_7d,
 
-        foreach ($get_punching_data as $punching_data_index => $punching_data_row) {
-            $day = date('l', strtotime($punching_data_row['DateString']));
-            $date_time = date('Y-m-d', strtotime($punching_data_row['DateString']));
-            $get_punching_data[$punching_data_index]['date_time'] = $date_time;
-            $get_punching_data[$punching_data_index]['day'] = $day;
-        }
+                -- 15-day average
+                (SELECT AVG(late_coming_minutes)
+                 FROM `pre_final_paid_days`
+                 WHERE employee_id = pfd.employee_id
+                 AND date BETWEEN DATE_SUB('{$current_date_of_month}', INTERVAL 15 DAY) AND '{$current_date_of_month}'
+                 AND late_coming_minutes > 0
+                ) AS avg_15d,
+
+                -- Month-to-date average
+                (SELECT AVG(late_coming_minutes)
+                 FROM `pre_final_paid_days`
+                 WHERE employee_id = pfd.employee_id
+                 AND date BETWEEN DATE_FORMAT('{$current_date_of_month}', '%Y-%m-01') AND '{$current_date_of_month}'
+                 AND late_coming_minutes > 0
+                ) AS avg_mtd
+
+            FROM `pre_final_paid_days` pfd
+            LEFT JOIN employees e ON e.id = pfd.employee_id
+            LEFT JOIN departments d ON d.id = e.department_id
+            LEFT JOIN companies c ON c.id = e.company_id
+
+            WHERE pfd.date = '{$current_date_of_month}'
+            AND pfd.late_coming_minutes > 0
+            AND pfd.punch_in_time IS NOT NULL
+            AND pfd.punch_in_time != '--:--'
+            AND (e.date_of_leaving IS NULL OR e.date_of_leaving >= '{$date_today}')
+            AND {$permission_filter}
+            {$company_filter}
+
+            ORDER BY pfd.late_coming_minutes DESC
+        ";
+
+        $results = $CustomModel->CustomQuery($sql);
 
         $punching_data = array();
-        if (!empty($all_employee_data)) {
-            foreach ($all_employee_data as $employee_data) {
-                foreach ($get_punching_data as $punching_row) {
-                    $temp_array = array();
-                    if ($punching_row['Empcode'] == $employee_data['internal_employee_id'] && $punching_row['INTime'] !== '--:--') {
+        if ($results) {
+            $data = $results->getResultArray();
 
-                        #make shift time array of current date
-                        if (isset($employee_data[$punching_row['day']]) && !empty($employee_data[$punching_row['day']])) {
-                            $shift = explode(',', $employee_data[$punching_row['day']]);
-                        } else {
-                            $shift = array('', '');
-                        }
-                        #make shift time array of current date
-                        $shift_start = date_create($shift[0]);
-                        $in_time = date_create($punching_row['INTime']);
-                        $timediff = $shift_start->diff($in_time);
-                        $late_minutes   = (int)$timediff->format('%r%i');
-                        $late_hours     = (int)$timediff->format('%r%h');
-                        if ($late_minutes > 0 || $late_hours > 0) {
-                            $temp_array['internal_employee_id'] = $punching_row['Empcode'];
-                            $temp_array['employee_name']        = $employee_data['employee_name'];
-                            $temp_array['in_time']              = date('h:i a', strtotime($punching_row['INTime']));
-                            $temp_array['shift_start']          = date('h:i a', strtotime($shift[0]));
-                            $temp_array['late_minutes']         = $late_minutes + ($late_hours * 60);
-                            $temp_array['department_name']      = $employee_data['department_name'];
-                            $temp_array['company_short_name']   = $employee_data['company_short_name'];
-                            $temp_array['date_time']            = date('d M Y', strtotime($punching_row['DateString']));
-                            $temp_array['avg_7d']               = getLateMinutes($employee_data, date('Y-m-d', strtotime(current_date_of_month() . " -7 days")), current_date_of_month())['average'];
-                            $temp_array['avg_15d']              = getLateMinutes($employee_data, date('Y-m-d', strtotime(current_date_of_month() . " -15 days")), current_date_of_month())['average'];
-                            $temp_array['avg_mtd']              = getLateMinutes($employee_data, first_date_of_month(), current_date_of_month())['average'];
-                        }
-                    }
-                    if (!empty($temp_array)) {
-                        $punching_data[] = $temp_array;
-                    }
-                }
-            }
-            usort($punching_data, function ($a, $b) {
-                return $a['late_minutes'] <=> $b['late_minutes'];
-            });
-            krsort($punching_data);
-            foreach ($punching_data as $data) {
-                $punching_data2[] = $data;
+            foreach ($data as $row) {
+                $punching_data[] = array(
+                    'internal_employee_id' => $row['internal_employee_id'],
+                    'employee_name'        => $row['employee_name'],
+                    'in_time'              => !empty($row['in_time']) && $row['in_time'] != '--:--' ? date('h:i a', strtotime($row['in_time'])) : '--:--',
+                    'shift_start'          => !empty($row['shift_start']) ? date('h:i a', strtotime($row['shift_start'])) : '--:--',
+                    'late_minutes'         => (int)$row['late_minutes'],
+                    'department_name'      => $row['department_name'] ?? '',
+                    'company_short_name'   => $row['company_short_name'] ?? '',
+                    'date_time'            => date('d M Y', strtotime($row['date_time'])),
+                    'avg_7d'               => round($row['avg_7d'] ?? 0, 2),
+                    'avg_15d'              => round($row['avg_15d'] ?? 0, 2),
+                    'avg_mtd'              => round($row['avg_mtd'] ?? 0, 2)
+                );
             }
         }
 
-        echo json_encode($punching_data2);
+        echo json_encode($punching_data);
     }
 
     public function getOnLeaveTodayPending()

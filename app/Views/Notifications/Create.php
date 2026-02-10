@@ -109,7 +109,7 @@
                                             </label>
                                         </div>
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="notification_type" value="reminder" id="type_reminder" required>
+                                            <input class="form-check-input" type="radio" name="notification_type" value="reminder" id="type_reminder" required checked>
                                             <label class="form-check-label" for="type_reminder">
                                                 ⏰ Reminder
                                             </label>
@@ -189,17 +189,17 @@
                             <!-- Target Employees -->
                             <div class="col-12">
                                 <div class="mb-3">
-                                    <label class="form-label fw-bold">Target Employees <small class="text-muted">(Leave empty for all employees)</small></label>
+                                    <label class="form-label fw-bold">Target Employees <small class="text-muted"><?= isset($canSeeAllEmployees) && $canSeeAllEmployees ? '(Leave empty for all employees)' : '(You can only send to yourself)' ?></small></label>
 
                                     <!-- Self Checkbox -->
                                     <div class="form-check mb-2">
-                                        <input class="form-check-input" type="checkbox" id="notif_self_checkbox" name="self_checkbox">
+                                        <input class="form-check-input" type="checkbox" id="notif_self_checkbox" name="self_checkbox" checked <?= isset($canSeeAllEmployees) && !$canSeeAllEmployees ? 'disabled' : '' ?>>
                                         <label class="form-check-label" for="notif_self_checkbox">
                                             Send to Self
                                         </label>
                                     </div>
 
-                                    <select class="form-select" id="notif_target_employees" name="target_employees[]" multiple data-control="select2" data-placeholder="Select specific employees or leave empty for all">
+                                    <select class="form-select" id="notif_target_employees" name="target_employees[]" multiple data-control="select2" data-placeholder="Select specific employees or leave empty for all" <?= isset($canSeeAllEmployees) && !$canSeeAllEmployees ? 'disabled' : '' ?>>
                                         <?php foreach ($employees as $emp): ?>
                                             <option value="<?= $emp['id'] ?>" data-employee-id="<?= $emp['id'] ?>"><?= $emp['internal_employee_id'] ?> - <?= $emp['first_name'] ?> <?= $emp['last_name'] ?></option>
                                         <?php endforeach; ?>
@@ -212,6 +212,9 @@
 
                             <!-- Hidden field for current employee ID -->
                             <input type="hidden" id="current_employee_id" value="<?= $current_employee_id ?>">
+
+                            <!-- Hidden field for can see all employees flag -->
+                            <input type="hidden" id="can_see_all_employees" value="<?= isset($canSeeAllEmployees) && $canSeeAllEmployees ? '1' : '0' ?>">
 
                             <!-- Submit Buttons -->
                             <div class="col-12">
@@ -249,12 +252,20 @@
 
         // Handle Self Checkbox
         $('#notif_self_checkbox').on('change', function() {
-            var currentEmployeeId = $('#current_employee_id').val();
+            var canSeeAll = $('#can_see_all_employees').val() === '1';
+
+            // If user cannot see all employees, prevent unchecking
+            if (!canSeeAll && !$(this).is(':checked')) {
+                $(this).prop('checked', true);
+                return;
+            }
+
+            var currentEmployeeId = String($('#current_employee_id').val());
             var $targetSelect = $('#notif_target_employees');
 
             if ($(this).is(':checked')) {
                 // Check if current employee is already selected
-                var selectedValues = $targetSelect.val() || [];
+                var selectedValues = ($targetSelect.val() || []).map(String);
 
                 // Add current employee if not already selected
                 if (!selectedValues.includes(currentEmployeeId)) {
@@ -263,7 +274,7 @@
                 }
             } else {
                 // Remove current employee from selection
-                var selectedValues = $targetSelect.val() || [];
+                var selectedValues = ($targetSelect.val() || []).map(String);
                 var index = selectedValues.indexOf(currentEmployeeId);
 
                 if (index > -1) {
@@ -275,16 +286,27 @@
 
         // Monitor Target Employees select to sync with Self checkbox
         $('#notif_target_employees').on('change', function() {
-            var currentEmployeeId = $('#current_employee_id').val();
-            var selectedValues = $(this).val() || [];
+            var canSeeAll = $('#can_see_all_employees').val() === '1';
+            var currentEmployeeId = String($('#current_employee_id').val());
+            var selectedValues = ($(this).val() || []).map(String);
 
             // Update checkbox based on whether current employee is selected
             if (selectedValues.includes(currentEmployeeId)) {
                 $('#notif_self_checkbox').prop('checked', true);
             } else {
-                $('#notif_self_checkbox').prop('checked', false);
+                // If user cannot see all employees, always keep checkbox checked
+                if (!canSeeAll) {
+                    $('#notif_self_checkbox').prop('checked', true);
+                } else {
+                    $('#notif_self_checkbox').prop('checked', false);
+                }
             }
         });
+
+        // Trigger checkbox change on page load to auto-select current employee
+        setTimeout(function() {
+            $('#notif_self_checkbox').trigger('change');
+        }, 100);
 
         // Initialize Flatpickr for static date inputs
         $('.notification-datepicker').flatpickr({
@@ -341,6 +363,16 @@
         // Handle Create Notification Form Submission
         $('#createNotificationForm').on('submit', function(e) {
             e.preventDefault();
+
+            // If user cannot see all employees, ensure current employee is included
+            var canSeeAll = $('#can_see_all_employees').val() === '1';
+            var $targetSelect = $('#notif_target_employees');
+
+            if (!canSeeAll) {
+                // Temporarily enable the select to allow form submission
+                $targetSelect.prop('disabled', false);
+            }
+
             var formData = new FormData(this);
             var saveBtn = $('#saveNotificationBtn');
 
@@ -399,6 +431,12 @@
                 },
                 complete: function() {
                     saveBtn.prop('disabled', false).html('<i class="fa fa-save me-2"></i>Create Notification');
+
+                    // Re-disable the select if user cannot see all employees
+                    var canSeeAll = $('#can_see_all_employees').val() === '1';
+                    if (!canSeeAll) {
+                        $('#notif_target_employees').prop('disabled', true);
+                    }
                 }
             });
         });

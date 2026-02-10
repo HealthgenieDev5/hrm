@@ -30,6 +30,7 @@ class SpecialHoliday extends BaseController
             ->select('employees.id as id')
             ->select('employees.company_id as company_id')
             ->select('employees.internal_employee_id as internal_employee_id')
+            ->select('employees.machine as machine')
             ->select('trim( concat( employees.first_name, " ", employees.last_name ) ) as employee_name, ')
             ->select('companies.company_short_name as company_short_name')
             ->select('departments.department_name as department_name')
@@ -85,6 +86,7 @@ class SpecialHoliday extends BaseController
             ->select('employees.id as id')
             ->select('employees.company_id as company_id')
             ->select('employees.internal_employee_id as internal_employee_id')
+            ->select('employees.machine as machine')
             ->select('trim( concat( employees.first_name, " ", employees.last_name ) ) as employee_name, ')
             ->select('companies.company_short_name as company_short_name')
             ->select('departments.department_name as department_name')
@@ -96,6 +98,11 @@ class SpecialHoliday extends BaseController
         $company_id = $this->request->getVar('company_id');
         if (!empty($company_id) && $company_id !== 'all_companies') {
             $EmployeeModel->where('employees.company_id =', $company_id);
+        }
+
+        $machine = $this->request->getVar('machine');
+        if (!empty($machine) && $machine !== 'all_machines') {
+            $EmployeeModel->where('employees.machine =', $machine);
         }
 
         $EmployeeModel->orderBy('employees.first_name', 'ASC');

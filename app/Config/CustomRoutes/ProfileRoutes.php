@@ -37,6 +37,10 @@ $routes->get('/backend/master/employee/probation-confirmation-letter/(:num)', [P
 
 $routes->match(['get', 'post'], '/backend/master/employee/save-probation-response-of-hod', [Profile::class, 'saveProbationResponseOfHod']);
 
+// HR Manager probation confirmation routes
+$routes->match(['get', 'post'], '/ajax/probation/hr-confirmations', [Profile::class, 'getHrProbationConfirmations']);
+$routes->post('/ajax/probation/hr-action', [Profile::class, 'handleHrProbationAction']);
+
 $routes->match(['get', 'post'], '/ajax/profile/get-welcome-email-waiting', [Profile::class, 'getEmployeesWaitingforWelcome']);
 
 /*begin::Employee anniversary*/
@@ -47,3 +51,4 @@ $routes->match(['get', 'post'], '/ajax/profile/acknowledge-probation', [Profile:
 
 // $routes->get('/ajax/profile/get-balance-grace', [Profile::class, 'getBalanceGrace']);
 $routes->get('/ajax/profile/get-attendance-stats', [Profile::class, 'getAttendanceStats']);
+$routes->match(['get', 'post'], '/ajax/profile/get-holidays-on-profile-page', [Profile::class, 'getHolidaysOnProfilePage']);

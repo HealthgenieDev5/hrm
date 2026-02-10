@@ -1,0 +1,61 @@
+
+CodeIgniter v4.6.3 Command Line Tool - Server Time: 2026-02-04 06:59:17 UTC+00:00
+
+Worker #13: Starting with 13 employees
+Processing has Started at 2026-02-04 06:59:21
+Processing batch #1
+→ Employee ID: 452 - Processing...
+✅ Success: Deeksha Grover
+→ Done in 28.19 seconds
+
+→ Employee ID: 453 - Processing...
+✅ Success: Abhishek Sharma
+→ Done in 46.8824 seconds
+
+→ Employee ID: 459 - Processing...
+✅ Success: Pawan Kumar Paswan
+→ Done in 30.1988 seconds
+
+→ Employee ID: 460 - Processing...
+✅ Success: Chandrapal Singh
+→ Done in 32.2697 seconds
+
+→ Employee ID: 461 - Processing...
+✅ Success: Bharti Rawal
+→ Done in 28.6988 seconds
+
+→ Employee ID: 467 - Processing...
+✅ Success: Neha Singh
+→ Done in 37.9182 seconds
+
+→ Employee ID: 468 - Processing...
+✅ Success: Garima
+→ Done in 21.6443 seconds
+
+→ Employee ID: 469 - Processing...
+✅ Success: Rohit Rai
+→ Done in 32.0978 seconds
+
+→ Employee ID: 470 - Processing...
+✅ Success: Krishan Mohan Ojha
+→ Done in 31.0042 seconds
+
+→ Employee ID: 471 - Processing...
+✅ Success: Manikandan S
+→ Done in 30.592 seconds
+
+→ Employee ID: 473 - Processing...
+✅ Success: Ayush Kumar Tiwari
+→ Done in 47.6296 seconds
+
+→ Employee ID: 475 - Processing...
+✅ Success: Ritik Harijan
+→ Done in 30.4444 seconds
+
+→ Employee ID: 476 - Processing...
+✅ Success: Vijay Singh
+→ Done in 24.4955 seconds
+
+Completed batch #1
+Processing has completed at 2026-02-04 07:06:24
+Worker #13: Completed processing

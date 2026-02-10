@@ -163,6 +163,7 @@ if (! function_exists('formatToIndianCurrency')) {
 if (! function_exists('save_raw_punching_data')) {
     function save_raw_punching_data($employee_id = 'ALL', $from_date = '', $to_date = '', $return = false)
     {
+        //set_time_limit(60);
         if (empty($from_date)) {
             $from_date = date('Y-m-d', strtotime(first_date_of_month()));
         }
@@ -494,6 +495,8 @@ if (! function_exists('get_punching_data_del')) {
         curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($curl, CURLOPT_TIMEOUT, 120);
+        curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 30);
         $resp = curl_exec($curl);
         curl_close($curl);
         $data = json_decode($resp, true);
@@ -543,6 +546,8 @@ if (! function_exists('get_punching_data_ggn')) {
         curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($curl, CURLOPT_TIMEOUT, 120);
+        curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 30);
         $resp = curl_exec($curl);
         curl_close($curl);
         $data = json_decode($resp, true);
@@ -598,6 +603,8 @@ if (! function_exists('get_punching_data_noida')) {
         curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($curl, CURLOPT_TIMEOUT, 120);
+        curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 30);
         $resp = curl_exec($curl);
         curl_close($curl);
         $data = json_decode($resp, true);
@@ -653,6 +660,8 @@ if (! function_exists('get_punching_data_skbd')) {
         curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($curl, CURLOPT_TIMEOUT, 120);
+        curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 30);
         $resp = curl_exec($curl);
         curl_close($curl);
         $data = json_decode($resp, true);
@@ -1542,6 +1551,15 @@ if (!function_exists('get_pending_deduction_request_count')) {
         } else {
             return null;
         }
+    }
+}
+
+if (!function_exists('get_active_resignation_count')) {
+    function get_active_resignation_count()
+    {
+        $ResignationModel = new \App\Models\ResignationModel;
+        $count = $ResignationModel->where('status', 'active')->countAllResults();
+        return $count > 0 ? $count : null;
     }
 }
 

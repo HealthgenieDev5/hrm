@@ -20,6 +20,8 @@ use App\Pipes\AttendanceProcessor\ProcessorHelper;
 use App\Models\ProbationNotificationModel;
 use App\Models\GraceBalanceModel;
 use App\Models\PreFinalPaidDaysModel;
+use App\Models\ResignationHodResponseModel;
+use App\Controllers\ResignationController;
 
 class Profile extends BaseController
 {
@@ -107,6 +109,8 @@ class Profile extends BaseController
             ->orderBy('employees.first_name ASC')
             ->findAll();
 
+        $ResignationController = new ResignationController();
+
         $data = [
             'page_title'            => $current_user['name'] . '\'s Profile',
             'current_user_data'     => $current_user_data,
@@ -126,6 +130,7 @@ class Profile extends BaseController
             'current_method'        => 'profile',
             'EnabledDateForCompOffCredit' => $EnabledDateForCompOffCredit,
             'probationPopUpEmployees' => $this->getDataForUnderProbationPopUp(),
+            'resignationHodAcknowledgments' => $ResignationController->getDataForResignationHodPopUp(),
 
         ];
         // dd($this->getDataForUnderProbationPopUp());
@@ -1245,10 +1250,20 @@ class Profile extends BaseController
                 $data = [
                     'employee_id' => $employee_id,
                     'hod_id' => $this->session->get('current_user')['employee_id'],
-                    'response' => $hod_response
+                    'response' => $hod_response,
+                    'date_time' => date('Y-m-d H:i:s')
                 ];
                 $ProbationHodResponseModel = new ProbationHodResponseModel();
                 $ProbationHodResponseModel->save($data);
+
+                if ($hod_response == 'Confirmed') {
+                    $savedRecordId = $ProbationHodResponseModel->getInsertID();
+
+                    if (!$ProbationHodResponseModel->hasUnconfirmedHrResponse($employee_id, $this->session->get('current_user')['employee_id'])) {
+                        $recruitmentManagerId = (int) env('app.recruitmentManagerIds');
+                        $ProbationHodResponseModel->setHrPending($savedRecordId, $recruitmentManagerId);
+                    }
+                }
             }
         }
 
@@ -1257,6 +1272,100 @@ class Profile extends BaseController
         $response_array['response_description'] = 'HOD Response saved Successfully';
         return $this->response->setJSON($response_array);
     }
+
+
+    public function getHrProbationConfirmations()
+    {
+        $currentUserId = $this->session->get('current_user')['employee_id'];
+        $recruitmentManagerIds = array_map('intval', explode(',', env('app.recruitmentManagerIds')));
+
+        if (!in_array($currentUserId, $recruitmentManagerIds)) {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Unauthorized',
+                'confirmations' => []
+            ]);
+        }
+
+        $ProbationHodResponseModel = new ProbationHodResponseModel();
+        $confirmations = $ProbationHodResponseModel->getPendingHrConfirmations($currentUserId);
+        foreach ($confirmations as $key => $arrData) {
+            if ($arrData['hr_response'] == 'remind_later' && date('Y-m-d', strtotime($arrData['hr_response_date'])) == date("Y-m-d")) {
+                unset($confirmations[$key]);
+            }
+        }
+        $confirmations = array_values($confirmations);
+
+        return $this->response->setJSON([
+            'success' => true,
+            'confirmations' => $confirmations
+        ]);
+    }
+
+
+    public function handleHrProbationAction()
+    {
+        $recordId = $this->request->getPost('record_id');
+        $action = $this->request->getPost('action');
+        //$notes = $this->request->getPost('notes');
+
+        $currentUserId = $this->session->get('current_user')['employee_id'];
+        $recruitmentManagerIds = array_map('intval', explode(',', env('app.recruitmentManagerIds')));
+
+        if (!in_array($currentUserId, $recruitmentManagerIds)) {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Unauthorized'
+            ]);
+        }
+
+        $ProbationHodResponseModel = new ProbationHodResponseModel();
+        $record = $ProbationHodResponseModel->find($recordId);
+
+        if (!$record) {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Record not found'
+            ]);
+        }
+
+        if ($record['hr_manager_id'] != $currentUserId) {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Not authorized for this record'
+            ]);
+        }
+
+        $success =  $ProbationHodResponseModel->hrUpdateStatus($recordId, $action);
+        if (!$action) {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Invalid action'
+            ]);
+        } else {
+            $message = 'Status has been updated';
+        }
+
+
+        // if ($action === 'remind_later') {
+        //     $success = $ProbationHodResponseModel->hrRemindLater($recordId);
+        //     $message = $success ? 'Reminder set' : 'Failed to set reminder';
+        // } elseif ($action === 'confirmed') {
+        //     $success = $ProbationHodResponseModel->hrConfirmed($recordId, $notes);
+        //     $message = $success ? 'Probation confirmed' : 'Failed to confirm';
+        // } else {
+        //     return $this->response->setJSON([
+        //         'success' => false,
+        //         'message' => 'Invalid action'
+        //     ]);
+        // }
+
+        return $this->response->setJSON([
+            'success' => $success,
+            'message' => $message
+        ]);
+    }
+
 
 
 

@@ -3273,6 +3273,11 @@
         $(document).on('click', '#submit_update_employee', function(e) {
             e.preventDefault();
 
+            // Prevent multiple submissions
+            if ($(this).attr('data-kt-indicator') === 'on') {
+                return false;
+            }
+
             var hasValidationError = false;
             var errorMessage = '';
             $('#employee_additional_attachments [data-repeater-item]').each(function() {
@@ -3333,10 +3338,18 @@
 
         function do_submit_form() {
             var form = $('#update_employee');
-            var submitButton = $(this);
+            var submitButton = $('#submit_update_employee');
             submitButton.attr("data-kt-indicator", "on");
             submitButton.attr("disabled", "true");
             var data = new FormData(form[0]);
+            var hasAdditionalDocuments = false;
+            $('#employee_additional_attachments [data-repeater-item]').each(function() {
+                var fileInput = $(this).find('input.attachment-file-input');
+                if (fileInput.length > 0 && fileInput.val()) {
+                    hasAdditionalDocuments = true;
+                    return false;
+                }
+            });
             $.ajax({
                 method: "post",
                 url: "<?php echo base_url('/ajax/master/employee/edit/validate'); ?>",
@@ -3381,6 +3394,10 @@
                                 customClass: {
                                     confirmButton: "btn btn-primary"
                                 },
+                            }).then(function() {
+                                if (hasAdditionalDocuments) {
+                                    location.reload();
+                                }
                             });
 
                             // if (can_update_salary === 'yes') {
@@ -3458,7 +3475,7 @@
                         }
                     }
                 },
-                failed: function() {
+                error: function() {
                     Swal.fire({
                         html: "Ajax Failed, Please contact administrator",
                         icon: "error",
