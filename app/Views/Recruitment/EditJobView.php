@@ -210,8 +210,7 @@
                         <option value="Part-time" <?= $job->type_of_job == 'Part-time' ? 'selected' : '' ?>>Part-time</option>
                         <option value="Contract" <?= $job->type_of_job == 'Contract' ? 'selected' : '' ?>>Contract</option>
                         <option value="Internship" <?= $job->type_of_job == 'Internship' ? 'selected' : '' ?>>Internship</option>
-                        <option value="Temporary" <?= $job->type_of_job == 'Temporary' ? 'selected' : '' ?>>Temporary</option>
-                        <option value="Freelance" <?= $job->type_of_job == 'Freelance' ? 'selected' : '' ?>>Freelance</option>
+
                     </select>
                     <label for="type_of_job">Job Type <span class="text-danger">* </span></label>
                 </div>
@@ -219,15 +218,21 @@
 
             <div class="col-6 col-md-4 col-lg-3 col-xl-3">
                 <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="min_budget" name="min_budget" placeholder="Min Budget" value="<?= esc($job->min_budget) ?>" required>
-                    <label for="min_budget">Min Budget <span class="text-danger">* </span></label>
+                    <div class="input-group">
+                        <input type="number" class="form-control" id="min_budget" name="min_budget" placeholder=" " min="0" value="<?= esc($job->min_budget) ?>" required>
+                        <span class="input-group-text">INR</span>
+                        <label for="min_budget">Min Budget <span class="text-danger">* </span></label>
+                    </div>
                 </div>
             </div>
 
             <div class="col-6 col-md-4 col-lg-3 col-xl-3">
                 <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="max_budget" name="max_budget" placeholder="Max Budget" value="<?= esc($job->max_budget) ?>" required>
-                    <label for="max_budget">Max Budget <span class="text-danger">* </span></label>
+                    <div class="input-group">
+                        <input type="number" class="form-control" id="max_budget" name="max_budget" placeholder=" " min="0" value="<?= esc($job->max_budget) ?>" required>
+                        <span class="input-group-text">INR</span>
+                        <label for="max_budget">Max Budget <span class="text-danger">* </span></label>
+                    </div>
                 </div>
             </div>
             <div class="col-6 col-md-4 col-lg-3 col-xl-2">
@@ -238,7 +243,7 @@
                         <option value="no" <?= $job->system_required == 'no' ? 'selected' : '' ?>>No</option>
                         <option value="Optional">Optional</option>
                     </select>
-                    <label for="system_required">System Required <span class="text-danger">* </span></label>
+                    <label for="system_required">Is PC Required? <span class="text-danger">* </span></label>
                 </div>
             </div>
 
@@ -279,6 +284,7 @@
                         <option value="" disabled selected>Select Interview Location</option>
                         <option value="Delhi" <?= $job->interview_location == 'Delhi' ? 'selected' : '' ?>>Delhi</option>
                         <option value="Noida" <?= $job->interview_location == 'Noida' ? 'selected' : '' ?>>Noida</option>
+                        <option value="Gurugram" <?= $job->interview_location == 'Gurugram' ? 'selected' : '' ?>>Gurugram</option>
                     </select>
                     <label for="interview_location">Interview Location <span class="text-danger">* </span></label>
                 </div>
@@ -288,10 +294,10 @@
                     <!-- <input type="text" class="form-control" id="job_location" name="job_location" placeholder="Job Location" value="<?= esc($job->job_location ?? '') ?>" required> -->
                     <select class="form-select" id="job_location" name="job_location" required>
                         <option value="" disabled selected>Select Job Location</option>
-                        <option value="Delhi" <?= $job->interview_location == 'Delhi' ? 'selected' : '' ?>>Delhi</option>
-                        <option value="Noida" <?= $job->interview_location == 'Noida' ? 'selected' : '' ?>>Noida</option>
-                        <option value="Sikandrabad" <?= $job->interview_location == 'Sikandrabad' ? 'selected' : '' ?>>Sikandrabad</option>
-                        <option value="Gurugram" <?= $job->interview_location == 'Gurugram' ? 'selected' : '' ?>>Gurugram</option>
+                        <option value="Delhi" <?= $job->job_location  == 'Delhi' ? 'selected' : '' ?>>Delhi</option>
+                        <option value="Noida" <?= $job->job_location  == 'Noida' ? 'selected' : '' ?>>Noida</option>
+                        <option value="Sikandrabad" <?= $job->job_location  == 'Sikandrabad' ? 'selected' : '' ?>>Sikandrabad</option>
+                        <option value="Gurugram" <?= $job->job_location  == 'Gurugram' ? 'selected' : '' ?>>Gurugram</option>
                     </select>
                     <label for="job_location">Job Location <span class="text-danger">* </span></label>
                 </div>
@@ -299,7 +305,7 @@
             <div class="col-md-6">
                 <div class="form-floating mb-3">
                     <input type="text" class="form-control" id="seating_location" name="seating_location" placeholder="Seating Location" value="<?= esc($job->seating_location) ?>">
-                    <label for="seating_location">Seating Location <span class="text-danger">* </span></label>
+                    <label for="seating_location">Office Seating Location <span class="text-danger">* </span></label>
                 </div>
             </div>
 
@@ -414,16 +420,17 @@
                     <select class="form-select" id="specific_industry" name="specific_industry" data-control="select2" data-placeholder="Select Industry">
                         <option value="" disabled selected>Select Industry</option>
                     </select>
-                    <label for="specific_industry">Specific Industry <span class="text-danger">* </span></label>
+                    <label for="specific_industry">Any Specific Industry <span class="text-danger">* </span></label>
                 </div>
             </div>
 
             <div class="col-6 col-md-6 col-lg-4 col-xl-4">
                 <div class="mb-3">
+                    <div id="testSummary" class="text-muted small"></div>
                     <a
                         id="tests_drawer_button"
                         href="#"
-                        class="notice d-flex bg-light-primary rounded border-primary border border-dashed mb-9 px-6 py-3">
+                        class="btn btn-lg btn-primary w-100 d-flex align-items-center justify-content-center gap-2 shadow-sm">
                         Configure Tests Required
                     </a>
                     <div
@@ -454,77 +461,6 @@
                             </div>
                             <div class="card-body hover-scroll-overlay-y">
                                 <div class="row">
-                                    <div class="col-md-12 align-items-center bg-light-success rounded p-5 mb-7">
-                                        <div class="d-flex justify-content-between align-items-center mb-3">
-                                            <label class="form-label fw-bold m-0">Technical Test Required <span class="text-danger"> *</span></label>
-                                        </div>
-                                        <div class="d-flex gap-4">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="radio" name="technical_test" id="technical_yes" value="Yes" <?= json_decode($job->technical_test_required ?? '{}', true)['required'] == 'Yes' ? 'checked' : '' ?> required>
-                                                <label class="form-check-label" for="technical_yes">Yes</label>
-                                            </div>
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="radio" name="technical_test" id="technical_no" value="No" <?= json_decode($job->technical_test_required ?? '{}', true)['required'] == 'No' ? 'checked' : '' ?> required>
-                                                <label class="form-check-label" for="technical_no">No</label>
-                                            </div>
-                                        </div>
-
-                                        <div id="technicalTestNameDiv" class="mt-3" style="display: none;">
-                                            <div id="technical_tests">
-                                                <div class="form-group">
-                                                    <div data-repeater-list="technical_tests">
-                                                        <?php
-                                                        $technicalTests = json_decode($job->technical_test_required ?? '{}', true)['tests'] ?? [];
-                                                        if (!empty($technicalTests)):
-                                                            foreach ($technicalTests as $test): ?>
-                                                                <div data-repeater-item>
-                                                                    <div class="form-group row">
-                                                                        <div class="col-md-10">
-                                                                            <div class="form-floating mt-3">
-                                                                                <input type="text" name="technical_test" class="form-control" value="<?= esc($test) ?>" placeholder="Technical Test">
-                                                                                <label>Technical Test </label>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="col-md-2">
-                                                                            <div class="d-flex align-items-center justify-content-end mt-3">
-                                                                                <a href="javascript:;" data-repeater-delete class="btn btn-sm btn-light-danger">
-                                                                                    <i class="la la-trash-o"></i>
-                                                                                </a>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            <?php endforeach;
-                                                        else: ?>
-                                                            <div data-repeater-item>
-                                                                <div class="form-group row">
-                                                                    <div class="col-md-10">
-                                                                        <div class="form-floating mt-3">
-                                                                            <input type="text" name="technical_test" class="form-control" placeholder="Technical Test">
-                                                                            <label>Technical Test </label>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-2">
-                                                                        <div class="d-flex align-items-center justify-content-end mt-3">
-                                                                            <a href="javascript:;" data-repeater-delete class="btn btn-sm btn-light-danger">
-                                                                                <i class="la la-trash-o"></i>
-                                                                            </a>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        <?php endif; ?>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <a href="javascript:;" data-repeater-create class="btn btn-sm btn-link">
-                                                        <i class="la la-plus"></i>Add a Technical Test
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
                                     <div class="col-md-12 align-items-center bg-light-warning rounded p-5 mb-7">
                                         <label class="form-label fw-bold">IQ Test Required <span class="text-danger"> *</span></label>
                                         <div class="d-flex gap-4">
@@ -587,15 +523,29 @@
                                                 <div class="form-group">
                                                     <div data-repeater-list="other_tests">
                                                         <?php
-                                                        $otherTests = json_decode($job->other_test_required ?? '{}', true)['tests'] ?? [];
+                                                        $otherTestData = json_decode($job->other_test_required ?? '{}', true);
+                                                        $otherTests = $otherTestData['tests'] ?? [];
                                                         if (!empty($otherTests)):
-                                                            foreach ($otherTests as $test): ?>
+                                                            foreach ($otherTests as $index => $testItem):
+                                                                // Backward compatibility: old data is string, new data is array
+                                                                $testName = is_array($testItem) ? ($testItem['name'] ?? '') : $testItem;
+                                                                $testFile = is_array($testItem) ? ($testItem['file'] ?? '') : '';
+                                                        ?>
                                                                 <div data-repeater-item>
                                                                     <div class="form-group row">
-                                                                        <div class="col-md-10">
+                                                                        <div class="col-md-6">
                                                                             <div class="form-floating mt-3">
-                                                                                <input type="text" name="other_test" class="form-control" value="<?= esc($test) ?>" placeholder="Other Test">
+                                                                                <input type="text" name="other_test" class="form-control" value="<?= esc($testName) ?>" placeholder="Other Test">
                                                                                 <label>Other Test <span class="text-danger"> *</span></label>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-4">
+                                                                            <div class="mt-3">
+                                                                                <label class="btn btn-outline-primary btn-sm w-100">
+                                                                                    <i class="la la-paperclip"></i> Attach Test File
+                                                                                    <input type="file" class="d-none other-test-file"
+                                                                                        name="other_test_file[]" accept=".pdf,.doc,.docx">
+                                                                                </label>
                                                                             </div>
                                                                         </div>
                                                                         <div class="col-md-2">
@@ -605,16 +555,52 @@
                                                                                 </a>
                                                                             </div>
                                                                         </div>
+                                                                        <div class="col-md-12">
+                                                                            <?php if (!empty($testFile)): ?>
+                                                                                <div class="mt-1 p-2 border rounded existing-test-file-section">
+                                                                                    <div class="d-flex justify-content-between align-items-center">
+                                                                                        <small class="text-dark">
+                                                                                            <i class="la la-file-text text-primary"></i>
+                                                                                            <?= esc(basename($testFile)) ?>
+                                                                                        </small>
+                                                                                        <div class="d-flex gap-1">
+                                                                                            <a href="<?= base_url('recruitment/job-listing/download-other-test/' . $job->id . '/' . $index) ?>"
+                                                                                                class="btn btn-sm btn-outline-primary" target="_blank" title="Download">
+                                                                                                <i class="la la-download"></i>
+                                                                                            </a>
+                                                                                            <button type="button" class="btn btn-sm btn-outline-danger delete-other-test-file"
+                                                                                                data-index="<?= $index ?>" title="Delete">
+                                                                                                <i class="la la-trash"></i>
+                                                                                            </button>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <input type="hidden" class="remove-other-test-file"
+                                                                                    name="remove_other_test_file[<?= $index ?>]" value="0">
+                                                                            <?php endif; ?>
+                                                                            <small class="text-muted file-name-display d-block mt-1"></small>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             <?php endforeach;
                                                         else: ?>
+                                                            <!-- Empty repeater row -->
                                                             <div data-repeater-item>
                                                                 <div class="form-group row">
-                                                                    <div class="col-md-10">
+                                                                    <div class="col-md-6">
                                                                         <div class="form-floating mt-3">
                                                                             <input type="text" name="other_test" class="form-control" placeholder="Other Test">
                                                                             <label>Other Test <span class="text-danger"> *</span></label>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-4">
+                                                                        <div class="mt-3">
+                                                                            <label class="btn btn-outline-primary btn-sm w-100">
+                                                                                <i class="la la-paperclip"></i> Attach Test File
+                                                                                <input type="file" class="d-none other-test-file"
+                                                                                    name="other_test_file[]" accept=".pdf,.doc,.docx">
+                                                                            </label>
+                                                                            <small class="text-muted file-name-display d-block mt-1"></small>
                                                                         </div>
                                                                     </div>
                                                                     <div class="col-md-2">
@@ -655,8 +641,8 @@
                         <?php foreach ($employees as $employee): ?>
                             <option value="<?php echo $employee['id']; ?>" <?= $job->review_schedule_3m == $employee['id'] ? 'selected' : '' ?>><?= esc($employee['employee_name']) ?> (<?= esc($employee['company_short_name']) ?>)</option>
                         <?php endforeach; ?>
-                        <label for="review_schedule_3m">Review Schedule 3 Months With <span class="text-danger">* </span></label>
                     </select>
+                    <label for="review_schedule_3m">Candidate Review Schedule 3 Months With <span class="text-danger">* </span></label>
                 </div>
             </div>
             <div class="col-md-4">
@@ -669,8 +655,8 @@
                             <option value="<?php echo $employee['id']; ?>" <?= $job->review_schedule_6m == $employee['id'] ? 'selected' : '' ?>><?= esc($employee['employee_name']) ?> (<?= esc($employee['company_short_name']) ?>)</option>
 
                         <?php endforeach; ?>
-                        <label for="review_schedule_6m">Review Schedule 6 Months With <span class="text-danger">* </span></label>
                     </select>
+                    <label for="review_schedule_6m">Candidate Review Schedule 6 Months With <span class="text-danger">* </span></label>
                 </div>
             </div>
             <div class="col-md-4">
@@ -680,13 +666,9 @@
                         <option value="" disabled selected>Select Review Schedule 12 Months</option>
                         <?php foreach ($employees as $employee): ?>
                             <option value="<?php echo $employee['id']; ?>" <?= $job->review_schedule_12m == $employee['id'] ? 'selected' : '' ?>><?= esc($employee['employee_name']) ?> (<?= esc($employee['company_short_name']) ?>)</option>
-
-
-
-
                         <?php endforeach; ?>
-                        <label for="review_schedule_12m">Review Schedule 12 Months With <span class="text-danger">* </span></label>
                     </select>
+                    <label for="review_schedule_12m">Candidate Review Schedule 12 Months With <span class="text-danger">* </span></label>
                 </div>
             </div>
         </div>
@@ -797,74 +779,31 @@
     });
 
     $(document).ready(function() {
-        const shiftTimings = [{
-                id: "9:00 AM - 5:00 PM",
-                text: "9:00 AM - 5:00 PM (Day Shift)"
+        // Fetch shift timings from database
+        $.ajax({
+            url: '<?= base_url('recruitment/job-listing/get-shift-timings') ?>',
+            type: 'GET',
+            dataType: 'json',
+            success: function(shiftTimings) {
+                $('#shift_timing').select2({
+                    data: shiftTimings,
+                    placeholder: 'Select Shift Timing'
+                });
+
+                // Set the selected shift timing from database
+                var savedShiftTiming = "<?= esc($job->shift_timing ?? '') ?>";
+                if (savedShiftTiming) {
+                    $('#shift_timing').val(savedShiftTiming).trigger('change');
+                }
             },
-            {
-                id: "10:00 AM - 6:00 PM",
-                text: "10:00 AM - 6:00 PM (Day Shift)"
-            },
-            {
-                id: "11:00 AM - 7:00 PM",
-                text: "11:00 AM - 7:00 PM (Day Shift)"
-            },
-            {
-                id: "12:00 PM - 8:00 PM",
-                text: "12:00 PM - 8:00 PM (Afternoon Shift)"
-            },
-            {
-                id: "1:00 PM - 9:00 PM",
-                text: "1:00 PM - 9:00 PM (Afternoon Shift)"
-            },
-            {
-                id: "2:00 PM - 10:00 PM",
-                text: "2:00 PM - 10:00 PM (Evening Shift)"
-            },
-            {
-                id: "3:00 PM - 11:00 PM",
-                text: "3:00 PM - 11:00 PM (Evening Shift)"
-            },
-            {
-                id: "6:00 PM - 2:00 AM",
-                text: "6:00 PM - 2:00 AM (Night Shift)"
-            },
-            {
-                id: "10:00 PM - 6:00 AM",
-                text: "10:00 PM - 6:00 AM (Night Shift)"
-            },
-            {
-                id: "11:00 PM - 7:00 AM",
-                text: "11:00 PM - 7:00 AM (Night Shift)"
-            },
-            {
-                id: "8:00 AM - 5:00 PM",
-                text: "8:00 AM - 5:00 PM (Early Day Shift)"
-            },
-            {
-                id: "7:00 AM - 4:00 PM",
-                text: "7:00 AM - 4:00 PM (Early Day Shift)"
-            },
-            {
-                id: "Flexible",
-                text: "Flexible Timing"
-            },
-            {
-                id: "Rotational",
-                text: "Rotational Shifts"
+            error: function(xhr, status, error) {
+                console.error('Error fetching shift timings:', error);
+                // Fallback to empty select2 if fetch fails
+                $('#shift_timing').select2({
+                    placeholder: 'Select Shift Timing'
+                });
             }
-        ];
-
-        $('#shift_timing').select2({
-            data: shiftTimings,
-            placeholder: 'Select Shift Timing'
         });
-
-        // Set the selected shift timing from database
-        var savedShiftTiming = "<?= esc($job->shift_timing ?? '') ?>";
-        if (savedShiftTiming) {
-            $('#shift_timing').val(savedShiftTiming).trigger('change');
-        }
 
         const industries = [
             "Accounting", "Airlines/Aviation", "Alternative Dispute Resolution", "Alternative Medicine", "Animation",
@@ -947,12 +886,40 @@
         var $other_tests = $('#other_tests').repeater({
             initEmpty: false,
             show: function() {
-                $(this).slideDown();
+                var $item = $(this);
+                // Clear the text input so new row is blank
+                $item.find('input[name="other_test"]').val('');
+                // Remove cloned existing file section and hidden removal input from col-md-12
+                $item.find('.existing-test-file-section').remove();
+                $item.find('.remove-other-test-file').remove();
+                // Clear any cloned file name text
+                $item.find('.file-name-display').text('');
+                $item.slideDown();
             },
             hide: function(deleteElement) {
                 $(this).slideUp(deleteElement);
             },
             ready: function() {}
+        });
+
+        // File handling for Other Test files
+        // Display selected file name and hide existing file section
+        $(document).on('change', '.other-test-file', function() {
+            var fileName = $(this).val().split('\\').pop();
+            var $col12 = $(this).closest('[data-repeater-item]').find('.col-md-12');
+            $col12.find('.existing-test-file-section').hide();
+            $col12.find('.file-name-display').text(fileName ? fileName : '');
+        });
+
+        // Delete other test file
+        $(document).on('click', '.delete-other-test-file', function() {
+            if (confirm('Are you sure you want to delete this file?')) {
+                var $button = $(this);
+                // Mark for deletion
+                $button.closest('[data-repeater-item]').find('.remove-other-test-file').val('1');
+                // Hide the existing file section
+                $button.closest('.existing-test-file-section').hide();
+            }
         });
 
         if ($('input[name="technical_test"]:checked').val() === 'Yes') {

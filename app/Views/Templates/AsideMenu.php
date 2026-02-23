@@ -1251,7 +1251,24 @@
 									<span class="menu-title">Job Listing</span>
 								</a>
 							</div>
-
+							<?php if (in_array(session()->get('current_user')['role'], ['hr']) || session()->get('current_user')['employee_id'] == '40') { ?>
+								<div class="menu-item <?php
+														if (isset($current_method) && $current_method == 'task-dashboard') {
+															echo $current_method . 'active';
+														}
+														?>">
+									<a class="menu-link"
+										href="<?php echo base_url('/recruitment/task-dashboard'); ?>">
+										<span class="menu-bullet">
+											<span class="bullet bullet-dot"></span>
+										</span>
+										<span class="menu-title">Task Dashboard</span>
+									</a>
+								</div>
+							<?php
+							}
+							?>
+							
 
 						</div>
 					</div>

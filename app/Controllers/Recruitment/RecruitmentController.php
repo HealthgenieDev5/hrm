@@ -14,6 +14,11 @@ use App\Models\Recruitment\RcJobListingCommentModel;
 use App\Models\Recruitment\RcJobListingNotificationModel;
 use App\Models\Recruitment\RcJobClosureApprovalModel;
 //use App\Models\Recruitment\RcJobListingCommentReadsModel;
+use App\Models\Recruitment\RcRecruitmentTaskModel;
+use App\Models\Recruitment\RcRecruitmentTaskAssigneeModel;
+use App\Models\Recruitment\RcRecruitmentTaskRevisionModel;
+use App\Models\ShiftModel;
+use App\Models\ShiftPerDayModel;
 use PhpParser\Node\Expr\AssignOp\Concat;
 use \Dompdf\Options;
 
@@ -89,6 +94,40 @@ class RecruitmentController extends BaseController
         return $AllEmployees;
     }
 
+    public function getShiftTimings()
+    {
+        $shiftModel = new ShiftModel();
+        $ShiftPerDayModel = new ShiftPerDayModel();
+        $shifts = $shiftModel->findAll();
+        $shiftData = [];
+        if (!empty($shifts)) {
+            foreach ($shifts as $shift) {
+                $arrShiftTime = $ShiftPerDayModel
+                    ->where('shift_id', $shift['id'])
+                    ->where('day', 'monday')
+                    ->first();
+
+                if ($arrShiftTime['shift_start'] && $arrShiftTime['shift_end']) {
+                    $startTime = date('h:i A', strtotime($arrShiftTime['shift_start']));
+                    $endTime = date('h:i A', strtotime($arrShiftTime['shift_end']));
+                    $timing = $startTime . ' - ' . $endTime;
+                }
+
+                $shiftData[] = [
+                    'id' => $shift['id'],
+                    'text' => $timing . ' (' . $shift['shift_name'] . ')',
+                    'timing' => $timing
+                ];
+            }
+        }
+
+
+
+
+
+        return $this->response->setJSON($shiftData);
+    }
+
 
     public function store()
     {
@@ -129,13 +168,71 @@ class RecruitmentController extends BaseController
                 'tests' => $technicalTests
             ]);
 
+            // OLD CODE - Commented out for file upload implementation
+            // $otherTests = [];
+            // if ($this->request->getPost('other_test') === 'Yes') {
+            //     $otherTestsArray = $this->request->getPost('other_tests');
+            //     if ($otherTestsArray && is_array($otherTestsArray)) {
+            //         foreach ($otherTestsArray as $test) {
+            //             if (!empty($test['other_test'])) {
+            //                 $otherTests[] = $test['other_test'];
+            //             }
+            //         }
+            //     }
+            // }
+            //
+            // $data['other_test_required'] = json_encode([
+            //     'required' => $this->request->getPost('other_test') ?: 'No',
+            //     'tests' => $otherTests
+            // ]);
+
+            // NEW CODE - With file upload support
             $otherTests = [];
             if ($this->request->getPost('other_test') === 'Yes') {
                 $otherTestsArray = $this->request->getPost('other_tests');
+                $allFiles = $this->request->getFiles();
+
                 if ($otherTestsArray && is_array($otherTestsArray)) {
-                    foreach ($otherTestsArray as $test) {
+                    foreach ($otherTestsArray as $index => $test) {
                         if (!empty($test['other_test'])) {
-                            $otherTests[] = $test['other_test'];
+                            $testData = [
+                                'name' => $test['other_test'],
+                                'file' => ''
+                            ];
+
+                            // Check if file exists in the nested structure created by FormRepeater
+                            $file = null;
+                            if (isset($allFiles['other_tests'][$index]['other_test_file'])) {
+                                $file = $allFiles['other_tests'][$index]['other_test_file'];
+                            } elseif (isset($test['other_test_file'])) {
+                                $file = $test['other_test_file'];
+                            }
+
+                            if ($file && $file->isValid() && !$file->hasMoved()) {
+                                $validExtensions = ['pdf', 'doc', 'docx'];
+                                $maxSize = 5 * 1024 * 1024; // 5MB
+
+                                if (
+                                    in_array($file->getExtension(), $validExtensions) &&
+                                    $file->getSize() <= $maxSize
+                                ) {
+                                    $upload_folder = WRITEPATH . 'uploads/' . date('Y') . '/' . date('m');
+                                    if (!is_dir($upload_folder)) {
+                                        mkdir($upload_folder, 0777, true);
+                                    }
+
+                                    $newFileName = $file->getRandomName();
+                                    if ($file->move($upload_folder, $newFileName)) {
+                                        $testData['file'] = str_replace(
+                                            WRITEPATH,
+                                            "/",
+                                            $upload_folder . '/' . $newFileName
+                                        );
+                                    }
+                                }
+                            }
+
+                            $otherTests[] = $testData;
                         }
                     }
                 }
@@ -194,6 +291,7 @@ class RecruitmentController extends BaseController
                     return redirect()->back()->withInput()->with('errors', $this->jobListingModel->errors());
                 }
             }
+
 
             if (!empty($createdJobIds)) {
                 $successMessage = count($createdJobIds) > 1
@@ -363,6 +461,100 @@ class RecruitmentController extends BaseController
             $data['attachment'] = $oldJob->attachment;
         }
 
+        // Handle Other Test files
+        $otherTestsArray = $this->request->getPost('other_tests');
+        $allFiles = $this->request->getFiles();
+        $removeOtherTestFiles = $this->request->getPost('remove_other_test_file') ?? [];
+
+        $otherTests = [];
+        $oldOtherTestData = json_decode($oldJob->other_test_required ?? '{}', true);
+        $oldTests = $oldOtherTestData['tests'] ?? [];
+
+        if ($this->request->getPost('other_test') === 'Yes' && $otherTestsArray && is_array($otherTestsArray)) {
+            foreach ($otherTestsArray as $index => $test) {
+                if (!empty($test['other_test'])) {
+                    $testData = [
+                        'name' => $test['other_test'],
+                        'file' => ''
+                    ];
+
+                    // Check if marked for deletion
+                    if (isset($removeOtherTestFiles[$index]) && $removeOtherTestFiles[$index] == '1') {
+                        if (isset($oldTests[$index])) {
+                            $oldTestItem = $oldTests[$index];
+                            $oldFile = is_array($oldTestItem) ? ($oldTestItem['file'] ?? '') : '';
+
+                            if (!empty($oldFile)) {
+                                $oldFilePath = WRITEPATH . ltrim($oldFile, '/');
+                                if (file_exists($oldFilePath) && is_file($oldFilePath)) {
+                                    unlink($oldFilePath);
+                                }
+                            }
+                        }
+                    }
+                    // Check if new file uploaded (in nested structure from FormRepeater)
+                    else {
+                        $file = null;
+                        if (isset($allFiles['other_tests'][$index]['other_test_file'])) {
+                            $file = $allFiles['other_tests'][$index]['other_test_file'];
+                        } elseif (isset($test['other_test_file'])) {
+                            $file = $test['other_test_file'];
+                        }
+
+                        if ($file && $file->isValid() && !$file->hasMoved()) {
+                            $validExtensions = ['pdf', 'doc', 'docx'];
+                            $maxSize = 5 * 1024 * 1024; // 5MB
+
+                            if (
+                                in_array($file->getExtension(), $validExtensions) &&
+                                $file->getSize() <= $maxSize
+                            ) {
+
+                                $upload_folder = WRITEPATH . 'uploads/' . date('Y') . '/' . date('m');
+                                if (!is_dir($upload_folder)) {
+                                    mkdir($upload_folder, 0777, true);
+                                }
+
+                                $newFileName = $file->getRandomName();
+                                if ($file->move($upload_folder, $newFileName)) {
+                                    // Delete old file if exists
+                                    if (isset($oldTests[$index])) {
+                                        $oldTestItem = $oldTests[$index];
+                                        $oldFile = is_array($oldTestItem) ? ($oldTestItem['file'] ?? '') : '';
+
+                                        if (!empty($oldFile)) {
+                                            $oldFilePath = WRITEPATH . ltrim($oldFile, '/');
+                                            if (file_exists($oldFilePath) && is_file($oldFilePath)) {
+                                                unlink($oldFilePath);
+                                            }
+                                        }
+                                    }
+
+                                    $testData['file'] = str_replace(
+                                        WRITEPATH,
+                                        "/",
+                                        $upload_folder . '/' . $newFileName
+                                    );
+                                }
+                            }
+                        }
+                        // Keep existing file if no new file uploaded
+                        elseif (isset($oldTests[$index])) {
+                            $oldTestItem = $oldTests[$index];
+                            $testData['file'] = is_array($oldTestItem) ? ($oldTestItem['file'] ?? '') : '';
+                        }
+                    }
+
+                    $otherTests[] = $testData;
+                }
+            }
+        }
+
+        $data['other_test_required'] = json_encode([
+            'required' => $this->request->getPost('other_test') ?: 'No',
+            'tests' => $otherTests
+        ]);
+
 
         // $data['job_description'] = json_encode([
         //     'points' => $this->request->getPost('job_description')
@@ -441,6 +633,38 @@ class RecruitmentController extends BaseController
 
         return $this->response->download($fullPath, null)->setFileName(basename($filePath));
     }
+
+
+    // public function downloadOtherTest($jobId, $testIndex)
+    // {
+    //     $job = $this->jobListingModel->asObject()->find($jobId);
+
+    //     if (!$job || empty($job->other_test_required)) {
+    //         return redirect()->back()->with('error', 'Test file not found.');
+    //     }
+
+    //     $otherTestData = json_decode($job->other_test_required, true);
+    //     $tests = $otherTestData['tests'] ?? [];
+
+    //     if (!isset($tests[$testIndex])) {
+    //         return redirect()->back()->with('error', 'Test index not found.');
+    //     }
+
+    //     $testItem = $tests[$testIndex];
+    //     $filePath = is_array($testItem) ? ($testItem['file'] ?? '') : '';
+
+    //     if (empty($filePath)) {
+    //         return redirect()->back()->with('error', 'No file attached to this test.');
+    //     }
+
+    //     $fullPath = WRITEPATH . ltrim($filePath, '/');
+
+    //     if (!file_exists($fullPath) || !is_file($fullPath)) {
+    //         return redirect()->back()->with('error', 'File not found on server.');
+    //     }
+
+    //     return $this->response->download($fullPath, null)->setFileName(basename($filePath));
+    // }
 
 
     public function downloadJobOpeningPdf($id)
@@ -702,7 +926,14 @@ class RecruitmentController extends BaseController
                 $updateData = [
                     'approved_by_hr_executive' => $currentUserId
                 ];
-                $notifyUserId = $job['department_hod_id'];
+
+                // Auto-approve HOD step if the job creator is the department HOD
+                if (!empty($job['department_hod_id']) && $job['created_by'] == $job['department_hod_id']) {
+                    $updateData['approved_by_hod'] = $job['department_hod_id'];
+                    $notifyUserId = $this->hrManagerId;
+                } else {
+                    $notifyUserId = $job['department_hod_id'];
+                }
                 break;
 
             case 'hod':
@@ -720,8 +951,12 @@ class RecruitmentController extends BaseController
                 if (empty($job['approved_by_hod'])) return $this->fail('HOD approval required first');
                 if (!empty($job['approved_by_hr_manager'])) return $this->fail('Already approved by HR Manager');
 
-                $jobOpeningDate = $this->request->getPost('job_opening_date');
-                if (!$jobOpeningDate) return $this->fail('Job opening date is required');
+                // OLD CODE - Commented out: Job opening date was manually entered by HR Manager
+                // $jobOpeningDate = $this->request->getPost('job_opening_date');
+                // if (!$jobOpeningDate) return $this->fail('Job opening date is required');
+
+                // NEW CODE: HR Manager approval date is automatically used as the official Job Opening Date
+                $jobOpeningDate = date('Y-m-d');
 
                 $updateData = [
                     'approved_by_hr_manager' => $currentUserId,
@@ -1373,5 +1608,624 @@ class RecruitmentController extends BaseController
     {
         $job = $this->jobListingModel->getJobWithDetails($jobId);
         return $job ? ($job->department_hod_id ?: $job->reporting_to) : null;
+    }
+
+    // ─── Recruitment Task Assignment ─────────────────────────────────────────
+
+    private const TASK_TYPES = [
+        'Source Candidates',
+        'Screen Resumes / CVs',
+        'Schedule Interviews',
+        'Conduct Telephonic Screening',
+        'Send Job Offer Letter',
+        'Background Verification',
+        'Collect Interview Feedback',
+        'Job Portal Posting / Update',
+        'Follow-up with Candidates',
+        'Reference Check',
+        'Coordinate with Department HOD',
+    ];
+
+    /**
+     * GET /recruitment/job-listing/tasks/hr-employees
+     * Returns active HR employees (excluding ID 52) for Select2.
+     */
+    public function getHrEmployees()
+    {
+        $currentUser = $this->session->get('current_user');
+        if (!in_array($currentUser['role'], ['superuser', 'hr', 'manager', 'hod', 'tl'])) {
+            return $this->response->setJSON(['success' => false, 'message' => 'Unauthorized'])->setStatusCode(403);
+        }
+
+        $employeeModel = new EmployeeModel();
+        $date45 = date('Y-m-d', strtotime('-45 days'));
+
+        $employees = $employeeModel
+            ->select("employees.id, TRIM(CONCAT(employees.first_name, ' ', employees.last_name)) as employee_name")
+            ->where('employees.role', 'hr')
+            ->where('employees.id !=', $this->hrExecutive)
+            ->groupStart()
+            ->where('employees.date_of_leaving IS NULL')
+            ->orWhere("employees.date_of_leaving >=", $date45)
+            ->groupEnd()
+            ->orderBy('employees.first_name', 'ASC')
+            ->findAll();
+
+        $result = array_map(fn($e) => ['id' => $e['id'], 'text' => $e['employee_name']], $employees);
+
+        return $this->response->setJSON(['success' => true, 'data' => $result]);
+    }
+
+    /**
+     * POST /recruitment/job-listing/tasks/assign
+     * Creates a task header + one assignee row per selected HR member.
+     */
+    public function assignTask()
+    {
+        $currentUserId = (int) $this->session->get('current_user')['employee_id'];
+
+        if ($currentUserId !== $this->hrExecutive) {
+            return $this->response->setJSON(['success' => false, 'message' => 'Only the HR Executive can assign tasks.'])->setStatusCode(403);
+        }
+
+        $jobListingId = (int) $this->request->getPost('job_listing_id');
+        $taskType     = $this->request->getPost('task_type');
+        $remarks      = $this->request->getPost('remarks');
+        $dueDate      = $this->request->getPost('due_date');
+        $assignedToIds = $this->request->getPost('assigned_to');
+
+        if (!$jobListingId || !$taskType || empty($assignedToIds) || !$dueDate) {
+            return $this->response->setJSON(['success' => false, 'message' => 'task_type, assigned_to[], and due_date are required.']);
+        }
+
+        if (!in_array($taskType, self::TASK_TYPES)) {
+            return $this->response->setJSON(['success' => false, 'message' => 'Invalid task type.']);
+        }
+
+        // Job must be fully approved
+        $job = $this->jobListingModel->find($jobListingId);
+        if (!$job || empty($job['approved_by_hr_manager'])) {
+            return $this->response->setJSON(['success' => false, 'message' => 'Job is not fully approved yet.']);
+        }
+
+        // Validate each assignee: active HR, not ID 52
+        $date45 = date('Y-m-d', strtotime('-45 days'));
+        $employeeModel = new EmployeeModel();
+        foreach ($assignedToIds as $assigneeId) {
+            $assigneeId = (int) $assigneeId;
+            if ($assigneeId === $this->hrExecutive) {
+                return $this->response->setJSON(['success' => false, 'message' => 'Cannot assign task to the HR Executive themselves.']);
+            }
+            $emp = $employeeModel
+                ->where('id', $assigneeId)
+                ->where('role', 'hr')
+                ->groupStart()
+                ->where('date_of_leaving IS NULL')
+                ->orWhere('date_of_leaving >=', $date45)
+                ->groupEnd()
+                ->first();
+            if (!$emp) {
+                return $this->response->setJSON(['success' => false, 'message' => "Assignee ID {$assigneeId} is not a valid active HR employee."]);
+            }
+        }
+
+        $taskModel = new RcRecruitmentTaskModel();
+        $taskId = $taskModel->insert([
+            'job_listing_id' => $jobListingId,
+            'task_type'      => $taskType,
+            'remarks'        => $remarks ?: null,
+            'assigned_date'  => date('Y-m-d'),
+            'due_date'       => $dueDate,
+            'assigned_by'    => $this->hrExecutive,
+        ]);
+
+        if (!$taskId) {
+            return $this->response->setJSON(['success' => false, 'message' => 'Failed to create task.']);
+        }
+
+        $assigneeModel  = new RcRecruitmentTaskAssigneeModel();
+        $revisionModel  = new RcRecruitmentTaskRevisionModel();
+
+        // Task-level creation revision
+        $revisionModel->insert([
+            'task_id'     => $taskId,
+            'assignee_id' => null,
+            'field_name'  => 'task_created',
+            'old_value'   => null,
+            'new_value'   => $taskType,
+            'updated_by'  => $currentUserId,
+        ]);
+
+        foreach ($assignedToIds as $assigneeId) {
+            $newAssigneeRowId = $assigneeModel->insert([
+                'task_id'     => $taskId,
+                'assigned_to' => (int) $assigneeId,
+                'status'      => 'pending',
+            ]);
+
+            $revisionModel->insert([
+                'task_id'     => $taskId,
+                'assignee_id' => $newAssigneeRowId,
+                'field_name'  => 'assignee_added',
+                'old_value'   => null,
+                'new_value'   => (string) (int) $assigneeId,
+                'updated_by'  => $currentUserId,
+            ]);
+        }
+
+        return $this->response->setJSON(['success' => true, 'message' => 'Task assigned successfully.', 'task_id' => $taskId]);
+    }
+
+    /**
+     * GET /recruitment/job-listing/tasks/(:num)
+     * Returns tasks with nested assignees for a job.
+     */
+    public function getJobTasks($jobId)
+    {
+        $currentUser = $this->session->get('current_user');
+        if (!in_array($currentUser['role'], ['superuser', 'hr', 'manager', 'hod', 'tl'])) {
+            return $this->response->setJSON(['success' => false, 'message' => 'Unauthorized'])->setStatusCode(403);
+        }
+
+        $taskModel = new RcRecruitmentTaskModel();
+        $tasks = $taskModel->getTasksForJob((int) $jobId);
+
+        return $this->response->setJSON(['success' => true, 'data' => $tasks]);
+    }
+
+    /**
+     * POST /recruitment/job-listing/tasks/update-status
+     * Assignee updates their own status on a task.
+     */
+    public function updateTaskStatus()
+    {
+        $currentUserId = (int) $this->session->get('current_user')['employee_id'];
+        $assigneeRecordId = (int) $this->request->getPost('assignee_record_id');
+        $newStatus = $this->request->getPost('status');
+
+        if (!in_array($newStatus, ['pending', 'in_progress', 'completed'])) {
+            return $this->response->setJSON(['success' => false, 'message' => 'Invalid status value.']);
+        }
+
+        $assigneeModel = new RcRecruitmentTaskAssigneeModel();
+        $record = $assigneeModel->find($assigneeRecordId);
+
+        if (!$record) {
+            return $this->response->setJSON(['success' => false, 'message' => 'Assignee record not found.']);
+        }
+
+        if ((int) $record['assigned_to'] !== $currentUserId) {
+            return $this->response->setJSON(['success' => false, 'message' => 'You can only update your own task status.'])->setStatusCode(403);
+        }
+
+        $oldStatus = $record['status'];
+        $assigneeModel->update($assigneeRecordId, ['status' => $newStatus]);
+
+        if ($oldStatus !== $newStatus) {
+            $revisionModel = new RcRecruitmentTaskRevisionModel();
+            $revisionModel->insert([
+                'task_id'     => (int) $record['task_id'],
+                'assignee_id' => $assigneeRecordId,
+                'field_name'  => 'status',
+                'old_value'   => $oldStatus,
+                'new_value'   => $newStatus,
+                'updated_by'  => $currentUserId,
+            ]);
+        }
+
+        return $this->response->setJSON(['success' => true, 'message' => 'Status updated successfully.']);
+    }
+
+    /**
+     * POST /recruitment/job-listing/tasks/reassign
+     * HR Executive reassigns a task to a different HR member.
+     */
+    public function reassignTask()
+    {
+        $currentUserId = (int) $this->session->get('current_user')['employee_id'];
+
+        if ($currentUserId !== $this->hrExecutive) {
+            return $this->response->setJSON(['success' => false, 'message' => 'Only the HR Executive can reassign tasks.'])->setStatusCode(403);
+        }
+
+        $assigneeRecordId = (int) $this->request->getPost('assignee_record_id');
+        $newAssignedTo    = (int) $this->request->getPost('new_assigned_to');
+
+        if (!$assigneeRecordId || !$newAssignedTo) {
+            return $this->response->setJSON(['success' => false, 'message' => 'assignee_record_id and new_assigned_to are required.']);
+        }
+
+        if ($newAssignedTo === $this->hrExecutive) {
+            return $this->response->setJSON(['success' => false, 'message' => 'Cannot reassign to the HR Executive themselves.']);
+        }
+
+        // Validate new assignee is active HR
+        $date45 = date('Y-m-d', strtotime('-45 days'));
+        $employeeModel = new EmployeeModel();
+        $emp = $employeeModel
+            ->where('id', $newAssignedTo)
+            ->where('role', 'hr')
+            ->groupStart()
+            ->where('date_of_leaving IS NULL')
+            ->orWhere('date_of_leaving >=', $date45)
+            ->groupEnd()
+            ->first();
+
+        if (!$emp) {
+            return $this->response->setJSON(['success' => false, 'message' => 'New assignee is not a valid active HR employee.']);
+        }
+
+        $assigneeModel = new RcRecruitmentTaskAssigneeModel();
+        $record = $assigneeModel->find($assigneeRecordId);
+
+        if (!$record) {
+            return $this->response->setJSON(['success' => false, 'message' => 'Assignee record not found.']);
+        }
+
+        $oldAssignedTo = (string) $record['assigned_to'];
+        $oldStatus     = $record['status'];
+
+        $assigneeModel->update($assigneeRecordId, [
+            'assigned_to' => $newAssignedTo,
+            'status'      => 'pending',
+        ]);
+
+        $revisionModel = new RcRecruitmentTaskRevisionModel();
+        $revisionModel->insert([
+            'task_id'     => (int) $record['task_id'],
+            'assignee_id' => $assigneeRecordId,
+            'field_name'  => 'assigned_to',
+            'old_value'   => $oldAssignedTo,
+            'new_value'   => (string) $newAssignedTo,
+            'updated_by'  => $currentUserId,
+        ]);
+
+        if ($oldStatus !== 'pending') {
+            $revisionModel->insert([
+                'task_id'     => (int) $record['task_id'],
+                'assignee_id' => $assigneeRecordId,
+                'field_name'  => 'status',
+                'old_value'   => $oldStatus,
+                'new_value'   => 'pending',
+                'updated_by'  => $currentUserId,
+            ]);
+        }
+
+        return $this->response->setJSON(['success' => true, 'message' => 'Task reassigned successfully.']);
+    }
+
+    /**
+     * POST /recruitment/job-listing/tasks/edit
+     * HR Executive edits an existing task's type, remarks, and due date.
+     */
+    public function editTask()
+    {
+        $currentUserId = (int) $this->session->get('current_user')['employee_id'];
+
+        if ($currentUserId !== $this->hrExecutive) {
+            return $this->response->setJSON(['success' => false, 'message' => 'Only the HR Executive can edit tasks.'])->setStatusCode(403);
+        }
+
+        $taskId   = (int) $this->request->getPost('task_id');
+        $taskType = $this->request->getPost('task_type');
+        $remarks  = $this->request->getPost('remarks');
+        $dueDate  = $this->request->getPost('due_date');
+
+        if (!$taskId || !$taskType || !$dueDate) {
+            return $this->response->setJSON(['success' => false, 'message' => 'task_id, task_type, and due_date are required.']);
+        }
+
+        if (!in_array($taskType, self::TASK_TYPES)) {
+            return $this->response->setJSON(['success' => false, 'message' => 'Invalid task type.']);
+        }
+
+        $taskModel = new RcRecruitmentTaskModel();
+        $task = $taskModel->find($taskId);
+
+        if (!$task) {
+            return $this->response->setJSON(['success' => false, 'message' => 'Task not found.']);
+        }
+
+        $newValues = [
+            'task_type' => $taskType,
+            'remarks'   => $remarks ?: null,
+            'due_date'  => $dueDate,
+        ];
+
+        // Collect changed fields before updating
+        $revisionModel = new RcRecruitmentTaskRevisionModel();
+        foreach (['task_type', 'remarks', 'due_date'] as $field) {
+            $oldVal = $task[$field] !== '' ? $task[$field] : null;
+            $newVal = $newValues[$field] !== '' ? $newValues[$field] : null;
+            if ($oldVal !== $newVal) {
+                $revisionModel->insert([
+                    'task_id'     => $taskId,
+                    'assignee_id' => null,
+                    'field_name'  => $field,
+                    'old_value'   => $oldVal,
+                    'new_value'   => $newVal,
+                    'updated_by'  => $currentUserId,
+                ]);
+            }
+        }
+
+        $taskModel->update($taskId, $newValues);
+
+        return $this->response->setJSON(['success' => true, 'message' => 'Task updated successfully.']);
+    }
+
+    /**
+     * GET /recruitment/job-listing/tasks/revisions/(:num)
+     * Returns the revision history for a task.
+     */
+    public function getTaskRevisions(int $taskId)
+    {
+        $currentUser = $this->session->get('current_user');
+        if (!in_array($currentUser['role'], ['superuser', 'hr', 'manager', 'hod', 'tl'])) {
+            return $this->response->setJSON(['success' => false, 'message' => 'Unauthorized'])->setStatusCode(403);
+        }
+
+        $db = \Config\Database::connect();
+
+        $revisions = $db->table('rc_recruitment_task_revisions r')
+            ->select([
+                'r.id',
+                'r.task_id',
+                'r.assignee_id',
+                'r.field_name',
+                'r.old_value',
+                'r.new_value',
+                'r.updated_by',
+                'r.created_at',
+                "TRIM(CONCAT(actor.first_name, ' ', actor.last_name)) AS updated_by_name",
+                "TRIM(CONCAT(old_emp.first_name, ' ', old_emp.last_name)) AS old_employee_name",
+                "TRIM(CONCAT(new_emp.first_name, ' ', new_emp.last_name)) AS new_employee_name",
+            ])
+            ->join('employees actor', 'actor.id = r.updated_by', 'left')
+            ->join('employees old_emp', "old_emp.id = r.old_value AND r.field_name IN ('assigned_to', 'assignee_added')", 'left')
+            ->join('employees new_emp', "new_emp.id = r.new_value AND r.field_name IN ('assigned_to', 'assignee_added')", 'left')
+            ->where('r.task_id', $taskId)
+            ->orderBy('r.created_at', 'DESC')
+            ->get()
+            ->getResultArray();
+
+        return $this->response->setJSON(['success' => true, 'data' => $revisions]);
+    }
+
+    // ─── Recruitment Task Dashboard ───────────────────────────────────────────
+
+    /**
+     * GET /recruitment/task-dashboard
+     * Renders the recruitment task dashboard view.
+     */
+    public function taskDashboard()
+    {
+        $currentUser = $this->session->get('current_user');
+        if (!in_array($currentUser['role'], ['superuser', 'hr', 'manager', 'hod', 'tl'])) {
+            return redirect()->to(base_url('/unauthorised'));
+        }
+
+        return view('Recruitment/TaskDashboard', [
+            'page_title'      => 'Recruitment Task Dashboard',
+            'task_types'      => self::TASK_TYPES,
+            'hr_executive'    => $this->hrExecutive,
+            'current_user_id' => (int) $currentUser['employee_id'],
+        ]);
+    }
+
+    /**
+     * GET /recruitment/task-dashboard/tasks
+     * Returns tasks with nested assignees and summary counts (AJAX).
+     */
+    public function getDashboardTasks()
+    {
+        $currentUser = $this->session->get('current_user');
+        if (!in_array($currentUser['role'], ['superuser', 'hr', 'manager', 'hod', 'tl'])) {
+            return $this->response->setJSON(['success' => false, 'message' => 'Unauthorized'])->setStatusCode(403);
+        }
+
+        $currentUserId = (int) $currentUser['employee_id'];
+        $isManager     = ($currentUserId === $this->hrExecutive);
+
+        // Parse and validate query params
+        $statusParam = $this->request->getGet('status') ?: 'pending,in_progress';
+        $rawStatuses = array_filter(array_map('trim', explode(',', $statusParam)));
+        $validStatuses = ['pending', 'in_progress', 'completed'];
+        $statuses = array_values(array_filter($rawStatuses, fn($s) => in_array($s, $validStatuses)));
+
+        $taskType    = $this->request->getGet('task_type') ?: null;
+        $dueDateFrom = $this->request->getGet('due_date_from') ?: null;
+        $dueDateTo   = $this->request->getGet('due_date_to') ?: null;
+        $assignedTo  = $isManager ? (int) ($this->request->getGet('assigned_to') ?: 0) : 0;
+
+        $db = \Config\Database::connect();
+
+        $builder = $db->table('rc_recruitment_tasks t')
+            ->select([
+                't.id AS task_id',
+                't.job_listing_id',
+                't.task_type',
+                't.remarks',
+                't.assigned_date',
+                't.due_date',
+                't.assigned_by',
+                "TRIM(CONCAT(assigner.first_name, ' ', assigner.last_name)) AS assigned_by_name",
+                'j.job_title',
+                'c.company_short_name AS company_name',
+                'd.department_name',
+            ])
+            ->join('rc_job_listing j',   'j.id = t.job_listing_id',   'left')
+            ->join('companies c',         'c.id = j.company_id',       'left')
+            ->join('departments d',       'd.id = j.department_id',    'left')
+            ->join('employees assigner',  'assigner.id = t.assigned_by', 'left');
+
+        // Build whitelisted status list for safe EXISTS sub-query
+        $statusList = !empty($statuses) ? implode("','", $statuses) : '';
+
+        if (!$isManager) {
+            // HR: only tasks where they are an assignee with a matching status
+            $statusClause = $statusList ? "AND rta.status IN ('{$statusList}')" : '';
+            $builder->where("EXISTS (
+                SELECT 1 FROM rc_recruitment_task_assignees rta
+                WHERE rta.task_id = t.id
+                  AND rta.assigned_to = {$currentUserId}
+                  {$statusClause}
+            )");
+        } else {
+            // Manager: optionally filter by assigned_to and/or status (any assignee)
+            $assigneeWhere = '';
+            if ($assignedTo) {
+                $assigneeWhere .= " AND rta.assigned_to = {$assignedTo}";
+            }
+            if ($statusList) {
+                $assigneeWhere .= " AND rta.status IN ('{$statusList}')";
+            }
+            if ($assigneeWhere) {
+                $builder->where("EXISTS (
+                    SELECT 1 FROM rc_recruitment_task_assignees rta
+                    WHERE rta.task_id = t.id
+                    {$assigneeWhere}
+                )");
+            }
+        }
+
+        if ($taskType && in_array($taskType, self::TASK_TYPES)) {
+            $builder->where('t.task_type', $taskType);
+        }
+        if ($dueDateFrom) {
+            $builder->where('t.due_date >=', $dueDateFrom);
+        }
+        if ($dueDateTo) {
+            $builder->where('t.due_date <=', $dueDateTo);
+        }
+
+        $builder->orderBy('t.due_date', 'ASC')->orderBy('t.created_at', 'DESC');
+        $tasks = $builder->get()->getResultArray();
+
+        if (empty($tasks)) {
+            return $this->response->setJSON([
+                'success' => true,
+                'data'    => [],
+                'summary' => ['total' => 0, 'pending' => 0, 'in_progress' => 0, 'overdue' => 0],
+            ]);
+        }
+
+        $taskIds = array_column($tasks, 'task_id');
+
+        // Query 2: fetch all assignees for these task IDs in one shot (avoids N+1)
+        $assigneeModel = new RcRecruitmentTaskAssigneeModel();
+        $allAssignees = $assigneeModel
+            ->select('rc_recruitment_task_assignees.*')
+            ->select("TRIM(CONCAT(e.first_name, ' ', e.last_name)) AS assigned_to_name")
+            ->join('employees as e', 'e.id = rc_recruitment_task_assignees.assigned_to', 'left')
+            ->whereIn('rc_recruitment_task_assignees.task_id', $taskIds)
+            ->findAll();
+
+        // Group assignees by task_id
+        $assigneeMap = [];
+        foreach ($allAssignees as $assignee) {
+            $assigneeMap[$assignee['task_id']][] = $assignee;
+        }
+
+        $today  = date('Y-m-d');
+        $result = [];
+        foreach ($tasks as $task) {
+            $taskAssignees = $assigneeMap[$task['task_id']] ?? [];
+            $allDone = !empty($taskAssignees) && array_reduce(
+                $taskAssignees,
+                fn($carry, $a) => $carry && ($a['status'] === 'completed'),
+                true
+            );
+            $isOverdue = $task['due_date'] < $today && !$allDone;
+
+            $result[] = [
+                'task_id'          => (int) $task['task_id'],
+                'job_listing_id'   => (int) $task['job_listing_id'],
+                'task_type'        => $task['task_type'],
+                'remarks'          => $task['remarks'],
+                'assigned_date'    => $task['assigned_date'],
+                'due_date'         => $task['due_date'],
+                'assigned_by'      => (int) $task['assigned_by'],
+                'assigned_by_name' => $task['assigned_by_name'],
+                'job_title'        => $task['job_title'],
+                'company_name'     => $task['company_name'],
+                'department_name'  => $task['department_name'],
+                'assignees'        => $taskAssignees,
+                'is_overdue'       => $isOverdue,
+            ];
+        }
+
+        return $this->response->setJSON([
+            'success' => true,
+            'data'    => $result,
+            'summary' => $this->buildSummary($result),
+        ]);
+    }
+
+    /**
+     * Builds summary counts from the already-hydrated task result array.
+     */
+    private function buildSummary(array $tasks): array
+    {
+        $total      = count($tasks);
+        $pending    = 0;
+        $inProgress = 0;
+        $overdue    = 0;
+
+        foreach ($tasks as $task) {
+            if ($task['is_overdue']) {
+                $overdue++;
+            }
+            $hasPending    = false;
+            $hasInProgress = false;
+            foreach ($task['assignees'] as $a) {
+                if ($a['status'] === 'pending')     $hasPending    = true;
+                if ($a['status'] === 'in_progress') $hasInProgress = true;
+            }
+            if ($hasPending)    $pending++;
+            if ($hasInProgress) $inProgress++;
+        }
+
+        return [
+            'total'       => $total,
+            'pending'     => $pending,
+            'in_progress' => $inProgress,
+            'overdue'     => $overdue,
+        ];
+    }
+
+    /**
+     * GET /recruitment/task-dashboard/job-listings
+     * Returns Select2-compatible list of approved open job listings (manager only).
+     */
+    public function getApprovedJobListings()
+    {
+        $currentUser = $this->session->get('current_user');
+        if ((int) $currentUser['employee_id'] !== $this->hrExecutive) {
+            return $this->response->setJSON(['success' => false, 'results' => []])->setStatusCode(403);
+        }
+
+        $q = $this->request->getGet('q') ?: '';
+
+        $builder = $this->jobListingModel
+            ->select('rc_job_listing.id, rc_job_listing.job_title, companies.company_short_name')
+            ->join('companies', 'companies.id = rc_job_listing.company_id', 'left')
+            ->where('rc_job_listing.approved_by_hr_manager IS NOT NULL')
+            ->whereIn('rc_job_listing.status', ['open', 'partially closed'])
+            ->orderBy('rc_job_listing.created_at', 'DESC')
+            ->limit(50);
+
+        if ($q) {
+            $builder->like('rc_job_listing.job_title', $q);
+        }
+
+        $jobs = $builder->findAll();
+
+        $results = array_map(fn($j) => [
+            'id'   => $j['id'],
+            'text' => $j['job_title'] . ' — ' . ($j['company_short_name'] ?? ''),
+        ], $jobs);
+
+        return $this->response->setJSON(['success' => true, 'results' => $results]);
     }
 }

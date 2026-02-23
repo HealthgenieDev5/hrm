@@ -116,7 +116,7 @@
         <table>
             <tr>
                 <td rowspan="4" style="width:20%; text-align:center; vertical-align:middle;">
-                    <img src="<?= esc($job->logo) ?>" alt="<?= esc($job->company_name) ?>" class="logo">
+                    <img src="<?= base_url('assets/media/company-logo/gstc_logo_1.png') ?>" alt="GSTC" class="logo">
                 </td>
 
                 <td rowspan="2" colspan="2" style="text-align:center; font-weight:bold;">FORMAT</td>
@@ -251,7 +251,18 @@
                     if (is_array($otherTest) && isset($otherTest['required'])) {
                         echo esc($otherTest['required']);
                         if ($otherTest['required'] === 'Yes' && isset($otherTest['tests']) && is_array($otherTest['tests'])) {
-                            echo ' - ' . esc(implode(' | ', $otherTest['tests']));
+                            // Handle both old (string array) and new (object array) formats
+                            $testNames = [];
+                            foreach ($otherTest['tests'] as $test) {
+                                if (is_array($test)) {
+                                    // New format: {"name": "test", "file": "..."}
+                                    $testNames[] = $test['name'] ?? '';
+                                } else {
+                                    // Old format: "test"
+                                    $testNames[] = $test;
+                                }
+                            }
+                            echo ' - ' . esc(implode(' | ', array_filter($testNames)));
                         }
                     }
 

@@ -124,7 +124,7 @@
         <table class="header-table">
             <tr>
                 <td rowspan="4" style="width:20%; text-align:center; vertical-align:middle;">
-                    <img src="<?= esc($job->logo ?? '') ?>" alt="<?= esc($job->company_name ?? '') ?>" class="logo">
+                    <img src="<?= base_url('assets/media/company-logo/gstc_logo_1.png') ?>" alt="GSTC" class="logo">
                 </td>
                 <td rowspan="2" colspan="2" style="text-align:center; font-weight:bold;">FORMAT</td>
                 <td style="font-weight:bold;">Doc. No.</td>

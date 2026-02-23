@@ -560,6 +560,7 @@
 
                                 <!-- Tests -->
                                 <div class="tab-pane fade" id="tests<?= $job->id ?>">
+                                    <?php /* Technical Test - commented out
                                     <p>
                                         <i class="bi bi-clipboard-check text-muted me-1" data-bs-toggle="tooltip" title="Technical Test"></i>
                                         <strong>Technical Test:</strong>
@@ -575,6 +576,7 @@
                                         }
                                         ?>
                                     </p>
+                                    */ ?>
                                     <p>
                                         <i class="bi bi-lightbulb text-muted me-1" data-bs-toggle="tooltip" title="IQ Test"></i>
                                         <strong>IQ Test:</strong>
@@ -598,7 +600,7 @@
                                         echo $operationTest['required'];
                                         ?>
                                     </p>
-                                    <p>
+                                    <div>
                                         <i class="bi bi-plus-circle text-muted me-1" data-bs-toggle="tooltip" title="Other Tests"></i>
                                         <strong>Any Other Test Required:</strong>
                                         <?php
@@ -606,12 +608,27 @@
                                         if (is_array($otherTest) && isset($otherTest['required'])) {
                                             echo esc($otherTest['required']);
                                             if ($otherTest['required'] === 'Yes' && isset($otherTest['tests']) && is_array($otherTest['tests'])) {
-                                                echo ' - ' . esc(implode(' | ', $otherTest['tests']));
+                                                echo '<ul class="mt-1 mb-0">';
+                                                foreach ($otherTest['tests'] as $test) {
+                                                    if (is_array($test)) {
+                                                        // New format: {"name": "test", "file": "..."}
+                                                        $testName = esc($test['name'] ?? '');
+                                                        $testFile = $test['file'] ?? '';
+                                                        echo '<li>' . $testName;
+                                                        if (!empty($testFile)) {
+                                                            echo ' <a href="' . base_url($testFile) . '" target="_blank" class="ms-2"><i class="bi bi-file-earmark-arrow-down"></i> View File</a>';
+                                                        }
+                                                        echo '</li>';
+                                                    } else {
+                                                        // Old format: "test"
+                                                        echo '<li>' . esc($test) . '</li>';
+                                                    }
+                                                }
+                                                echo '</ul>';
                                             }
                                         }
-
                                         ?>
-                                    </p>
+                                    </div>
                                 </div>
 
                                 <!-- Review -->
@@ -793,6 +810,58 @@
 
 
                 </div>
+
+                <?php if (!empty($hrExecutive) && !empty($hodApproval) && !empty($hrManager)): ?>
+                    <!-- Recruitment Tasks Card -->
+                    <div class="card card-flush mt-6 mb-6">
+                        <div class="card-header d-flex align-items-center py-5 gap-2 justify-content-between">
+                            <div class="card-title">
+                                <h3 class="fw-bold m-0">
+                                    <i class="fas fa-tasks text-primary me-2"></i>Recruitment Tasks
+                                </h3>
+                            </div>
+                            <div class="card-toolbar">
+                                <?php if ($currentUser == $hr_executive): ?>
+                                    <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#assignTaskModal">
+                                        <i class="fas fa-plus me-1"></i>Assign Task
+                                    </button>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                        <div class="card-body pt-0">
+                            <!-- Loading spinner -->
+                            <div id="tasks-loading" class="text-center py-6 d-none">
+                                <div class="spinner-border text-primary" role="status"></div>
+                                <p class="mt-2 text-muted">Loading tasks…</p>
+                            </div>
+                            <!-- Empty state -->
+                            <div id="tasks-empty" class="text-center py-6 d-none">
+                                <i class="fas fa-clipboard-list fa-2x text-muted mb-3"></i>
+                                <p class="text-muted fw-semibold">No tasks assigned yet</p>
+                            </div>
+                            <!-- Tasks table -->
+                            <div id="tasks-table-wrapper" class="d-none">
+                                <div class="table-responsive">
+                                    <table class="table table-row-dashed table-row-gray-200 align-middle gs-0 gy-3" id="tasks-table">
+                                        <thead>
+                                            <tr class="fw-bold text-muted bg-light">
+                                                <th class="ps-4 rounded-start">#</th>
+                                                <th>Task Type</th>
+                                                <th>Remarks</th>
+                                                <th>Assigned Date</th>
+                                                <th>Due Date</th>
+                                                <th>Assignees &amp; Status</th>
+                                                <th class="rounded-end">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tasks-tbody"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <?php endif; ?>
+
                 <!--end::Tab Content-->
         </div>
 
@@ -1128,6 +1197,176 @@
     </div>
 </div>
 
+<?php if ($currentUser == $hr_executive): ?>
+    <!-- Assign Task Modal -->
+    <div class="modal fade" id="assignTaskModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold"><i class="fas fa-tasks me-2 text-primary"></i>Assign Recruitment Task</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="assign-task-form">
+                        <input type="hidden" name="job_listing_id" value="<?= $job->id ?>">
+                        <div class="mb-4">
+                            <label class="form-label fw-bold required">Task Type</label>
+                            <select class="form-select" name="task_type" id="task-type-select" required>
+                                <option value="">-- Select Task Type --</option>
+                                <?php foreach (
+                                    [
+                                        'Source Candidates',
+                                        'Screen Resumes / CVs',
+                                        'Schedule Interviews',
+                                        'Conduct Telephonic Screening',
+                                        'Send Job Offer Letter',
+                                        'Background Verification',
+                                        'Job Portal Posting / Update',
+                                        'Follow-up with Candidates',
+                                        'Reference Check',
+                                        'Coordinate with Department HOD',
+                                    ] as $taskType
+                                ): ?>
+                                    <option value="<?= esc($taskType) ?>"><?= esc($taskType) ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Remarks <span class="text-muted">(Optional)</span></label>
+                            <textarea class="form-control" name="remarks" rows="3" placeholder="Add any instructions or notes…"></textarea>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label fw-bold required">Assign To</label>
+                            <select class="form-select" name="assigned_to[]" id="assign-to-select" multiple required>
+                            </select>
+                            <div class="form-text text-muted">Select one or more HR team members</div>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label fw-bold required">Due Date</label>
+                            <input type="date" class="form-control" name="due_date" min="<?= date('Y-m-d') ?>" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="confirm-assign-task">
+                        <i class="fas fa-check me-1"></i>Assign Task
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reassign Task Modal -->
+    <div class="modal fade" id="reassignModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold"><i class="fas fa-user-edit me-2 text-warning"></i>Reassign Task</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="reassign-assignee-record-id">
+                    <div class="mb-4">
+                        <label class="form-label fw-bold required">Reassign To</label>
+                        <select class="form-select" id="reassign-to-select">
+                            <option value="">-- Select HR Member --</option>
+                        </select>
+                    </div>
+                    <p class="text-muted small"><i class="fas fa-info-circle me-1"></i>The original assignee will be replaced and the status will reset to <strong>Pending</strong>.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-warning" id="confirm-reassign">
+                        <i class="fas fa-exchange-alt me-1"></i>Reassign
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Task Modal -->
+    <div class="modal fade" id="editTaskModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold"><i class="fas fa-edit me-2 text-primary"></i>Edit Task</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="edit-task-form">
+                        <input type="hidden" name="task_id" id="edit-task-id">
+                        <div class="mb-4">
+                            <label class="form-label fw-bold required">Task Type</label>
+                            <select class="form-select" name="task_type" id="edit-task-type-select" required>
+                                <option value="">-- Select Task Type --</option>
+                                <?php foreach (
+                                    [
+                                        'Source Candidates',
+                                        'Screen Resumes / CVs',
+                                        'Schedule Interviews',
+                                        'Conduct Telephonic Screening',
+                                        'Send Job Offer Letter',
+                                        'Background Verification',
+                                        'Job Portal Posting / Update',
+                                        'Follow-up with Candidates',
+                                        'Reference Check',
+                                        'Coordinate with Department HOD',
+                                    ] as $taskType
+                                ): ?>
+                                    <option value="<?= esc($taskType) ?>"><?= esc($taskType) ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Remarks <span class="text-muted">(Optional)</span></label>
+                            <textarea class="form-control" name="remarks" id="edit-task-remarks" rows="3" placeholder="Add any instructions or notes…"></textarea>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label fw-bold required">Due Date</label>
+                            <input type="date" class="form-control" name="due_date" id="edit-task-due-date" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="confirm-edit-task">
+                        <i class="fas fa-save me-1"></i>Save Changes
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+<?php endif; ?>
+
+<!-- Task History Modal (available to all authorised roles) -->
+<div class="modal fade" id="taskHistoryModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold"><i class="fas fa-history me-2 text-secondary"></i>Task Change History</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Loading spinner -->
+                <div id="history-loading" class="text-center py-6">
+                    <div class="spinner-border text-secondary" role="status"></div>
+                    <p class="mt-2 text-muted">Loading history…</p>
+                </div>
+                <!-- Empty state -->
+                <div id="history-empty" class="text-center py-6 d-none">
+                    <i class="fas fa-scroll fa-2x text-muted mb-3"></i>
+                    <p class="text-muted fw-semibold">No history recorded for this task yet.</p>
+                </div>
+                <!-- Timeline -->
+                <ul id="history-timeline" class="list-unstyled mb-0 d-none"></ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <?= $this->section('javascript') ?>
 <script src="https://cdn.jsdelivr.net/npm/summernote@0.9.0/dist/summernote-bs5.min.js"></script>
@@ -1142,7 +1381,7 @@
                     title: 'Success!',
                     text: parts[0],
                     icon: 'success',
-                    confirmButtonText: 'Cool'
+                    confirmButtonText: 'Noted'
                 });
             } else {
                 // Display regular success messages
@@ -1150,7 +1389,7 @@
                     title: 'Success!',
                     text: successMessage,
                     icon: 'success',
-                    confirmButtonText: 'Cool'
+                    confirmButtonText: 'Noted'
                 });
             }
         <?php endif; ?>
@@ -1617,31 +1856,35 @@
             const button = $(this);
             const originalText = button.html();
 
-            if (approvalType === 'hr_manager') {
-                Swal.fire({
-                    title: 'Set Job Opening Date',
-                    html: '<input type="date" id="job-opening-date" class="form-control" min="' + new Date().toISOString().split('T')[0] + '" required>',
-                    showCancelButton: true,
-                    confirmButtonText: 'Approve',
-                    cancelButtonText: 'Cancel',
-                    confirmButtonColor: '#198754',
-                    cancelButtonColor: '#6c757d',
-                    preConfirm: () => {
-                        const date = document.getElementById('job-opening-date').value;
-                        if (!date) {
-                            Swal.showValidationMessage('Please select a job opening date');
-                            return false;
-                        }
-                        return date;
-                    }
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        processApproval(jobId, approvalType, button, originalText, result.value);
-                    }
-                });
-            } else {
-                processApproval(jobId, approvalType, button, originalText);
-            }
+            // OLD CODE - Commented out: HR Manager used to manually pick a Job Opening Date via popup
+            // if (approvalType === 'hr_manager') {
+            //     Swal.fire({
+            //         title: 'Set Job Opening Date',
+            //         html: '<input type="date" id="job-opening-date" class="form-control" min="' + new Date().toISOString().split('T')[0] + '" required>',
+            //         showCancelButton: true,
+            //         confirmButtonText: 'Approve',
+            //         cancelButtonText: 'Cancel',
+            //         confirmButtonColor: '#198754',
+            //         cancelButtonColor: '#6c757d',
+            //         preConfirm: () => {
+            //             const date = document.getElementById('job-opening-date').value;
+            //             if (!date) {
+            //                 Swal.showValidationMessage('Please select a job opening date');
+            //                 return false;
+            //             }
+            //             return date;
+            //         }
+            //     }).then((result) => {
+            //         if (result.isConfirmed) {
+            //             processApproval(jobId, approvalType, button, originalText, result.value);
+            //         }
+            //     });
+            // } else {
+            //     processApproval(jobId, approvalType, button, originalText);
+            // }
+
+            // NEW CODE: HR Manager approval date is automatically set as the official Job Opening Date (server-side)
+            processApproval(jobId, approvalType, button, originalText);
         });
 
         function processApproval(jobId, approvalType, button, originalText, jobOpeningDate = null) {
@@ -1730,25 +1973,27 @@
 
         $('#hrClosureModal').on('shown.bs.modal', function() {
             $('#hrClosureModal select[data-control="select2"]').each(function() {
-                if (!$(this).hasClass('select2-hidden-accessible')) {
-                    $(this).select2({
-                        dropdownParent: $('#hrClosureModal'),
-                        placeholder: $(this).data('placeholder') || 'Select option',
-                        allowClear: true
-                    });
+                if ($(this).hasClass('select2-hidden-accessible')) {
+                    $(this).select2('destroy');
                 }
+                $(this).select2({
+                    dropdownParent: $('#hrClosureModal'),
+                    placeholder: $(this).data('placeholder') || 'Select option',
+                    allowClear: true
+                });
             });
         });
 
         $('#managerClosureModal').on('shown.bs.modal', function() {
             $('#managerClosureModal select[data-control="select2"]').each(function() {
-                if (!$(this).hasClass('select2-hidden-accessible')) {
-                    $(this).select2({
-                        dropdownParent: $('#managerClosureModal'),
-                        placeholder: $(this).data('placeholder') || 'Select option',
-                        allowClear: true
-                    });
+                if ($(this).hasClass('select2-hidden-accessible')) {
+                    $(this).select2('destroy');
                 }
+                $(this).select2({
+                    dropdownParent: $('#managerClosureModal'),
+                    placeholder: $(this).data('placeholder') || 'Select option',
+                    allowClear: true
+                });
             });
         });
 
@@ -1919,5 +2164,467 @@
 
     });
 </script>
+
+<?php if (!empty($hrExecutive) && !empty($hodApproval) && !empty($hrManager)): ?>
+    <script>
+        (function() {
+            const JOB_ID = <?= (int) $job->id ?>;
+            const CURRENT_USER = <?= (int) $currentUser ?>;
+            const HR_EXECUTIVE = <?= (int) $hr_executive ?>;
+
+            // ── Helpers ──────────────────────────────────────────────────────────────
+
+            function loadHrEmployees(callback) {
+                $.ajax({
+                    url: '<?= base_url('recruitment/job-listing/tasks/hr-employees') ?>',
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(resp) {
+                        if (resp.success && resp.data) {
+                            callback(resp.data);
+                        }
+                    }
+                });
+            }
+
+            function loadTasks() {
+                $('#tasks-loading').removeClass('d-none');
+                $('#tasks-empty').addClass('d-none');
+                $('#tasks-table-wrapper').addClass('d-none');
+
+                $.ajax({
+                    url: '<?= base_url('recruitment/job-listing/tasks/') ?>' + JOB_ID,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(resp) {
+                        if (resp.success) {
+                            renderTasks(resp.data);
+                        }
+                    },
+                    complete: function() {
+                        $('#tasks-loading').addClass('d-none');
+                    }
+                });
+            }
+
+            function statusBadgeClass(status) {
+                return {
+                    pending: 'badge-light-warning',
+                    in_progress: 'badge-light-info',
+                    completed: 'badge-light-success',
+                } [status] || 'badge-light-secondary';
+            }
+
+            function statusLabel(status) {
+                return {
+                    pending: 'Pending',
+                    in_progress: 'In Progress',
+                    completed: 'Completed',
+                } [status] || status;
+            }
+
+            function isOverdue(task) {
+                const today = new Date().toISOString().slice(0, 10);
+                const allDone = task.assignees.every(a => a.status === 'completed');
+                return task.due_date < today && !allDone;
+            }
+
+            function renderAssigneeRow(assignee) {
+                const isOwn = (CURRENT_USER === parseInt(assignee.assigned_to));
+                const isDone = (assignee.status === 'completed');
+                const isExec = (CURRENT_USER === HR_EXECUTIVE);
+                let statusHtml = '';
+
+                if (isOwn && !isDone) {
+                    statusHtml = `
+                <select class="form-select form-select-sm task-status-select" style="width:140px"
+                        data-assignee-id="${assignee.id}">
+                    <option value="pending"     ${assignee.status === 'pending'     ? 'selected' : ''}>Pending</option>
+                    <option value="in_progress" ${assignee.status === 'in_progress' ? 'selected' : ''}>In Progress</option>
+                    <option value="completed"   ${assignee.status === 'completed'   ? 'selected' : ''}>Completed</option>
+                </select>`;
+                } else {
+                    statusHtml = `<span class="badge ${statusBadgeClass(assignee.status)}">${statusLabel(assignee.status)}</span>`;
+                }
+
+                let reassignBtn = '';
+                if (isExec) {
+                    reassignBtn = ` <button class="btn btn-icon btn-sm btn-light-warning reassign-btn ms-1"
+                                    title="Reassign"
+                                    data-assignee-id="${assignee.id}">
+                                <i class="fas fa-user-edit fa-sm"></i>
+                            </button>`;
+                }
+
+                return `<li class="d-flex align-items-center gap-2 mb-1">
+                    <i class="fas fa-user-circle text-muted"></i>
+                    <span>${$('<div>').text(assignee.assigned_to_name).html()}</span>
+                    ${statusHtml}
+                    ${reassignBtn}
+                </li>`;
+            }
+
+            const taskDataMap = {};
+
+            function renderTasks(tasks) {
+                if (!tasks || tasks.length === 0) {
+                    $('#tasks-empty').removeClass('d-none');
+                    return;
+                }
+
+                $('#tasks-table-wrapper').removeClass('d-none');
+                const tbody = $('#tasks-tbody');
+                tbody.empty();
+
+                tasks.forEach(function(task, idx) {
+                    taskDataMap[task.id] = task;
+                    const rowClass = isOverdue(task) ? 'table-danger' : '';
+                    const assigneesList = task.assignees.map(renderAssigneeRow).join('');
+
+                    <?php if ($currentUser == $hr_executive): ?>
+                        let actionsCol = `<td>
+                <button class="btn btn-icon btn-sm btn-light-primary edit-task-btn me-1" title="Edit Task" data-task-id="${task.id}">
+                    <i class="fas fa-edit fa-sm"></i>
+                </button>
+                <button class="btn btn-icon btn-sm btn-light-secondary task-history-btn" title="View History" data-task-id="${task.id}">
+                    <i class="fas fa-history fa-sm"></i>
+                </button>
+            </td>`;
+                    <?php else: ?>
+                        let actionsCol = `<td>
+                <button class="btn btn-icon btn-sm btn-light-secondary task-history-btn" title="View History" data-task-id="${task.id}">
+                    <i class="fas fa-history fa-sm"></i>
+                </button>
+            </td>`;
+                    <?php endif; ?>
+
+                    tbody.append(`
+                <tr class="${rowClass}">
+                    <td class="ps-4">${idx + 1}</td>
+                    <td><span class="fw-semibold">${$('<div>').text(task.task_type).html()}</span></td>
+                    <td class="text-muted" style="max-width:180px;white-space:normal;">${task.remarks ? $('<div>').text(task.remarks).html() : '<span class="text-muted">—</span>'}</td>
+                    <td>${task.assigned_date}</td>
+                    <td>${task.due_date}${isOverdue(task) ? ' <span class="badge badge-light-danger ms-1">Overdue</span>' : ''}</td>
+                    <td><ul class="list-unstyled mb-0">${assigneesList}</ul></td>
+                    ${actionsCol}
+                </tr>
+            `);
+                });
+            }
+
+            function openReassignModal(assigneeId) {
+                $('#reassign-assignee-record-id').val(assigneeId);
+                loadHrEmployees(function(employees) {
+                    const sel = $('#reassign-to-select');
+                    sel.empty().append('<option value="">-- Select HR Member --</option>');
+                    employees.forEach(e => sel.append(`<option value="${e.id}">${$('<div>').text(e.text).html()}</option>`));
+                });
+                $('#reassignModal').modal('show');
+            }
+
+            // ── Event handlers ────────────────────────────────────────────────────────
+
+            <?php if ($currentUser == $hr_executive): ?>
+                // Init Assign Task modal
+                $('#assignTaskModal').on('shown.bs.modal', function() {
+                    loadHrEmployees(function(employees) {
+                        const sel = $('#assign-to-select');
+                        sel.empty();
+                        employees.forEach(e => sel.append(`<option value="${e.id}">${$('<div>').text(e.text).html()}</option>`));
+
+                        if (!sel.hasClass('select2-hidden-accessible')) {
+                            sel.select2({
+                                dropdownParent: $('#assignTaskModal'),
+                                placeholder: 'Select HR team members',
+                                allowClear: true,
+                            });
+                        }
+                    });
+                });
+
+                $('#assignTaskModal').on('hidden.bs.modal', function() {
+                    $('#assign-task-form')[0].reset();
+                    if ($('#assign-to-select').hasClass('select2-hidden-accessible')) {
+                        $('#assign-to-select').val(null).trigger('change');
+                    }
+                });
+
+                $('#confirm-assign-task').on('click', function() {
+                    const taskType = $('#task-type-select').val();
+                    const assignedTo = $('#assign-to-select').val();
+                    const dueDate = $('#assign-task-form input[name="due_date"]').val();
+
+                    if (!taskType) {
+                        Swal.fire('Error', 'Please select a task type.', 'error');
+                        return;
+                    }
+                    if (!assignedTo || assignedTo.length === 0) {
+                        Swal.fire('Error', 'Please select at least one assignee.', 'error');
+                        return;
+                    }
+                    if (!dueDate) {
+                        Swal.fire('Error', 'Please select a due date.', 'error');
+                        return;
+                    }
+
+                    const formData = $('#assign-task-form').serialize();
+
+                    $.ajax({
+                        url: '<?= base_url('recruitment/job-listing/tasks/assign') ?>',
+                        type: 'POST',
+                        data: formData,
+                        dataType: 'json',
+                        success: function(resp) {
+                            $('#assignTaskModal').modal('hide');
+                            if (resp.success) {
+                                Swal.fire('Success', resp.message, 'success').then(() => loadTasks());
+                            } else {
+                                Swal.fire('Error', resp.message, 'error');
+                            }
+                        },
+                        error: function() {
+                            $('#assignTaskModal').modal('hide');
+                            Swal.fire('Error', 'Failed to assign task. Please try again.', 'error');
+                        }
+                    });
+                });
+
+                // Reassign confirm
+                $('#confirm-reassign').on('click', function() {
+                    const assigneeRecordId = $('#reassign-assignee-record-id').val();
+                    const newAssignedTo = $('#reassign-to-select').val();
+
+                    if (!newAssignedTo) {
+                        Swal.fire('Error', 'Please select a new assignee.', 'error');
+                        return;
+                    }
+
+                    $.ajax({
+                        url: '<?= base_url('recruitment/job-listing/tasks/reassign') ?>',
+                        type: 'POST',
+                        data: {
+                            assignee_record_id: assigneeRecordId,
+                            new_assigned_to: newAssignedTo
+                        },
+                        dataType: 'json',
+                        success: function(resp) {
+                            $('#reassignModal').modal('hide');
+                            if (resp.success) {
+                                Swal.fire('Success', resp.message, 'success').then(() => loadTasks());
+                            } else {
+                                Swal.fire('Error', resp.message, 'error');
+                            }
+                        },
+                        error: function() {
+                            $('#reassignModal').modal('hide');
+                            Swal.fire('Error', 'Failed to reassign task. Please try again.', 'error');
+                        }
+                    });
+                });
+
+                // Reassign button (delegated)
+                $(document).on('click', '.reassign-btn', function() {
+                    openReassignModal($(this).data('assignee-id'));
+                });
+
+                // Edit Task
+                function openEditModal(task) {
+                    $('#edit-task-id').val(task.id);
+                    $('#edit-task-type-select').val(task.task_type);
+                    $('#edit-task-remarks').val(task.remarks || '');
+                    $('#edit-task-due-date').val(task.due_date);
+                    $('#editTaskModal').modal('show');
+                }
+
+                $(document).on('click', '.edit-task-btn', function() {
+                    const taskId = $(this).data('task-id');
+                    const task = taskDataMap[taskId];
+                    if (task) {
+                        openEditModal(task);
+                    }
+                });
+
+                $('#editTaskModal').on('hidden.bs.modal', function() {
+                    $('#edit-task-form')[0].reset();
+                });
+
+                $('#confirm-edit-task').on('click', function() {
+                    const taskType = $('#edit-task-type-select').val();
+                    const dueDate = $('#edit-task-due-date').val();
+
+                    if (!taskType) {
+                        Swal.fire('Error', 'Please select a task type.', 'error');
+                        return;
+                    }
+                    if (!dueDate) {
+                        Swal.fire('Error', 'Please select a due date.', 'error');
+                        return;
+                    }
+
+                    $.ajax({
+                        url: '<?= base_url('recruitment/job-listing/tasks/edit') ?>',
+                        type: 'POST',
+                        data: $('#edit-task-form').serialize(),
+                        dataType: 'json',
+                        success: function(resp) {
+                            $('#editTaskModal').modal('hide');
+                            if (resp.success) {
+                                Swal.fire('Success', resp.message, 'success').then(() => loadTasks());
+                            } else {
+                                Swal.fire('Error', resp.message, 'error');
+                            }
+                        },
+                        error: function() {
+                            $('#editTaskModal').modal('hide');
+                            Swal.fire('Error', 'Failed to update task. Please try again.', 'error');
+                        }
+                    });
+                });
+            <?php endif; ?>
+
+            // ── Task History ──────────────────────────────────────────────────────────
+
+            const FIELD_LABELS = {
+                task_created: 'Task Created',
+                assignee_added: 'Assignee Added',
+                task_type: 'Task Type',
+                remarks: 'Remarks',
+                due_date: 'Due Date',
+                assigned_to: 'Reassigned To',
+                status: 'Status',
+            };
+
+            function statusBadgeHtml(value) {
+                const cls = {
+                    pending: 'badge-light-warning',
+                    in_progress: 'badge-light-info',
+                    completed: 'badge-light-success',
+                } [value] || 'badge-light-secondary';
+                const label = {
+                    pending: 'Pending',
+                    in_progress: 'In Progress',
+                    completed: 'Completed',
+                } [value] || value;
+                return `<span class="badge ${cls}">${label}</span>`;
+            }
+
+            function resolveValue(row, side) {
+                const val = side === 'old' ? row.old_value : row.new_value;
+                const empName = side === 'old' ? row.old_employee_name : row.new_employee_name;
+                if (val === null || val === '') return '<span class="text-muted">—</span>';
+                if (row.field_name === 'assigned_to' || row.field_name === 'assignee_added') {
+                    return empName ? $('<div>').text(empName).html() : `Employee #${val}`;
+                }
+                if (row.field_name === 'status') {
+                    return statusBadgeHtml(val);
+                }
+                return $('<div>').text(val).html();
+            }
+
+            function renderHistoryItem(row, idx) {
+                const actor = row.updated_by_name ? $('<div>').text(row.updated_by_name).html() : 'System';
+                const label = FIELD_LABELS[row.field_name] || row.field_name;
+                const ts = row.created_at || '';
+
+                let description = '';
+                if (row.field_name === 'task_created') {
+                    description = `Task created with type <strong>${resolveValue(row, 'new')}</strong>`;
+                } else if (row.field_name === 'assignee_added') {
+                    description = `<strong>${resolveValue(row, 'new')}</strong> added as assignee`;
+                } else {
+                    const oldHtml = resolveValue(row, 'old');
+                    const newHtml = resolveValue(row, 'new');
+                    description = `<strong>${label}</strong> changed from ${oldHtml} <i class="fas fa-arrow-right fa-xs text-muted mx-1"></i> ${newHtml}`;
+                }
+
+                return `<li class="d-flex gap-3 mb-5">
+            <div class="d-flex flex-column align-items-center">
+                <div class="symbol symbol-circle symbol-35px bg-light-secondary flex-shrink-0">
+                    <span class="symbol-label fs-7 fw-bold text-secondary">${idx + 1}</span>
+                </div>
+                <div class="border-start border-dashed border-gray-300 flex-grow-1 mt-2"></div>
+            </div>
+            <div class="flex-grow-1 pb-5">
+                <div class="d-flex justify-content-between align-items-start mb-1">
+                    <span class="fw-semibold text-dark fs-7">${actor}</span>
+                    <small class="text-muted ms-3 text-nowrap">${ts}</small>
+                </div>
+                <div class="text-gray-600 fs-7">${description}</div>
+            </div>
+        </li>`;
+            }
+
+            function openHistoryModal(taskId) {
+                const $loading = $('#history-loading');
+                const $empty = $('#history-empty');
+                const $timeline = $('#history-timeline');
+
+                $loading.removeClass('d-none');
+                $empty.addClass('d-none');
+                $timeline.addClass('d-none').empty();
+
+                $('#taskHistoryModal').modal('show');
+
+                $.ajax({
+                    url: '<?= base_url('recruitment/job-listing/tasks/revisions/') ?>' + taskId,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(resp) {
+                        $loading.addClass('d-none');
+                        if (resp.success && resp.data && resp.data.length > 0) {
+                            resp.data.forEach(function(row, idx) {
+                                $timeline.append(renderHistoryItem(row, idx));
+                            });
+                            $timeline.removeClass('d-none');
+                        } else {
+                            $empty.removeClass('d-none');
+                        }
+                    },
+                    error: function() {
+                        $loading.addClass('d-none');
+                        $empty.removeClass('d-none');
+                    }
+                });
+            }
+
+            $(document).on('click', '.task-history-btn', function() {
+                openHistoryModal($(this).data('task-id'));
+            });
+
+            // Status change (delegated — works for any logged-in assignee)
+            $(document).on('change', '.task-status-select', function() {
+                const assigneeId = $(this).data('assignee-id');
+                const newStatus = $(this).val();
+
+                $.ajax({
+                    url: '<?= base_url('recruitment/job-listing/tasks/update-status') ?>',
+                    type: 'POST',
+                    data: {
+                        assignee_record_id: assigneeId,
+                        status: newStatus
+                    },
+                    dataType: 'json',
+                    success: function(resp) {
+                        if (resp.success) {
+                            loadTasks();
+                        } else {
+                            Swal.fire('Error', resp.message, 'error');
+                        }
+                    },
+                    error: function() {
+                        Swal.fire('Error', 'Failed to update status. Please try again.', 'error');
+                    }
+                });
+            });
+
+            // ── Init ─────────────────────────────────────────────────────────────────
+            $(document).ready(function() {
+                loadTasks();
+            });
+
+        })();
+    </script>
+<?php endif; ?>
+
 <?= $this->endSection() ?>
 <?= $this->endSection() ?>

@@ -209,45 +209,28 @@
                         <option value="Part-time">Part-time</option>
                         <option value="Contract">Contract</option>
                         <option value="Internship">Internship</option>
-                        <option value="Temporary">Temporary</option>
-                        <option value="Freelance">Freelance</option>
                     </select>
                     <label for="type_of_job">Job Type <span class="text-danger">* </span></label>
                 </div>
             </div>
 
-            <!-- <div class="col-6 col-md-4 col-lg-3 col-xl-3">
+            <div class="col-6 col-md-4 col-lg-3 col-xl-3">
                 <div class="form-floating mb-3">
-                    <select class="form-select" id="min_budget" name="min_budget" onchange="updateMaxBudget()" required>
-                        <option value="" disabled selected>Select Min Budget</option>
-                        <?php foreach ([10000, 20000, 30000, 40000, 50000, 60000, 80000, 100000] as $amount): ?>
-                            <option value="<?= $amount ?>"><?= number_format($amount) ?></option>
-                        <?php endforeach; ?>
-                    </select>
-                    <label for="min_budget">Min Budget</label>
+                    <div class="input-group">
+                        <input type="number" class="form-control" id="min_budget" name="min_budget" placeholder=" " min="0" required>
+                        <span class="input-group-text">INR</span>
+                        <label for="min_budget">Min Budget <span class="text-danger">* </span></label>
+                    </div>
                 </div>
             </div>
 
             <div class="col-6 col-md-4 col-lg-3 col-xl-3">
                 <div class="form-floating mb-3">
-                    <select class="form-select" id="max_budget" name="max_budget" required>
-                        <option value="" disabled selected>Select Max Budget</option>
-                    </select>
-                    <label for="max_budget">Max Budget</label>
-                </div>
-            </div> -->
-
-            <div class="col-6 col-md-4 col-lg-3 col-xl-3">
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="min_budget" name="min_budget" placeholder="Min Budget" required>
-                    <label for="min_budget">Min Budget <span class="text-danger">* </span></label>
-                </div>
-            </div>
-
-            <div class="col-6 col-md-4 col-lg-3 col-xl-3">
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="max_budget" name="max_budget" placeholder="Max Budget" required>
-                    <label for="max_budget">Max Budget <span class="text-danger">* </span></label>
+                    <div class="input-group">
+                        <input type="number" class="form-control" id="max_budget" name="max_budget" placeholder=" " min="0" required>
+                        <span class="input-group-text">INR</span>
+                        <label for="max_budget">Max Budget <span class="text-danger">* </span></label>
+                    </div>
                 </div>
             </div>
             <div class="col-6 col-md-4 col-lg-3 col-xl-2">
@@ -258,7 +241,7 @@
                         <option value="no">No</option>
                         <option value="Optional">Optional</option>
                     </select>
-                    <label for="system_required">System Required <span class="text-danger">* </span></label>
+                    <label for="system_required">Is PC Required? <span class="text-danger">* </span></label>
                 </div>
             </div>
 
@@ -301,6 +284,7 @@
                         <option value="" disabled selected>Select Interview Location</option>
                         <option value="Delhi">Delhi</option>
                         <option value="Noida">Noida</option>
+                        <option value="Gurugram">Gurugram</option>
                     </select>
                     <label for="interview_location">Interview Location <span class="text-danger">* </span></label>
                 </div>
@@ -323,7 +307,7 @@
             <div class="col-md-6">
                 <div class="form-floating mb-3">
                     <input type="text" class="form-control" id="seating_location" name="seating_location" placeholder="Seating Location">
-                    <label for="seating_location">Seating Location <span class="text-danger">* </span></label>
+                    <label for="seating_location">Office Seating Location <span class="text-danger">* </span></label>
                 </div>
             </div>
 
@@ -400,7 +384,7 @@
                     <select class="form-select" id="specific_industry" name="specific_industry" data-control="select2" data-placeholder="Select Industry">
                         <option value="" disabled selected>Select Industry</option>
                     </select>
-                    <label for="specific_industry">Specific Industry <span class="text-danger">* </span></label>
+                    <label for="specific_industry">Any Specific Industry <span class="text-danger">* </span></label>
                 </div>
             </div>
 
@@ -409,13 +393,13 @@
                     <!-- <button type="button" class="btn btn-outline-primary" id="testRequiredBtn">
                         <i class="fas fa-clipboard-list"></i> Configure Tests Required
                     </button> -->
-                    <div id="testSummary" class="mt-2 text-muted small"></div>
                     <a
                         id="tests_drawer_button"
                         href="#"
-                        class="notice d-flex bg-light-primary rounded border-primary border border-dashed mb-9 px-6 py-3">
+                        class="btn btn-lg btn-primary w-100 d-flex align-items-center justify-content-center gap-2 shadow-sm">
                         Configure Tests Required
                     </a>
+                    <div id="testSummary" class="mt-2 text-info"></div>
                     <div
                         id="tests_drawer"
                         class="bg-white"
@@ -445,63 +429,6 @@
                             <div class="card-body hover-scroll-overlay-y">
 
                                 <div class="row">
-                                    <div class="col-md-12 align-items-center bg-light-success rounded p-5 mb-7">
-                                        <div class="d-flex justify-content-between align-items-center mb-3">
-                                            <label class="form-label fw-bold m-0">Technical Test Required <span class="text-danger"> *</span></label>
-                                            <!-- <button type="button" class="btn btn-sm btn-success" id="addTechnicalTestBtn" onclick="addTechnicalTest()" style="display: none;">+ Add More</button> -->
-                                        </div>
-                                        <div class="d-flex gap-4">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="radio" name="technical_test" id="technical_yes" value="Yes">
-                                                <label class="form-check-label" for="technical_yes">Yes</label>
-                                            </div>
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="radio" name="technical_test" id="technical_no" value="No">
-                                                <label class="form-check-label" for="technical_no">No</label>
-                                            </div>
-                                        </div>
-
-                                        <!-- <div id="technicalTestNameDiv" class="mt-3" style="display: none;">
-                            <input type="text" class="form-control" id="technicalTestName" placeholder="Specify technical test name (e.g., Coding Test, Algorithm Test)">
-                        </div> -->
-                                        <div id="technicalTestNameDiv" class="mt-3" style="display: none;">
-                                            <!--begin::Repeater-->
-                                            <div id="technical_tests">
-
-                                                <!--begin::Form group-->
-                                                <div class="form-group">
-                                                    <div data-repeater-list="technical_tests">
-                                                        <div data-repeater-item>
-                                                            <div class="form-group row">
-                                                                <div class="col-md-10">
-                                                                    <div class="form-floating mt-3">
-                                                                        <input type="text" name="technical_test" class="form-control" placeholder="Technical Test">
-                                                                        <label>Technical Test </label>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-2">
-                                                                    <div class="d-flex align-items-center justify-content-end mt-3">
-                                                                        <a href="javascript:;" data-repeater-delete class="btn btn-sm btn-light-danger">
-                                                                            <i class="la la-trash-o"></i>
-                                                                        </a>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <a href="javascript:;" data-repeater-create class="btn btn-sm btn-link">
-                                                        <i class="la la-plus"></i>Add a Technical Test
-                                                    </a>
-                                                </div>
-                                            </div>
-                                            <!--end::Repeater-->
-                                        </div>
-                                    </div>
-
-                                    <!-- <hr class="my-4"> -->
-
                                     <div class="col-md-12 align-items-center bg-light-warning rounded p-5 mb-7">
                                         <label class="form-label fw-bold">IQ Test Required <span class="text-danger"> *</span></label>
                                         <div class="d-flex gap-4">
@@ -580,6 +507,7 @@
                                                 <!--begin::Form group-->
                                                 <div class="form-group">
                                                     <div data-repeater-list="other_tests">
+                                                        <!-- OLD CODE - Without file upload
                                                         <div data-repeater-item>
                                                             <div class="form-group row">
                                                                 <div class="col-md-10">
@@ -594,6 +522,37 @@
                                                                             <i class="la la-trash-o"></i>
                                                                         </a>
                                                                     </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        -->
+                                                        <!-- NEW CODE - With file upload -->
+                                                        <div data-repeater-item>
+                                                            <div class="form-group row">
+                                                                <div class="col-md-7">
+                                                                    <div class="form-floating mt-3">
+                                                                        <input type="text" name="other_test" class="form-control" placeholder="Other Test">
+                                                                        <label>Other Test <span class="text-danger"> *</span></label>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-3">
+                                                                    <div class="mt-3">
+                                                                        <label class="btn btn-outline-primary btn w-100 px-2">
+                                                                            <i class="la la-paperclip"></i>Upload
+                                                                            <input type="file" class="d-none other-test-file" name="other_test_file" accept=".pdf,.doc,.docx">
+                                                                        </label>
+
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-2">
+                                                                    <div class="d-flex align-items-center justify-content-end mt-3">
+                                                                        <a href="javascript:;" data-repeater-delete class="btn btn btn-light-danger">
+                                                                            <i class="la la-trash-o"></i>
+                                                                        </a>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-12">
+                                                                    <small class="text-muted file-name-display d-block mt-1"></small>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -635,22 +594,25 @@
                     <select class="form-select" id="review_schedule_3m" name="review_schedule_3m" data-control="select2" data-placeholder="Select Review Schedule 3 Months" required>
                         <option value="" disabled selected>Select Review Schedule 3 Months</option>
                         <?php foreach ($employees as $employee): ?>
-                            <option value="<?= esc($employee['id']) ?>"><?= esc($employee['employee_name']) ?> (<?= esc($employee['company_short_name']) ?>)</option>
+                            <option value="<?= esc($employee['id']) ?>"><?= esc($employee['employee_name']) ?> (<?= esc($employee['department_name']) ?>)</option>
                         <?php endforeach; ?>
                     </select>
-                    <label for="review_schedule_3m">Review Schedule 3 Months With <span class="text-danger">* </span></label>
+                    <label for="review_schedule_3m">Candidate Review Schedule 3 Months With <span class="text-danger">* </span></label>
                 </div>
             </div>
+
+
+
+
             <div class="col-md-4">
                 <div class="form-floating mb-3">
-                    <!-- <input type="text" class="form-control" id="review_schedule_6m" name="review_schedule_6m" placeholder="Review Schedule 6 Months"> -->
                     <select class="form-select" id="review_schedule_6m" name="review_schedule_6m" data-control="select2" data-placeholder="Select Review Schedule 6 Months" required>
                         <option value="" disabled selected>Select Review Schedule 6 Months</option>
                         <?php foreach ($employees as $employee): ?>
-                            <option value="<?= esc($employee['id']) ?>"><?= esc($employee['employee_name']) ?> (<?= esc($employee['company_short_name']) ?>)</option>
+                            <option value="<?= esc($employee['id']) ?>"><?= esc($employee['employee_name']) ?> (<?= esc($employee['department_name']) ?>)</option>
                         <?php endforeach; ?>
                     </select>
-                    <label for="review_schedule_6m">Review Schedule 6 Months With <span class="text-danger">* </span></label>
+                    <label for="review_schedule_6m">Candidate Review Schedule 6 Months With <span class="text-danger">* </span></label>
                 </div>
             </div>
 
@@ -661,10 +623,10 @@
                     <select class="form-select" id="review_schedule_12m" name="review_schedule_12m" data-control="select2" data-placeholder="Select Review Schedule 12 Months" required>
                         <option value="" disabled selected>Select Review Schedule 12 Months</option>
                         <?php foreach ($employees as $employee): ?>
-                            <option value="<?= esc($employee['id']) ?>"><?= esc($employee['employee_name']) ?> (<?= esc($employee['company_short_name']) ?>)</option>
+                            <option value="<?= esc($employee['id']) ?>"><?= esc($employee['employee_name']) ?> (<?= esc($employee['department_name']) ?>)</option>
                         <?php endforeach; ?>
                     </select>
-                    <label for="review_schedule_12m">Review Schedule 12 Months With <span class="text-danger">* </span></label>
+                    <label for="review_schedule_12m">Candidate Review Schedule 12 Months With <span class="text-danger">* </span></label>
                 </div>
             </div>
         </div>
@@ -954,56 +916,24 @@
     });
 
     $(document).ready(function() {
-        // Shift timing options in JSON format
-        const shiftTimings = [{
-                id: "10:00 AM - 6:30 PM",
-                text: "10:00 AM - 6:30 PM (Day Shift)"
-            }, {
-                id: "9:00 AM - 5:30 PM",
-                text: "9:00 AM - 5:30 PM (Day Shift)"
+        // Fetch shift timings from database
+        $.ajax({
+            url: '<?= base_url('recruitment/job-listing/get-shift-timings') ?>',
+            type: 'GET',
+            dataType: 'json',
+            success: function(shiftTimings) {
+                $('#shift_timing').select2({
+                    data: shiftTimings,
+                    placeholder: 'Select Shift Timing'
+                });
             },
-            {
-                id: "9:15 AM - 5:45 PM",
-                text: "9:15 AM - 5:45 PM (Day Shift)"
-            },
-            {
-                id: "9:30 AM - 6:00 PM",
-                text: "9:30 AM - 6:00 PM (Day Shift)"
-            },
-            {
-                id: "08:00 AM - 08:00 PM",
-                text: "08:00 AM - 08:00 PM (12 hr Shift)"
-            },
-            {
-                id: "12:00 PM - 8:30 PM",
-                text: "12:00 PM - 8:30 PM (Afternoon Shift)"
-            },
-            {
-                id: "2:00 PM - 10:30 PM",
-                text: "2:00 PM - 10:30 PM (Evening Shift)"
-            },
-            {
-                id: "10:00 PM - 6:30 AM",
-                text: "10:00 PM - 6:30 AM (Night Shift)"
-            },
-            {
-                id: "8:00 AM - 5:30 PM",
-                text: "8:00 AM - 5:30 PM (Early Day Shift)"
-            },
-            {
-                id: "Flexible",
-                text: "Flexible Timing"
-            },
-            {
-                id: "Rotational",
-                text: "Rotational Shifts"
+            error: function(xhr, status, error) {
+                console.error('Error fetching shift timings:', error);
+                // Fallback to empty select2 if fetch fails
+                $('#shift_timing').select2({
+                    placeholder: 'Select Shift Timing'
+                });
             }
-        ];
-
-        // Initialize Select2 for shift timing
-        $('#shift_timing').select2({
-            data: shiftTimings,
-            placeholder: 'Select Shift Timing'
         });
 
         // Industry options in JSON format
@@ -1222,60 +1152,61 @@
             ready: function() {}
         });
 
-        // Show/hide other test name input and add more button
-        $('input[name="other_test"]').on('change', function() {
-            if ($(this).val() === 'Yes') {
-                const wrapper = $('#otherTestNameDiv');
-
-                // If the wrapper is empty, add the first input automatically
-                // if (wrapper.find('.other-test-row').length === 0) {
-                //     addOtherTest();
-                // } else {
-                wrapper.show();
-                //}
-                //  $('#addOtherTestBtn').show();
-            } else {
-                $('#otherTestNameDiv').hide();
-                // $('#addOtherTestBtn').hide();
-                // Clear all other test inputs when switching to No
-                //    $('#otherTestNameDiv').empty();
-            }
+        // NEW CODE - Display selected file name for other test files
+        $(document).on('change', '.other-test-file', function() {
+            var fileName = $(this).val().split('\\').pop();
+            $(this).closest('.form-group').find('.file-name-display').text(fileName ? fileName : '');
         });
 
-        var $other_tests = $('#other_tests').repeater({
-            initEmpty: false,
-            show: function() {
-                $(this).slideDown();
-            },
-            hide: function(deleteElement) {
-                $(this).slideUp(deleteElement);
-            },
-            ready: function() {}
+        // Variable to track if repeater has been initialized
+        var otherTestsRepeaterInitialized = false;
+        var $other_tests;
+
+        // Show/hide other test name input and add more button
+        $('input[name="other_test"][type="radio"]').on('change', function() {
+            if ($(this).val() === 'Yes') {
+                const wrapper = $('#otherTestNameDiv');
+                wrapper.show();
+
+                // Initialize repeater only once when first shown
+                if (!otherTestsRepeaterInitialized) {
+                    $other_tests = $('#other_tests').repeater({
+                        initEmpty: false,
+                        show: function() {
+                            $(this).slideDown();
+                        },
+                        hide: function(deleteElement) {
+                            $(this).slideUp(deleteElement);
+                        },
+                        ready: function() {}
+                    });
+                    otherTestsRepeaterInitialized = true;
+                }
+            } else {
+                $('#otherTestNameDiv').hide();
+            }
         });
 
 
         // Save test configuration
         $('#saveTestConfig').on('click', function() {
-            // Clear any existing error messages
             $('.alert-danger').remove();
             $('.is-invalid').removeClass('is-invalid');
 
-            // Get selected values
             const technical = $('input[name="technical_test"]:checked').val() || '';
             const iq = $('input[name="iq_test"]:checked').val() || '';
             const english = $('input[name="english_test"]:checked').val() || '';
             const operation = $('input[name="operation_test"]:checked').val() || '';
             const other = $('input[name="other_test"]:checked').val() || '';
 
-            // Validation
             const errors = [];
             let firstErrorField = null;
 
-            if (!technical) {
-                errors.push('Technical Test Required field is required');
-                $('input[name="technical_test"]').addClass('is-invalid');
-                if (!firstErrorField) firstErrorField = $('input[name="technical_test"]').first();
-            }
+            // if (!technical) {
+            //     errors.push('Technical Test Required field is required');
+            //     $('input[name="technical_test"]').addClass('is-invalid');
+            //     if (!firstErrorField) firstErrorField = $('input[name="technical_test"]').first();
+            // }
 
             if (!iq) {
                 errors.push('IQ Test Required field is required');
@@ -1301,11 +1232,9 @@
                 if (!firstErrorField) firstErrorField = $('input[name="other_test"]').first();
             }
 
-            // If there are validation errors, show them and stop
             if (errors.length > 0) {
                 showErrorNotification('Please fill all required fields:<br>• ' + errors.join('<br>• '));
 
-                // Scroll to first error field
                 if (firstErrorField) {
                     firstErrorField.closest('.col-md-12').get(0).scrollIntoView({
                         behavior: 'smooth',
@@ -1315,7 +1244,6 @@
                 return;
             }
 
-            // Get additional values for processing
             const technicalName = $('#technicalTestName').val();
             const otherName = $('#otherTestName').val();
 
@@ -1327,15 +1255,15 @@
             $('#other_test_required').val(other);
             $('#other_test_name').val(otherName);
 
-            // Update summary
             const summary = [];
-            if (technical === 'Yes' && technicalName) summary.push(`${technicalName}: Yes`);
-            else if (technical && technical !== 'No') summary.push(`Technical: ${technical}`);
+            // if (technical === 'Yes' && technicalName) summary.push(`${technicalName}: Yes`);
+            // else if (technical && technical !== 'No') summary.push(`Technical: ${technical}`);
             if (iq) summary.push(`IQ: ${iq}`);
             if (english) summary.push(`English: ${english}`);
             if (operation) summary.push(`Operation: ${operation}`);
             if (other === 'Yes' && otherName) summary.push(`${otherName}: Yes`);
             else if (other && other !== 'No') summary.push(`Other: ${other}`);
+
 
             const summaryText = summary.length > 0 ? summary.join(', ') : 'No tests configured';
             $('#testSummary').html(`<strong>Tests:</strong> ${summaryText}`);
@@ -1346,10 +1274,8 @@
                 $('#testRequiredBtn').removeClass('btn-success').addClass('btn-outline-primary');
             }
 
-            // Hide the test drawer
             $('#tests_drawer_close').click();
 
-            // Show success notification
             showSuccessNotification('Test configuration saved successfully!');
         });
 
@@ -1358,30 +1284,24 @@
             $('#kras_file_name').text(fileName ? fileName : '');
         });
 
-        // Form validation on submit
         $('form').on('submit', function(e) {
-            // Check if any test is configured by looking at the testSummary
             const testSummaryText = $('#testSummary').text();
             const hasTestsConfigured = testSummaryText && !testSummaryText.includes('No tests configured') && testSummaryText.trim() !== '';
 
-            // Clear previous error styles
             $('#tests_drawer_button').removeClass('border-danger bg-light-danger').addClass('border-primary bg-light-primary');
 
             if (!hasTestsConfigured) {
-                e.preventDefault(); // Prevent form submission
+                e.preventDefault();
 
-                // Add error styling to the test configuration button
                 $('#tests_drawer_button')
                     .removeClass('border-primary bg-light-primary')
                     .addClass('border-danger bg-light-danger');
 
-                // Scroll to the test configuration section
                 $('#tests_drawer_button')[0].scrollIntoView({
                     behavior: 'smooth',
                     block: 'center'
                 });
 
-                // Show error message
                 showErrorNotificationOnPage('Please configure the required tests before submitting.');
 
                 return false;
@@ -1389,61 +1309,46 @@
         });
     });
 
-    // Function to show success notification
     function showSuccessNotification(message) {
-        // Remove any existing notifications
         $('.alert-success').remove();
 
-        // Create and insert success alert
         const alert = $(`<div class="alert alert-success alert-dismissible fade show" role="alert">
             ${message}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>`);
 
-        // Insert after the h2 heading
         $('h2.mb-4').after(alert);
 
-        // Auto-hide after 3 seconds
         setTimeout(() => {
             alert.fadeOut(500, () => alert.remove());
         }, 3000);
     }
 
-    // Function to show error notification
     function showErrorNotification(message) {
-        // Remove any existing error notifications
         $('.alert-danger').remove();
 
-        // Create and insert error alert
         const alert = $(`<div class="alert alert-danger alert-dismissible fade show" role="alert">
             ${message}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>`);
 
-        // Insert inside the drawer, at the top of card-body
         $('.card-body.hover-scroll-overlay-y').prepend(alert);
 
-        // Auto-hide after 5 seconds (longer for error messages)
         setTimeout(() => {
             alert.fadeOut(500, () => alert.remove());
         }, 5000);
     }
 
-    // Function to show error notification on main page
     function showErrorNotificationOnPage(message) {
-        // Remove any existing error notifications
         $('.alert-danger').remove();
 
-        // Create and insert error alert
         const alert = $(`<div class="alert alert-danger alert-dismissible fade show" role="alert">
             ${message}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>`);
 
-        // Insert after the h2 heading
         $('h2.mb-4').after(alert);
 
-        // Auto-hide after 5 seconds
         setTimeout(() => {
             alert.fadeOut(500, () => alert.remove());
         }, 5000);
