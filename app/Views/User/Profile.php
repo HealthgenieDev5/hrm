@@ -4451,7 +4451,7 @@ if (!empty($etime_office_error)) {
             // console.log(returned_data);
             // }
         });
-        $('#probation_ended_wrapper > .card > .card-header > .card-title').replaceWith('<h3 class="card-title">Probation completed</h3>');
+        $('#probation_ended_wrapper > .card > .card-header > .card-title').replaceWith('<h3 class="card-title">Confirmation pending from HR</h3>');
         // $('#probation_ended_wrapper > .card > .card-footer').html('<small class="d-block">Probation completed</small>');
         /*end::leave_balance_current_month*/
 
@@ -4515,7 +4515,7 @@ if (!empty($etime_office_error)) {
             // console.log(returned_data);
             // }
         });
-        $('#recently_joined_wrapper > .card > .card-header > .card-title').replaceWith('<h3 class="card-title my-0">Send welcome email</h3>');
+        $('#recently_joined_wrapper > .card > .card-header > .card-title').replaceWith('<h3 class="card-title my-0">Pending welcome email</h3>');
 
         $(document).on('click', '.send-welcome-email', function(e) {
             e.preventDefault();
