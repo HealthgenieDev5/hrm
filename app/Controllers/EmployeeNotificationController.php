@@ -423,6 +423,57 @@ class EmployeeNotificationController extends BaseController
         $employeeId = session()->get('current_user')['employee_id'];
         $notifications = $this->notificationModel->getUnreadNotificationsForEmployee($employeeId);
 
+        // Collect all unique related_employee_ids in one pass
+        $relatedEmployeeIds = array_values(array_unique(array_filter(
+            array_column($notifications, 'related_employee_id')
+        )));
+
+        $relatedEmployeesMap = [];
+        if (!empty($relatedEmployeeIds)) {
+            $employees = (new EmployeeModel())
+                ->select('employees.id, employees.first_name, employees.last_name, employees.attachment, employees.work_mobile, employees.work_email, employees.work_phone_extension_number, employees.internal_employee_id, designations.designation_name, departments.department_name, companies.company_short_name')
+                ->join('designations', 'designations.id = employees.designation_id', 'left')
+                ->join('departments', 'departments.id = employees.department_id', 'left')
+                ->join('companies', 'companies.id = employees.company_id', 'left')
+                ->whereIn('employees.id', $relatedEmployeeIds)
+                ->findAll();
+            $relatedEmployeesMap = array_column($employees, null, 'id');
+        }
+
+        // Enrich each notification using the in-memory map
+        foreach ($notifications as &$notification) {
+            $notification['employee_image']       = null;
+            $notification['employee_mobile']      = null;
+            $notification['employee_email']       = null;
+            $notification['employee_extension']   = null;
+            $notification['employee_code']        = null;
+            $notification['employee_name']        = null;
+            $notification['employee_first_name']  = null;
+            $notification['employee_designation'] = null;
+            $notification['employee_department']  = null;
+            $notification['employee_company']     = null;
+            $relatedId = $notification['related_employee_id'] ?? null;
+            if ($relatedId && isset($relatedEmployeesMap[$relatedId])) {
+                $emp = $relatedEmployeesMap[$relatedId];
+                if (!empty($emp['attachment'])) {
+                    $attachment = json_decode($emp['attachment'], true);
+                    if (isset($attachment['avatar']['file']) && !empty($attachment['avatar']['file'])) {
+                        $notification['employee_image'] = base_url($attachment['avatar']['file']);
+                    }
+                }
+                $notification['employee_mobile']      = $emp['work_mobile'] ?? null;
+                $notification['employee_email']       = $emp['work_email'] ?? null;
+                $notification['employee_extension']   = $emp['work_phone_extension_number'] ?? null;
+                $notification['employee_code']        = $emp['internal_employee_id'] ?? null;
+                $notification['employee_name']        = trim(($emp['first_name'] ?? '') . ' ' . ($emp['last_name'] ?? ''));
+                $notification['employee_first_name']  = $emp['first_name'] ?? null;
+                $notification['employee_designation'] = $emp['designation_name'] ?? null;
+                $notification['employee_department']  = $emp['department_name'] ?? null;
+                $notification['employee_company']     = $emp['company_short_name'] ?? null;
+            }
+        }
+        unset($notification);
+
         return $this->response->setJSON([
             'success' => true,
             'notifications' => $notifications

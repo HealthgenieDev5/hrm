@@ -251,6 +251,7 @@ class BirthdayAnniversaryNotifications extends BaseController
             'reminder_2_date' => null,
             'reminder_3_date' => null,
             'target_employees' => json_encode([$employeeId]), // Only for the birthday person
+            'related_employee_id' => $employeeId,
             'is_active' => 1,
             'created_by' => 385, // System user
         ];
@@ -284,6 +285,7 @@ class BirthdayAnniversaryNotifications extends BaseController
                 'reminder_2_date' => null,
                 'reminder_3_date' => null,
                 'target_employees' => json_encode($allEmployeeIds), // All employees except birthday person
+                'related_employee_id' => $employeeId,
                 'is_active' => 1,
                 'created_by' => 385, // System user
             ];
@@ -342,6 +344,7 @@ class BirthdayAnniversaryNotifications extends BaseController
             'reminder_2_date' => null,
             'reminder_3_date' => null,
             'target_employees' => json_encode([$employeeId]), // Only for the anniversary person
+            'related_employee_id' => $employeeId,
             'is_active' => 1,
             'created_by' => 385, // System user
         ];
@@ -376,6 +379,7 @@ class BirthdayAnniversaryNotifications extends BaseController
                 'reminder_2_date' => null,
                 'reminder_3_date' => null,
                 'target_employees' => json_encode($allEmployeeIds), // All employees except anniversary person
+                'related_employee_id' => $employeeId,
                 'is_active' => 1,
                 'created_by' => 385, // System user
             ];
