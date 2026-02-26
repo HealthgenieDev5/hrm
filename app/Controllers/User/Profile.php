@@ -1405,6 +1405,65 @@ class Profile extends BaseController
         echo json_encode($data);
     }
 
+    public function getUpcomingBirthdays()
+    {
+        $EmployeeModel = new EmployeeModel();
+        $EmployeeModel->select("employees.id as employee_id");
+        $EmployeeModel->select("trim(concat(employees.first_name, ' ', employees.last_name)) as employee_name");
+        $EmployeeModel->select("employees.internal_employee_id as employee_code");
+        $EmployeeModel->select("employees.date_of_birth");
+        $EmployeeModel->select("departments.department_name");
+        $EmployeeModel->select("companies.company_short_name");
+        $EmployeeModel->join("departments", "departments.id = employees.department_id", "left");
+        $EmployeeModel->join("companies", "companies.id = employees.company_id", "left");
+        $EmployeeModel->where("employees.status", "active");
+        $EmployeeModel->where("employees.date_of_birth IS NOT NULL", null, false);
+        $rawData = $EmployeeModel->findAll();
+
+        $today     = new \DateTime('today');
+        $limitDate = new \DateTime('+7 days');
+        $result    = [];
+
+        foreach ($rawData as $emp) {
+            $dob = $emp['date_of_birth'];
+            if (empty($dob)) continue;
+
+            $birthdayThisYear = new \DateTime(date('Y') . '-' . date('m-d', strtotime($dob)));
+
+            if ($birthdayThisYear < $today) continue;
+
+            if ($birthdayThisYear > $limitDate) continue;
+
+            $daysLeft = (int) $today->diff($birthdayThisYear)->days;
+
+            $day    = (int) date('j', strtotime($dob));
+            $suffix = in_array($day, [11, 12, 13]) ? 'th' : (['th', 'st', 'nd', 'rd'][$day % 10] ?? 'th');
+            $birthdayDisplay = $day . '<sup>' . $suffix . '</sup> ' . date('M', strtotime($dob));
+
+            if ($daysLeft === 0) {
+                $daysLeftLabel = 'Today 🎂';
+            } elseif ($daysLeft === 1) {
+                $daysLeftLabel = 'Tomorrow';
+            } else {
+                $daysLeftLabel = 'In ' . $daysLeft . ' days';
+            }
+
+            $result[] = [
+                'employee_name'   => $emp['employee_name'],
+                'employee_code'   => $emp['employee_code'],
+                'department_name' => $emp['department_name'],
+                'company_name'    => $emp['company_short_name'],
+                'birthday_display' => $birthdayDisplay,
+                'days_left'       => $daysLeft,
+                'days_left_label' => $daysLeftLabel,
+            ];
+        }
+
+        usort($result, fn($a, $b) => $a['days_left'] <=> $b['days_left']);
+
+        echo json_encode($result);
+    }
+
 
 
     public function getProbationExtendedLetter($id)

@@ -42,6 +42,7 @@ $routes->match(['get', 'post'], '/ajax/probation/hr-confirmations', [Profile::cl
 $routes->post('/ajax/probation/hr-action', [Profile::class, 'handleHrProbationAction']);
 
 $routes->match(['get', 'post'], '/ajax/profile/get-welcome-email-waiting', [Profile::class, 'getEmployeesWaitingforWelcome']);
+$routes->get('/ajax/profile/get-upcoming-birthdays', [Profile::class, 'getUpcomingBirthdays']);
 
 /*begin::Employee anniversary*/
 $routes->match(['get', 'post'], '/ajax/hr/employee/get-one-year-anniversary-employees', [EmployeeEdit::class, 'getOneYearAnniversaryEmployees']);
