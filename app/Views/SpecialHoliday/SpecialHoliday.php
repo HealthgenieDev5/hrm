@@ -137,15 +137,19 @@
                                         <label class="form-label">Filter Company</label>
                                         <select class="form-select form-select-sm" id="company_id" data-control="select2" data-placeholder="Select a Company">
                                             <option value=""></option>
-                                            <option value="all_companies" <?php echo (isset($_REQUEST['company']) && !empty($_REQUEST['company']) && in_array('all_companies', $_REQUEST['company'])) ? 'selected' : ''; ?>>All Companies</option>
+                                            <option value="all_companies" <?php #echo (isset($_REQUEST['company']) && !empty($_REQUEST['company']) && in_array('all_companies', $_REQUEST['company'])) ? 'selected' : ''; 
+                                                                            ?>>All Companies</option>
                                             <?php
-                                            if (isset($Companies) && !empty($Companies)) {
-                                                foreach ($Companies as $company_row) {
+                                            // if (isset($Companies) && !empty($Companies)) {
+                                            //     foreach ($Companies as $company_row) {
                                             ?>
-                                                    <option value="<?php echo $company_row['id']; ?>" <?php echo (isset($_REQUEST['company']) && !empty($_REQUEST['company']) && in_array($company_row['id'], $_REQUEST['company']) && !in_array('all_companies', $_REQUEST['company'])) ? 'selected' : ''; ?>><?php echo $company_row['company_name']; ?></option>
+                                                    <option value="<?php #echo $company_row['id']; 
+                                                                    ?>" <?php #echo (isset($_REQUEST['company']) && !empty($_REQUEST['company']) && in_array($company_row['id'], $_REQUEST['company']) && !in_array('all_companies', $_REQUEST['company'])) ? 'selected' : ''; 
+                                                                        ?>><?php #echo $company_row['company_name']; 
+                                                                            ?></option>
                                             <?php
-                                                }
-                                            }
+                                            //     }
+                                            // }
                                             ?>
                                         </select>
                                         <br>

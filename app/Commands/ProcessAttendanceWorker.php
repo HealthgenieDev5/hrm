@@ -9,8 +9,11 @@ use CodeIgniter\CLI\CLI;
 class ProcessAttendanceWorker extends BaseCommand
 {
     protected $group = 'App';
+
     protected $name = 'attendance:worker';
+
     protected $description = 'Worker process for parallel attendance processing';
+
     protected $usage = 'attendance:worker [options]';
 
     protected $options = [
@@ -29,12 +32,13 @@ class ProcessAttendanceWorker extends BaseCommand
 
         if (empty($employeeIds)) {
             CLI::error("Worker #{$workerId}: No employee IDs provided");
+
             return;
         }
 
-        CLI::write("Worker #{$workerId}: Starting with " . count($employeeIds) . " employees", 'green');
+        CLI::write("Worker #{$workerId}: Starting with ".count($employeeIds).' employees', 'green');
 
-        $processor = new AttendanceProcessor();
+        $processor = new AttendanceProcessor;
         $processor->processAll(count($employeeIds), $month, $employeeIds);
 
         CLI::write("Worker #{$workerId}: Completed processing", 'green');
@@ -49,6 +53,7 @@ class ProcessAttendanceWorker extends BaseCommand
                 $options[$key] = $value;
             }
         }
+
         return $options;
     }
 }

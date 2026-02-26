@@ -2,8 +2,6 @@
 
 <?= $this->section('content') ?>
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
 
 <style>
     /* Modal background animation */
@@ -433,6 +431,16 @@
                     </tr>
                 </thead>
             </table>
+            <!-- <table id="employee_holidays_table" class="table table-sm table-row-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th style="text-align: left"><strong>Date</strong></th>
+                        <th style="text-align: left"><strong>Holiday</strong></th>
+                        <th style="text-align: center"><strong>Type</strong></th>
+                        <th style="text-align: center"><strong>Day</strong></th>
+                    </tr>
+                </thead>
+            </table> -->
             <div id="_rh_dates">
                 <input type="hidden" id="first_rh_date" value="" />
                 <input type="hidden" id="second_rh_date" value="" />
@@ -940,6 +948,18 @@
             </div>
         </div>
 
+        <div class="shadow-sm mb-5">
+            <table id="employee_holidays_table" class="table table-sm table-row-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th style="text-align: left"><strong>Date</strong></th>
+                        <th style="text-align: left"><strong>Holiday</strong></th>
+                        <th style="text-align: center"><strong>Type</strong></th>
+                        <th style="text-align: center"><strong>Day</strong></th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
 
         <div class="shadow-sm mb-5">
             <table id="leave_balance_next_month" class="table table-sm table-row-bordered">
@@ -1081,6 +1101,32 @@
 </div>
 
 
+<!-- <div class="modal fade" id="employeeNotificationModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="employeeNotificationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title w-100" id="employeeNotificationModalLabel" style="text-align: center;">
+                    <span id="notification-icon" class="me-2"></span><span id="notification-title"></span>
+                </h5>
+            </div>
+            <div class="modal-body" style="text-align: center;">
+                <div class="celebration-icon" id="notification-emoji" style="font-size: 3rem; margin-bottom: 15px;"></div>
+                <div class="mb-3">
+                    <span class="badge badge-light-primary" id="notification-type" style="font-size: 0.9rem; padding: 6px 12px;"></span>
+                    <span class="text-muted ms-3" id="notification-event-date" style="font-size: 0.9rem;"></span>
+                </div>
+                <div class="separator separator-dashed my-4"></div>
+                <div class="notification-description" id="notification-description" style="white-space: pre-wrap; font-size: 1rem; line-height: 1.6; text-align: left; padding: 0 20px;"></div>
+            </div>
+            <div class="modal-footer" style="justify-content: center;">
+                <button type="button" class="btn btn-lg btn-success" id="mark-as-read-btn">
+                    <i class="fa fa-check me-2"></i>Acknowledge
+                </button>
+            </div>
+        </div>
+    </div>
+</div> -->
+
 <div class="modal fade" id="employeeNotificationModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered notif-dialog">
         <div class="modal-content notif-glass-card">
@@ -1154,7 +1200,7 @@
                                     </div>
                                 </div>
                                 <div class="col-6 notif-contact-item" id="notif-row-emp-code" style="display: none;">
-                                    <p class="notif-contact-label">Employee Code</p>
+                                    <p class="notif-contact-label">Employee ID</p>
                                     <div class="notif-contact-value">
                                         <i class="bi bi-fingerprint"></i><span id="notif-emp-code"></span>
                                     </div>
@@ -1162,6 +1208,7 @@
                             </div>
                         </div>
 
+                        <!-- Date (non-employee notifications) -->
                         <div id="notification-event-date" class="notif-date-only"></div>
                     </div>
 
@@ -1191,10 +1238,7 @@
         margin-left: auto;
         margin-right: auto;
     }
-</style>
 
-
-<style type="text/css">
     .notif-dialog {
         max-width: 760px;
     }
@@ -1524,7 +1568,6 @@
     }
 </style>
 
-<!-- HR Manager Probation Confirmation Modal -->
 <div class="modal fade" id="probationConfirmationModal" tabindex="-1" aria-labelledby="probationConfirmationModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
@@ -1963,700 +2006,140 @@ if (!empty($probationPopUpEmployees)) {
 }
 ?>
 
-<script>
-    $(document).ready(function() {
-        setTimeout(function() {
-            checkForHrProbationConfirmations();
-        }, 2500);
-
-        function checkForHrProbationConfirmations() {
-            $.ajax({
-                url: '<?= base_url("/ajax/probation/hr-confirmations") ?>',
-                method: 'GET',
-                dataType: 'json',
-                success: function(response) {
-                    if (response.success && response.confirmations.length > 0) {
-                        showHrProbationModal(response.confirmations[0]);
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.error('Error fetching HR confirmations:', error);
-                }
-            });
-        }
-
-        function showHrProbationModal(confirmation) {
-            $('#pc-record-id').val(confirmation.id);
-            $('#pc-employee-name').text(confirmation.first_name + ' ' + confirmation.last_name);
-            $('#pc-department').text(confirmation.department_name || 'N/A');
-            $('#pc-designation').text(confirmation.designation_name || 'N/A');
-            $('#pc-joining-date').text(formatDate(confirmation.joining_date));
-            $('#pc-probation-period').text(confirmation.probation);
-            //$('#pc-probation-end-date').text(calculateProbationEndDate(confirmation.joining_date, confirmation.probation_days));
-            $('#pc-hod-name').text(confirmation.hod_first_name + ' ' + confirmation.hod_last_name);
-            $('#pc-confirmation-date').text(formatDate(confirmation.date_time));
-
-            $('#probationConfirmationModal').modal('show');
-        }
-
-        $('#pc-remind-later-btn').click(function() {
-            handleHrAction('remind_later', null);
-        });
-
-        $('#pc-confirmed-btn').click(function() {
-            Swal.fire({
-                title: 'Confirm Probation',
-                text: 'Are you sure you want to confirm this probation?',
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonText: 'Yes, Confirm',
-                cancelButtonText: 'Cancel',
-                confirmButtonColor: '#198754',
-                cancelButtonColor: '#6c757d'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    handleHrAction('confirmed', null);
-                }
-            });
-        });
-
-        function handleHrAction(action, notes) {
-            const recordId = $('#pc-record-id').val();
-            const $remindBtn = $('#pc-remind-later-btn');
-            const $confirmBtn = $('#pc-confirmed-btn');
-
-            const remindBtnHtml = $remindBtn.html();
-            const confirmBtnHtml = $confirmBtn.html();
-
-            $remindBtn.prop('disabled', true);
-            $confirmBtn.prop('disabled', true);
-
-            if (action === 'remind_later') {
-                $remindBtn.html('<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>Processing...');
-            } else {
-                $confirmBtn.html('<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>Processing...');
-            }
-
-            $.ajax({
-                url: '<?= base_url("/ajax/probation/hr-action") ?>',
-                method: 'POST',
-                data: {
-                    record_id: recordId,
-                    action: action,
-                    notes: notes
-                },
-                dataType: 'json',
-                success: function(response) {
-                    if (response.success) {
-                        $('#probationConfirmationModal').modal('hide');
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Success',
-                            text: response.message,
-                            timer: 2000,
-                            showConfirmButton: false
-                        });
-
-                        setTimeout(checkForHrProbationConfirmations, 1000);
-                    } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: response.message
-                        });
-                    }
-                },
-                error: function(xhr, status, error) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'Failed to process action. Please try again.'
-                    });
-                },
-                complete: function() {
-                    // Restore buttons
-                    $remindBtn.html(remindBtnHtml).prop('disabled', false);
-                    $confirmBtn.html(confirmBtnHtml).prop('disabled', false);
-                }
-            });
-        }
-
-        function formatDate(dateString) {
-            if (!dateString) return 'N/A';
-            const date = new Date(dateString);
-            return date.toLocaleDateString('en-GB');
-        }
-
-        function calculateProbationEndDate(joiningDate, probationDays) {
-            if (!joiningDate || !probationDays) return 'N/A';
-            const date = new Date(joiningDate);
-            date.setDate(date.getDate() + parseInt(probationDays));
-            return date.toLocaleDateString('en-GB');
-        }
-    });
-</script>
-
-
-<!-- ==================== RESIGNATION HOD ACKNOWLEDGMENT MODALS ==================== -->
-
-<?php
-// HOD Resignation Acknowledgment Modal (Bootstrap - one at a time)
-if (!empty($resignationHodAcknowledgments)) {
-?>
-    <script type="text/javascript">
+<?php if (in_array(session()->get('current_user')['employee_id'], array_map('intval', explode(',', env('app.recruitmentManagerIds'))))): ?>
+    <script>
         $(document).ready(function() {
-            const resignations = JSON.parse('<?php echo json_encode($resignationHodAcknowledgments); ?>');
-            let currentIndex = 0;
+            setTimeout(function() {
+                checkForHrProbationConfirmations();
+            }, 2500);
 
-            function showHodResignationModal(index) {
-                if (index >= resignations.length) return;
-
-                const r = resignations[index];
-                $('#hod-record-id').val(r.id);
-                $('#hod-employee-name').text(r.employee_name + ' - (' + (r.internal_employee_id) + ')');
-                // $('#hod-employee-name').text(r.employee_name);
-                // $('#hod-employee-id').text(r.internal_employee_id || 'N/A');
-                $('#hod-department').text(r.department_name || 'N/A');
-                $('#hod-designation').text(r.designation_name || 'N/A');
-                $('#hod-company').text(r.company_name || 'N/A');
-                $('#hod-manager-name').text(r.manager_name || 'N/A');
-                $('#hod-resignation-date').text(r.resignation_date_formatted);
-                $('#hod-last-working-date').text(r.last_working_date_formatted);
-                $('#hod-reason').text(r.resignation_reason || 'Not specified');
-                $('#hod-remaining-days').text(r.remaining_days + ' days');
-
-                // Urgent badge
-                const $urgentBadge = $('#hod-urgent-badge');
-                if (r.is_urgent) {
-                    $urgentBadge.show();
-                } else {
-                    $urgentBadge.hide();
-                }
-
-                // Counter
-                $('#hod-counter').text('(' + (index + 1) + ' of ' + resignations.length + ')');
-
-                // Reset action and rejection reason
-                $('#hod-action-select').val('');
-                $('#hod-rejection-reason-container').hide();
-                $('#hod-rejection-reason').val('');
-                $('#hod-action-error').hide();
-                $('#hod-rejection-error').hide();
-
-                $('#hodResignationAckModal').modal('show');
-            }
-
-            // Show first resignation
-            showHodResignationModal(0);
-
-            // Show/hide rejection reason based on action
-            $('#hod-action-select').on('change', function() {
-                if ($(this).val() === 'reject') {
-                    $('#hod-rejection-reason-container').slideDown();
-                } else {
-                    $('#hod-rejection-reason-container').slideUp();
-                    $('#hod-rejection-reason').val('');
-                }
-                $('#hod-action-error').hide();
-                $('#hod-rejection-error').hide();
-            });
-
-            // Submit button
-            $('#hod-submit-btn').on('click', function() {
-                const recordId = $('#hod-record-id').val();
-                const action = $('#hod-action-select').val();
-                const rejectionReason = $('#hod-rejection-reason').val();
-
-                // Validate
-                $('#hod-action-error').hide();
-                $('#hod-rejection-error').hide();
-
-                if (!action) {
-                    $('#hod-action-error').show();
-                    return;
-                }
-                if (action === 'reject' && !rejectionReason.trim()) {
-                    $('#hod-rejection-error').show();
-                    return;
-                }
-
-                const $btn = $(this);
-                const btnHtml = $btn.html();
-                $btn.prop('disabled', true);
-                $btn.html('<span class="spinner-border spinner-border-sm me-1"></span>Processing...');
-
-                const responses = {};
-                responses[recordId] = {
-                    action: action,
-                    rejection_reason: rejectionReason || null
-                };
-
+            function checkForHrProbationConfirmations() {
                 $.ajax({
-                    method: "POST",
-                    url: "<?php echo base_url('/ajax/resignation/save-hod-response'); ?>",
-                    data: {
-                        responses: responses
-                    },
+                    url: '<?= base_url("/ajax/probation/hr-confirmations") ?>',
+                    method: 'GET',
                     dataType: 'json',
                     success: function(response) {
-                        if (response.response_type === 'success') {
-                            $('#hodResignationAckModal').modal('hide');
-                            currentIndex++;
-
-                            if (currentIndex < resignations.length) {
-                                // Show next resignation after brief delay
-                                setTimeout(function() {
-                                    showHodResignationModal(currentIndex);
-                                }, 500);
-                            } else {
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'All Done!',
-                                    text: 'All resignation responses saved successfully.',
-                                    timer: 2000,
-                                    showConfirmButton: false
-                                }).then(() => {
-                                    location.reload();
-                                });
-                            }
-                        } else {
-                            Swal.fire('Error', response.response_description, 'error');
+                        if (response.success && response.confirmations.length > 0) {
+                            showHrProbationModal(response.confirmations[0]);
                         }
                     },
-                    error: function() {
-                        Swal.fire('Error', 'Failed to save response. Please try again.', 'error');
-                    },
-                    complete: function() {
-                        $btn.html(btnHtml).prop('disabled', false);
+                    error: function(xhr, status, error) {
+                        console.error('Error fetching HR confirmations:', error);
+                    }
+                });
+            }
+
+            function showHrProbationModal(confirmation) {
+                $('#pc-record-id').val(confirmation.id);
+                $('#pc-employee-name').text(confirmation.first_name + ' ' + confirmation.last_name);
+                $('#pc-department').text(confirmation.department_name || 'N/A');
+                $('#pc-designation').text(confirmation.designation_name || 'N/A');
+                $('#pc-joining-date').text(formatDate(confirmation.joining_date));
+                $('#pc-probation-period').text(confirmation.probation);
+                //$('#pc-probation-end-date').text(calculateProbationEndDate(confirmation.joining_date, confirmation.probation_days));
+                $('#pc-hod-name').text(confirmation.hod_first_name + ' ' + confirmation.hod_last_name);
+                $('#pc-confirmation-date').text(formatDate(confirmation.date_time));
+
+                $('#probationConfirmationModal').modal('show');
+            }
+
+            $('#pc-remind-later-btn').click(function() {
+                handleHrAction('remind_later', null);
+            });
+
+            $('#pc-confirmed-btn').click(function() {
+                Swal.fire({
+                    title: 'Confirm Probation',
+                    text: 'Are you sure you want to confirm this probation?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, Confirm',
+                    cancelButtonText: 'Cancel',
+                    confirmButtonColor: '#198754',
+                    cancelButtonColor: '#6c757d'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        handleHrAction('confirmed', null);
                     }
                 });
             });
+
+            function handleHrAction(action, notes) {
+                const recordId = $('#pc-record-id').val();
+                const $remindBtn = $('#pc-remind-later-btn');
+                const $confirmBtn = $('#pc-confirmed-btn');
+
+                const remindBtnHtml = $remindBtn.html();
+                const confirmBtnHtml = $confirmBtn.html();
+
+                $remindBtn.prop('disabled', true);
+                $confirmBtn.prop('disabled', true);
+
+                if (action === 'remind_later') {
+                    $remindBtn.html('<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>Processing...');
+                } else {
+                    $confirmBtn.html('<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>Processing...');
+                }
+
+                $.ajax({
+                    url: '<?= base_url("/ajax/probation/hr-action") ?>',
+                    method: 'POST',
+                    data: {
+                        record_id: recordId,
+                        action: action,
+                        notes: notes
+                    },
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.success) {
+                            $('#probationConfirmationModal').modal('hide');
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success',
+                                text: response.message,
+                                timer: 2000,
+                                showConfirmButton: false
+                            });
+
+                            setTimeout(checkForHrProbationConfirmations, 1000);
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: response.message
+                            });
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Failed to process action. Please try again.'
+                        });
+                    },
+                    complete: function() {
+                        // Restore buttons
+                        $remindBtn.html(remindBtnHtml).prop('disabled', false);
+                        $confirmBtn.html(confirmBtnHtml).prop('disabled', false);
+                    }
+                });
+            }
+
+            function formatDate(dateString) {
+                if (!dateString) return 'N/A';
+                const date = new Date(dateString);
+                return date.toLocaleDateString('en-GB');
+            }
+
+            function calculateProbationEndDate(joiningDate, probationDays) {
+                if (!joiningDate || !probationDays) return 'N/A';
+                const date = new Date(joiningDate);
+                date.setDate(date.getDate() + parseInt(probationDays));
+                return date.toLocaleDateString('en-GB');
+            }
         });
     </script>
-
-    <!-- HOD Resignation Acknowledgment Bootstrap Modal -->
-    <div class="modal fade" id="hodResignationAckModal" tabindex="-1" aria-labelledby="hodResignationAckModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title w-100" id="hodResignationAckModalLabel" style="text-align: center;">
-                        <span class="me-2">📋</span><span>Resignation Acknowledgment Required</span>
-                    </h5>
-                </div>
-                <div class="modal-body">
-                    <input type="hidden" id="hod-record-id">
-
-                    <div class="alert alert-warning mb-3">
-                        <i class="bi bi-exclamation-triangle me-1"></i>
-                        As HOD, your acknowledgment is required for the following resignation.
-                    </div>
-
-                    <span id="hod-urgent-badge" class="badge bg-danger mb-3" style="display: none;">URGENT - Less than 7 days remaining</span>
-
-                    <!-- Employee Information Card -->
-                    <div class="card mb-3">
-                        <div class="card-header bg-light">
-                            <strong>Employee Information</strong>
-                        </div>
-                        <div class="card-body">
-                            <div class="row mb-2">
-                                <div class="col-md-4"><strong>Name:</strong></div>
-                                <div class="col-md-8" id="hod-employee-name"></div>
-                            </div>
-                            <!-- <div class="row mb-2">
-                                <div class="col-md-4"><strong>Employee ID:</strong></div>
-                                <div class="col-md-8" id="hod-employee-id"></div>
-                            </div> -->
-                            <div class="row mb-2">
-                                <div class="col-md-4"><strong>Department:</strong></div>
-                                <div class="col-md-8" id="hod-department"></div>
-                            </div>
-                            <div class="row mb-2">
-                                <div class="col-md-4"><strong>Designation:</strong></div>
-                                <div class="col-md-8" id="hod-designation"></div>
-                            </div>
-                            <div class="row mb-2">
-                                <div class="col-md-4"><strong>Company:</strong></div>
-                                <div class="col-md-8" id="hod-company"></div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-4"><strong>Reporting Manager:</strong></div>
-                                <div class="col-md-8" id="hod-manager-name"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Resignation Details Card -->
-                    <div class="card mb-3">
-                        <div class="card-header bg-light">
-                            <strong>Resignation Details</strong>
-                        </div>
-                        <div class="card-body">
-                            <div class="row mb-2">
-                                <div class="col-md-5"><strong>Resignation Date:</strong></div>
-                                <div class="col-md-7" id="hod-resignation-date"></div>
-                            </div>
-                            <div class="row mb-2">
-                                <div class="col-md-5"><strong>Last Working Date:</strong></div>
-                                <div class="col-md-7" id="hod-last-working-date"></div>
-                            </div>
-                            <div class="row mb-2">
-                                <div class="col-md-5"><strong>Remaining Days:</strong></div>
-                                <div class="col-md-7" id="hod-remaining-days"></div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-5"><strong>Reason:</strong></div>
-                                <div class="col-md-7" id="hod-reason"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Action Card -->
-                    <div class="card">
-                        <div class="card-header bg-light">
-                            <strong>Your Response</strong>
-                        </div>
-                        <div class="card-body">
-                            <div class="mb-3">
-                                <select id="hod-action-select" class="form-select">
-                                    <option value="" disabled selected>Select Action</option>
-                                    <option value="too_early">Remind Me Later</option>
-                                    <option value="accept">Accept</option>
-                                    <option value="reject">Reject</option>
-                                </select>
-                                <div id="hod-action-error" class="text-danger mt-1" style="display: none; font-size: 0.85rem;">Please select an action!</div>
-                            </div>
-                            <div id="hod-rejection-reason-container" style="display: none;">
-                                <textarea id="hod-rejection-reason" class="form-control" placeholder="Rejection reason (required)" rows="3"></textarea>
-                                <div id="hod-rejection-error" class="text-danger mt-1" style="display: none; font-size: 0.85rem;">Please provide a rejection reason!</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer" style="justify-content: center;">
-                    <button type="button" class="btn btn-lg btn-success" id="hod-submit-btn">
-                        <i class="fa fa-check me-2"></i>Submit Response
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-<?php
-}
-?>
-
-<!-- ==================== REPORTING MANAGER RESIGNATION NOTIFICATION ==================== -->
-
-<!-- Reporting Manager Resignation Notification Script -->
-<script>
-    $(document).ready(function() {
-        setTimeout(function() {
-            checkForReportingManagerResignationNotifications();
-        }, 3000);
-
-        function checkForReportingManagerResignationNotifications() {
-            $.ajax({
-                url: '<?= base_url("/ajax/resignation/reporting-manager-notifications") ?>',
-                method: 'GET',
-                dataType: 'json',
-                success: function(response) {
-                    if (response.success && response.notifications.length > 0) {
-                        showReportingManagerResignationModal(response.notifications[0]);
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.error('Error fetching reporting manager notifications:', error);
-                }
-            });
-        }
-
-        function showReportingManagerResignationModal(notification) {
-            $('#rm-record-id').val(notification.id);
-            $('#rm-employee-name').text(notification.employee_name + ' - (' + (notification.internal_employee_id) + ')');
-            // $('#rm-employee-name').text(notification.employee_name);
-            // $('#rm-employee-id').text(notification.internal_employee_id || 'N/A');
-            $('#rm-department').text(notification.department_name || 'N/A');
-            $('#rm-designation').text(notification.designation_name || 'N/A');
-            $('#rm-company').text(notification.company_name || 'N/A');
-            $('#rm-resignation-date').text(notification.resignation_date_formatted);
-            $('#rm-last-working-date').text(notification.last_working_date_formatted);
-            $('#rm-reason').text(notification.resignation_reason || 'Not specified');
-            $('#rm-hod-name').text(notification.hod_name || 'N/A');
-
-            // Show HOD response status
-            const hodResponse = notification.hod_response || 'pending';
-            const $hodBadge = $('#rm-hod-response');
-            $hodBadge.text(hodResponse.charAt(0).toUpperCase() + hodResponse.slice(1));
-            $hodBadge.removeClass('bg-success bg-danger bg-warning bg-secondary');
-            if (hodResponse === 'accept') {
-                $hodBadge.addClass('bg-success');
-            } else if (hodResponse === 'rejected') {
-                $hodBadge.addClass('bg-danger');
-            } else {
-                $hodBadge.addClass('bg-warning text-dark');
-            }
-
-            $('#reportingManagerResignationModal').modal('show');
-        }
-
-        $('#rm-acknowledge-btn').click(function() {
-            const recordId = $('#rm-record-id').val();
-            const $btn = $(this);
-            const btnHtml = $btn.html();
-
-            $btn.prop('disabled', true);
-            $btn.html('<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>Processing...');
-
-            $.ajax({
-                url: '<?= base_url("/ajax/resignation/reporting-manager-notification-action") ?>',
-                method: 'POST',
-                data: {
-                    record_id: recordId,
-                    action: 'viewed'
-                },
-                dataType: 'json',
-                success: function(response) {
-                    if (response.success) {
-                        $('#reportingManagerResignationModal').modal('hide');
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Acknowledged',
-                            text: response.message,
-                            timer: 2000,
-                            showConfirmButton: false
-                        });
-                        // Check for next notification
-                        setTimeout(checkForReportingManagerResignationNotifications, 1000);
-                    } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: response.message
-                        });
-                    }
-                },
-                error: function() {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'Failed to process. Please try again.'
-                    });
-                },
-                complete: function() {
-                    $btn.html(btnHtml).prop('disabled', false);
-                }
-            });
-        });
-    });
-</script>
-
-<!-- Reporting Manager Resignation Notification Bootstrap Modal -->
-<div class="modal fade" id="reportingManagerResignationModal" tabindex="-1" aria-labelledby="reportingManagerResignationModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title w-100" id="reportingManagerResignationModalLabel" style="text-align: center;">
-                    <span class="me-2">📋</span><span>Employee Resignation Notification</span>
-                </h5>
-            </div>
-            <div class="modal-body">
-                <input type="hidden" id="rm-record-id">
-
-                <div class="alert alert-warning mb-3">
-                    <i class="bi bi-exclamation-triangle me-1"></i>
-                    An employee under your supervision has submitted their resignation.
-                </div>
-
-                <div>
-                    <!-- Employee Information Card -->
-                    <div class="card mb-3">
-                        <div class="card-header bg-light">
-                            <strong>Employee Information</strong>
-                        </div>
-                        <div class="card-body">
-                            <div class="row mb-2">
-                                <div class="col-md-4"><strong>Name:</strong></div>
-                                <div class="col-md-8" id="rm-employee-name"></div>
-                            </div>
-                            <!-- <div class="row mb-2">
-                                <div class="col-md-4"><strong>Employee ID:</strong></div>
-                                <div class="col-md-8" id="rm-employee-id"></div>
-                            </div> -->
-                            <div class="row mb-2">
-                                <div class="col-md-4"><strong>Department:</strong></div>
-                                <div class="col-md-8" id="rm-department"></div>
-                            </div>
-                            <div class="row mb-2">
-                                <div class="col-md-4"><strong>Designation:</strong></div>
-                                <div class="col-md-8" id="rm-designation"></div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-4"><strong>Company:</strong></div>
-                                <div class="col-md-8" id="rm-company"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Resignation Details Card -->
-                    <div class="card mb-3">
-                        <div class="card-header bg-light">
-                            <strong>Resignation Details</strong>
-                        </div>
-                        <div class="card-body">
-                            <div class="row mb-2">
-                                <div class="col-md-5"><strong>Resignation Date:</strong></div>
-                                <div class="col-md-7" id="rm-resignation-date"></div>
-                            </div>
-                            <div class="row mb-2">
-                                <div class="col-md-5"><strong>Last Working Date:</strong></div>
-                                <div class="col-md-7" id="rm-last-working-date"></div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-5"><strong>Reason:</strong></div>
-                                <div class="col-md-7" id="rm-reason"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- HOD Status Card -->
-                    <div class="card">
-                        <div class="card-header bg-light">
-                            <strong>HOD Status</strong>
-                        </div>
-                        <div class="card-body">
-                            <div class="row mb-2">
-                                <div class="col-md-4"><strong>HOD Name:</strong></div>
-                                <div class="col-md-8" id="rm-hod-name"></div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-4"><strong>HOD Response:</strong></div>
-                                <div class="col-md-8">
-                                    <span id="rm-hod-response" class="badge bg-warning text-dark"></span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer" style="justify-content: center;">
-                <button type="button" class="btn btn-lg btn-success" id="rm-acknowledge-btn">
-                    <i class="fa fa-check me-2"></i>Acknowledge
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- ==================== END REPORTING MANAGER RESIGNATION NOTIFICATION ==================== -->
-
-<!-- ==================== HR MANAGER RESIGNATION NOTIFICATION (after HOD responds) ==================== -->
-
-<!-- HR Manager Resignation Notification Script -->
-<script>
-    $(document).ready(function() {
-        setTimeout(function() {
-            checkForHrResignationNotifications();
-        }, 2500);
-
-        function checkForHrResignationNotifications() {
-            $.ajax({
-                url: '<?= base_url("/ajax/resignation/manager-notifications") ?>',
-                method: 'GET',
-                dataType: 'json',
-                success: function(response) {
-                    if (response.success && response.notifications.length > 0) {
-                        showHrResignationModal(response.notifications[0]);
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.error('Error fetching HR resignation notifications:', error);
-                }
-            });
-        }
-
-        function showHrResignationModal(notification) {
-            $('#rn-record-id').val(notification.id);
-            $('#rn-employee-name').text(notification.employee_name + ' - (' + (notification.internal_employee_id) + ')');
-            // $('#rn-employee-name').text(notification.employee_name);
-            // $('#rn-employee-id').text(notification.internal_employee_id || 'N/A');
-            $('#rn-department').text(notification.department_name || 'N/A');
-            $('#rn-designation').text(notification.designation_name || 'N/A');
-            $('#rn-company').text(notification.company_name || 'N/A');
-            $('#rn-resignation-date').text(notification.resignation_date_formatted);
-            $('#rn-last-working-date').text(notification.last_working_date_formatted);
-            $('#rn-hod-name').text(notification.hod_name);
-            $('#rn-hod-response').text(notification.hod_response);
-
-            // Set response badge color
-            const $responseBadge = $('#rn-hod-response');
-            $responseBadge.removeClass('bg-success bg-danger bg-warning');
-            if (notification.hod_response === 'accept') {
-                $responseBadge.addClass('bg-success');
-            } else if (notification.hod_response === 'rejected') {
-                $responseBadge.addClass('bg-danger');
-            }
-
-            // Show/hide rejection reason
-            if (notification.hod_response === 'rejected' && notification.hod_rejection_reason) {
-                $('#rn-rejection-reason-container').show();
-                $('#rn-rejection-reason').text(notification.hod_rejection_reason);
-            } else {
-                $('#rn-rejection-reason-container').hide();
-            }
-
-            $('#resignationHrNotificationModal').modal('show');
-        }
-
-        $('#rn-acknowledge-btn').click(function() {
-            const recordId = $('#rn-record-id').val();
-            const $btn = $(this);
-            const btnHtml = $btn.html();
-
-            $btn.prop('disabled', true);
-            $btn.html('<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>Processing...');
-
-            $.ajax({
-                url: '<?= base_url("/ajax/resignation/manager-notification-action") ?>',
-                method: 'POST',
-                data: {
-                    record_id: recordId,
-                    action: 'viewed'
-                },
-                dataType: 'json',
-                success: function(response) {
-                    if (response.success) {
-                        $('#resignationHrNotificationModal').modal('hide');
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Acknowledged',
-                            text: response.message,
-                            timer: 2000,
-                            showConfirmButton: false
-                        });
-                        // Check for next notification
-                        setTimeout(checkForHrResignationNotifications, 1000);
-                    } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: response.message
-                        });
-                    }
-                },
-                error: function() {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'Failed to process. Please try again.'
-                    });
-                },
-                complete: function() {
-                    $btn.html(btnHtml).prop('disabled', false);
-                }
-            });
-        });
-    });
-</script>
+<?php endif; ?>
 
 <!-- HR Manager Resignation Notification Bootstrap Modal -->
 <div class="modal fade" id="resignationHrNotificationModal" tabindex="-1" aria-labelledby="resignationHrNotificationModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
@@ -2667,81 +2150,80 @@ if (!empty($resignationHodAcknowledgments)) {
                     <span class="me-2">🔔</span><span>Resignation Response Notification</span>
                 </h5>
             </div>
-            <div class="modal-body" style="text-align: center;">
-                <div class="alert alert-warning text-start" role="alert" style="margin-bottom: 15px;">
-                    The Head of Department (HOD) has reviewed and responded to the following resignation. Please acknowledge to confirm receipt.
-                </div>
+            <div class="modal-body">
                 <input type="hidden" id="rn-record-id">
 
-                <div class="text-start" style="padding: 0 20px;">
-                    <!-- Employee Information Card -->
-                    <div class="card mb-3">
-                        <div class="card-header bg-light">
-                            <strong>Employee Information</strong>
+                <div class="alert alert-warning mb-3">
+                    <i class="bi bi-info-circle me-1"></i>
+                    The Head of Department (HOD) has reviewed and responded to the following resignation. Please acknowledge to confirm receipt.
+                </div>
+                <!-- Employee Information Card -->
+                <div class="card mb-3">
+                    <div class="card-header bg-light">
+                        <strong>Employee Information</strong>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-2">
+                            <div class="col-md-4"><strong>Name:</strong></div>
+                            <div class="col-md-8" id="rn-employee-name"></div>
                         </div>
-                        <div class="card-body">
-                            <div class="row mb-2">
-                                <div class="col-md-4"><strong>Name:</strong></div>
-                                <div class="col-md-8" id="rn-employee-name"></div>
-                            </div>
-                            <!-- <div class="row mb-2">
+                        <!-- <div class="row mb-2">
                                 <div class="col-md-4"><strong>Employee ID:</strong></div>
                                 <div class="col-md-8" id="rn-employee-id"></div>
                             </div> -->
-                            <div class="row mb-2">
-                                <div class="col-md-4"><strong>Department:</strong></div>
-                                <div class="col-md-8" id="rn-department"></div>
-                            </div>
-                            <div class="row mb-2">
-                                <div class="col-md-4"><strong>Designation:</strong></div>
-                                <div class="col-md-8" id="rn-designation"></div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-4"><strong>Company:</strong></div>
-                                <div class="col-md-8" id="rn-company"></div>
-                            </div>
+                        <div class="row mb-2">
+                            <div class="col-md-4"><strong>Department:</strong></div>
+                            <div class="col-md-8" id="rn-department"></div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-md-4"><strong>Designation:</strong></div>
+                            <div class="col-md-8" id="rn-designation"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4"><strong>Company:</strong></div>
+                            <div class="col-md-8" id="rn-company"></div>
                         </div>
                     </div>
+                </div>
 
-                    <!-- Resignation Details Card -->
-                    <div class="card mb-3">
-                        <div class="card-header bg-light">
-                            <strong>Resignation Details</strong>
+                <!-- Resignation Details Card -->
+                <div class="card mb-3">
+                    <div class="card-header bg-light">
+                        <strong>Resignation Details</strong>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-2">
+                            <div class="col-md-5"><strong>Resignation Date:</strong></div>
+                            <div class="col-md-7" id="rn-resignation-date"></div>
                         </div>
-                        <div class="card-body">
-                            <div class="row mb-2">
-                                <div class="col-md-5"><strong>Resignation Date:</strong></div>
-                                <div class="col-md-7" id="rn-resignation-date"></div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-5"><strong>Last Working Date:</strong></div>
-                                <div class="col-md-7" id="rn-last-working-date"></div>
-                            </div>
+                        <div class="row">
+                            <div class="col-md-5"><strong>Last Working Date:</strong></div>
+                            <div class="col-md-7" id="rn-last-working-date"></div>
                         </div>
                     </div>
+                </div>
 
-                    <!-- HOD Response Card -->
-                    <div class="card">
-                        <div class="card-header bg-light">
-                            <strong>HOD Response</strong>
+                <!-- HOD Response Card -->
+                <div class="card">
+                    <div class="card-header bg-light">
+                        <strong>HOD Response</strong>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-2">
+                            <div class="col-md-4"><strong>HOD Name:</strong></div>
+                            <div class="col-md-8" id="rn-hod-name"></div>
                         </div>
-                        <div class="card-body">
-                            <div class="row mb-2">
-                                <div class="col-md-4"><strong>HOD Name:</strong></div>
-                                <div class="col-md-8" id="rn-hod-name"></div>
+                        <div class="row mb-2">
+                            <div class="col-md-4"><strong>Response:</strong></div>
+                            <div class="col-md-8">
+                                <span id="rn-hod-response" class="badge bg-success"></span>
                             </div>
-                            <div class="row mb-2">
-                                <div class="col-md-4"><strong>Response:</strong></div>
+                        </div>
+                        <div id="rn-rejection-reason-container" style="display: none;">
+                            <div class="row">
+                                <div class="col-md-4"><strong>Reason:</strong></div>
                                 <div class="col-md-8">
-                                    <span id="rn-hod-response" class="badge bg-success"></span>
-                                </div>
-                            </div>
-                            <div id="rn-rejection-reason-container" style="display: none;">
-                                <div class="row">
-                                    <div class="col-md-4"><strong>Reason:</strong></div>
-                                    <div class="col-md-8">
-                                        <div class="alert alert-danger mb-0" id="rn-rejection-reason"></div>
-                                    </div>
+                                    <div class="alert alert-danger mb-0" id="rn-rejection-reason"></div>
                                 </div>
                             </div>
                         </div>
@@ -2758,8 +2240,117 @@ if (!empty($resignationHodAcknowledgments)) {
 </div>
 
 <!-- ==================== END HR MANAGER RESIGNATION NOTIFICATION ==================== -->
+<script>
+    $(document).ready(function() {
+        checkForHrManagerNotifications();
+    });
 
+    function checkForHrManagerNotifications() {
+        $.ajax({
+            url: '<?php echo base_url('ajax/resignation/hr-manager-notifications'); ?>',
+            method: 'POST',
+            dataType: 'json',
+            success: function(response) {
+                // if (response.success && response.data && response.data.length > 0) {
+                //     displayHrManagerNotifications(response.data);
+                // }
+                if (response.success && response.notifications && response.notifications.length > 0) {
+                    displayHrManagerNotifications(response.notifications);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching HR Manager notifications:', error);
+            }
+        });
+    }
+
+    function displayHrManagerNotifications(notifications) {
+        if (notifications.length === 0) return;
+
+        let html = '<div class="container-fluid">';
+        html += '<div class="alert alert-info mb-3">';
+        html += '<strong>You have ' + notifications.length + ' resignation(s) to review as HR Manager</strong>';
+        html += '</div>';
+
+        notifications.forEach((notification, index) => {
+            let hodResponseBadge = '';
+            switch (notification.hod_response) {
+                case 'accept':
+                    hodResponseBadge = '<span class="badge badge-success">Accepted</span>';
+                    break;
+                case 'reject':
+                    hodResponseBadge = '<span class="badge badge-danger">Rejected</span>';
+                    break;
+                case 'pending':
+                    hodResponseBadge = '<span class="badge badge-warning">Pending</span>';
+                    break;
+                case 'too_early':
+                    hodResponseBadge = '<span class="badge badge-info">Too Early</span>';
+                    break;
+                default:
+                    hodResponseBadge = '<span class="badge badge-secondary">Unknown</span>';
+            }
+
+            html += '<div class="card mb-3">';
+            html += '<div class="card-header bg-light"><strong>Resignation ' + (index + 1) + ' of ' + notifications.length + '</strong></div>';
+            html += '<div class="card-body">';
+            html += '<div class="row">';
+            html += '<div class="col-md-6">';
+            html += '<p><strong>Employee:</strong> ' + notification.first_name + ' ' + notification.last_name + ' (' + notification.internal_employee_id + ')</p>';
+            html += '<p><strong>Department:</strong> ' + (notification.department_name || 'N/A') + '</p>';
+            html += '<p><strong>Company:</strong> ' + (notification.company_name || 'N/A') + '</p>';
+            html += '<p><strong>Resignation Date:</strong> ' + notification.resignation_date + '</p>';
+            html += '</div>';
+            html += '<div class="col-md-6">';
+            html += '<p><strong>HOD Response:</strong> ' + hodResponseBadge + '</p>';
+            html += '<p><strong>HOD:</strong> ' + (notification.hod_first_name || '') + ' ' + (notification.hod_last_name || '') + '</p>';
+            html += '<p><strong>Response Date:</strong> ' + (notification.hod_response_date || 'N/A') + '</p>';
+            html += '<p><strong>Reason:</strong> ' + (notification.resignation_reason || 'N/A') + '</p>';
+            html += '</div>';
+            html += '</div>';
+            html += '</div>';
+            html += '</div>';
+        });
+
+        html += '</div>';
+
+        $('#hrManagerResignationNotificationContent').html(html);
+        $('#hrManagerResignationNotificationModal').modal('show');
+
+        // Store notification IDs for marking as viewed
+        $('#markHrManagerNotificationViewedBtn').data('record-ids', notifications.map(n => n.id));
+    }
+
+    $(document).ready(function() {
+        $('#markHrManagerNotificationViewedBtn').on('click', function() {
+            const recordIds = $(this).data('record-ids');
+
+            if (!recordIds || recordIds.length === 0) return;
+
+            // Mark all notifications as viewed
+            const promises = recordIds.map(recordId => {
+                return $.ajax({
+                    url: '<?php echo base_url('ajax/resignation/hr-manager-notification-action'); ?>',
+                    method: 'POST',
+                    data: {
+                        record_id: recordId,
+                        action: 'viewed'
+                    },
+
+                });
+            });
+
+            Promise.all(promises).then(() => {
+                $('#hrManagerResignationNotificationModal').modal('hide');
+                toastr.success('Notifications marked as viewed');
+            }).catch(() => {
+                toastr.error('Failed to mark some notifications as viewed');
+            });
+        });
+    });
+</script>
 <!-- ==================== END RESIGNATION HOD ACKNOWLEDGMENT MODALS ==================== -->
+
 
 <script>
     function oneYearEmpAnniversary() {
@@ -4984,6 +4575,7 @@ if (!empty($etime_office_error)) {
             // }
         });
         $('#probation_ended_wrapper > .card > .card-header > .card-title').replaceWith('<h3 class="card-title">Confirmation pending from HR</h3>');
+        // $('#probation_ended_wrapper > .card > .card-header > .card-title').replaceWith('<h3 class="card-title">Probation completed</h3>');
         // $('#probation_ended_wrapper > .card > .card-footer').html('<small class="d-block">Probation completed</small>');
         /*end::leave_balance_current_month*/
 
@@ -5048,7 +4640,7 @@ if (!empty($etime_office_error)) {
             // }
         });
         $('#recently_joined_wrapper > .card > .card-header > .card-title').replaceWith('<h3 class="card-title my-0">Pending welcome email</h3>');
-
+        // $('#recently_joined_wrapper > .card > .card-header > .card-title').replaceWith('<h3 class="card-title my-0">Send welcome email</h3>');
         /*begin::upcoming_birthdays*/
         var upcoming_birthdays = $("#upcoming_birthdays").DataTable({
             "dom": '<"card"<"card-header py-0 pe-0"<"card-title"><"card-toolbar my-0"f>><"card-body pt-1 pb-1"rt><"card-footer">>',
@@ -5073,8 +4665,9 @@ if (!empty($etime_office_error)) {
             "columns": [{
                     data: "employee_name",
                     render: function(data, type, row) {
+                        //return data + ' <span class="text-muted">(' + row.employee_code + ')</span>';
                         return data + ' <span class="text-muted">(' + row.department_name + ') - ' + row.company_name + '</span>';
-                        //return data;
+                        return data;
                     }
                 },
                 {
@@ -5111,6 +4704,7 @@ if (!empty($etime_office_error)) {
         $('#upcoming_birthdays_wrapper > .card > .card-header > .card-title').replaceWith('<h3 class="card-title my-0">Upcoming Birthdays 🎂</h3>');
         /*end::upcoming_birthdays*/
 
+
         $(document).on('click', '.send-welcome-email', function(e) {
             e.preventDefault();
             var button = $(this);
@@ -5127,6 +4721,7 @@ if (!empty($etime_office_error)) {
                 },
                 success: function(response) {
 
+                    console.log(response);
                     if (response.response_type == 'failed') {
                         Swal.fire({
                             html: response.response_description,
@@ -5288,6 +4883,687 @@ if (!empty($etime_office_error)) {
         </div>
     </div>
 </div>
+
+
+
+<!-- ==================== RESIGNATION HOD ACKNOWLEDGMENT MODALS ==================== -->
+
+<?php
+// HOD Resignation Acknowledgment Modal (Bootstrap - one at a time)
+if (!empty($resignationHodAcknowledgments)) {
+?>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            const resignations = JSON.parse('<?php echo json_encode($resignationHodAcknowledgments); ?>');
+            let currentIndex = 0;
+
+            function showHodResignationModal(index) {
+                if (index >= resignations.length) return;
+
+                const r = resignations[index];
+                $('#hod-record-id').val(r.id);
+                $('#hod-employee-name').text(r.employee_name + ' - (' + (r.internal_employee_id) + ')');
+                // $('#hod-employee-name').text(r.employee_name);
+                // $('#hod-employee-id').text(r.internal_employee_id || 'N/A');
+                $('#hod-department').text(r.department_name || 'N/A');
+                $('#hod-designation').text(r.designation_name || 'N/A');
+                $('#hod-company').text(r.company_name || 'N/A');
+                $('#hod-manager-name').text(r.manager_name || 'N/A');
+                $('#hod-resignation-date').text(r.resignation_date_formatted);
+                $('#hod-last-working-date').text(r.last_working_date_formatted);
+                $('#hod-reason').text(r.resignation_reason || 'Not specified');
+                $('#hod-remaining-days').text(r.remaining_days + ' days');
+
+                // Urgent badge
+                const $urgentBadge = $('#hod-urgent-badge');
+                if (r.is_urgent) {
+                    $urgentBadge.show();
+                } else {
+                    $urgentBadge.hide();
+                }
+
+                // Counter
+                $('#hod-counter').text('(' + (index + 1) + ' of ' + resignations.length + ')');
+
+                // Reset action and rejection reason
+                $('#hod-action-select').val('');
+                $('#hod-rejection-reason-container').hide();
+                $('#hod-rejection-reason').val('');
+                $('#hod-action-error').hide();
+                $('#hod-rejection-error').hide();
+
+                $('#hodResignationAckModal').modal('show');
+            }
+
+            // Show first resignation
+            showHodResignationModal(0);
+
+            // Show/hide rejection reason based on action
+            $('#hod-action-select').on('change', function() {
+                if ($(this).val() === 'reject') {
+                    $('#hod-rejection-reason-container').slideDown();
+                } else {
+                    $('#hod-rejection-reason-container').slideUp();
+                    $('#hod-rejection-reason').val('');
+                }
+                $('#hod-action-error').hide();
+                $('#hod-rejection-error').hide();
+            });
+
+            // Submit button
+            $('#hod-submit-btn').on('click', function() {
+                const recordId = $('#hod-record-id').val();
+                const action = $('#hod-action-select').val();
+                const rejectionReason = $('#hod-rejection-reason').val();
+
+                // Validate
+                $('#hod-action-error').hide();
+                $('#hod-rejection-error').hide();
+
+                if (!action) {
+                    $('#hod-action-error').show();
+                    return;
+                }
+                if (action === 'reject' && !rejectionReason.trim()) {
+                    $('#hod-rejection-error').show();
+                    return;
+                }
+
+                const $btn = $(this);
+                const btnHtml = $btn.html();
+                $btn.prop('disabled', true);
+                $btn.html('<span class="spinner-border spinner-border-sm me-1"></span>Processing...');
+
+                const responses = {};
+                responses[recordId] = {
+                    action: action,
+                    rejection_reason: rejectionReason || null
+                };
+
+                $.ajax({
+                    method: "POST",
+                    url: "<?php echo base_url('/ajax/resignation/save-hod-response'); ?>",
+                    data: {
+                        responses: responses
+                    },
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.response_type === 'success') {
+                            $('#hodResignationAckModal').modal('hide');
+                            currentIndex++;
+
+                            if (currentIndex < resignations.length) {
+                                // Show next resignation after brief delay
+                                setTimeout(function() {
+                                    showHodResignationModal(currentIndex);
+                                }, 500);
+                            } else {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'All Done!',
+                                    text: 'All resignation responses saved successfully.',
+                                    timer: 2000,
+                                    showConfirmButton: false
+                                }).then(() => {
+                                    location.reload();
+                                });
+                            }
+                        } else {
+                            Swal.fire('Error', response.response_description, 'error');
+                        }
+                    },
+                    error: function() {
+                        Swal.fire('Error', 'Failed to save response. Please try again.', 'error');
+                    },
+                    complete: function() {
+                        $btn.html(btnHtml).prop('disabled', false);
+                    }
+                });
+            });
+        });
+    </script>
+
+    <!-- HOD Resignation Acknowledgment Bootstrap Modal -->
+    <div class="modal fade" id="hodResignationAckModal" tabindex="-1" aria-labelledby="hodResignationAckModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title w-100" id="hodResignationAckModalLabel" style="text-align: center;">
+                        <span class="me-2">📋</span><span>Resignation Acknowledgment Required</span>
+                    </h5>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="hod-record-id">
+
+                    <div class="alert alert-warning mb-3">
+                        <i class="bi bi-exclamation-triangle me-1"></i>
+                        As HOD, your acknowledgment is required for the following resignation.
+                    </div>
+
+                    <span id="hod-urgent-badge" class="badge bg-danger mb-3" style="display: none;">URGENT - Less than 7 days remaining</span>
+
+                    <!-- Employee Information Card -->
+                    <div class="card mb-3">
+                        <div class="card-header bg-light">
+                            <strong>Employee Information</strong>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-2">
+                                <div class="col-md-4"><strong>Name:</strong></div>
+                                <div class="col-md-8" id="hod-employee-name"></div>
+                            </div>
+                            <!-- <div class="row mb-2">
+                                <div class="col-md-4"><strong>Employee ID:</strong></div>
+                                <div class="col-md-8" id="hod-employee-id"></div>
+                            </div> -->
+                            <div class="row mb-2">
+                                <div class="col-md-4"><strong>Department:</strong></div>
+                                <div class="col-md-8" id="hod-department"></div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-md-4"><strong>Designation:</strong></div>
+                                <div class="col-md-8" id="hod-designation"></div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-md-4"><strong>Company:</strong></div>
+                                <div class="col-md-8" id="hod-company"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4"><strong>Reporting Manager:</strong></div>
+                                <div class="col-md-8" id="hod-manager-name"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Resignation Details Card -->
+                    <div class="card mb-3">
+                        <div class="card-header bg-light">
+                            <strong>Resignation Details</strong>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-2">
+                                <div class="col-md-5"><strong>Resignation Date:</strong></div>
+                                <div class="col-md-7" id="hod-resignation-date"></div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-md-5"><strong>Last Working Date:</strong></div>
+                                <div class="col-md-7" id="hod-last-working-date"></div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-md-5"><strong>Remaining Days:</strong></div>
+                                <div class="col-md-7" id="hod-remaining-days"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-5"><strong>Reason:</strong></div>
+                                <div class="col-md-7" id="hod-reason"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Card -->
+                    <div class="card">
+                        <div class="card-header bg-light">
+                            <strong>Your Response</strong>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <select id="hod-action-select" class="form-select">
+                                    <option value="" disabled selected>Select Action</option>
+                                    <option value="too_early">Remind Me Later</option>
+                                    <option value="accept">Accept</option>
+                                    <option value="reject">Reject</option>
+                                </select>
+                                <div id="hod-action-error" class="text-danger mt-1" style="display: none; font-size: 0.85rem;">Please select an action!</div>
+                            </div>
+                            <div id="hod-rejection-reason-container" style="display: none;">
+                                <textarea id="hod-rejection-reason" class="form-control" placeholder="Rejection reason (required)" rows="3"></textarea>
+                                <div id="hod-rejection-error" class="text-danger mt-1" style="display: none; font-size: 0.85rem;">Please provide a rejection reason!</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer" style="justify-content: center;">
+                    <button type="button" class="btn btn-lg btn-success" id="hod-submit-btn">
+                        <i class="fa fa-check me-2"></i>Submit Response
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+<?php
+}
+?>
+
+<!-- ==================== REPORTING MANAGER RESIGNATION NOTIFICATION ==================== -->
+
+<!-- Reporting Manager Resignation Notification Script -->
+<script>
+    $(document).ready(function() {
+        setTimeout(function() {
+            checkForReportingManagerResignationNotifications();
+        }, 3000);
+
+        function checkForReportingManagerResignationNotifications() {
+            $.ajax({
+                url: '<?= base_url("/ajax/resignation/reporting-manager-notifications") ?>',
+                method: 'GET',
+                dataType: 'json',
+                success: function(response) {
+                    if (response.success && response.notifications.length > 0) {
+                        showReportingManagerResignationModal(response.notifications[0]);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error fetching reporting manager notifications:', error);
+                }
+            });
+        }
+
+        function showReportingManagerResignationModal(notification) {
+            $('#rm-record-id').val(notification.id);
+            $('#rm-employee-name').text(notification.employee_name + ' - (' + (notification.internal_employee_id) + ')');
+            // $('#rm-employee-name').text(notification.employee_name);
+            // $('#rm-employee-id').text(notification.internal_employee_id || 'N/A');
+            $('#rm-department').text(notification.department_name || 'N/A');
+            $('#rm-designation').text(notification.designation_name || 'N/A');
+            $('#rm-company').text(notification.company_name || 'N/A');
+            $('#rm-resignation-date').text(notification.resignation_date_formatted);
+            $('#rm-last-working-date').text(notification.last_working_date_formatted);
+            $('#rm-reason').text(notification.resignation_reason || 'Not specified');
+            $('#rm-hod-name').text(notification.hod_name || 'N/A');
+
+            // Show HOD response status
+            const hodResponse = notification.hod_response || 'pending';
+            const $hodBadge = $('#rm-hod-response');
+            $hodBadge.text(hodResponse.charAt(0).toUpperCase() + hodResponse.slice(1));
+            $hodBadge.removeClass('bg-success bg-danger bg-warning bg-secondary');
+            if (hodResponse === 'accept') {
+                $hodBadge.addClass('bg-success');
+            } else if (hodResponse === 'rejected') {
+                $hodBadge.addClass('bg-danger');
+            } else {
+                $hodBadge.addClass('bg-warning text-dark');
+            }
+
+            $('#reportingManagerResignationModal').modal('show');
+        }
+
+        $('#rm-acknowledge-btn').click(function() {
+            const recordId = $('#rm-record-id').val();
+            const $btn = $(this);
+            const btnHtml = $btn.html();
+
+            $btn.prop('disabled', true);
+            $btn.html('<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>Processing...');
+
+            $.ajax({
+                url: '<?= base_url("/ajax/resignation/reporting-manager-notification-action") ?>',
+                method: 'POST',
+                data: {
+                    record_id: recordId,
+                    action: 'viewed'
+                },
+                dataType: 'json',
+                success: function(response) {
+                    if (response.success) {
+                        $('#reportingManagerResignationModal').modal('hide');
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Acknowledged',
+                            text: response.message,
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
+                        // Check for next notification
+                        setTimeout(checkForReportingManagerResignationNotifications, 1000);
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: response.message
+                        });
+                    }
+                },
+                error: function() {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Failed to process. Please try again.'
+                    });
+                },
+                complete: function() {
+                    $btn.html(btnHtml).prop('disabled', false);
+                }
+            });
+        });
+    });
+</script>
+
+<!-- Reporting Manager Resignation Notification Bootstrap Modal -->
+<div class="modal fade" id="reportingManagerResignationModal" tabindex="-1" aria-labelledby="reportingManagerResignationModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title w-100" id="reportingManagerResignationModalLabel" style="text-align: center;">
+                    <span class="me-2">📋</span><span>Employee Resignation Notification</span>
+                </h5>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="rm-record-id">
+
+                <div class="alert alert-warning mb-3">
+                    <i class="bi bi-exclamation-triangle me-1"></i>
+                    An employee under your supervision has submitted their resignation.
+                </div>
+
+                <div>
+                    <!-- Employee Information Card -->
+                    <div class="card mb-3">
+                        <div class="card-header bg-light">
+                            <strong>Employee Information</strong>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-2">
+                                <div class="col-md-4"><strong>Name:</strong></div>
+                                <div class="col-md-8" id="rm-employee-name"></div>
+                            </div>
+                            <!-- <div class="row mb-2">
+                                <div class="col-md-4"><strong>Employee ID:</strong></div>
+                                <div class="col-md-8" id="rm-employee-id"></div>
+                            </div> -->
+                            <div class="row mb-2">
+                                <div class="col-md-4"><strong>Department:</strong></div>
+                                <div class="col-md-8" id="rm-department"></div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-md-4"><strong>Designation:</strong></div>
+                                <div class="col-md-8" id="rm-designation"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4"><strong>Company:</strong></div>
+                                <div class="col-md-8" id="rm-company"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Resignation Details Card -->
+                    <div class="card mb-3">
+                        <div class="card-header bg-light">
+                            <strong>Resignation Details</strong>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-2">
+                                <div class="col-md-5"><strong>Resignation Date:</strong></div>
+                                <div class="col-md-7" id="rm-resignation-date"></div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-md-5"><strong>Last Working Date:</strong></div>
+                                <div class="col-md-7" id="rm-last-working-date"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-5"><strong>Reason:</strong></div>
+                                <div class="col-md-7" id="rm-reason"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- HOD Status Card -->
+                    <div class="card">
+                        <div class="card-header bg-light">
+                            <strong>HOD Status</strong>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-2">
+                                <div class="col-md-4"><strong>HOD Name:</strong></div>
+                                <div class="col-md-8" id="rm-hod-name"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4"><strong>HOD Response:</strong></div>
+                                <div class="col-md-8">
+                                    <span id="rm-hod-response" class="badge bg-warning text-dark"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" style="justify-content: center;">
+                <button type="button" class="btn btn-lg btn-success" id="rm-acknowledge-btn">
+                    <i class="fa fa-check me-2"></i>Acknowledge
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="hrManagerResignationNotificationModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header text-white">
+                <h5 class="modal-title">Resignation Notification</h5>
+
+            </div>
+            <div class="modal-body" id="hrManagerResignationNotificationContent">
+                <!-- Content populated by JavaScript -->
+            </div>
+            <div class="modal-footer">
+                <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> -->
+                <button type="button" class="btn btn-primary" id="markHrManagerNotificationViewedBtn">Acknowledge</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ==================== END REPORTING MANAGER RESIGNATION NOTIFICATION ==================== -->
+
+<!-- ==================== HR MANAGER RESIGNATION NOTIFICATION (after HOD responds) ==================== -->
+
+<!-- HR Manager Resignation Notification Script -->
+<script>
+    $(document).ready(function() {
+        setTimeout(function() {
+            checkForHrResignationNotifications();
+        }, 2500);
+
+        function checkForHrResignationNotifications() {
+            $.ajax({
+                url: '<?= base_url("/ajax/resignation/manager-notifications") ?>',
+                method: 'GET',
+                dataType: 'json',
+                success: function(response) {
+                    if (response.success && response.notifications.length > 0) {
+                        showHrResignationModal(response.notifications[0]);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error fetching HR resignation notifications:', error);
+                }
+            });
+        }
+
+        function showHrResignationModal(notification) {
+            $('#rn-record-id').val(notification.id);
+            $('#rn-employee-name').text(notification.employee_name + ' - (' + (notification.internal_employee_id) + ')');
+            // $('#rn-employee-name').text(notification.employee_name);
+            // $('#rn-employee-id').text(notification.internal_employee_id || 'N/A');
+            $('#rn-department').text(notification.department_name || 'N/A');
+            $('#rn-designation').text(notification.designation_name || 'N/A');
+            $('#rn-company').text(notification.company_name || 'N/A');
+            $('#rn-resignation-date').text(notification.resignation_date_formatted);
+            $('#rn-last-working-date').text(notification.last_working_date_formatted);
+            $('#rn-hod-name').text(notification.hod_name);
+            $('#rn-hod-response').text(notification.hod_response);
+
+            // Set response badge color
+            const $responseBadge = $('#rn-hod-response');
+            $responseBadge.removeClass('bg-success bg-danger bg-warning');
+            if (notification.hod_response === 'accept') {
+                $responseBadge.addClass('bg-success');
+            } else if (notification.hod_response === 'rejected') {
+                $responseBadge.addClass('bg-danger');
+            }
+
+            // Show/hide rejection reason
+            if (notification.hod_response === 'rejected' && notification.hod_rejection_reason) {
+                $('#rn-rejection-reason-container').show();
+                $('#rn-rejection-reason').text(notification.hod_rejection_reason);
+            } else {
+                $('#rn-rejection-reason-container').hide();
+            }
+
+            $('#resignationHrNotificationModal').modal('show');
+        }
+
+        $('#rn-acknowledge-btn').click(function() {
+            const recordId = $('#rn-record-id').val();
+            const $btn = $(this);
+            const btnHtml = $btn.html();
+
+            $btn.prop('disabled', true);
+            $btn.html('<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>Processing...');
+
+            $.ajax({
+                url: '<?= base_url("/ajax/resignation/manager-notification-action") ?>',
+                method: 'POST',
+                data: {
+                    record_id: recordId,
+                    action: 'viewed'
+                },
+                dataType: 'json',
+                success: function(response) {
+                    if (response.success) {
+                        $('#resignationHrNotificationModal').modal('hide');
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Acknowledged',
+                            text: response.message,
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
+                        // Check for next notification
+                        setTimeout(checkForHrResignationNotifications, 1000);
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: response.message
+                        });
+                    }
+                },
+                error: function() {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Failed to process. Please try again.'
+                    });
+                },
+                complete: function() {
+                    $btn.html(btnHtml).prop('disabled', false);
+                }
+            });
+        });
+    });
+</script>
+
+<!-- HR Manager Resignation Notification Bootstrap Modal -->
+<div class="modal fade" id="resignationHrNotificationModal" tabindex="-1" aria-labelledby="resignationHrNotificationModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title w-100" id="resignationHrNotificationModalLabel" style="text-align: center;">
+                    <span class="me-2">🔔</span><span>Resignation Response Notification</span>
+                </h5>
+            </div>
+            <div class="modal-body" style="text-align: center;">
+                <div class="alert alert-warning text-start" role="alert" style="margin-bottom: 15px;">
+                    The Head of Department (HOD) has reviewed and responded to the following resignation. Please acknowledge to confirm receipt.
+                </div>
+                <input type="hidden" id="rn-record-id">
+
+                <div class="text-start" style="padding: 0 20px;">
+                    <!-- Employee Information Card -->
+                    <div class="card mb-3">
+                        <div class="card-header bg-light">
+                            <strong>Employee Information</strong>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-2">
+                                <div class="col-md-4"><strong>Name:</strong></div>
+                                <div class="col-md-8" id="rn-employee-name"></div>
+                            </div>
+                            <!-- <div class="row mb-2">
+                                <div class="col-md-4"><strong>Employee ID:</strong></div>
+                                <div class="col-md-8" id="rn-employee-id"></div>
+                            </div> -->
+                            <div class="row mb-2">
+                                <div class="col-md-4"><strong>Department:</strong></div>
+                                <div class="col-md-8" id="rn-department"></div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-md-4"><strong>Designation:</strong></div>
+                                <div class="col-md-8" id="rn-designation"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4"><strong>Company:</strong></div>
+                                <div class="col-md-8" id="rn-company"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Resignation Details Card -->
+                    <div class="card mb-3">
+                        <div class="card-header bg-light">
+                            <strong>Resignation Details</strong>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-2">
+                                <div class="col-md-5"><strong>Resignation Date:</strong></div>
+                                <div class="col-md-7" id="rn-resignation-date"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-5"><strong>Last Working Date:</strong></div>
+                                <div class="col-md-7" id="rn-last-working-date"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- HOD Response Card -->
+                    <div class="card">
+                        <div class="card-header bg-light">
+                            <strong>HOD Response</strong>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-2">
+                                <div class="col-md-4"><strong>HOD Name:</strong></div>
+                                <div class="col-md-8" id="rn-hod-name"></div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-md-4"><strong>Response:</strong></div>
+                                <div class="col-md-8">
+                                    <span id="rn-hod-response" class="badge bg-success"></span>
+                                </div>
+                            </div>
+                            <div id="rn-rejection-reason-container" style="display: none;">
+                                <div class="row">
+                                    <div class="col-md-4"><strong>Reason:</strong></div>
+                                    <div class="col-md-8">
+                                        <div class="alert alert-danger mb-0" id="rn-rejection-reason"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" style="justify-content: center;">
+                <button type="button" class="btn btn-lg btn-success" id="rn-acknowledge-btn">
+                    <i class="fa fa-check me-2"></i>Acknowledge
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== END HR MANAGER RESIGNATION NOTIFICATION ==================== -->
 
 <script type="text/javascript">
     jQuery(document).ready(function($) {
@@ -5476,8 +5752,36 @@ if (!empty($etime_office_error)) {
             });
         }
 
+        // function updateNotificationBadge() {
+        //     $.ajax({
+        //         url: '<?= base_url('/recruitment/job-listing/comments/unread-count') ?>',
+        //         type: 'GET',
+        //         dataType: 'json',
+        //         success: function(response) {
+        //             if (response.status === 'success') {
+        //                 const count = response.unread_count;
+        //                 const badge = $('#notification-badge');
+
+        //                 if (count > 0) {
+        //                     badge.text(count).show();
+        //                 } else {
+        //                     badge.hide();
+        //                 }
+        //             }
+        //         },
+        //         error: function(xhr, status, error) {
+        //             console.error('Error updating notification badge:', error);
+        //         }
+        //     });
+        // }
+
         function updateNotificationBadge() {
-            $.ajax({
+            // Abort any pending badge request before starting a new one
+            if (badgeRequest && badgeRequest.readyState !== 4) {
+                badgeRequest.abort();
+            }
+
+            badgeRequest = $.ajax({
                 url: '<?= base_url('/recruitment/job-listing/comments/unread-count') ?>',
                 type: 'GET',
                 dataType: 'json',
@@ -5494,7 +5798,10 @@ if (!empty($etime_office_error)) {
                     }
                 },
                 error: function(xhr, status, error) {
-                    console.error('Error updating notification badge:', error);
+                    // Ignore aborted requests
+                    if (status !== 'abort') {
+                        console.error('Error updating notification badge:', error);
+                    }
                 }
             });
         }
@@ -5646,6 +5953,11 @@ if (!empty($etime_office_error)) {
 
     });
     $(document).ready(function() {
+
+        let notificationRequest = null;
+        let badgeRequest = null;
+
+
         loadJobNotifications();
         updateNotificationBadge();
 
@@ -5918,7 +6230,69 @@ if (!empty($etime_office_error)) {
             }
         });
     });
+
+
+    var employee_holidays_table = $("#employee_holidays_table").DataTable({
+        "dom": '<"card"<"card-header"<"card-title"><"card-toolbar"<"datatable-buttons-container me-1"B><"toolbar-buttons">>><"card-body pt-1 pb-1"rt><"card-footer">>',
+        "buttons": [],
+        "ajax": {
+            url: "<?= base_url('ajax/profile/get-holidays-on-profile-page') ?>",
+            error: function(jqXHR, ajaxOptions, thrownError) {
+                console.error('Error loading holidays:', thrownError);
+            },
+            dataSrc: function(receivedData) {
+                return receivedData;
+            },
+        },
+        "deferRender": true,
+        "processing": true,
+        "language": {
+            processing: '<div class="d-flex align-items-center justify-content-between h-100 m-auto" style="max-width:max-content"><i class="fa fa-spinner fa-spin fa-2x fa-fw"></i><span class="ms-3 fs-1">Loading Holidays...</span></div>',
+            emptyTable: '<div class="bg-white w-100 empty-table-message d-flex align-items-center justify-content-center h-100 position-absolute" style="top:0; left:0; z-index: 1;"><span class="ms-3 fs-1">No Holidays Found</span></div>',
+        },
+        "columns": [{
+                data: "date",
+                orderable: true,
+                type: "date",
+                className: 'text-nowrap'
+            },
+            {
+                data: "name",
+                orderable: false
+            },
+            {
+                data: "code",
+                orderable: false,
+                className: 'text-center',
+                render: function(data, type, row) {
+                    var badgeClass = 'badge-light-primary';
+                    if (data == 'NH') badgeClass = 'badge-light-success';
+                    else if (data == 'RH') badgeClass = 'badge-light-info';
+                    else if (data == 'SPL HL') badgeClass = 'badge-light-warning';
+
+                    return '<span class="badge ' + badgeClass + '">' + data + '</span>';
+                }
+            },
+            {
+                data: "day",
+                orderable: false,
+                className: 'text-center text-muted'
+            },
+        ],
+        "scrollX": false,
+        "paging": false,
+        "ordering": true,
+        "order": [
+            [0, 'asc']
+        ], // Sort by date ascending
+        "columnDefs": [],
+    });
+
+    $('#employee_holidays_table_wrapper > .card > .card-header > .card-title').replaceWith('<h3 class="card-title"><i class="fa fa-calendar-alt me-2"></i>Holidays ' + new Date().getFullYear() + '</h3>');
+    $('#employee_holidays_table_wrapper > .card > .card-footer').html('<small class="text-muted d-block"><i class="fa fa-info-circle me-1"></i>Showing general holidays and special holidays assigned to you</small>');
 </script>
+
+
 
 <?= $this->endSection() ?>
 <?= $this->endSection() ?>

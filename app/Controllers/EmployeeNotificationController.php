@@ -422,7 +422,6 @@ class EmployeeNotificationController extends BaseController
     {
         $employeeId = session()->get('current_user')['employee_id'];
         $notifications = $this->notificationModel->getUnreadNotificationsForEmployee($employeeId);
-
         // Collect all unique related_employee_ids in one pass
         $relatedEmployeeIds = array_values(array_unique(array_filter(
             array_column($notifications, 'related_employee_id')
@@ -473,7 +472,6 @@ class EmployeeNotificationController extends BaseController
             }
         }
         unset($notification);
-
         return $this->response->setJSON([
             'success' => true,
             'notifications' => $notifications

@@ -190,6 +190,12 @@ if (!in_array(session()->get('current_user')['role'], array('admin', 'superuser'
                         Completed Resignations
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#abscond_resignations_tab">
+                        Abscond Resignations
+                        <span class="badge badge-light-dark ms-2" id="abscond_count_badge">0</span>
+                    </a>
+                </li>
             </ul>
         </div>
     </div>
@@ -316,6 +322,44 @@ if (!in_array(session()->get('current_user')['role'], array('admin', 'superuser'
                     </tbody>
                 </table>
             </div>
+
+            <!-- Abscond Resignations Tab -->
+            <div class="tab-pane fade" id="abscond_resignations_tab" role="tabpanel">
+                <table id="abscond_resignations_table" class="table table-striped nowrap" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th class="text-center"><strong>Emp Code</strong></th>
+                            <th class="text-center"><strong>Name</strong></th>
+                            <th class="text-center"><strong>Department</strong></th>
+                            <th class="text-center"><strong>Company</strong></th>
+                            <th class="text-center"><strong>Resignation Date</strong></th>
+                            <th class="text-center"><strong>Last Working Day</strong></th>
+                            <th class="text-center"><strong>Abscond On</strong></th>
+                            <th class="text-center"><strong>HOD Acknowledgment</strong></th>
+                            <th class="text-center"><strong>Manager Acknowledgment</strong></th>
+                            <th class="text-center"><strong>Reason</strong></th>
+                            <th class="text-center"><strong>Actions</strong></th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th class="text-center"><strong>Emp Code</strong></th>
+                            <th class="text-center"><strong>Name</strong></th>
+                            <th class="text-center"><strong>Department</strong></th>
+                            <th class="text-center"><strong>Company</strong></th>
+                            <th class="text-center"><strong>Resignation Date</strong></th>
+                            <th class="text-center"><strong>Last Working Day</strong></th>
+                            <th class="text-center"><strong>Abscond On</strong></th>
+                            <th class="text-center"><strong>HOD Acknowledgment</strong></th>
+                            <th class="text-center"><strong>Manager Acknowledgment</strong></th>
+                            <th class="text-center"><strong>Reason</strong></th>
+                            <th class="text-center"><strong>Actions</strong></th>
+                        </tr>
+                    </tfoot>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
@@ -358,6 +402,7 @@ if (!in_array(session()->get('current_user')['role'], array('admin', 'superuser'
                     const urgentAlerts = response.urgent_alerts || 0;
                     const monthNew = response.month_new || 0;
                     const monthCompleted = response.month_completed || 0;
+                    const totalAbscond = response.total_abscond || 0;
 
                     $('#stat_total_active').text(totalActive);
                     $('#stat_overdue').text(overdue);
@@ -365,6 +410,7 @@ if (!in_array(session()->get('current_user')['role'], array('admin', 'superuser'
                     $('#stat_month_new').text(monthNew);
                     $('#stat_month_completed').text(monthCompleted);
                     $('#urgent_alerts_count_badge').text(urgentAlerts);
+                    $('#abscond_count_badge').text(totalAbscond);
                 },
                 error: function() {
                     console.error('Failed to load statistics');
@@ -479,16 +525,45 @@ if (!in_array(session()->get('current_user')['role'], array('admin', 'superuser'
                     orderable: false,
                     render: function(data, type, row) {
                         let actions = '<div class="d-flex align-items-center gap-2">';
+                        const currentUserId = <?= session()->get('current_user')['id'] ?? 0 ?>;
 
-                        actions += '<select class="form-select form-select-sm status-change-select" data-id="' + row.resignation_id + '" style="width: 120px;">';
-                        actions += '<option value="active"' + (row.resignation_status === 'active' ? ' selected' : '') + '>On Resignation</option>';
-                        actions += '<option value="withdrawn"' + (row.resignation_status === 'withdrawn' ? ' selected' : '') + '>Withdrawn</option>';
-                        actions += '<option value="completed"' + (row.resignation_status === 'completed' ? ' selected' : '') + '>Completed</option>';
-                        actions += '<option value="abscond"' + (row.resignation_status === 'abscond' ? ' selected' : '') + '>Abscond</option>';
-                        actions += '<option value="left"' + (row.resignation_status === 'left' ? ' selected' : '') + '>Left</option>';
-                        actions += '</select>';
-                        if (row.resignation_status === 'active') {
-                            actions += '<a href="<?= base_url('resignation/edit') ?>/' + row.resignation_id + '" class="btn btn-sm btn-primary p-3" title="Edit"><i class="fa-solid fa-edit"></i></a>';
+                        // Only show dropdown for employee_id 52
+                        if (currentUserId === 52) {
+                            actions += '<select class="form-select form-select-sm status-change-select" data-id="' + row.resignation_id + '" style="width: 120px;">';
+                            actions += '<option value="active"' + (row.resignation_status === 'active' ? ' selected' : '') + '>On Resignation</option>';
+                            actions += '<option value="withdrawn"' + (row.resignation_status === 'withdrawn' ? ' selected' : '') + '>Withdrawn</option>';
+                            actions += '<option value="completed"' + (row.resignation_status === 'completed' ? ' selected' : '') + '>Completed</option>';
+                            actions += '<option value="abscond"' + (row.resignation_status === 'abscond' ? ' selected' : '') + '>Abscond</option>';
+                            // actions += '<option value="left"' + (row.resignation_status === 'left' ? ' selected' : '') + '>Left</option>';
+                            actions += '</select>';
+                        } else {
+                            // Show status as text only for other users
+                            let statusText = '';
+                            switch (row.resignation_status) {
+                                case 'active':
+                                    statusText = 'On Resignation';
+                                    break;
+                                case 'withdrawn':
+                                    statusText = 'Withdrawn';
+                                    break;
+                                case 'completed':
+                                    statusText = 'Completed';
+                                    break;
+                                case 'abscond':
+                                    statusText = 'Abscond';
+                                    break;
+                                case 'left':
+                                    statusText = 'Left';
+                                    break;
+                                default:
+                                    statusText = row.resignation_status;
+                            }
+                            actions += '<span class="badge bg-primary" style="width: 120px;">' + statusText + '</span>';
+                        }
+                        if (currentUserId === 52) {
+                            if (row.resignation_status === 'active') {
+                                actions += '<a href="<?= base_url('resignation/edit') ?>/' + row.resignation_id + '" class="btn btn-sm btn-primary p-3" title="Edit"><i class="fa-solid fa-edit"></i></a>';
+                            }
                         }
                         actions += '<button type="button" class="btn btn-sm btn-info view-history-btn p-3" data-id="' + row.resignation_id + '" title="View History"><i class="fa-solid fa-history"></i></button>';
                         actions += '</div>';
@@ -497,7 +572,7 @@ if (!in_array(session()->get('current_user')['role'], array('admin', 'superuser'
                 },
             ],
             "order": [
-                [8, 'asc']
+                [7, 'asc']
             ],
             "scrollX": true,
             "scrollY": '500px',
@@ -523,6 +598,7 @@ if (!in_array(session()->get('current_user')['role'], array('admin', 'superuser'
         // Lazy-init tables in hidden tabs to avoid fixedColumns rendering bug
         var resignation_alerts_table = null;
         var completed_resignations_table = null;
+        var abscond_resignations_table = null;
 
         function initAlertsTable() {
             if (resignation_alerts_table) return;
@@ -634,15 +710,45 @@ if (!in_array(session()->get('current_user')['role'], array('admin', 'superuser'
                         render: function(data, type, row) {
                             let actions = '<div class="d-flex align-items-center gap-2">';
 
-                            actions += '<select class="form-select form-select-sm status-change-select" data-id="' + row.resignation_id + '" style="width: 120px;">';
-                            actions += '<option value="active"' + (row.resignation_status === 'active' ? ' selected' : '') + '>On Resignation</option>';
-                            actions += '<option value="withdrawn"' + (row.resignation_status === 'withdrawn' ? ' selected' : '') + '>Withdrawn</option>';
-                            actions += '<option value="completed"' + (row.resignation_status === 'completed' ? ' selected' : '') + '>Completed</option>';
-                            actions += '<option value="abscond"' + (row.resignation_status === 'abscond' ? ' selected' : '') + '>Abscond</option>';
-                            actions += '<option value="left"' + (row.resignation_status === 'left' ? ' selected' : '') + '>Left</option>';
-                            actions += '</select>';
-                            if (row.resignation_status === 'active') {
-                                actions += '<a href="<?= base_url('resignation/edit') ?>/' + row.resignation_id + '" class="btn btn-sm btn-primary p-3" title="Edit"><i class="fa-solid fa-edit"></i></a>';
+                            const currentUserId = <?= session()->get('current_user')['id'] ?? 0 ?>;
+
+                            // Only show dropdown for employee_id 52
+                            if (currentUserId === 52) {
+                                actions += '<select class="form-select form-select-sm status-change-select" data-id="' + row.resignation_id + '" style="width: 120px;">';
+                                actions += '<option value="active"' + (row.resignation_status === 'active' ? ' selected' : '') + '>On Resignation</option>';
+                                actions += '<option value="withdrawn"' + (row.resignation_status === 'withdrawn' ? ' selected' : '') + '>Withdrawn</option>';
+                                actions += '<option value="completed"' + (row.resignation_status === 'completed' ? ' selected' : '') + '>Completed</option>';
+                                actions += '<option value="abscond"' + (row.resignation_status === 'abscond' ? ' selected' : '') + '>Abscond</option>';
+                                //actions += '<option value="left"' + (row.resignation_status === 'left' ? ' selected' : '') + '>Left</option>';
+                                actions += '</select>';
+                            } else {
+                                // Show status as text only for other users
+                                let statusText = '';
+                                switch (row.resignation_status) {
+                                    case 'active':
+                                        statusText = 'On Resignation';
+                                        break;
+                                    case 'withdrawn':
+                                        statusText = 'Withdrawn';
+                                        break;
+                                    case 'completed':
+                                        statusText = 'Completed';
+                                        break;
+                                    case 'abscond':
+                                        statusText = 'Abscond';
+                                        break;
+                                    case 'left':
+                                        statusText = 'Left';
+                                        break;
+                                    default:
+                                        statusText = row.resignation_status;
+                                }
+                                actions += '<span class="badge bg-primary" style="width: 120px;">' + statusText + '</span>';
+                            }
+                            if (currentUserId === 52) {
+                                if (row.resignation_status === 'active') {
+                                    actions += '<a href="<?= base_url('resignation/edit') ?>/' + row.resignation_id + '" class="btn btn-sm btn-primary p-3" title="Edit"><i class="fa-solid fa-edit"></i></a>';
+                                }
                             }
                             actions += '<button class="btn btn-sm btn-info view-history-btn p-3" data-id="' + row.resignation_id + '" title="View History"><i class="fa-solid fa-history"></i></button>';
                             actions += '</div>';
@@ -651,7 +757,7 @@ if (!in_array(session()->get('current_user')['role'], array('admin', 'superuser'
                     },
                 ],
                 "order": [
-                    [8, 'asc']
+                    [7, 'asc']
                 ],
                 "scrollX": true,
                 "scrollY": '500px',
@@ -783,6 +889,118 @@ if (!in_array(session()->get('current_user')['role'], array('admin', 'superuser'
             $('#completed_resignations_table_wrapper > .card > .card-header > .card-title').replaceWith('<h3 class="card-title text-success"><i class="fa-solid fa-check-circle"></i> Completed Resignations</h3>');
         }
 
+        function initAbscondTable() {
+            if (abscond_resignations_table) return;
+            abscond_resignations_table = $("#abscond_resignations_table").DataTable({
+                "dom": '<"card"<"card-header bg-dark bg-opacity-10"<"card-title text-dark"><"card-toolbar"<"datatable-buttons-container me-1"B>f<"toolbar-buttons">>><"card-body pt-1 pb-1"rt><"card-footer pt-5 pb-3"<"row"<"col-sm-12 col-md-5 d-flex align-items-center justify-content-start mb-3"li><"col-sm-12 col-md-7 d-flex align-items-center justify-content-start justify-content-md-end"p>>>>',
+                "buttons": [{
+                    extend: 'excelHtml5',
+                    title: 'Abscond_Resignations_' + new Date().toISOString().slice(0, 10),
+                    text: '<i class="fa-solid fa-file-excel"></i>Excel',
+                    className: 'btn btn-sm btn-light',
+                }],
+                "lengthMenu": [
+                    [10, 25, 50, 100, -1],
+                    [10, 25, 50, 100, 'All'],
+                ],
+                "ajax": {
+                    url: "<?= base_url('ajax/resignation/abscond') ?>",
+                    type: "POST",
+                    data: {
+                        company_id: function() {
+                            return $('#company_id_for_filter').val();
+                        }
+                    },
+                    error: function(jqXHR, ajaxOptions, thrownError) {
+                        alert(thrownError + "\r\n" + jqXHR.statusText + "\r\n" + jqXHR.responseText);
+                    },
+                    dataSrc: "",
+                },
+                "deferRender": true,
+                "processing": true,
+                "language": {
+                    processing: '<div class="d-flex align-items-center justify-content-between h-100 m-auto" style="max-width:max-content"><i class="fa fa-spinner fa-spin fa-2x fa-fw"></i><span class="ms-3 fs-1">Processing...</span></div>',
+                    emptyTable: '<div class="bg-white w-100 empty-table-message d-flex align-items-center justify-content-center h-100 position-absolute" style="top:0; left:0; z-index: 1;"><span class="ms-3 fs-1">No Abscond Resignations</span></div>',
+                },
+                "oLanguage": {
+                    "sSearch": ""
+                },
+                "columns": [{
+                        data: "internal_employee_id"
+                    },
+                    {
+                        data: "employee_name"
+                    },
+                    {
+                        data: "department_name"
+                    },
+                    {
+                        data: "company_short_name"
+                    },
+                    {
+                        data: "resignation_date"
+                    },
+                    {
+                        data: "last_working_day"
+                    },
+                    {
+                        data: "abscond_on"
+                    },
+                    {
+                        data: "hod_response_display",
+                        render: function(data, type, row) {
+                            let html = data;
+                            if (row.hod_name) {
+                                html += '<br><small class="text-muted">' + row.hod_name + '</small>';
+                            }
+                            if (row.hod_response_date) {
+                                html += '<br><small class="text-muted">' + row.hod_response_date + '</small>';
+                            }
+                            return html;
+                        }
+                    },
+                    {
+                        data: "manager_response_display",
+                        render: function(data, type, row) {
+                            let html = data;
+                            if (row.manager_name) {
+                                html += '<br><small class="text-muted">' + row.manager_name + '</small>';
+                            }
+                            if (row.manager_response_date) {
+                                html += '<br><small class="text-muted">' + row.manager_response_date + '</small>';
+                            }
+                            return html;
+                        }
+                    },
+                    {
+                        data: "resignation_reason"
+                    },
+                    {
+                        data: null,
+                        orderable: false,
+                        render: function(data, type, row) {
+                            return '<button class="btn btn-sm btn-info view-history-btn" data-id="' + row.resignation_id + '" title="View History"><i class="fa-solid fa-history"></i></button>';
+                        }
+                    },
+                ],
+                "order": [
+                    [6, 'desc']
+                ],
+                "scrollX": true,
+                "scrollY": '500px',
+                "paging": true,
+                "fixedColumns": {
+                    "left": 2,
+                    "right": 1
+                },
+                "columnDefs": [{
+                    "className": 'text-center',
+                    "targets": '_all'
+                }]
+            });
+            $('#abscond_resignations_table_wrapper > .card > .card-header > .card-title').replaceWith('<h3 class="card-title text-dark"><i class="fa-solid fa-user-slash"></i> Abscond Resignations</h3>');
+        }
+
         $('#company_id_for_filter').on('change.select2', function() {
             var company_id = $(this).val();
             window.location.href = "<?= base_url('resignation') ?>/" + company_id;
@@ -795,6 +1013,8 @@ if (!in_array(session()->get('current_user')['role'], array('admin', 'superuser'
                 initAlertsTable();
             } else if (target === '#completed_resignations_tab') {
                 initCompletedTable();
+            } else if (target === '#abscond_resignations_tab') {
+                initAbscondTable();
             }
         });
 
@@ -908,6 +1128,7 @@ if (!in_array(session()->get('current_user')['role'], array('admin', 'superuser'
                     resignation_reports_table.ajax.reload();
                     if (resignation_alerts_table) resignation_alerts_table.ajax.reload();
                     if (completed_resignations_table) completed_resignations_table.ajax.reload();
+                    if (abscond_resignations_table) abscond_resignations_table.ajax.reload();
                     loadStatistics();
                     Swal.fire('Success', response.success || 'Status updated successfully', 'success');
                 },

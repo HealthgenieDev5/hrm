@@ -20,6 +20,9 @@ class ResignationHodResponseModel extends Model
 		'hr_id',
 		'hr_viewed',
 		'hr_viewed_date',
+		'hr_manager_id',
+		'hr_manager_viewed',
+		'hr_manager_viewed_date',
 	];
 
 	protected $useTimestamps = true;
@@ -188,6 +191,46 @@ class ResignationHodResponseModel extends Model
 		return $this->update($recordId, [
 			'hr_id' => $hrId,
 			'hr_viewed' => 'pending'
+		]);
+	}
+
+	public function getPendingHrManagerNotifications($hrManagerId)
+	{
+		return $this->select('resignation_hod_response.*,
+			resignations.resignation_date,
+			resignations.last_working_date,
+			resignations.resignation_reason,
+			resignations.buyout_days,
+			employees.first_name,
+			employees.last_name,
+			employees.internal_employee_id,
+			departments.department_name,
+			designations.designation_name,
+			companies.company_name,
+			hod.first_name as hod_first_name,
+			hod.last_name as hod_last_name')
+			->join('resignations', 'resignations.id = resignation_hod_response.resignation_id', 'left')
+			->join('employees', 'employees.id = resignation_hod_response.employee_id', 'left')
+			->join('departments', 'departments.id = employees.department_id', 'left')
+			->join('designations', 'designations.id = employees.designation_id', 'left')
+			->join('companies', 'companies.id = employees.company_id', 'left')
+			->join('employees as hod', 'hod.id = resignation_hod_response.hod_id', 'left')
+			->where('resignation_hod_response.hr_manager_id', $hrManagerId)
+			->where('resignation_hod_response.hr_manager_viewed', 'pending')
+			//->whereIn('resignation_hod_response.hod_response', ['accept', 'rejected'])
+			->where('resignations.status', 'active')
+			->orderBy('resignation_hod_response.hod_response_date', 'ASC')
+			->findAll();
+	}
+
+	/**
+	 * Mark that HR Manager has viewed the notification
+	 */
+	public function markHrManagerViewed($recordId)
+	{
+		return $this->update($recordId, [
+			'hr_manager_viewed' => 'viewed',
+			'hr_manager_viewed_date' => date('Y-m-d H:i:s')
 		]);
 	}
 }

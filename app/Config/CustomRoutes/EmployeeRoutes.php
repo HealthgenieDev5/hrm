@@ -53,6 +53,6 @@ $routes->match(['get', 'post'], '/ajax/hr/employee/password-update', 'PasswordRe
 // $routes->match(['get', 'post'], '/ajax/backend/hr/special-holiday/update', 'SpecialHoliday\SpecialHoliday::updateSpecialHoliday');
 
 $routes->match(['get', 'post'], '/backend/hr/special-holiday', [SpecialHoliday::class, 'index']);
-$routes->match(['get', 'post'], '/ajax/backend/hr/special-holiday/get-all-employees', [SpecialHoliday::class, 'getAllEmployees']);
+// $routes->match(['get', 'post'], '/ajax/backend/hr/special-holiday/get-all-employees', [SpecialHoliday::class, 'getAllEmployees']);
 $routes->match(['get', 'post'], '/ajax/backend/hr/special-holiday/update', [SpecialHoliday::class, 'updateSpecialHoliday']);
 /*end::Employee Master*/

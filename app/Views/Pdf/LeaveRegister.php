@@ -165,8 +165,7 @@
 </head>
 
 <body>
-    <!-- Page number footer (appears on all pages) -->
-    <div class="page-number"></div>
+
 
     <?php
     $totalEmployees = count($employees);

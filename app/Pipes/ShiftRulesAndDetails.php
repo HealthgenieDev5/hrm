@@ -35,6 +35,11 @@ class ShiftRulesAndDetails
         $data['absent_for_work_hours_minutes_current_user_data'] = $absent_for_work_hours_minutes_current_user_data;
         $data['half_day_for_work_hours_minutes_current_user_data'] = $half_day_for_work_hours_minutes_current_user_data;
 
+        // if ($data['current_user_data']['id'] == '252') {
+        //     print_r($data['current_user_data']);
+        //     die();
+        // }
+
 
         return $next($data);
     }

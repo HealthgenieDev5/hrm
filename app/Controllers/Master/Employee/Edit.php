@@ -21,6 +21,7 @@ use App\Models\ProbationHodResponseModel;
 use CodeIgniter\Exceptions\PageNotFoundException;
 use App\Models\ProbationNotificationModel;
 use App\Models\EmployeeAttachmentModel;
+use App\Models\ResignationModel;
 use DateTime;
 use DateInterval;
 
@@ -158,6 +159,13 @@ class Edit extends BaseController
         }
         $data['attachment'] = $attachment;
         $data['probation_response'] = isset($probation_response['response']) ? $probation_response['response'] : '';
+
+        // Check if employee has active resignation
+        $ResignationModel = new ResignationModel();
+        $active_resignation = $ResignationModel->where('employee_id', $id)
+            ->where('status', 'active')
+            ->first();
+        $data['active_resignation'] = $active_resignation;
 
         $EmployeeAttachmentModel = new EmployeeAttachmentModel();
         $employee_attachments = $EmployeeAttachmentModel->getEmployeeAttachments($id);

@@ -56,6 +56,7 @@
 
                             <option value="ML" <?= @edit_set_select('attendance', 'ML', $attendance) ?>>ML</option>
                             <option value="INC" <?= @edit_set_select('attendance', 'INC', $attendance) ?>>INC</option>
+
                         </select>
                         <small class="text-danger error-text" id="attendance_error"><?= isset($validation) ? display_error($validation, 'attendance') : '' ?></small>
                     </div>

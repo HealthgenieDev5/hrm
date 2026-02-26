@@ -62,6 +62,8 @@ class PunchTimeCleanup
         //     dd($punching_row['in_time'], $punching_row['out_time']);
         // }
 
+
+
         return $next($punching_row);
     }
 }

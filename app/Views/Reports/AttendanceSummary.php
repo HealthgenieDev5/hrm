@@ -61,34 +61,6 @@
     .flatpickr-monthSelect-month.flatpickr-disabled {
         opacity: 0.25;
     }
-
-    /* Dropdown register buttons styling */
-    .dt-button-collection {
-        padding: 0.5rem 0 !important;
-        min-width: 220px !important;
-    }
-
-    .dt-button-collection .dropdown-item {
-        padding: 0.65rem 1.25rem !important;
-        color: #181c32 !important;
-        font-size: 0.95rem !important;
-        transition: background-color 0.15s ease;
-    }
-
-    .dt-button-collection .dropdown-item:hover {
-        background-color: #f1faff !important;
-        color: #009ef7 !important;
-    }
-
-    .dt-button-collection .dropdown-item i {
-        width: 20px;
-        text-align: center;
-        color: #7e8299;
-    }
-
-    .dt-button-collection .dropdown-item:hover i {
-        color: #009ef7;
-    }
 </style>
 
 <!--begin::Row-->
@@ -405,61 +377,11 @@
         var attendance_summary = $("#attendance_summary").DataTable({
             "dom": '<"card"<"card-header"<"card-title"><"card-toolbar"<"datatable-buttons-container me-1"B>f<"toolbar-buttons">>><"card-body pt-1 pb-1"rt><"card-footer pt-5 pb-3"<"row"<"col-sm-12 col-md-5 d-flex align-items-center justify-content-start mb-3"li><"col-sm-12 col-md-7 d-flex align-items-center justify-content-start justify-content-md-end"p>>>>',
             "buttons": [{
-                    extend: 'collection',
-                    text: '<i class="fa-solid fa-download"></i> Download Registers ',
-                    className: 'btn btn-sm btn-primary',
-                    autoClose: true,
-                    buttons: [{
-                            text: '<i class="fa-solid fa-calendar-check me-2"></i> Attendance Register',
-                            className: 'dropdown-item',
-                            action: function(e, dt, node, config) {
-                                downloadRegister('attendance_register');
-                            }
-                        },
-                        {
-                            text: '<i class="fa-solid fa-indian-rupee-sign me-2"></i> Wages Register',
-                            className: 'dropdown-item',
-                            action: function(e, dt, node, config) {
-                                downloadRegister('wages_register');
-                            }
-                        },
-                        {
-                            text: '<i class="fa-solid fa-file-invoice me-2"></i> Wage Slip',
-                            className: 'dropdown-item',
-                            action: function(e, dt, node, config) {
-                                downloadRegister('wage_slip');
-                            }
-                        },
-                        {
-                            text: '<i class="fa-solid fa-clock me-2"></i> Overtime Register',
-                            className: 'dropdown-item',
-                            action: function(e, dt, node, config) {
-                                downloadRegister('overtime_register');
-                            }
-                        },
-                        {
-                            text: '<i class="fa-solid fa-clipboard-list me-2"></i> Muster Roll',
-                            className: 'dropdown-item',
-                            action: function(e, dt, node, config) {
-                                downloadRegister('muster_roll');
-                            }
-                        },
-                        {
-                            text: '<i class="fa-solid fa-person-walking-arrow-right me-2"></i> Leave Register',
-                            className: 'dropdown-item',
-                            action: function(e, dt, node, config) {
-                                downloadRegister('leave_register');
-                            }
-                        }
-                    ]
-                },
-                {
-                    extend: 'excelHtml5',
-                    title: '',
-                    text: '<i class="fa-solid fa-file-excel"></i> Download Excel',
-                    className: 'btn btn-sm btn-light',
-                }
-            ],
+                extend: 'excelHtml5',
+                title: '',
+                text: '<i class="fa-solid fa-file-excel"></i>Download Excel',
+                className: 'btn btn-sm btn-light',
+            }],
             "lengthMenu": [
                 [5, 10, 25, 50, 100, -1],
                 [5, 10, 25, 50, 100, 'All'],
@@ -577,72 +499,6 @@
                 })
             }
         });
-    }
-
-    // Function to download various registers
-    const downloadRegister = (register_type) => {
-        // Get current filter values
-        var company = $('#company').val();
-        var department = $('#department').val();
-        var employee = $('#employee').val();
-        var from = $('#from').val();
-        var to = $('#to').val();
-
-        // Validate filters
-        if (!company || company.length === 0) {
-            Swal.fire({
-                html: "Please select at least one company",
-                icon: "warning",
-                buttonsStyling: false,
-                confirmButtonText: "Ok, got it!",
-                customClass: {
-                    confirmButton: "btn btn-primary"
-                },
-            });
-            return;
-        }
-
-        if (!from || !to) {
-            Swal.fire({
-                html: "Please select From and To month",
-                icon: "warning",
-                buttonsStyling: false,
-                confirmButtonText: "Ok, got it!",
-                customClass: {
-                    confirmButton: "btn btn-primary"
-                },
-            });
-            return;
-        }
-
-        // Build URL with parameters
-        var params = new URLSearchParams();
-
-        if (company && company.length > 0) {
-            company.forEach(function(val) {
-                params.append('company[]', val);
-            });
-        }
-
-        if (department && department.length > 0) {
-            department.forEach(function(val) {
-                params.append('department[]', val);
-            });
-        }
-
-        if (employee && employee.length > 0) {
-            employee.forEach(function(val) {
-                params.append('employee[]', val);
-            });
-        }
-
-        params.append('from', from);
-        params.append('to', to);
-        params.append('register_type', register_type);
-
-        // Open download URL in new tab
-        var downloadUrl = '<?= base_url("backend/reports/download-register"); ?>?' + params.toString();
-        window.open(downloadUrl, '_blank');
     }
 
     const getEmployeesByDepatment = async (company_id, department_id) => {

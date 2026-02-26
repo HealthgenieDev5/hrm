@@ -2,65 +2,61 @@
 
 namespace App\Controllers\Attendance;
 
-use App\Libraries\Pipeline;
-use App\Pipes\BasicDetails;
-use App\Models\EmployeeModel;
-use App\Pipes\ProcessAttendance;
-use App\Pipes\GetAttendanceClean;
-use App\Pipes\SandwichSecondPass;
 use App\Controllers\BaseController;
-use App\Controllers\Reports\FinalPaidDays;
 use App\Libraries\AttendanceProcessor;
-use App\Pipes\FetchFreshAttendance;
-use App\Pipes\LateComingAdjustment;
-use App\Pipes\ShiftRulesAndDetails;
-use App\Pipes\AdjustLastWorkingDate;
-use App\Pipes\ApplyAttendanceOverride;
-use App\Models\ShiftAttendanceRuleModel;
+use App\Libraries\Pipeline;
+use App\Models\EmployeeModel;
 use App\Models\GraceBalanceModel;
 use App\Models\PreFinalPaidDaysModel;
+use App\Models\ShiftAttendanceRuleModel;
+use App\Pipes\AdjustLastWorkingDate;
+use App\Pipes\ApplyAttendanceOverride;
 use App\Pipes\AttendanceProcessor\ProcessorHelper;
-use App\Pipes\DashboardPipes\BasicDetails as DashboardPipesBasicDetails;
+use App\Pipes\BasicDetails;
 use App\Pipes\DashboardPipes\GetAttendanceClean as DashboardPipesGetAttendanceClean;
 use App\Pipes\DashboardPipes\ProcessAttendance as DashboardPipesProcessAttendance;
+use App\Pipes\GetAttendanceClean;
+use App\Pipes\LateComingAdjustment;
+use App\Pipes\ProcessAttendance;
 use App\Pipes\RecalculateForHeuer;
-use PhpParser\Node\Stmt\TryCatch;
+use App\Pipes\SandwichSecondPass;
+use App\Pipes\ShiftRulesAndDetails;
 
 class Processor extends BaseController
 {
     public $session;
+
     public $uri;
 
     public function __construct()
     {
         helper(['url', 'form', 'Form_helper', 'Config_defaults_helper']);
-        $this->session    = session();
+        $this->session = session();
     }
-
 
     public static function getProcessedPunchingDataProfile($employee_id, $dateFrom, $dateTo, $do_sw_second_pass = true)
     {
         try {
             // $startTime = microtime(true);
             ob_start();
-            $processor = new AttendanceProcessor();
+            $processor = new AttendanceProcessor;
             $processor->processAll(25, date('Y-m'), [$employee_id]);
             $processor_output = ob_get_clean();
             // $endTime = microtime(true);
             // $diff =   ($endTime - $startTime) / 60;
-            $PreFinalPaidDaysModel = new PreFinalPaidDaysModel();
+            $PreFinalPaidDaysModel = new PreFinalPaidDaysModel;
             $PreFinalPaidDays = $PreFinalPaidDaysModel
                 ->select('pre_final_paid_days.*')
                 ->select('trim(concat(settler.first_name, " ", settler.last_name)) as settled_by_name')
                 ->join('employees as settler', 'settler.id = pre_final_paid_days.settled_by', 'left')
                 ->where('pre_final_paid_days.employee_id =', $employee_id)
-                ->where("(pre_final_paid_days.date between '" . $dateFrom . "' and '" . $dateTo . "')")
+                ->where("(pre_final_paid_days.date between '".$dateFrom."' and '".$dateTo."')")
                 ->orderBy('pre_final_paid_days.date', 'ASC')
                 ->findAll();
 
-            if (!empty($PreFinalPaidDays)) {
+            if (! empty($PreFinalPaidDays)) {
                 foreach ($PreFinalPaidDays as $index => $row) {
-                    //echo $is_weekoff = ProcessorHelper::is_weekoff($row['shift_id'] ?? null, $row['date']);
+                    // echo $is_weekoff = ProcessorHelper::is_weekoff($row['shift_id'] ?? null, $row['date']);
                     // print_r($PreFinalPaidDays[$index]['is_weekoff']);
                     // if ($is_weekoff == 'yes') {
                     //     $data['status']          = "W/O";
@@ -68,35 +64,35 @@ class Processor extends BaseController
                     // }
 
                     // $date = $PreFinalPaidDays[$index]['date'];
-                    $PreFinalPaidDays[$index]['shift_start'] = isset($row['shift_start']) && !empty($row['shift_start']) ? date('h:i A', strtotime($row['shift_start'])) : '';
-                    $PreFinalPaidDays[$index]['shift_end'] = isset($row['shift_end']) && !empty($row['shift_end']) ? date('h:i A', strtotime($row['shift_end'])) : '';
+                    $PreFinalPaidDays[$index]['shift_start'] = isset($row['shift_start']) && ! empty($row['shift_start']) ? date('h:i A', strtotime($row['shift_start'])) : '';
+                    $PreFinalPaidDays[$index]['shift_end'] = isset($row['shift_end']) && ! empty($row['shift_end']) ? date('h:i A', strtotime($row['shift_end'])) : '';
                     $is_present = ProcessorHelper::is_present($row['punch_in_time'], $row['punch_out_time']);
-                    if ($is_present == 'no' && $row['status']  == 'W/O') {
+                    if ($is_present == 'no' && $row['status'] == 'W/O') {
                         $PreFinalPaidDays[$index]['shift_start'] = '';
                         $PreFinalPaidDays[$index]['shift_end'] = '';
                     }
-                    if (date('Y-m-d', strtotime($row['date'])) == date('Y-m-d') && !empty($row['punch_in_time']) && empty($row['punch_out_time'])) {
+                    if (date('Y-m-d', strtotime($row['date'])) == date('Y-m-d') && ! empty($row['punch_in_time']) && empty($row['punch_out_time'])) {
                         $PreFinalPaidDays[$index]['status'] = '--';
                         $PreFinalPaidDays[$index]['status_remarks'] = '';
                     }
                     $PreFinalPaidDays[$index]['date_time_new'] = [
                         'formatted' => date('d M Y', strtotime($row['date'])),
-                        'ordering' => strtotime($row['date'])
+                        'ordering' => strtotime($row['date']),
                     ];
 
-                    $PreFinalPaidDays[$index]['punch_in_time'] = isset($row['punch_in_time']) && !empty($row['punch_in_time']) ? date('h:i A', strtotime($row['punch_in_time'])) : '--';
-                    $PreFinalPaidDays[$index]['punch_out_time'] = isset($row['punch_out_time']) && !empty($row['punch_out_time']) ? date('h:i A', strtotime($row['punch_out_time'])) : '--';
-                    $PreFinalPaidDays[$index]['in_time_between_shift_with_od'] = isset($row['in_time_between_shift_with_od']) && !empty($row['in_time_between_shift_with_od']) ? date('h:i A', strtotime($row['in_time_between_shift_with_od'])) : '--';
-                    $PreFinalPaidDays[$index]['out_time_between_shift_with_od'] = isset($row['out_time_between_shift_with_od']) && !empty($row['out_time_between_shift_with_od']) ? date('h:i A', strtotime($row['out_time_between_shift_with_od'])) : '--';
-                    $PreFinalPaidDays[$index]['in_time_including_od'] = isset($row['in_time_including_od']) && !empty($row['in_time_including_od']) ? date('h:i A', strtotime($row['in_time_including_od'])) : '--';
-                    $PreFinalPaidDays[$index]['out_time_including_od'] = isset($row['out_time_including_od']) && !empty($row['out_time_including_od']) ? date('h:i A', strtotime($row['out_time_including_od'])) : '--';
+                    $PreFinalPaidDays[$index]['punch_in_time'] = isset($row['punch_in_time']) && ! empty($row['punch_in_time']) ? date('h:i A', strtotime($row['punch_in_time'])) : '--';
+                    $PreFinalPaidDays[$index]['punch_out_time'] = isset($row['punch_out_time']) && ! empty($row['punch_out_time']) ? date('h:i A', strtotime($row['punch_out_time'])) : '--';
+                    $PreFinalPaidDays[$index]['in_time_between_shift_with_od'] = isset($row['in_time_between_shift_with_od']) && ! empty($row['in_time_between_shift_with_od']) ? date('h:i A', strtotime($row['in_time_between_shift_with_od'])) : '--';
+                    $PreFinalPaidDays[$index]['out_time_between_shift_with_od'] = isset($row['out_time_between_shift_with_od']) && ! empty($row['out_time_between_shift_with_od']) ? date('h:i A', strtotime($row['out_time_between_shift_with_od'])) : '--';
+                    $PreFinalPaidDays[$index]['in_time_including_od'] = isset($row['in_time_including_od']) && ! empty($row['in_time_including_od']) ? date('h:i A', strtotime($row['in_time_including_od'])) : '--';
+                    $PreFinalPaidDays[$index]['out_time_including_od'] = isset($row['out_time_including_od']) && ! empty($row['out_time_including_od']) ? date('h:i A', strtotime($row['out_time_including_od'])) : '--';
                     $PreFinalPaidDays[$index]['grace'] = $row['late_coming_grace'];
 
-                    if (!empty($row['in_time_between_shift_with_od']) && !empty($row['out_time_between_shift_with_od'])) {
+                    if (! empty($row['in_time_between_shift_with_od']) && ! empty($row['out_time_between_shift_with_od'])) {
                         $in_time_between_shift_with_od = date('Y-m-d H:i:s', strtotime($row['in_time_between_shift_with_od']));
                         $out_time_between_shift_with_od = date('Y-m-d H:i:s', strtotime($row['out_time_between_shift_with_od']));
                         if (strtotime($row['in_time_between_shift_with_od']) > strtotime($row['out_time_between_shift_with_od'])) {
-                            $out_time_between_shift_with_od = date('Y-m-d H:i:s', strtotime($row['out_time_between_shift_with_od'] . " +1 days"));
+                            $out_time_between_shift_with_od = date('Y-m-d H:i:s', strtotime($row['out_time_between_shift_with_od'].' +1 days'));
                         }
 
                         $PreFinalPaidDays[$index]['work_hours_between_shifts_including_od'] = ProcessorHelper::get_time_difference($in_time_between_shift_with_od, $out_time_between_shift_with_od);
@@ -107,7 +103,7 @@ class Processor extends BaseController
             }
             // print_r($PreFinalPaidDays);
             // die();
-            //return (['punching_data' => $PreFinalPaidDays]);
+            // return (['punching_data' => $PreFinalPaidDays]);
 
             return $PreFinalPaidDays;
         } catch (\Throwable $th) {
@@ -117,19 +113,19 @@ class Processor extends BaseController
         // return $punching_data;
     }
 
-
     public static function getProcessedPunchingData($employee_id, $dateFrom, $dateTo, $do_sw_second_pass = true)
     {
         $processedAttendanceArray = self::ProcessPunchingData($employee_id, $dateFrom, $dateTo, $do_sw_second_pass = true);
 
         // print_r($processedAttendanceArray);
         // die();
-        $GraceBalanceModel = new GraceBalanceModel();
+        $GraceBalanceModel = new GraceBalanceModel;
         $balance_grace = $processedAttendanceArray['balance_grace'];
         $GraceBalanceModel->updateOrCreate(
             ['employee_id' => $employee_id, 'year_month' => date('Y-m', strtotime($dateFrom ?? date('Y-m')))],
             ['employee_id' => $employee_id, 'year_month' => date('Y-m', strtotime($dateFrom ?? date('Y-m'))), 'minutes' => $balance_grace]
         );
+
         return $processedAttendanceArray['punching_data'];
     }
 
@@ -143,13 +139,13 @@ class Processor extends BaseController
             'do_sw_second_pass' => $do_sw_second_pass,
         ];
 
-        $result = (new Pipeline())
+        $result = (new Pipeline)
             ->send($data)
             ->through([
                 BasicDetails::class,
                 ShiftRulesAndDetails::class,
                 GetAttendanceClean::class,
-                ProcessAttendance::class, //real work is happening here
+                ProcessAttendance::class, // real work is happening here
                 LateComingAdjustment::class,
                 SandwichSecondPass::class,
                 ApplyAttendanceOverride::class,
@@ -160,11 +156,8 @@ class Processor extends BaseController
                 return $data;
             });
 
-
-
         return $result;
     }
-
 
     public static function getProcessedDashboardDataNew($employee_row, $RawPunchingData)
     {
@@ -175,11 +168,11 @@ class Processor extends BaseController
             'RawPunchingData' => $RawPunchingData,
         ];
 
-        $result = (new Pipeline())
+        $result = (new Pipeline)
             ->send($data)
             ->through([
                 DashboardPipesGetAttendanceClean::class,
-                DashboardPipesProcessAttendance::class, //real work is happening here
+                DashboardPipesProcessAttendance::class, // real work is happening here
             ])
             ->then(function ($data) {
                 return $data;
@@ -192,7 +185,7 @@ class Processor extends BaseController
 
     public static function getProcessedDashboardData($employee_id, $dateFrom, $dateTo)
     {
-        $EmployeeModel = new EmployeeModel();
+        $EmployeeModel = new EmployeeModel;
         $current_user_data = $EmployeeModel
             ->select('employees.*')
             ->select('trim(concat(employees.first_name, " ", employees.last_name)) as employee_name')
@@ -216,24 +209,24 @@ class Processor extends BaseController
             ->where('employees.id =', $employee_id)
             ->first();
 
-        ################# Begin::Get Shift Rules [Late Coming rule] #################
+        // ################ Begin::Get Shift Rules [Late Coming rule] #################
         $shift_id_current_user_data = $current_user_data['shift_id'];
-        $ShiftAttendanceRuleModel_current_user_data =  new ShiftAttendanceRuleModel();
+        $ShiftAttendanceRuleModel_current_user_data = new ShiftAttendanceRuleModel;
         $ShiftAttendanceRule_current_user_data = $ShiftAttendanceRuleModel_current_user_data->where('shift_id =', $shift_id_current_user_data)->first();
         $late_coming_rule_current_user_data = json_decode($ShiftAttendanceRule_current_user_data['late_coming_rule'], true);
         $attendance_rule_current_user_data = json_decode($ShiftAttendanceRule_current_user_data['attendance_rule'], true);
 
-        $absent_for_work_hours_current_user_data              = date_create($attendance_rule_current_user_data['absent_for_work_hours']);
-        $absent_for_work_hours_hrs_current_user_data          = $absent_for_work_hours_current_user_data->format('h');
-        $absent_for_work_hours_minutes_current_user_data      = $absent_for_work_hours_current_user_data->format('i');
-        $absent_for_work_hours_minutes_current_user_data      = $absent_for_work_hours_minutes_current_user_data + ($absent_for_work_hours_hrs_current_user_data * 60);
+        $absent_for_work_hours_current_user_data = date_create($attendance_rule_current_user_data['absent_for_work_hours']);
+        $absent_for_work_hours_hrs_current_user_data = $absent_for_work_hours_current_user_data->format('h');
+        $absent_for_work_hours_minutes_current_user_data = $absent_for_work_hours_current_user_data->format('i');
+        $absent_for_work_hours_minutes_current_user_data = $absent_for_work_hours_minutes_current_user_data + ($absent_for_work_hours_hrs_current_user_data * 60);
 
-        $half_day_for_work_hours_current_user_data              = date_create($attendance_rule_current_user_data['half_day_for_work_hours']);
-        $half_day_for_work_hours_hrs_current_user_data          = $half_day_for_work_hours_current_user_data->format('h');
-        $half_day_for_work_hours_minutes_current_user_data      = $half_day_for_work_hours_current_user_data->format('i');
-        $half_day_for_work_hours_minutes_current_user_data      = $half_day_for_work_hours_minutes_current_user_data + ($half_day_for_work_hours_hrs_current_user_data * 60);
+        $half_day_for_work_hours_current_user_data = date_create($attendance_rule_current_user_data['half_day_for_work_hours']);
+        $half_day_for_work_hours_hrs_current_user_data = $half_day_for_work_hours_current_user_data->format('h');
+        $half_day_for_work_hours_minutes_current_user_data = $half_day_for_work_hours_current_user_data->format('i');
+        $half_day_for_work_hours_minutes_current_user_data = $half_day_for_work_hours_minutes_current_user_data + ($half_day_for_work_hours_hrs_current_user_data * 60);
 
-        ################# End::Get Shift Rules [Late Coming rule] #################
+        // ################ End::Get Shift Rules [Late Coming rule] #################
 
         $get_punching_data = json_decode(get_punching_data($current_user_data['internal_employee_id'], $dateFrom, $dateTo), true)['InOutPunchData'];
         foreach ($get_punching_data as $punching_data_index => $punching_data_row) {
@@ -248,56 +241,56 @@ class Processor extends BaseController
             $get_punching_data[$punching_data_index]['date_time_new'] = $date_time;
             $get_punching_data[$punching_data_index]['day'] = $day;
 
-            $get_punching_data[$punching_data_index]['shift_override']  = ProcessorHelper::get_shift_override($get_punching_data[$punching_data_index]['employee_id'], $get_punching_data[$punching_data_index]['date']);
-            if (!empty($get_punching_data[$punching_data_index]['shift_override'])) {
-                $get_punching_data[$punching_data_index]['shift_id']    = $get_punching_data[$punching_data_index]['shift_override']['shift_override_id'];
+            $get_punching_data[$punching_data_index]['shift_override'] = ProcessorHelper::get_shift_override($get_punching_data[$punching_data_index]['employee_id'], $get_punching_data[$punching_data_index]['date']);
+            if (! empty($get_punching_data[$punching_data_index]['shift_override'])) {
+                $get_punching_data[$punching_data_index]['shift_id'] = $get_punching_data[$punching_data_index]['shift_override']['shift_override_id'];
 
-                $ShiftAttendanceRuleModel =  new ShiftAttendanceRuleModel();
+                $ShiftAttendanceRuleModel = new ShiftAttendanceRuleModel;
                 $ShiftAttendanceRule = $ShiftAttendanceRuleModel->where('shift_id =', $get_punching_data[$punching_data_index]['shift_id'])->first();
 
                 $get_punching_data[$punching_data_index]['late_coming_rule'] = json_decode($ShiftAttendanceRule['late_coming_rule'], true);
                 $get_punching_data[$punching_data_index]['attendance_rule'] = json_decode($ShiftAttendanceRule['attendance_rule'], true);
 
-                $absent_for_work_hours                                  = date_create($get_punching_data[$punching_data_index]['attendance_rule']['absent_for_work_hours']);
-                $absent_for_work_hours_hrs                              = $absent_for_work_hours->format('h');
-                $absent_for_work_hours_minutes                          = $absent_for_work_hours->format('i');
-                $absent_for_work_hours_minutes                          = $absent_for_work_hours_minutes + ($absent_for_work_hours_hrs * 60);
+                $absent_for_work_hours = date_create($get_punching_data[$punching_data_index]['attendance_rule']['absent_for_work_hours']);
+                $absent_for_work_hours_hrs = $absent_for_work_hours->format('h');
+                $absent_for_work_hours_minutes = $absent_for_work_hours->format('i');
+                $absent_for_work_hours_minutes = $absent_for_work_hours_minutes + ($absent_for_work_hours_hrs * 60);
 
-                $half_day_for_work_hours                                = date_create($get_punching_data[$punching_data_index]['attendance_rule']['half_day_for_work_hours']);
-                $half_day_for_work_hours_hrs                            = $half_day_for_work_hours->format('h');
-                $half_day_for_work_hours_minutes                        = $half_day_for_work_hours->format('i');
-                $half_day_for_work_hours_minutes                        = $half_day_for_work_hours_minutes + ($half_day_for_work_hours_hrs * 60);
+                $half_day_for_work_hours = date_create($get_punching_data[$punching_data_index]['attendance_rule']['half_day_for_work_hours']);
+                $half_day_for_work_hours_hrs = $half_day_for_work_hours->format('h');
+                $half_day_for_work_hours_minutes = $half_day_for_work_hours->format('i');
+                $half_day_for_work_hours_minutes = $half_day_for_work_hours_minutes + ($half_day_for_work_hours_hrs * 60);
             } else {
-                $get_punching_data[$punching_data_index]['shift_id']    = $shift_id_current_user_data;
-                $absent_for_work_hours_minutes                          = $absent_for_work_hours_minutes_current_user_data;
-                $half_day_for_work_hours_minutes                        = $half_day_for_work_hours_minutes_current_user_data;
+                $get_punching_data[$punching_data_index]['shift_id'] = $shift_id_current_user_data;
+                $absent_for_work_hours_minutes = $absent_for_work_hours_minutes_current_user_data;
+                $half_day_for_work_hours_minutes = $half_day_for_work_hours_minutes_current_user_data;
             }
         }
 
-        $punching_data = array();
+        $punching_data = [];
         foreach ($get_punching_data as $punching_row) {
             $date_time_formatted = $punching_row['date_time'];
-            $date_time_ordering = !empty($punching_row['date_time']) ? strtotime($punching_row['date_time']) : '0';
+            $date_time_ordering = ! empty($punching_row['date_time']) ? strtotime($punching_row['date_time']) : '0';
             $punching_row['date_time_ordering'] = $date_time_ordering;
-            $punching_row['date_time_new'] = array('formatted' => $date_time_formatted, 'ordering' => $date_time_ordering);
+            $punching_row['date_time_new'] = ['formatted' => $date_time_formatted, 'ordering' => $date_time_ordering];
 
-            #add in_time in punching_data_row
+            // add in_time in punching_data_row
             if ($punching_row['INTime'] !== '--:--') {
                 $punching_row['in_time__Raw'] = date('H:i:s', strtotime($punching_row['INTime']));
             } else {
                 $punching_row['in_time__Raw'] = null;
             }
 
-            #add out_time in punching_data_row
+            // add out_time in punching_data_row
             if ($punching_row['OUTTime'] !== '--:--') {
                 $punching_row['out_time__Raw'] = date('H:i:s', strtotime($punching_row['OUTTime']));
             } else {
                 $punching_row['out_time__Raw'] = null;
             }
 
-            $punching_row['shift']          = !empty($punching_row['shift_override']) ? $punching_row['shift_override'] : ProcessorHelper::get_shift($current_user_data[$punching_row['day']]);
-            $punching_row['shift_start']    = !empty($punching_row['shift']['shift_start']) ? $punching_row['shift']['shift_start'] : null;
-            $punching_row['shift_end']      = !empty($punching_row['shift']['shift_end']) ? $punching_row['shift']['shift_end'] : null;
+            $punching_row['shift'] = ! empty($punching_row['shift_override']) ? $punching_row['shift_override'] : ProcessorHelper::get_shift($current_user_data[$punching_row['day']]);
+            $punching_row['shift_start'] = ! empty($punching_row['shift']['shift_start']) ? $punching_row['shift']['shift_start'] : null;
+            $punching_row['shift_end'] = ! empty($punching_row['shift']['shift_end']) ? $punching_row['shift']['shift_end'] : null;
 
             $punching_row['punching_time_between_shift_including_od'] = $punching_time_between_shift_including_od = ProcessorHelper::get_punch_time_between_shift_including_od(
                 $punching_row['in_time__Raw'],
@@ -323,46 +316,46 @@ class Processor extends BaseController
             $punching_row['in_time'] = $punching_time_between_shift_including_od[0];
             $punching_row['out_time'] = $punching_time_between_shift_including_od[1];
 
-            $punching_row['late_coming_minutes']    = ProcessorHelper::get_late_coming_minutes($punching_row['shift']['shift_start'], $punching_row['in_time']);
-            $punching_row['early_going_minutes']    = ProcessorHelper::get_early_going_minutes($punching_row['shift']['shift_end'], $punching_row['out_time'], $punching_row['in_time']);
+            $punching_row['late_coming_minutes'] = ProcessorHelper::get_late_coming_minutes($punching_row['shift']['shift_start'], $punching_row['in_time']);
+            $punching_row['early_going_minutes'] = ProcessorHelper::get_early_going_minutes($punching_row['shift']['shift_end'], $punching_row['out_time'], $punching_row['in_time']);
 
-            $punching_row['is_weekoff']             = ProcessorHelper::is_weekoff($punching_row['shift_id'], $punching_row['date']);
+            $punching_row['is_weekoff'] = ProcessorHelper::is_weekoff($punching_row['shift_id'], $punching_row['date']);
 
-
-            if (!empty($punching_row['out_time_including_od']) && !empty($punching_row['out_time_including_od']) && (strtotime($punching_row['out_time_including_od']) < strtotime($punching_row['in_time_including_od']))) {
-                $extra_working_minutes_day1  = ProcessorHelper::get_time_difference($punching_row['shift']['shift_end'], '23:59', 'minutes');
-                $extra_working_minutes_day2  = ProcessorHelper::get_time_difference('00:00', $punching_row['out_time_including_od'], 'minutes');
+            if (! empty($punching_row['out_time_including_od']) && ! empty($punching_row['out_time_including_od']) && (strtotime($punching_row['out_time_including_od']) < strtotime($punching_row['in_time_including_od']))) {
+                $extra_working_minutes_day1 = ProcessorHelper::get_time_difference($punching_row['shift']['shift_end'], '23:59', 'minutes');
+                $extra_working_minutes_day2 = ProcessorHelper::get_time_difference('00:00', $punching_row['out_time_including_od'], 'minutes');
                 $extra_working_minutes = $extra_working_minutes_day1 + $extra_working_minutes_day2 + 1;
             } else {
-                $extra_working_minutes  = ProcessorHelper::get_time_difference($punching_row['shift']['shift_end'], $punching_row['out_time_including_od'], 'minutes');
+                $extra_working_minutes = ProcessorHelper::get_time_difference($punching_row['shift']['shift_end'], $punching_row['out_time_including_od'], 'minutes');
             }
 
-            $punching_row['extra_working_minutes']  = $extra_working_minutes > 0 ? $extra_working_minutes : 0;
+            $punching_row['extra_working_minutes'] = $extra_working_minutes > 0 ? $extra_working_minutes : 0;
 
-            $punching_row['is_on_InternationOD']    = ProcessorHelper::is_on_InternationOD($punching_row['date'], $employee_id);
+            $punching_row['is_on_InternationOD'] = ProcessorHelper::is_on_InternationOD($punching_row['date'], $employee_id);
             if ($punching_row['is_on_InternationOD'] == 'yes' && $punching_row['is_weekoff'] == 'yes') {
-                $punching_row['is_onOD']            = 'no';
+                $punching_row['is_onOD'] = 'no';
             } else {
-                $punching_row['is_onOD']            = ProcessorHelper::is_onOD($punching_row['date'], $employee_id);
+                $punching_row['is_onOD'] = ProcessorHelper::is_onOD($punching_row['date'], $employee_id);
             }
 
-            $punching_row['shift_start'] = (!empty($punching_row['shift_start'])) ? date('h:i A', strtotime($punching_row['shift_start'])) : null;
-            $punching_row['shift_end'] = (!empty($punching_row['shift_end'])) ? date('h:i A', strtotime($punching_row['shift_end'])) : null;
+            $punching_row['shift_start'] = (! empty($punching_row['shift_start'])) ? date('h:i A', strtotime($punching_row['shift_start'])) : null;
+            $punching_row['shift_end'] = (! empty($punching_row['shift_end'])) ? date('h:i A', strtotime($punching_row['shift_end'])) : null;
 
-            $punching_row['in_time_between_shift_with_od'] = !empty($punching_row['in_time']) ? date('h:i A', strtotime($punching_row['in_time'])) : null;
-            $punching_row['out_time_between_shift_with_od'] = !empty($punching_row['out_time']) ? date('h:i A', strtotime($punching_row['out_time'])) : null;
-            $punching_row['punch_in_time'] = !empty($punching_row['in_time__Raw']) ? date('h:i A', strtotime($punching_row['in_time__Raw'])) : null;
-            $punching_row['punch_out_time'] = !empty($punching_row['out_time__Raw']) ? date('h:i A', strtotime($punching_row['out_time__Raw'])) : null;
+            $punching_row['in_time_between_shift_with_od'] = ! empty($punching_row['in_time']) ? date('h:i A', strtotime($punching_row['in_time'])) : null;
+            $punching_row['out_time_between_shift_with_od'] = ! empty($punching_row['out_time']) ? date('h:i A', strtotime($punching_row['out_time'])) : null;
+            $punching_row['punch_in_time'] = ! empty($punching_row['in_time__Raw']) ? date('h:i A', strtotime($punching_row['in_time__Raw'])) : null;
+            $punching_row['punch_out_time'] = ! empty($punching_row['out_time__Raw']) ? date('h:i A', strtotime($punching_row['out_time__Raw'])) : null;
 
-            $punching_row['in_time_including_od'] = !empty($punching_row['in_time_including_od']) ? date('h:i A', strtotime($punching_row['in_time_including_od'])) : null;
-            $punching_row['out_time_including_od'] = !empty($punching_row['out_time_including_od']) ? date('h:i A', strtotime($punching_row['out_time_including_od'])) : null;
+            $punching_row['in_time_including_od'] = ! empty($punching_row['in_time_including_od']) ? date('h:i A', strtotime($punching_row['in_time_including_od'])) : null;
+            $punching_row['out_time_including_od'] = ! empty($punching_row['out_time_including_od']) ? date('h:i A', strtotime($punching_row['out_time_including_od'])) : null;
 
-            if (!empty($punching_row)) {
+            if (! empty($punching_row)) {
                 $punching_data[] = $punching_row;
             }
         }
 
-        $punching_data_sorted = orderResultSet($punching_data, 'date_time_ordering', TRUE);
+        $punching_data_sorted = orderResultSet($punching_data, 'date_time_ordering', true);
+
         return $punching_data_sorted;
     }
 }

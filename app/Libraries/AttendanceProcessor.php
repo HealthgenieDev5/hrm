@@ -23,7 +23,7 @@ class AttendanceProcessor
     public function processAll(int $chunkSize = 25, ?string $month = null, ?array $employeeIds = null): void
     {
 
-        CLI::write('Processing has Started at '.date('Y-m-d H:i:s'), 'yellow');
+        CLI::write('Processing has Started at ' . date('Y-m-d H:i:s'), 'yellow');
 
         $employeeIds = ! empty($employeeIds) ? $employeeIds : [];
         $isBulkProcessing = empty($employeeIds) ? true : false;
@@ -71,8 +71,13 @@ class AttendanceProcessor
             ->join('shift_per_day as spd', 'spd.id = s.id', 'left');
 
         $EmployeeModel->groupStart();
+        $EmployeeModel->where('employees.joining_date is null');
+        $EmployeeModel->orWhere("employees.joining_date <= ('" . $to . "')");
+        $EmployeeModel->groupEnd();
+
+        $EmployeeModel->groupStart();
         $EmployeeModel->where('employees.date_of_leaving is null');
-        $EmployeeModel->orWhere("employees.date_of_leaving >= ('".$from."')");
+        $EmployeeModel->orWhere("employees.date_of_leaving >= ('" . $from . "')");
         $EmployeeModel->groupEnd();
 
         // $EmployeeModel->whereIn('employees.company_id', [1, 3, 5]);
@@ -101,19 +106,19 @@ class AttendanceProcessor
         $chunks = array_chunk($allEmployees, $chunkSize);
 
         foreach ($chunks as $i => $group) {
-            CLI::write('Processing batch #'.($i + 1), 'blue');
+            CLI::write('Processing batch #' . ($i + 1), 'blue');
             foreach ($group as $employee_row) {
                 $start = microtime(true);
                 CLI::write("→ Employee ID: {$employee_row['id']} - Processing...", 'white');
                 $this->processEmployee($employee_row, $from, $to, $isBulkProcessing);
                 $end = microtime(true);
                 $executionTime = $end - $start;
-                CLI::write('→ Done in '.round($executionTime, 4)." seconds\n", 'white');
+                CLI::write('→ Done in ' . round($executionTime, 4) . " seconds\n", 'white');
             }
-            CLI::write('Completed batch #'.($i + 1), 'light_gray');
+            CLI::write('Completed batch #' . ($i + 1), 'light_gray');
         }
 
-        CLI::write('Processing has completed at '.date('Y-m-d H:i:s'), 'yellow');
+        CLI::write('Processing has completed at ' . date('Y-m-d H:i:s'), 'yellow');
     }
 
     protected function processEmployee($employee_row, $from, $to, $isBulkProcessing = false): void
@@ -127,7 +132,7 @@ class AttendanceProcessor
         $FinalSalary = $PreFinalSalaryModel->first();
 
         if (! empty($FinalSalary) && ! in_array($FinalSalary['status'], ['generated', 're-generated', 'unhold'])) {
-            $message = 'Salary not updatable of '.trim($employee_row['first_name'].' '.$employee_row['last_name']).' ('.$employee_row['internal_employee_id'].')';
+            $message = 'Salary not updatable of ' . trim($employee_row['first_name'] . ' ' . $employee_row['last_name']) . ' (' . $employee_row['internal_employee_id'] . ')';
             CLI::write("→ Employee ID: {$employee_row['id']} - Failed...$message", 'white');
             if (! $isBulkProcessing) {
                 exit();
@@ -142,7 +147,17 @@ class AttendanceProcessor
 
         // We are pulling fresh attendance of this employee if we are trying to regenerate the attendance of this employee only
         // If in case we are processing all employees then this will be excluded
+
+
+
+
         if (! $isBulkProcessing) {
+            $employee_joining_date = $employee_row['joining_date'] ?? null;
+            if (! empty($employee_joining_date)) {
+                if ($employee_joining_date > $from) {
+                    $from = $employee_joining_date;
+                }
+            }
             save_raw_punching_data($employee_row['internal_employee_id'], $from, $to);
         }
 
@@ -152,9 +167,8 @@ class AttendanceProcessor
         $shift_id = $employee_row['shift_id'];
 
         $PunchingData = Processor::getProcessedPunchingData($employee_id, $from, $to);
-        // if ($employee_id == '331') {
-        //     dd($PunchingData);
-        // }
+
+
         if (! empty($PunchingData)) {
             foreach ($PunchingData as $rowIndex => $rowData) {
                 $PunchingData[$rowIndex]['shift_start'] = (! empty($rowData['shift_start'])) ? date('H:i:s', strtotime($rowData['shift_start'])) : null;
@@ -179,17 +193,21 @@ class AttendanceProcessor
                 $PunchingData[$rowIndex]['leave_request_status'] = (! empty($rowData['LeaveData'])) ? $rowData['LeaveData']['status'] : '';
                 $PunchingData[$rowIndex]['late_coming_rule'] = (! empty($rowData['late_coming_rule'])) ? json_encode($rowData['late_coming_rule']) : null;
             }
+
+
+
+
             $PreFinalPaidDaysModel = new PreFinalPaidDaysModel;
             $result = $this->insertOrUpdateBatch($PunchingData, $PreFinalPaidDaysModel);
             if (! $result) {
-                CLI::write('❌ Failed to insert/update: '.trim($employee_row['first_name'].' '.$employee_row['last_name']), 'red');
-                CLI::write('→ Query: '.$PreFinalPaidDaysModel->getLastQuery()->getQuery(), 'red');
+                CLI::write('❌ Failed to insert/update: ' . trim($employee_row['first_name'] . ' ' . $employee_row['last_name']), 'red');
+                CLI::write('→ Query: ' . $PreFinalPaidDaysModel->getLastQuery()->getQuery(), 'red');
                 exit();
             } else {
-                CLI::write('✅ Success: '.trim($employee_row['first_name'].' '.$employee_row['last_name']), 'green');
+                CLI::write('✅ Success: ' . trim($employee_row['first_name'] . ' ' . $employee_row['last_name']), 'green');
             }
         } else {
-            CLI::write('❌ PunchingData is blank: '.trim($employee_row['first_name'].' '.$employee_row['last_name']), 'red');
+            CLI::write('❌ PunchingData is blank: ' . trim($employee_row['first_name'] . ' ' . $employee_row['last_name']), 'red');
         }
     }
 
@@ -205,7 +223,7 @@ class AttendanceProcessor
 
         $existingMap = [];
         foreach ($existingRows as $existing) {
-            $key = $existing['employee_id'].'_'.$existing['date'];
+            $key = $existing['employee_id'] . '_' . $existing['date'];
             $existingMap[$key] = $existing['id'];
         }
 
@@ -213,7 +231,7 @@ class AttendanceProcessor
         $toUpdate = [];
 
         foreach ($rows as $row) {
-            $key = $row['employee_id'].'_'.$row['date'];
+            $key = $row['employee_id'] . '_' . $row['date'];
 
             if (isset($existingMap[$key])) {
                 $row['id'] = $existingMap[$key]; // required for updateBatch

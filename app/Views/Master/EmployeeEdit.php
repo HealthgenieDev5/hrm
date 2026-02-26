@@ -74,6 +74,15 @@
                                     <!--begin::Name-->
                                     <a href="#" class="fs-3 text-gray-800 text-hover-primary fw-bolder mb-3"><?php echo trim($first_name . " " . $last_name); ?></a>
                                     <!--end::Name-->
+                                    <?php if (isset($active_resignation) && !empty($active_resignation)): ?>
+                                        <!--begin::Resignation Badge-->
+                                        <div class="mb-3">
+                                            <span class="badge badge-danger fs-6 px-4 py-2">
+                                                <i class="fa-solid fa-circle-exclamation me-1"></i> On Resignation
+                                            </span>
+                                        </div>
+                                        <!--end::Resignation Badge-->
+                                    <?php endif; ?>
                                 </div>
                                 <!--end::User Info-->
                                 <!--end::Summary-->
@@ -3272,12 +3281,9 @@
 
         $(document).on('click', '#submit_update_employee', function(e) {
             e.preventDefault();
-
-            // Prevent multiple submissions
             if ($(this).attr('data-kt-indicator') === 'on') {
                 return false;
             }
-
             var hasValidationError = false;
             var errorMessage = '';
             $('#employee_additional_attachments [data-repeater-item]').each(function() {
@@ -3338,6 +3344,7 @@
 
         function do_submit_form() {
             var form = $('#update_employee');
+            //var submitButton = $(this);
             var submitButton = $('#submit_update_employee');
             submitButton.attr("data-kt-indicator", "on");
             submitButton.attr("disabled", "true");

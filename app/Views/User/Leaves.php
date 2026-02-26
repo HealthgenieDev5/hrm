@@ -304,12 +304,11 @@
                                 +'<button class="cancel-self-leave-request btn py-1 px-3 btn-outline btn-outline-dashed btn-outline-success btn-active-light-success" data-id="'+data+'">Cancel</button>'
                                 +'</div>';
                             }
-                            // else if( row.cancellable == 'yes' && row.status == 'approved' ){
-                            //     let dataaaa = '888888888888888';
-                            //     return '<div class="btn-group btn-group-sm">'
-                            //     +'<button class="cancel-self-leave-request btn py-1 px-3 btn-outline btn-outline-dashed btn-outline-success btn-active-light-success" data-id="'+dataaaa+'">Cancelable '+row.salary_status_from_date+'</button>'
-                            //     +'</div>';
-                            // }
+                            else if( row.status == 'approved' && row.type_of_leave == 'CL' && row.is_the_cl_cancellable == 'yes' ){
+                                return '<div class="btn-group btn-group-sm">'
+                                +'<button class="cancel-self-leave-request btn py-1 px-3 btn-outline btn-outline-dashed btn-outline-success btn-active-light-success" data-id="'+data+'">Cancel</button>'
+                                +'</div>';
+                            }
                             else{
                                 return  '<div class="btn-group btn-group-sm">'
                                 +'<button class="btn py-1 px-3 btn-outline btn-outline-dashed btn-outline-danger btn-active-light-danger disabled" disabled>Locked</button>'

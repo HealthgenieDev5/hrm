@@ -51,8 +51,7 @@
 </head>
 
 <body>
-    <!-- Page number footer (appears on all pages) -->
-    <div class="page-number"></div>
+
 
     <?php
     $salary_month = date('F', strtotime($month));
@@ -65,6 +64,11 @@
             <div class="page-break">
                 <div style="background: #fff; margin:0px auto; padding: 50px 25px;">
                     <table style="width: 100%;">
+                        <tr>
+                            <td style="vertical-align: middle;" colspan="3">
+                                <p style="text-align:center">Wage Slip-Form XI (Rule 26(2))</p>
+                            </td>
+                        </tr>
                         <tr>
                             <td style="vertical-align: middle; width:15%">
 
@@ -97,7 +101,7 @@
                                             <strong>Name</strong>
                                         </th>
                                         <td style="text-align: right; border-bottom: 1px solid grey; padding: 5px;">
-                                            <strong style="color: #009ef7; opacity: 0.75;"><?= json_decode(@$FinalSalary['employee_data'])?->employee_name ?></strong>
+                                            <strong><?= json_decode(@$FinalSalary['employee_data'])?->employee_name ?></strong>
                                         </td>
                                     </tr>
                                     <tr>
@@ -105,7 +109,7 @@
                                             <strong>Employee ID</strong>
                                         </th>
                                         <td style="text-align: right; border-bottom: 1px solid grey; padding: 5px;">
-                                            <strong style="color: #009ef7; opacity: 0.75;"><?= json_decode(@$FinalSalary['employee_data'])?->internal_employee_id ?></strong>
+                                            <strong><?= json_decode(@$FinalSalary['employee_data'])?->internal_employee_id ?></strong>
                                         </td>
                                     </tr>
                                     <tr>
@@ -113,7 +117,7 @@
                                             <strong>Joining Date</strong>
                                         </th>
                                         <td style="text-align: right; border-bottom: 1px solid grey; padding: 5px;">
-                                            <strong style="color: #009ef7; opacity: 0.75;"><?php echo !empty(json_decode(@$FinalSalary['employee_data'])?->joining_date) ? date('d M, Y', strtotime(json_decode(@$FinalSalary['employee_data'])?->joining_date)) : ''; ?></strong>
+                                            <strong><?php echo !empty(json_decode(@$FinalSalary['employee_data'])?->joining_date) ? date('d M, Y', strtotime(json_decode(@$FinalSalary['employee_data'])?->joining_date)) : ''; ?></strong>
                                         </td>
                                     </tr>
                                     <tr>
@@ -121,7 +125,7 @@
                                             <strong>Designation</strong>
                                         </th>
                                         <td style="text-align: right; border-bottom: 1px solid grey; padding: 5px;">
-                                            <strong style="color: #009ef7; opacity: 0.75;"><?= json_decode(@$FinalSalary['employee_data'])?->designation_name ?></strong>
+                                            <strong><?= json_decode(@$FinalSalary['employee_data'])?->designation_name ?></strong>
                                         </td>
                                     </tr>
                                     <tr>
@@ -129,7 +133,7 @@
                                             <strong>Department</strong>
                                         </th>
                                         <td style="text-align: right; border-bottom: 1px solid grey; padding: 5px;">
-                                            <strong style="color: #009ef7; opacity: 0.75;"><?= json_decode(@$FinalSalary['employee_data'])?->department_name ?></strong>
+                                            <strong><?= json_decode(@$FinalSalary['employee_data'])?->department_name ?></strong>
                                         </td>
                                     </tr>
                                     <tr>
@@ -137,7 +141,7 @@
                                             <strong>UAN Number</strong>
                                         </th>
                                         <td style="text-align: right; padding: 5px;">
-                                            <strong style="color: #009ef7; opacity: 0.75;">
+                                            <strong>
                                                 <?= (json_decode(@$FinalSalary['salary_structure'], true)['pf_number'] ?? null) ?: 'N/A'; ?>
                                             </strong>
                                         </td>
@@ -151,7 +155,7 @@
                                             <strong>Bank Name</strong>
                                         </th>
                                         <td style="text-align: right; border-bottom: 1px solid grey; padding: 5px;">
-                                            <strong style="color: #009ef7; opacity: 0.75;"><?= json_decode(json_decode($FinalSalary['employee_data'])?->attachment)?->bank_account?->name ?></strong>
+                                            <strong><?= json_decode(json_decode($FinalSalary['employee_data'])?->attachment)?->bank_account?->name ?></strong>
                                         </td>
                                     </tr>
                                     <tr>
@@ -159,7 +163,7 @@
                                             <strong>Bank Account Number</strong>
                                         </th>
                                         <td style="text-align: right; border-bottom: 1px solid grey; padding: 5px;">
-                                            <strong style="color: #009ef7; opacity: 0.75;">
+                                            <strong>
                                                 <?php
                                                 $bank_account_number = json_decode(json_decode($FinalSalary['employee_data'])?->attachment)?->bank_account?->number;
                                                 // echo $bank_account_number;
@@ -180,7 +184,7 @@
                                             <strong>Adhar Number</strong>
                                         </th>
                                         <td style="text-align: right; border-bottom: 1px solid grey; padding: 5px;">
-                                            <strong style="color: #009ef7; opacity: 0.75;"><?= json_decode(json_decode($FinalSalary['employee_data'])?->attachment)?->adhar?->number ?></strong>
+                                            <strong><?= json_decode(json_decode($FinalSalary['employee_data'])?->attachment)?->adhar?->number ?></strong>
                                         </td>
                                     </tr>
                                     <tr>
@@ -188,7 +192,7 @@
                                             <strong>Pan Number</strong>
                                         </th>
                                         <td style="text-align: right; border-bottom: 1px solid grey; padding: 5px;">
-                                            <strong style="color: #009ef7; opacity: 0.75;"><?= json_decode(json_decode($FinalSalary['employee_data'])?->attachment)?->pan?->number ?></strong>
+                                            <strong><?= json_decode(json_decode($FinalSalary['employee_data'])?->attachment)?->pan?->number ?></strong>
                                         </td>
                                     </tr>
                                     <tr>
@@ -196,7 +200,7 @@
                                             <strong>ESI Number</strong>
                                         </th>
                                         <td style="text-align: right; padding: 5px;">
-                                            <strong style="color: #009ef7; opacity: 0.75;">
+                                            <strong>
                                                 <?= (json_decode(@$FinalSalary['salary_structure'], true)['esi_number'] ?? null) ?: 'N/A'; ?>
                                             </strong>
                                         </td>
@@ -217,7 +221,7 @@
                                         <span>
                                             Final Paid Days:
                                         </span>
-                                        <span style="color: #009ef7; opacity: 0.75; padding-right: 15px;">
+                                        <span style="padding-right: 15px;">
                                             <?= @$FinalSalary['final_paid_days'] ?>/<?= @$FinalSalary['month_days'] ?>
                                         </span>
                                     </span>
@@ -248,10 +252,10 @@
                                             <strong>Basic Salary</strong>
                                         </td>
                                         <td style="text-align: center; border-left: 1px solid grey; border-right: 1px solid grey; border-bottom: 1px solid grey; padding: 5px;">
-                                            <strong style="color: #009ef7; opacity: 0.75;"><?= json_decode(@$FinalSalary['salary_structure'])?->basic_salary ?? 0 ?></strong>
+                                            <strong><?= round(json_decode(@$FinalSalary['salary_structure'])?->basic_salary ?? 0) ?></strong>
                                         </td>
                                         <td style="text-align: center; border-bottom: 1px solid grey; padding: 5px;">
-                                            <strong style="color: #009ef7; opacity: 0.75;"><?= round(@$FinalSalary['basic_salary'], 2) ?></strong>
+                                            <strong><?= round(@$FinalSalary['basic_salary'], 2) ?></strong>
                                         </td>
                                     </tr>
                                     <tr>
@@ -259,10 +263,10 @@
                                             <strong>HRA</strong>
                                         </td>
                                         <td style="text-align: center; border-left: 1px solid grey; border-right: 1px solid grey; border-bottom: 1px solid grey; padding: 5px;">
-                                            <strong style="color: #009ef7; opacity: 0.75;"><?= json_decode(@$FinalSalary['salary_structure'])?->house_rent_allowance ?? 0 ?></strong>
+                                            <strong><?= round(json_decode(@$FinalSalary['salary_structure'])?->house_rent_allowance ?? 0) ?></strong>
                                         </td>
                                         <td style="text-align: center; border-bottom: 1px solid grey; padding: 5px;">
-                                            <strong style="color: #009ef7; opacity: 0.75;"><?= round(@$FinalSalary['house_rent_allowance'], 2) ?></strong>
+                                            <strong><?= round(@$FinalSalary['house_rent_allowance'], 2) ?></strong>
                                         </td>
                                     </tr>
                                     <tr>
@@ -270,10 +274,10 @@
                                             <strong>Conveyance</strong>
                                         </td>
                                         <td style="text-align: center; border-left: 1px solid grey; border-right: 1px solid grey; border-bottom: 1px solid grey; padding: 5px;">
-                                            <strong style="color: #009ef7; opacity: 0.75;"><?= json_decode(@$FinalSalary['salary_structure'])?->conveyance ?? 0 ?></strong>
+                                            <strong><?= round(json_decode(@$FinalSalary['salary_structure'])?->conveyance ?? 0) ?></strong>
                                         </td>
                                         <td style="text-align: center; border-bottom: 1px solid grey; padding: 5px;">
-                                            <strong style="color: #009ef7; opacity: 0.75;"><?= round(@$FinalSalary['conveyance'], 2) ?></strong>
+                                            <strong><?= round(@$FinalSalary['conveyance'], 2) ?></strong>
                                         </td>
                                     </tr>
                                     <tr>
@@ -281,10 +285,10 @@
                                             <strong>Medical Allowance</strong>
                                         </td>
                                         <td style="text-align: center; border-left: 1px solid grey; border-right: 1px solid grey; border-bottom: 1px solid grey; padding: 5px;">
-                                            <strong style="color: #009ef7; opacity: 0.75;"><?= json_decode(@$FinalSalary['salary_structure'])?->medical_allowance ?? 0 ?></strong>
+                                            <strong><?= round(json_decode(@$FinalSalary['salary_structure'])?->medical_allowance ?? 0) ?></strong>
                                         </td>
                                         <td style="text-align: center; border-bottom: 1px solid grey; padding: 5px;">
-                                            <strong style="color: #009ef7; opacity: 0.75;"><?= round(@$FinalSalary['medical_allowance'], 2) ?></strong>
+                                            <strong><?= round(@$FinalSalary['medical_allowance'], 2) ?></strong>
                                         </td>
                                     </tr>
                                     <tr>
@@ -292,10 +296,10 @@
                                             <strong>Special Allowance</strong>
                                         </td>
                                         <td style="text-align: center; border-left: 1px solid grey; border-right: 1px solid grey; border-bottom: 1px solid grey; padding: 5px;">
-                                            <strong style="color: #009ef7; opacity: 0.75;"><?= json_decode(@$FinalSalary['salary_structure'])?->special_allowance ?? 0 ?></strong>
+                                            <strong><?= round(json_decode(@$FinalSalary['salary_structure'])?->special_allowance ?? 0) ?></strong>
                                         </td>
                                         <td style="text-align: center; border-bottom: 1px solid grey; padding: 5px;">
-                                            <strong style="color: #009ef7; opacity: 0.75;"><?= round(@$FinalSalary['special_allowance'], 2) ?></strong>
+                                            <strong><?= round(@$FinalSalary['special_allowance'], 2) ?></strong>
                                         </td>
                                     </tr>
                                     <tr>
@@ -303,10 +307,10 @@
                                             <strong>Fuel Allowance</strong>
                                         </td>
                                         <td style="text-align: center; border-left: 1px solid grey; border-right: 1px solid grey; border-bottom: 1px solid grey; padding: 5px;">
-                                            <strong style="color: #009ef7; opacity: 0.75;"><?= json_decode(@$FinalSalary['salary_structure'])?->fuel_allowance ?? 0 ?></strong>
+                                            <strong><?= round(json_decode(@$FinalSalary['salary_structure'])?->fuel_allowance ?? 0) ?></strong>
                                         </td>
                                         <td style="text-align: center; border-bottom: 1px solid grey; padding: 5px;">
-                                            <strong style="color: #009ef7; opacity: 0.75;"><?= round(@$FinalSalary['fuel_allowance'], 2) ?></strong>
+                                            <strong><?= round(@$FinalSalary['fuel_allowance'], 2) ?></strong>
                                         </td>
                                     </tr>
                                     <tr>
@@ -314,10 +318,10 @@
                                             <strong>Vacation Allowance</strong>
                                         </td>
                                         <td style="text-align: center; border-left: 1px solid grey; border-right: 1px solid grey; border-bottom: 1px solid grey; padding: 5px;">
-                                            <strong style="color: #009ef7; opacity: 0.75;"><?= json_decode($FinalSalary['salary_structure'])?->vacation_allowance ?? 0 ?></strong>
+                                            <strong><?= round(json_decode($FinalSalary['salary_structure'])?->vacation_allowance ?? 0) ?></strong>
                                         </td>
                                         <td style="text-align: center; border-bottom: 1px solid grey; padding: 5px;">
-                                            <strong style="color: #009ef7; opacity: 0.75;"><?= round(@$FinalSalary['vacation_allowance'], 2) ?></strong>
+                                            <strong><?= round(@$FinalSalary['vacation_allowance'], 2) ?></strong>
                                         </td>
                                     </tr>
                                     <tr>
@@ -325,10 +329,10 @@
                                             <strong>Other Allowance</strong>
                                         </td>
                                         <td style="text-align: center; border-left: 1px solid grey; border-right: 1px solid grey; border-bottom: 1px solid grey; padding: 5px;">
-                                            <strong style="color: #009ef7; opacity: 0.75;"><?= json_decode(@$FinalSalary['salary_structure'])?->other_allowance ?? 0 ?></strong>
+                                            <strong><?= round(json_decode(@$FinalSalary['salary_structure'])?->other_allowance ?? 0) ?></strong>
                                         </td>
                                         <td style="text-align: center; border-bottom: 1px solid grey; padding: 5px;">
-                                            <strong style="color: #009ef7; opacity: 0.75;"><?= round(@$FinalSalary['other_allowance'], 2) ?></strong>
+                                            <strong><?= round(@$FinalSalary['other_allowance'], 2) ?></strong>
                                         </td>
                                     </tr>
                                     <tr>
@@ -336,10 +340,10 @@
                                             <strong>Total Gross</strong>
                                         </td>
                                         <td style="text-align: center; border-left: 1px solid grey; border-right: 1px solid grey; border-bottom: 1px solid grey; padding: 5px;">
-                                            <strong style="color: #009ef7; opacity: 0.75;"><?= json_decode(@$FinalSalary['salary_structure'])?->gross_salary ?? 0 ?></strong>
+                                            <strong><?= round(json_decode(@$FinalSalary['salary_structure'])?->gross_salary ?? 0) ?></strong>
                                         </td>
                                         <td style="text-align: center; border-bottom: 1px solid grey; padding: 5px;">
-                                            <strong style="color: #009ef7; opacity: 0.75;"><?= round(@$FinalSalary['gross_salary'], 2) ?></strong>
+                                            <strong><?= round(@$FinalSalary['gross_salary'], 2) ?></strong>
                                         </td>
                                     </tr>
                                     <tr>
@@ -364,7 +368,7 @@
                                             <strong>PF</strong>
                                         </td>
                                         <td style="text-align: right; border-bottom: 1px solid grey; padding: 5px;">
-                                            <strong style="color: #009ef7; opacity: 0.75;"><?= round(@$FinalSalary['pf_employee_contribution'], 2) ?></strong>
+                                            <strong><?= round(@$FinalSalary['pf_employee_contribution'], 2) ?></strong>
                                         </td>
                                     </tr>
                                     <tr>
@@ -372,7 +376,7 @@
                                             <strong>ESI</strong>
                                         </td>
                                         <td style="text-align: right; border-bottom: 1px solid grey; padding: 5px;">
-                                            <strong style="color: #009ef7; opacity: 0.75;"><?= round(@$FinalSalary['esi_employee_contribution'], 2) ?></strong>
+                                            <strong><?= round(@$FinalSalary['esi_employee_contribution'], 2) ?></strong>
                                         </td>
                                     </tr>
                                     <tr>
@@ -380,7 +384,7 @@
                                             <strong>LWF</strong>
                                         </td>
                                         <td style="text-align: right; border-bottom: 1px solid grey; padding: 5px;">
-                                            <strong style="color: #009ef7; opacity: 0.75;"><?= round(@$FinalSalary['lwf_employee_contribution'], 2) ?></strong>
+                                            <strong><?= round(@$FinalSalary['lwf_employee_contribution'], 2) ?></strong>
                                         </td>
                                     </tr>
                                     <tr>
@@ -388,7 +392,7 @@
                                             <strong>Loan</strong>
                                         </td>
                                         <td style="text-align: right; border-bottom: 1px solid grey; padding: 5px;">
-                                            <strong style="color: #009ef7; opacity: 0.75;"><?= round(@$FinalSalary['loan_emi'], 2) ?></strong>
+                                            <strong><?= round(@$FinalSalary['loan_emi'], 2) ?></strong>
                                         </td>
                                     </tr>
                                     <tr>
@@ -396,7 +400,7 @@
                                             <strong>Advance</strong>
                                         </td>
                                         <td style="text-align: right; border-bottom: 1px solid grey; padding: 5px;">
-                                            <strong style="color: #009ef7; opacity: 0.75;"><?= round(@$FinalSalary['advance'], 2) ?></strong>
+                                            <strong><?= round(@$FinalSalary['advance'], 2) ?></strong>
                                         </td>
                                     </tr>
                                     <tr>
@@ -404,7 +408,7 @@
                                             <strong>Imprest</strong>
                                         </td>
                                         <td style="text-align: right; border-bottom: 1px solid grey; padding: 5px;">
-                                            <strong style="color: #009ef7; opacity: 0.75;"><?= round(@$FinalSalary['imprest'], 2) ?></strong>
+                                            <strong><?= round(@$FinalSalary['imprest'], 2) ?></strong>
                                         </td>
                                     </tr>
                                     <tr>
@@ -412,7 +416,7 @@
                                             <strong>TDS</strong>
                                         </td>
                                         <td style="text-align: right; border-bottom: 1px solid grey; padding: 5px;">
-                                            <strong style="color: #009ef7; opacity: 0.75;"><?= round(@$FinalSalary['tds'], 2) ?></strong>
+                                            <strong><?= round(@$FinalSalary['tds'], 2) ?></strong>
                                         </td>
                                     </tr>
                                     <tr>
@@ -420,7 +424,7 @@
                                             <strong>Phone</strong>
                                         </td>
                                         <td style="text-align: right; border-bottom: 1px solid grey; padding: 5px;">
-                                            <strong style="color: #009ef7; opacity: 0.75;"><?= round(@$FinalSalary['phone_bill'], 2) ?></strong>
+                                            <strong><?= round(@$FinalSalary['phone_bill'], 2) ?></strong>
                                         </td>
                                     </tr>
                                     <tr>
@@ -428,7 +432,7 @@
                                             <strong>Total Deductions</strong>
                                         </td>
                                         <td style="text-align: right; border-bottom: 1px solid grey; padding: 5px;">
-                                            <strong style="color: #009ef7; opacity: 0.75;"><?= round((@$FinalSalary['gross_salary'] - @$FinalSalary['net_salary'])) ?></strong>
+                                            <strong><?= round((@$FinalSalary['gross_salary'] - @$FinalSalary['net_salary'])) ?></strong>
                                         </td>
                                     </tr>
                                     <tr>
@@ -436,7 +440,7 @@
                                             <strong>Net Amount in hand</strong>
                                         </td>
                                         <td style="text-align: right; border-bottom: 1px solid grey; padding: 5px;">
-                                            <strong style="color: #009ef7; opacity: 0.75;"><?= round(@$FinalSalary['net_salary']) ?></strong>
+                                            <strong><?= round(@$FinalSalary['net_salary']) ?></strong>
                                         </td>
                                     </tr>
                                 </table>

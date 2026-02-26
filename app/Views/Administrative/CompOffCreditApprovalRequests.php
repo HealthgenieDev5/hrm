@@ -749,7 +749,6 @@
 
         //begin::Initialize Datatable
         var table = $("#comp_off_credit_approval_requests_table").DataTable({
-            //"dom": '<"mb-3 d-flex align-items-center justify-content-between datatable-top-div"<"ml-2"B><"flex-grow-1"f>>rtl',
             "dom": '<"mb-3 d-flex align-items-center justify-content-between datatable-top-div"<"ml-2"B><"flex-grow-1"f>>rt',
             "paging": false,
             "scrollX": true,

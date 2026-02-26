@@ -289,6 +289,103 @@ class Dashboard extends BaseController
         echo json_encode($punching_data);
     }
 
+    // public function getLateComingReports()
+    // {
+    //     $punching_data2 = array();
+    //     $current_user = $this->session->get('current_user');
+    //     $current_date_of_month = current_date_of_month();
+    //     $current_day_of_month = strtolower(current_day_of_month());
+    //     $company_id = $this->request->getVar('company_id');
+    //     $current_employee_id = $current_user['employee_id'];
+    //     $EmployeeModel = new EmployeeModel();
+    //     $date_today = date('Y-m-d');
+    //     $all_employee_data_query = $EmployeeModel
+    //         ->select('employees.id as id')
+    //         ->select('trim(concat(employees.first_name, " ", employees.last_name)) as employee_name')
+    //         ->select('employees.internal_employee_id as internal_employee_id')
+    //         ->select('d.department_name as department_name')
+    //         ->select('c.company_short_name as company_short_name')
+    //         ->select('s.shift_name as shift_name')
+    //         ->select('(select concat(shift_start, ",",shift_end) from shift_per_day where day = "monday" and shift_id = employees.shift_id) as Monday')
+    //         ->select('(select concat(shift_start, ",",shift_end) from shift_per_day where day = "tuesday" and shift_id = employees.shift_id) as Tuesday')
+    //         ->select('(select concat(shift_start, ",",shift_end) from shift_per_day where day = "wednesday" and shift_id = employees.shift_id) as Wednesday')
+    //         ->select('(select concat(shift_start, ",",shift_end) from shift_per_day where day = "thursday" and shift_id = employees.shift_id) as Thursday')
+    //         ->select('(select concat(shift_start, ",",shift_end) from shift_per_day where day = "friday" and shift_id = employees.shift_id) as Friday')
+    //         ->select('(select concat(shift_start, ",",shift_end) from shift_per_day where day = "saturday" and shift_id = employees.shift_id) as Saturday')
+    //         ->select('(select concat(shift_start, ",",shift_end) from shift_per_day where day = "sunday" and shift_id = employees.shift_id) as Sunday')
+    //         ->join('departments d', 'd.id = employees.department_id', 'left')
+    //         ->join('companies c', 'c.id = employees.company_id', 'left')
+    //         ->join('shifts s', 's.id = employees.shift_id', 'left')
+    //         ->groupStart()
+    //         ->where('employees.date_of_leaving is null')
+    //         ->orWhere("employees.date_of_leaving >= ('" . $date_today . "')")
+    //         ->groupEnd()
+    //         ->where('(employees.id = "' . $current_employee_id . '" or employees.reporting_manager_id = "' . $current_employee_id . '" or d.hod_employee_id = "' . $current_employee_id . '" or "' . $current_user['role'] . '" in ("admin", "superuser", "hr"))');
+    //     if ($company_id != 'all_companies' && $company_id != '') {
+    //         $EmployeeModel->where('employees.company_id = ', $company_id);
+    //     }
+
+    //     $all_employee_data = $all_employee_data_query->findAll();
+
+    //     $get_punching_data = json_decode(get_punching_data(), true)['InOutPunchData'];
+
+    //     foreach ($get_punching_data as $punching_data_index => $punching_data_row) {
+    //         $day = date('l', strtotime($punching_data_row['DateString']));
+    //         $date_time = date('Y-m-d', strtotime($punching_data_row['DateString']));
+    //         $get_punching_data[$punching_data_index]['date_time'] = $date_time;
+    //         $get_punching_data[$punching_data_index]['day'] = $day;
+    //     }
+
+    //     $punching_data = array();
+    //     if (!empty($all_employee_data)) {
+    //         foreach ($all_employee_data as $employee_data) {
+    //             foreach ($get_punching_data as $punching_row) {
+    //                 $temp_array = array();
+    //                 if ($punching_row['Empcode'] == $employee_data['internal_employee_id'] && $punching_row['INTime'] !== '--:--') {
+
+    //                     #make shift time array of current date
+    //                     if (isset($employee_data[$punching_row['day']]) && !empty($employee_data[$punching_row['day']])) {
+    //                         $shift = explode(',', $employee_data[$punching_row['day']]);
+    //                     } else {
+    //                         $shift = array('', '');
+    //                     }
+    //                     #make shift time array of current date
+    //                     $shift_start = date_create($shift[0]);
+    //                     $in_time = date_create($punching_row['INTime']);
+    //                     $timediff = $shift_start->diff($in_time);
+    //                     $late_minutes   = (int)$timediff->format('%r%i');
+    //                     $late_hours     = (int)$timediff->format('%r%h');
+    //                     if ($late_minutes > 0 || $late_hours > 0) {
+    //                         $temp_array['internal_employee_id'] = $punching_row['Empcode'];
+    //                         $temp_array['employee_name']        = $employee_data['employee_name'];
+    //                         $temp_array['in_time']              = date('h:i a', strtotime($punching_row['INTime']));
+    //                         $temp_array['shift_start']          = date('h:i a', strtotime($shift[0]));
+    //                         $temp_array['late_minutes']         = $late_minutes + ($late_hours * 60);
+    //                         $temp_array['department_name']      = $employee_data['department_name'];
+    //                         $temp_array['company_short_name']   = $employee_data['company_short_name'];
+    //                         $temp_array['date_time']            = date('d M Y', strtotime($punching_row['DateString']));
+    //                         $temp_array['avg_7d']               = getLateMinutes($employee_data, date('Y-m-d', strtotime(current_date_of_month() . " -7 days")), current_date_of_month())['average'];
+    //                         $temp_array['avg_15d']              = getLateMinutes($employee_data, date('Y-m-d', strtotime(current_date_of_month() . " -15 days")), current_date_of_month())['average'];
+    //                         $temp_array['avg_mtd']              = getLateMinutes($employee_data, first_date_of_month(), current_date_of_month())['average'];
+    //                     }
+    //                 }
+    //                 if (!empty($temp_array)) {
+    //                     $punching_data[] = $temp_array;
+    //                 }
+    //             }
+    //         }
+    //         usort($punching_data, function ($a, $b) {
+    //             return $a['late_minutes'] <=> $b['late_minutes'];
+    //         });
+    //         krsort($punching_data);
+    //         foreach ($punching_data as $data) {
+    //             $punching_data2[] = $data;
+    //         }
+    //     }
+
+    //     echo json_encode($punching_data2);
+    // }
+
     public function getLateComingReports()
     {
         $current_user = $this->session->get('current_user');

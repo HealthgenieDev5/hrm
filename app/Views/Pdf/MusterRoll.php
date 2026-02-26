@@ -252,7 +252,7 @@
                             $totalPaidDays += $summary['total_paid_days'] ?? 0;
                         ?>
                             <tr>
-                                <td><?= $currentIndex ?></td>
+                                <td style="height:20px;"><?= $currentIndex ?></td>
                                 <td style="white-space:nowrap; text-align:left;"><?= $employee['employee_name'] ?></td>
                                 <td style="white-space:nowrap;"><?= $employee['department_name'] ?? '' ?></td>
                                 <td style="white-space:nowrap;"><?= $employee['designation_name'] ?? '' ?></td>
@@ -274,13 +274,13 @@
                                 ?>
                                     <td class="<?= $cellClass ?>"><?= $status /* allows HTML for line breaks */ ?></td>
                                 <?php } ?>
-                                <td class="summary-col"><?= round($summary['present'] ?? 0, 1) ?></td>
-                                <td class="summary-col"><?= round($summary['week_off'] ?? 0, 1) ?></td>
-                                <td class="summary-col"><?= round($summary['cl'] ?? 0, 1) ?></td>
-                                <td class="summary-col"><?= round($summary['el'] ?? 0, 1) ?></td>
-                                <td class="summary-col"><?= round($summary['hl'] ?? 0, 1) ?></td>
-                                <td class="summary-col"><?= round($summary['absent'] ?? 0, 1) ?></td>
-                                <td class="summary-col"><?= round($summary['total_paid_days'] ?? 0, 2) ?></td>
+                                <td class="summary-col"><?= $summary['present'] ?? 0 ?></td>
+                                <td class="summary-col"><?= $summary['week_off'] ?? 0 ?></td>
+                                <td class="summary-col"><?= $summary['cl'] ?? 0 ?></td>
+                                <td class="summary-col"><?= $summary['el'] ?? 0 ?></td>
+                                <td class="summary-col"><?= $summary['hl'] ?? 0 ?></td>
+                                <td class="summary-col"><?= $summary['absent'] ?? 0 ?></td>
+                                <td class="summary-col"><?= $summary['total_paid_days'] ?? 0 ?></td>
                             </tr>
                         <?php
                         }
@@ -288,13 +288,13 @@
                         <!-- Summary/Total Row -->
                         <tr style="background-color: #f0f0f0; font-weight: bold;">
                             <td colspan="<?= 4 + $days_in_month ?>" style="text-align: right;">Total</td>
-                            <td class="summary-col"><?= round($totalPresent, 1) ?></td>
-                            <td class="summary-col"><?= round($totalWeekOff, 1) ?></td>
-                            <td class="summary-col"><?= round($totalCL, 1) ?></td>
-                            <td class="summary-col"><?= round($totalEL, 1) ?></td>
-                            <td class="summary-col"><?= round($totalHL, 1) ?></td>
-                            <td class="summary-col"><?= round($totalAbsent, 1) ?></td>
-                            <td class="summary-col"><?= round($totalPaidDays, 2) ?></td>
+                            <td class="summary-col"><?= $totalPresent ?? 0 ?></td>
+                            <td class="summary-col"><?= $totalWeekOff ?? 0 ?></td>
+                            <td class="summary-col"><?= $totalCL ?? 0 ?></td>
+                            <td class="summary-col"><?= $totalEL ?? 0 ?></td>
+                            <td class="summary-col"><?= $totalHL ?? 0 ?></td>
+                            <td class="summary-col"><?= $totalAbsent ?? 0 ?></td>
+                            <td class="summary-col"><?= $totalPaidDays ?? 0 ?></td>
                         </tr>
                     </tbody>
                 </table>

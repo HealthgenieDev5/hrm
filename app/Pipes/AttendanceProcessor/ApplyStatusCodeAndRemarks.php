@@ -311,6 +311,8 @@ class ApplyStatusCodeAndRemarks
             $data['paid']            = '0';
             $data['grace']           = '0';
         }
+
+
         return $next($data);
     }
 }

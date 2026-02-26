@@ -199,6 +199,11 @@
                         </td>
                         <td style="width:80px; border:none;"></td>
                     </tr>
+                    <tr>
+                        <td colspan="3" style="text-align:center; border:none;">
+                            <p style="margin-top:5px;"><strong>Month: <?= $month_name ?></strong></p>
+                        </td>
+                    </tr>
                 </table>
             </div>
 

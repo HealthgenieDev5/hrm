@@ -37,7 +37,7 @@ $routes->get('/backend/master/employee/probation-confirmation-letter/(:num)', [P
 
 $routes->match(['get', 'post'], '/backend/master/employee/save-probation-response-of-hod', [Profile::class, 'saveProbationResponseOfHod']);
 
-// HR Manager probation confirmation routes
+// HR probation confirmation routes
 $routes->match(['get', 'post'], '/ajax/probation/hr-confirmations', [Profile::class, 'getHrProbationConfirmations']);
 $routes->post('/ajax/probation/hr-action', [Profile::class, 'handleHrProbationAction']);
 
