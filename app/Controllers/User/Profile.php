@@ -20,7 +20,9 @@ use App\Pipes\AttendanceProcessor\ProcessorHelper;
 use App\Models\ProbationNotificationModel;
 use App\Models\GraceBalanceModel;
 use App\Models\PreFinalPaidDaysModel;
-use App\Models\ResignationHodResponseModel;
+use App\Models\HolidayModel;
+use App\Models\SpecialHolidayEmployeesModel;
+use App\Models\FixedRhModel;
 use App\Controllers\ResignationController;
 
 class Profile extends BaseController
@@ -110,7 +112,6 @@ class Profile extends BaseController
             ->findAll();
 
         $ResignationController = new ResignationController();
-
         $data = [
             'page_title'            => $current_user['name'] . '\'s Profile',
             'current_user_data'     => $current_user_data,
@@ -863,6 +864,65 @@ class Profile extends BaseController
         echo json_encode($current_user_data);
     }
 
+    public function getUpcomingBirthdays()
+    {
+        $EmployeeModel = new EmployeeModel();
+        $EmployeeModel->select("employees.id as employee_id");
+        $EmployeeModel->select("trim(concat(employees.first_name, ' ', employees.last_name)) as employee_name");
+        $EmployeeModel->select("employees.internal_employee_id as employee_code");
+        $EmployeeModel->select("employees.date_of_birth");
+        $EmployeeModel->select("departments.department_name");
+        $EmployeeModel->select("companies.company_short_name");
+        $EmployeeModel->join("departments", "departments.id = employees.department_id", "left");
+        $EmployeeModel->join("companies", "companies.id = employees.company_id", "left");
+        $EmployeeModel->where("employees.status", "active");
+        $EmployeeModel->where("employees.date_of_birth IS NOT NULL", null, false);
+        $rawData = $EmployeeModel->findAll();
+
+        $today     = new \DateTime('today');
+        $limitDate = new \DateTime('+7 days');
+        $result    = [];
+
+        foreach ($rawData as $emp) {
+            $dob = $emp['date_of_birth'];
+            if (empty($dob)) continue;
+
+            $birthdayThisYear = new \DateTime(date('Y') . '-' . date('m-d', strtotime($dob)));
+
+            if ($birthdayThisYear < $today) continue;
+
+            if ($birthdayThisYear > $limitDate) continue;
+
+            $daysLeft = (int) $today->diff($birthdayThisYear)->days;
+
+            $day    = (int) date('j', strtotime($dob));
+            $suffix = in_array($day, [11, 12, 13]) ? 'th' : (['th', 'st', 'nd', 'rd'][$day % 10] ?? 'th');
+            $birthdayDisplay = $day . '<sup>' . $suffix . '</sup> ' . date('M', strtotime($dob));
+
+            if ($daysLeft === 0) {
+                $daysLeftLabel = 'Today 🎂';
+            } elseif ($daysLeft === 1) {
+                $daysLeftLabel = 'Tomorrow';
+            } else {
+                $daysLeftLabel = 'In ' . $daysLeft . ' days';
+            }
+
+            $result[] = [
+                'employee_name'   => $emp['employee_name'],
+                'employee_code'   => $emp['employee_code'],
+                'department_name' => $emp['department_name'],
+                'company_name'    => $emp['company_short_name'],
+                'birthday_display' => $birthdayDisplay,
+                'days_left'       => $daysLeft,
+                'days_left_label' => $daysLeftLabel,
+            ];
+        }
+
+        usort($result, fn($a, $b) => $a['days_left'] <=> $b['days_left']);
+
+        echo json_encode($result);
+    }
+
     public function getProbationCompletedEmployees()
     {
 
@@ -1180,6 +1240,8 @@ class Profile extends BaseController
         return $all_uncofirmed_employees;
     }
 
+
+
     public function saveProbationResponseOfHod()
     {
         $hod_responses = $_REQUEST['reponses'];
@@ -1250,12 +1312,10 @@ class Profile extends BaseController
                 $data = [
                     'employee_id' => $employee_id,
                     'hod_id' => $this->session->get('current_user')['employee_id'],
-                    'response' => $hod_response,
-                    'date_time' => date('Y-m-d H:i:s')
+                    'response' => $hod_response
                 ];
                 $ProbationHodResponseModel = new ProbationHodResponseModel();
                 $ProbationHodResponseModel->save($data);
-
                 if ($hod_response == 'Confirmed') {
                     $savedRecordId = $ProbationHodResponseModel->getInsertID();
 
@@ -1272,7 +1332,6 @@ class Profile extends BaseController
         $response_array['response_description'] = 'HOD Response saved Successfully';
         return $this->response->setJSON($response_array);
     }
-
 
     public function getHrProbationConfirmations()
     {
@@ -1368,7 +1427,6 @@ class Profile extends BaseController
 
 
 
-
     public function getEmployeesWaitingforWelcome()
     {
         $oneMonthBefore =  date('Y-m-d', strtotime("-1 month"));
@@ -1445,5 +1503,64 @@ class Profile extends BaseController
         $dompdf->setPaper('A4', 'portrait');
         $dompdf->render();
         $dompdf->stream("probation-extended-letter-" . strtolower($data['first_name'] . '-' . $data['last_name']) . "-.pdf");
+    }
+
+    public function getHolidaysOnProfilePage()
+    {
+        $HolidayModel = new HolidayModel();
+        $SpecialHolidayEmployeesModel = new SpecialHolidayEmployeesModel();
+        $FixedRhModel = new FixedRhModel();
+        $current_user = $this->session->get('current_user');
+        $employee_id = $current_user['employee_id'];
+
+        $current_year = date('Y');
+
+        $all_holidays_raw = $HolidayModel
+            ->where('YEAR(holiday_date)', $current_year)
+            ->orderBy('holiday_date', 'ASC')
+            ->findAll();
+
+        $employee_holidays = [];
+        foreach ($all_holidays_raw as $holiday) {
+            $is_special_holiday = $holiday['holiday_code'] == 'SPL HL' || $holiday['is_special_holiday'] == 'yes' ? true : false;
+            $is_rh = $holiday['holiday_code'] == 'RH' ? true : false;
+            $is_nh = $holiday['holiday_code'] == 'NH' ? true : false;
+
+            if ($is_special_holiday) {
+                $special_assign = $SpecialHolidayEmployeesModel
+                    ->where('holiday_id', $holiday['id'])
+                    ->first();
+
+                if ($special_assign && !empty($special_assign['employee_id'])) {
+                    $employee_list = array_map('trim', explode(',', $special_assign['employee_id']));
+                    if (in_array($employee_id, $employee_list)) {
+                        $employee_holidays[] = $holiday;
+                    }
+                }
+            } elseif ($is_rh) {
+                $rh_assign = $FixedRhModel
+                    ->where('rh_id', $holiday['id'])
+                    ->where('employee_id', $employee_id)
+                    ->first();
+                if ($rh_assign) {
+                    $employee_holidays[] = $holiday;
+                }
+            } else {
+                $employee_holidays[] = $holiday;
+            }
+        }
+
+        $formatted_holidays = [];
+        foreach ($employee_holidays as $holiday) {
+            $formatted_holidays[] = [
+                'date' => date('d M Y', strtotime($holiday['holiday_date'])),
+                'date_sort' => strtotime($holiday['holiday_date']),
+                'name' => $holiday['holiday_name'],
+                'code' => $holiday['holiday_code'],
+                'day' => date('l', strtotime($holiday['holiday_date']))
+            ];
+        }
+
+        return $this->response->setJSON($formatted_holidays);
     }
 }

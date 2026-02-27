@@ -229,6 +229,62 @@ class ResignationModel extends Model
     }
 
     /**
+     * Get abscond resignations with employee details
+     */
+    public function getAbscondResignations($company_id = null, $current_employee_id = null, $user_role = null)
+    {
+        $builder = $this->db->table('resignations r');
+        $builder->select("
+            r.id as resignation_id,
+            r.employee_id,
+            r.resignation_date,
+            r.resignation_reason,
+            r.buyout_days,
+            r.status as resignation_status,
+            r.updated_at,
+            e.internal_employee_id,
+            TRIM(CONCAT(e.first_name, ' ', e.last_name)) as employee_name,
+            e.notice_period,
+            d.department_name,
+            c.company_short_name,
+            COALESCE(r.last_working_date, DATE_ADD(r.resignation_date, INTERVAL (e.notice_period - COALESCE(r.buyout_days, 0)) DAY)) as calculated_last_working_day,
+            rhr.hod_response,
+            rhr.hod_response_date,
+            TRIM(CONCAT(COALESCE(hod_emp.first_name, ''), ' ', COALESCE(hod_emp.last_name, ''))) as hod_name,
+            rhr.manager_viewed,
+            rhr.manager_viewed_date,
+            TRIM(CONCAT(COALESCE(mgr_emp.first_name, ''), ' ', COALESCE(mgr_emp.last_name, ''))) as manager_name
+        ");
+        $builder->join('employees e', 'e.id = r.employee_id', 'left');
+        $builder->join('departments d', 'd.id = e.department_id', 'left');
+        $builder->join('companies c', 'c.id = e.company_id', 'left');
+        $builder->join('resignation_hod_response rhr', 'rhr.resignation_id = r.id', 'left');
+        $builder->join('employees hod_emp', 'hod_emp.id = rhr.hod_id', 'left');
+        $builder->join('employees mgr_emp', 'mgr_emp.id = rhr.manager_id', 'left');
+        $builder->where('r.status', 'abscond');
+
+        // Apply role-based access control
+        if ($user_role && !in_array($user_role, ['admin', 'superuser', 'hr'])) {
+            $builder->groupStart();
+            $builder->where('e.id', $current_employee_id);
+            $builder->orWhere('e.reporting_manager_id', $current_employee_id);
+            $builder->orWhere('d.hod_employee_id', $current_employee_id);
+            $builder->groupEnd();
+        }
+
+        // Apply company filter
+        if ($company_id && $company_id !== 'all_companies' && $company_id !== '') {
+            $builder->where('e.company_id', $company_id);
+        }
+
+        $builder->orderBy('r.updated_at', 'DESC');
+        $builder->orderBy('c.company_short_name', 'ASC');
+        $builder->orderBy('e.first_name', 'ASC');
+
+        return $builder->get()->getResultArray();
+    }
+
+    /**
      * Get resignation statistics
      */
     public function getStatistics($company_id = null)
@@ -286,6 +342,15 @@ class ResignationModel extends Model
             $builder->where('e.company_id', $company_id);
         }
         $stats['month_completed'] = $builder->countAllResults();
+
+        // Total abscond resignations
+        $builder = $this->db->table('resignations r');
+        $builder->join('employees e', 'e.id = r.employee_id');
+        $builder->where('r.status', 'abscond');
+        if ($company_id && $company_id !== 'all_companies') {
+            $builder->where('e.company_id', $company_id);
+        }
+        $stats['total_abscond'] = $builder->countAllResults();
 
         return $stats;
     }

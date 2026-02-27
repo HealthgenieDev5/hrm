@@ -29,7 +29,7 @@ class UpdateCreditandBalance extends BaseController
 		// $employees = $EmployeeModel->where('id =', '95')->orderBy('id', 'ASC')->find();
 
 		foreach ($employees as $employee) {
-			$date = '2026-01-02';
+			$date = '2026-02-02';
 			$LeaveModel = new LeaveModel();
 			$leaves = $LeaveModel->findAll();
 			$this->insertIntoCredit($employee, $date, $leaves);

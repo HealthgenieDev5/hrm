@@ -2,12 +2,6 @@
 
 namespace App\Pipes\AttendanceProcessor;
 
-
-use App\Libraries\Pipeline;
-use App\Models\EmployeeModel;
-use App\Models\OdRequestsModel;
-use App\Models\ShiftAttendanceRuleModel;
-use App\Models\ShiftOverrideModel;
 use Closure;
 
 class CheckFraudPunchesAndOverride
@@ -18,7 +12,7 @@ class CheckFraudPunchesAndOverride
 
             $in_time_including_od = $punching_row['in_time_including_od'];
             $out_time_including_od = $punching_row['out_time_including_od'];
-            // Check if both punches are before shift start 
+            // Check if both punches are before shift start
             // Remove punch out if fraud
             if (
                 strtotime($in_time_including_od) < strtotime($punching_row['shift_start'])
@@ -34,10 +28,10 @@ class CheckFraudPunchesAndOverride
                 $punching_row['out_time__Raw'] = null;
                 $punching_row['out_time_including_od'] = null;
                 $punching_row['out_time_between_shift_including_od'] = null;
-                $punching_row['fraud_remarks'] = "<span class='text-danger'>Both punches are before shift start, INTime = " . $punching_row['INTime'] . ", OUTTime=" . $punching_row['OUTTime'] . "</span><br>";
+                $punching_row['fraud_remarks'] = "<span class='text-danger'>Both punches are before shift start, INTime = " . $punching_row['INTime'] . ', OUTTime=' . $punching_row['OUTTime'] . '</span><br>';
             }
 
-            // Check if both punches are after shift end 
+            // Check if both punches are after shift end
             // Remove punch in if fraud
             if (
                 strtotime($in_time_including_od) > strtotime($punching_row['shift_end'])
@@ -53,7 +47,7 @@ class CheckFraudPunchesAndOverride
                 $punching_row['out_time__Raw'] = null;
                 $punching_row['out_time_including_od'] = null;
                 $punching_row['out_time_between_shift_including_od'] = null;
-                $punching_row['fraud_remarks'] = "<span class='text-danger'>Both punches are after shift end, INTime = " . $punching_row['INTime'] . ", OUTTime=" . $punching_row['OUTTime'] . "</span><br>";
+                $punching_row['fraud_remarks'] = "<span class='text-danger'>Both punches are after shift end, INTime = " . $punching_row['INTime'] . ', OUTTime=' . $punching_row['OUTTime'] . '</span><br>';
             }
         }
 
@@ -73,6 +67,8 @@ class CheckFraudPunchesAndOverride
             ]);
             die();
         } */
+
+
         return $next($punching_row);
     }
 }

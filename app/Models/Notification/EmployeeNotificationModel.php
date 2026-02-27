@@ -20,6 +20,7 @@ class EmployeeNotificationModel extends Model
         'reminder_2_date',
         'reminder_3_date',
         'target_employees',
+        'related_employee_id',
         'is_active',
         'created_by',
     ];

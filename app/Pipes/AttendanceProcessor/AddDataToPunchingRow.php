@@ -26,11 +26,14 @@ class AddDataToPunchingRow
     {
 
         $employee_id = $punching_row['current_user_data']['id'];
+
         if (!empty($punching_row['in_time'])) {
             $punching_row['late_coming_minutes']    = ProcessorHelper::get_late_coming_minutes($punching_row['shift_start'], $punching_row['in_time']);
         } else {
             $punching_row['late_coming_minutes']    = ProcessorHelper::get_late_coming_minutes($punching_row['shift_start'], $punching_row['in_time__Raw']);
         }
+
+
 
 
         if (!empty($punching_row['out_time'])) {
@@ -166,12 +169,34 @@ class AddDataToPunchingRow
         $punching_row['in_time_including_od']              = !empty($punching_row['in_time_including_od']) ? date('h:i A', strtotime($punching_row['in_time_including_od'])) : null;
         $punching_row['out_time_including_od']             = !empty($punching_row['out_time_including_od']) ? date('h:i A', strtotime($punching_row['out_time_including_od'])) : null;
 
+
+
+
+        // if ($punching_row['employee_id'] == '252' && $punching_row['date'] == '2026-02-01') {
+        //     echo '<pre>#####--AddDataToPunchingRow--######';
+        //     // $d = array_column($punchingDataSorted, 'late_coming_minutes', 'date_time');
+        //     print_r($punching_row);
+        //     die();
+        // }
+
+
+        $punching_row['hn_late_coming_minutes'] = $punching_row['late_coming_minutes'];
+        $punching_row['hn_early_going_minutes'] = $punching_row['early_going_minutes'];
+
         if ($punching_row['is_weekoff'] == 'yes' || $punching_row['is_holiday'] == 'yes' || $punching_row['is_special_holiday'] == 'yes' || $punching_row['is_fixed_off'] == 'yes' || $punching_row['is_RH'] == 'yes') {
+
+
             $punching_row['late_coming_minutes'] = $punching_row['early_going_minutes'] = $punching_row['late_coming_plus_early_going_minutes'] = $punching_row['late_coming_plus_early_going_minutes_adjustable'] = $punching_row['minutes_required_for_half_day'] = $punching_row['minutes_required_for_full_day'] = 0;
             $punching_row['half_day_because_of_work_hours'] = "no";
             $punching_row['absent_because_of_work_hours'] = "no";
         }
 
+        // if ($punching_row['employee_id'] == '252' && $punching_row['date'] == '2026-02-01') {
+        //     echo '<pre>#####--AddDataToPunchingRow--######';
+        //     // $d = array_column($punchingDataSorted, 'late_coming_minutes', 'date_time');
+        //     print_r($punching_row);
+        //     die();
+        // }
         return $next($punching_row);
     }
 }

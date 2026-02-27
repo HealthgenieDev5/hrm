@@ -20,7 +20,7 @@ class ProcessAttendance
     public function handle($data, Closure $next)
     {
         $get_punching_data = $data['get_punching_data'];
-        $punching_data = array();
+        $punching_data = [];
         foreach ($get_punching_data as $punching_row) {
 
             $punching_row['shift_id_current_user_data'] = $data['shift_id_current_user_data'];
@@ -29,7 +29,7 @@ class ProcessAttendance
             $punching_row['half_day_for_work_hours_minutes_current_user_data'] = $data['half_day_for_work_hours_minutes_current_user_data'];
             $punching_row['current_user_data'] = $data['current_user_data'];
 
-            $punching_row = (new Pipeline())
+            $punching_row = (new Pipeline)
                 ->send($punching_row)
                 ->through([
                     ApplyShiftOverride::class,
@@ -41,19 +41,19 @@ class ProcessAttendance
                     // CheckFraudPunches::class,
 
                     ApplyManualPunching::class,
-                    //Apply last working date condition
+                    // Apply last working date condition
                     PunchTimeCleanup::class,
 
                     CheckFraudPunchesAndOverride::class,
 
-                    AddDataToPunchingRow::class, //real calculation is happening here
-                    ApplyStatusCodeAndRemarks::class, //real calculation is happening here
+                    AddDataToPunchingRow::class, // real calculation is happening here
+                    ApplyStatusCodeAndRemarks::class, // real calculation is happening here
                 ])
                 ->then(function ($data) {
                     return $data;
                 });
 
-            if (!empty($punching_row)) {
+            if (! empty($punching_row)) {
                 $punching_data[] = $punching_row;
             }
         }

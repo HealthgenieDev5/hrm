@@ -69,13 +69,17 @@ class All extends BaseController
                 ifnull(emp.attachment, '') as attachment, 
                 dep.department_name as department_name, 
                 des.designation_name as designation_name, 
-                comp.company_short_name as company_short_name 
+                comp.company_short_name as company_short_name, 
+                minimum_wages_categories.minimum_wages_category_name as minimum_wages_category_name, 
+                minimum_wages_categories.minimum_wages_category_state as minimum_wages_category_state, 
+                minimum_wages_categories.minimum_wages_category_value as minimum_wages_category_value 
                 from employees emp 
                 left join departments dep on dep.id = emp.department_id 
                 left join designations des on des.id = emp.designation_id 
                 left join companies comp on comp.id = emp.company_id 
                 left join employees reporting on reporting.id = emp.reporting_manager_id
                 left join shifts shift on shift.id = emp.shift_id
+                left join minimum_wages_categories minimum_wages_categories on minimum_wages_categories.id = emp.min_wages_category
                 ";
         /*echo '<pre>'.$sql;
             die();*/

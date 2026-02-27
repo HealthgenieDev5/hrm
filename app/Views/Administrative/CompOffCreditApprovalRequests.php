@@ -166,11 +166,6 @@
                                 ?>
                             </option>
 
-                            <?php if (session()->get('current_user')['employee_id'] == '1') { ?>
-                                <option value="stage_1_aryan" <?php echo (isset($_REQUEST['status']) && !empty($_REQUEST['status']) && in_array('stage_1_aryan', $_REQUEST['status']) && !in_array('all_status', $_REQUEST['status'])) ? 'selected' : ''; ?>>Pending from Aryan</option>
-                                <option value="approved_aryan" <?php echo (isset($_REQUEST['status']) && !empty($_REQUEST['status']) && in_array('approved_aryan', $_REQUEST['status']) && !in_array('all_status', $_REQUEST['status'])) ? 'selected' : ''; ?>>Approved by Aryan</option>
-                            <?php } ?>
-
                             <option value="rejected" <?php echo (isset($_REQUEST['status']) && !empty($_REQUEST['status']) && in_array('rejected', $_REQUEST['status']) && !in_array('all_status', $_REQUEST['status'])) ? 'selected' : ''; ?>>Rejected</option>
                             <option value="cancelled" <?php echo (isset($_REQUEST['status']) && !empty($_REQUEST['status']) && in_array('cancelled', $_REQUEST['status']) && !in_array('all_status', $_REQUEST['status'])) ? 'selected' : ''; ?>>Cancelled</option>
                         </select>
@@ -577,7 +572,7 @@
     jQuery(document).ready(function($) {
         var getDepartment = true;
         var getEmployee = true;
-        <?php if (!in_array(session()->get('current_user')['employee_id'], ['54'])) { ?>
+        <?php if (!in_array(session()->get('current_user')['employee_id'], ['1', '54'])) { ?>
 
             loadPendingCounts();
 
@@ -754,7 +749,6 @@
 
         //begin::Initialize Datatable
         var table = $("#comp_off_credit_approval_requests_table").DataTable({
-            //"dom": '<"mb-3 d-flex align-items-center justify-content-between datatable-top-div"<"ml-2"B><"flex-grow-1"f>>rtl',
             "dom": '<"mb-3 d-flex align-items-center justify-content-between datatable-top-div"<"ml-2"B><"flex-grow-1"f>>rt',
             "paging": false,
             "scrollX": true,

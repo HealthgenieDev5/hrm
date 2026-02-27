@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(/c/Users/Developer-2/.config/herd/bin/php.bat spark migrate:*)"
+    ]
+  }
+}

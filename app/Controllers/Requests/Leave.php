@@ -316,11 +316,12 @@ class Leave extends BaseController
                                 'Number of days' => $LeaveRequest["number_of_days"],
                                 'Leave Code' => $LeaveRequest["type_of_leave"],
                                 'Emergency Contact' => $LeaveRequest["emergency_contact_d_l"],
-                            ],
-                            [
-                                array('url' => base_url("/backend/administrative/leaveapproval?action=approve&id=") . $lastInsertID, 'label' => 'Approve', 'class' => 'success'),
-                                array('url' => base_url("/backend/administrative/leaveapproval?action=reject&id=") . $lastInsertID, 'label' => 'Reject', 'class' => 'danger'),
                             ]
+                            // ,
+                            // [
+                            //     array('url' => base_url("/backend/administrative/leaveapproval?action=approve&id=") . $lastInsertID, 'label' => 'Approve', 'class' => 'success'),
+                            //     array('url' => base_url("/backend/administrative/leaveapproval?action=reject&id=") . $lastInsertID, 'label' => 'Reject', 'class' => 'danger'),
+                            // ]
                         );
                         $email->setMessage($preparedMessage);
                         if ($email->send()) {
@@ -412,11 +413,12 @@ class Leave extends BaseController
                         'Number of days' => $LeaveRequest["number_of_days"],
                         'Leave Code' => $LeaveRequest["type_of_leave"],
                         'Emergency Contact' => $LeaveRequest["emergency_contact_d_l"],
-                    ],
-                    [
-                        array('url' => base_url("/backend/administrative/leaveapproval?action=approve&id=") . $lastInsertID, 'label' => 'Approve', 'class' => 'success'),
-                        array('url' => base_url("/backend/administrative/leaveapproval?action=reject&id=") . $lastInsertID, 'label' => 'Reject', 'class' => 'danger'),
                     ]
+                    // ,
+                    // [
+                    //     array('url' => base_url("/backend/administrative/leaveapproval?action=approve&id=") . $lastInsertID, 'label' => 'Approve', 'class' => 'success'),
+                    //     array('url' => base_url("/backend/administrative/leaveapproval?action=reject&id=") . $lastInsertID, 'label' => 'Reject', 'class' => 'danger'),
+                    // ]
                 );
                 $email->setMessage($preparedMessage);
                 if ($email->send()) {
@@ -918,6 +920,15 @@ class Leave extends BaseController
             $leave_requests[$index]['salary_status_to_date'] = $FinalSalary_to_date['status'] ?? false;
             #end::Salary disbursed or not
 
+            #begin::Check if CL is cancellable based on current month
+            $from_date_month = date('m', $from_date_ordering);
+            $from_date_year = date('Y', $from_date_ordering);
+            $current_month = date('m');
+            $current_year = date('Y');
+
+            $leave_requests[$index]['is_the_cl_cancellable'] = ($from_date_month == $current_month && $from_date_year == $current_year) ? 'yes' : 'no';
+            #end::Check if CL is cancellable based on current month
+
         }
         echo json_encode($leave_requests);
     }
@@ -973,7 +984,27 @@ class Leave extends BaseController
             $CustomModel = new CustomModel();
             $leave_request = $CustomModel->CustomQuery($leave_request_sql)->getResultArray()[0];
 
-            if ($leave_request['status'] == 'pending') {
+            #begin::Check if leave is cancellable
+            $is_pending = $leave_request['status'] == 'pending';
+            $is_approved_cl = $leave_request['status'] == 'approved' && $leave_request['type_of_leave'] == 'CL';
+
+            $is_cancellable = false;
+            if ($is_pending) {
+                $is_cancellable = true;
+            } elseif ($is_approved_cl) {
+                // Check if from_date is in current month
+                $from_date_month = date('m', strtotime($leave_request['from_date']));
+                $from_date_year = date('Y', strtotime($leave_request['from_date']));
+                $current_month = date('m');
+                $current_year = date('Y');
+
+                if ($from_date_month == $current_month && $from_date_year == $current_year) {
+                    $is_cancellable = true;
+                }
+            }
+            #end::Check if leave is cancellable
+
+            if ($is_cancellable) {
                 $leave_request['from_date'] = !empty($leave_request['from_date']) ? date('d-M-Y', strtotime($leave_request['from_date'])) : '';
                 $leave_request['to_date'] = !empty($leave_request['to_date']) ? date('d-M-Y', strtotime($leave_request['to_date'])) : '';
                 $leave_request['date_time'] = !empty($leave_request['date_time']) ? date('d-M-Y h:i A', strtotime($leave_request['date_time'])) : '';
@@ -990,7 +1021,7 @@ class Leave extends BaseController
                 }
             } else {
                 $response_array['response_type'] = 'error';
-                $response_array['response_description'] = 'This leave request is not in Pending Status';
+                $response_array['response_description'] = 'This leave request cannot be cancelled';
             }
         }
         #echo json_encode($response_array);
@@ -1048,12 +1079,40 @@ class Leave extends BaseController
             $current_employee_id = $LeaveRequest['employee_id'];
             $type_of_leave = $LeaveRequest['type_of_leave'];
 
-            if ($LeaveRequest['status'] !== 'pending') {
+            #begin::Validate cancellation eligibility
+            $is_pending = $LeaveRequest['status'] === 'pending';
+            $is_approved = $LeaveRequest['status'] === 'approved';
+
+            // Check if it's an approved CL trying to be cancelled
+            if ($is_approved && $type_of_leave === 'CL') {
+                // Approved CL can only be cancelled if from_date is in current month
+                $from_date_month = date('m', strtotime($LeaveRequest['from_date']));
+                $from_date_year = date('Y', strtotime($LeaveRequest['from_date']));
+                $current_month = date('m');
+                $current_year = date('Y');
+
+                if ($from_date_month != $current_month || $from_date_year != $current_year) {
+                    $response_array['response_type'] = 'error';
+                    $response_array['response_description'] = 'Approved CL can only be cancelled if the leave date is in the current month';
+                    return $this->response->setJSON($response_array);
+                    die();
+                }
+            } elseif ($is_approved && $type_of_leave !== 'CL') {
+                // Other approved leaves cannot be cancelled
                 $response_array['response_type'] = 'error';
-                $response_array['response_description'] = 'This leave request is not in Pending Status';
+                $response_array['response_description'] = 'This leave request cannot be cancelled';
                 return $this->response->setJSON($response_array);
                 die();
-            } else {
+            } elseif (!$is_pending && !$is_approved) {
+                // Rejected or cancelled leaves cannot be cancelled again
+                $response_array['response_type'] = 'error';
+                $response_array['response_description'] = 'This leave request cannot be cancelled';
+                return $this->response->setJSON($response_array);
+                die();
+            }
+            #end::Validate cancellation eligibility
+
+            if ($is_pending || ($is_approved && $type_of_leave === 'CL')) {
 
                 if ($type_of_leave == 'COMP OFF') {
                     $data = [

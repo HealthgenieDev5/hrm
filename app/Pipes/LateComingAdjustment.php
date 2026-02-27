@@ -24,6 +24,13 @@ class LateComingAdjustment
         // $totalGrace = $Grace+$LateSitting+$WaveOffMinutes-$DeductionMinutes;
         $totalGrace = $Grace + $LateSitting + $WaveOffMinutes + $CompOffMinutes;
 
+        // if ($data['employee_id'] == '252' && $data['dateFrom'] == '2026-02-01') {
+        //     echo '<pre>-----#####------######';
+        //     // $d = array_column($punchingDataSorted, 'late_coming_minutes', 'date_time');
+        //     print_r($punchingDataSorted);
+        //     die();
+        // }
+
         foreach ($punchingDataSorted as $index => $dataRow) {
 
             $dataRow['is_halfDayLeave'] = 'no';
@@ -669,6 +676,21 @@ class LateComingAdjustment
 
         $data['balance_grace'] = $totalGrace;
         $data['punching_data'] = $punchingDataSorted;
+
+
+        // if ($data['employee_id'] == '252' && $data['dateFrom'] == '2026-02-01') {
+        //     echo '<pre>-----#####--fghdfgh----######';
+
+        //     print_r($data['punching_data']);
+        //     die();
+        // }
+
+        // if ($data['employee_id'] == '252' && $data['dateFrom'] == '2026-02-01') {
+        //     echo '<pre>-----#####------######';
+        //     $d = array_column($punchingDataSorted, 'hn_late_coming_minutes', 'date_time');
+        //     print_r($d);
+        //     die();
+        // }
 
         return $next($data);
     }

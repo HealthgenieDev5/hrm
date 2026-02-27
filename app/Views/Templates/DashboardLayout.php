@@ -53,6 +53,9 @@
 	<link href="<?php echo base_url(); ?>assets/css/custom.css" rel="stylesheet" type="text/css" />
 
 	<link href="<?php echo base_url(); ?>assets/css/toggle-switch.css" rel="stylesheet" type="text/css" />
+	<!-- <link rel="preconnect" href="https://fonts.googleapis.com">
+	<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet"> -->
+
 
 </head>
 <!--end::Head-->

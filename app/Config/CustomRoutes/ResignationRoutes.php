@@ -11,6 +11,7 @@ $routes->match(['get', 'post'], '/ajax/resignation/stats', [ResignationControlle
 $routes->match(['get', 'post'], '/ajax/resignation/reports', [ResignationController::class, 'getResignationReports']);
 $routes->match(['get', 'post'], '/ajax/resignation/alerts', [ResignationController::class, 'getResignationAlerts']);
 $routes->match(['get', 'post'], '/ajax/resignation/completed', [ResignationController::class, 'getCompletedResignations']);
+$routes->match(['get', 'post'], '/ajax/resignation/abscond', [ResignationController::class, 'getAbscondResignations']);
 $routes->match(['get', 'post'], '/ajax/resignation/history/(:num)', [ResignationController::class, 'getRevisionHistory/$1']);
 // Resignation HOD acknowledgment routes
 $routes->match(['get', 'post'], '/ajax/resignation/save-hod-response', [ResignationController::class, 'saveResignationResponseOfHod']);
@@ -20,6 +21,10 @@ $routes->post('/ajax/resignation/manager-notification-action', [ResignationContr
 // Reporting manager notification routes (notified at resignation creation)
 $routes->match(['get', 'post'], '/ajax/resignation/reporting-manager-notifications', [ResignationController::class, 'getReportingManagerResignationNotifications']);
 $routes->post('/ajax/resignation/reporting-manager-notification-action', [ResignationController::class, 'handleReportingManagerNotificationAction']);
+
+// HR Manager notification routes (notified after HOD responds)
+$routes->match(['get', 'post'], '/ajax/resignation/hr-manager-notifications', [ResignationController::class, 'getHrManagerResignationNotifications']);
+$routes->post('/ajax/resignation/hr-manager-notification-action', [ResignationController::class, 'handleHrManagerResignationNotificationAction']);
 
 $routes->group('resignation', ['filter' => 'authfilter'], function ($routes) {
     $routes->get('/', [ResignationController::class, 'index']);

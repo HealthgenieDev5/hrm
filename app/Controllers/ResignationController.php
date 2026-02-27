@@ -893,6 +893,11 @@ class ResignationController extends BaseController
                 $updateData['hod_response'] = 'too_early';
             } elseif ($action === 'accept') {
                 $updateData['hod_response'] = 'accept';
+                // If HOD and Manager are the same person, auto-update manager_viewed
+                if ($record['hod_id'] == $record['manager_id']) {
+                    $updateData['manager_viewed'] = 'viewed';
+                    $updateData['manager_viewed_date'] = date('Y-m-d H:i:s');
+                }
 
                 // Set HR pending notification (first HR manager from config)
                 $resignationHrManagerIds = array_map('intval', explode(',', env('app.resignationHrManagerIds', '52,40,93')));
@@ -904,6 +909,12 @@ class ResignationController extends BaseController
             } elseif ($action === 'reject') {
                 $updateData['hod_response'] = 'rejected';
                 $updateData['hod_rejection_reason'] = $rejectionReason;
+
+                // If HOD and Manager are the same person, auto-update manager_viewed
+                if ($record['hod_id'] == $record['manager_id']) {
+                    $updateData['manager_viewed'] = 'viewed';
+                    $updateData['manager_viewed_date'] = date('Y-m-d H:i:s');
+                }
 
                 // Set HR pending notification (first HR manager from config)
                 $resignationHrManagerIds = array_map('intval', explode(',', env('app.resignationHrManagerIds', '52,40,93')));
@@ -1019,7 +1030,7 @@ class ResignationController extends BaseController
 
         $email = \Config\Services::email();
         $email->setFrom('app.hrm@healthgenie.in', 'HRM');
-        $toEmails = ['developer3@healthgenie.in', 'developer2@healthgenie.in', 'hrd@gstc.com', 'careers@gstc.com'];
+        $toEmails = ['developer3@healthgenie.in', 'hrd@gstc.com', 'careers@gstc.com'];
         $email->setTo($toEmails);
 
         $responseText = $action === 'accept' ? 'accepted' : 'rejected';

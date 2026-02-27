@@ -10,7 +10,7 @@ class BasicDetails
     public function handle($data, Closure $next)
     {
         // $data['greeting'] = "Hello";
-        $EmployeeModel = new EmployeeModel();
+        $EmployeeModel = new EmployeeModel;
         $data['current_user_data'] = $EmployeeModel
             ->select('employees.*')
             ->select('trim(concat(employees.first_name, " ", employees.last_name)) as employee_name')

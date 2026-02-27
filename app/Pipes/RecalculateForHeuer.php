@@ -12,12 +12,9 @@ class RecalculateForHeuer
     {
         $punching_data_sorted = $data['punching_data'];
 
-        foreach ($punching_data_sorted as $index => $punching_row) {
-            // if ($punching_row['employee_id'] == '400' && $punching_row['date'] == '2025-12-01') {
-            //     dd($punching_row);
-            // }
-            if ($punching_row['shift_type'] == 'reduce') {
 
+        foreach ($punching_data_sorted as $index => $punching_row) {
+            if ($punching_row['shift_type'] == 'reduce') {
                 $is_night_shift = strtotime($punching_row['shift_start']) > strtotime($punching_row['shift_end']) ? true : false;
                 if ($is_night_shift) {
                     ///apply new formula for night shift
@@ -304,7 +301,7 @@ class RecalculateForHeuer
                     $shift_end_original                                         = date('H:i', strtotime($punching_row['shift_end']));
                     $INTime_original                                            = $punching_row['INTime'];
                     $OUTTime_original                                           = $punching_row['OUTTime'];
-                    $early_going_minutes_original                               = $punching_row['early_going_minutes'];
+                    $early_going_minutes_original                               = $punching_row['hn_early_going_minutes'];
                     $late_leaving_miutes_original                               = $punching_row['ExtraWorkMinutes'];
                     $absent_for_work_hours_minutes_current_user_data_original   = $punching_row['absent_for_work_hours_minutes_current_user_data'];
                     $half_day_for_work_hours_minutes_current_user_data_original = $punching_row['half_day_for_work_hours_minutes_current_user_data'];
@@ -321,9 +318,11 @@ class RecalculateForHeuer
                     $out_time_including_od_original                             = $punching_row['out_time_including_od'];
                     $in_time_original                                           = $punching_row['in_time'];
                     $out_time_original                                          = $punching_row['out_time'];
-                    $late_coming_minutes_original                               = $punching_row['late_coming_minutes'];
-                    $early_coming_minutes_original                              = $late_coming_minutes_original <= 0 ? ProcessorHelper::get_time_difference($INTime_original, $shift_start_original, 'minutes') : 0;
-                    $early_going_minutes_original                               = $punching_row['early_going_minutes'];
+                    $late_coming_minutes_original                               = $punching_row['hn_late_coming_minutes'];
+
+
+                    $early_coming_minutes_original                              = $late_coming_minutes_original == 0 ? ProcessorHelper::get_time_difference($INTime_original, $shift_start_original, 'minutes') : 0;
+
                     $comp_off_minutes_original                                  = $punching_row['comp_off_minutes'];
                     $wave_off_minutes_original                                  = $punching_row['wave_off_minutes'];
                     $deduction_minutes_original                                 = $punching_row['deduction_minutes'];
@@ -340,13 +339,6 @@ class RecalculateForHeuer
                     $LateSittingMinutes_original                                = $punching_row['LateSittingMinutes'];
                     $OverTimeMinutes_original                                   = $punching_row['OverTimeMinutes'];
                     $grace_original                                             = $punching_row['grace'];
-
-
-
-
-                    // convertToMinutes($time)
-                    // convertToTime($totalMinutes)
-                    // twoByThree(float $value)
 
                     $shift_duration_original = ProcessorHelper::get_time_difference($shift_start_original, $shift_end_original, 'minutes');
                     $shift_duration_reduced = $shift_duration_original * 2 / 3;
@@ -376,8 +368,6 @@ class RecalculateForHeuer
                         $OUTTime = $OUTTime_original;
                     }
 
-
-
                     if (!empty($punch_in_time_original) && $punch_in_time_original != '--:--') {
                         $punch_in_time_timestamp = strtotime($shift_start) + ($late_coming_minutes * 60) - ($early_coming_minutes * 60);
                         $punch_in_time = date('H:i', $punch_in_time_timestamp);
@@ -391,11 +381,6 @@ class RecalculateForHeuer
                     } else {
                         $punch_out_time = $punch_out_time_original;
                     }
-
-
-
-
-
 
                     // Begin::calclualte in time between shift including od
                     $late_coming_between_shift_including_od_original = ProcessorHelper::get_time_difference($shift_start_original, $punching_time_between_shift_including_od_original[0], 'minutes');
@@ -486,55 +471,6 @@ class RecalculateForHeuer
 
 
 
-                    // if ($punching_row['employee_id'] == '316' && $punching_row['date'] == '2025-12-03') {
-
-                    // dd($punching_row);
-                    // dd(
-                    //     [
-                    //         'date' => $punching_row['date'],
-                    //         'shift_duration_original' => $shift_duration_original,
-                    //         'shift_duration_reduced' => $shift_duration_reduced,
-                    //         'shift_start' => $shift_start,
-                    //         'shift_end_reduced_timestamp' => $shift_end_reduced_timestamp,
-                    //         'shift_end' => $shift_end,
-                    //         'early_coming_minutes_original' => $early_coming_minutes_original,
-                    //         'early_coming_minutes' => $early_coming_minutes,
-                    //         'late_coming_minutes_original' => $late_coming_minutes_original,
-                    //         'late_coming_minutes' => $late_coming_minutes,
-                    //         'INTime_original' => $INTime_original,
-                    //         'INTime' => $INTime,
-                    //         'OUTTime_original' => $OUTTime_original,
-                    //         'OUTTime' => $OUTTime,
-                    //         'late_coming_between_shift_including_od_original' => $late_coming_between_shift_including_od_original,
-                    //         'late_coming_between_shift_including_od' => $late_coming_between_shift_including_od,
-                    //         // 'in_time_between_shift_including_od' => $in_time_between_shift_including_od,
-                    //         'in_time_between_shift_with_od' => $in_time_between_shift_with_od,
-                    //         'early_going_between_shift_including_od_original' => $early_going_between_shift_including_od_original,
-                    //         'early_going_between_shift_including_od' => $early_going_between_shift_including_od,
-                    //         // 'out_time_between_shift_including_od' => $out_time_between_shift_including_od,
-                    //         'out_time_between_shift_with_od' => $out_time_between_shift_with_od,
-                    //         'punching_time_between_shift_including_od' => $punching_time_between_shift_including_od,
-
-                    //         'late_coming_including_od_original' => $late_coming_including_od_original,
-                    //         'late_coming_including_od' => $late_coming_including_od,
-                    //         'early_coming_including_od_original' => $early_coming_including_od_original,
-                    //         'early_coming_including_od' => $early_coming_including_od,
-                    //         'in_time_including_od' => $in_time_including_od,
-
-                    //         'out_time_including_od_original' => $out_time_including_od_original,
-                    //         'early_going_including_od_original' => $early_going_including_od_original,
-                    //         'early_going_including_od' => $early_going_including_od,
-                    //         'late_going_including_od_original' => $late_going_including_od_original,
-                    //         'late_going_including_od' => $late_going_including_od,
-                    //         'out_time_including_od' => $out_time_including_od,
-
-                    //         'punch_time_including_od' => $punch_time_including_od,
-
-                    //         'grace_original' => $grace_original,
-                    //         'grace' => $grace,
-                    //     ]
-                    // );
-                    // }
 
                     $punching_row['shift_start'] = $shift_start;
                     $punching_row['shift_end'] = $shift_end;
@@ -558,8 +494,13 @@ class RecalculateForHeuer
                     $punching_row['punch_in_time'] = $punch_in_time;
                     $punching_row['punch_out_time'] = $punch_out_time;
 
-                    $punching_row['late_coming_minutes'] = $late_coming_minutes;
-                    $punching_row['early_going_minutes'] = $early_going_minutes;
+                    // Replace the late comings and early going on weekends
+                    // $punching_row['late_coming_minutes'] = $late_coming_minutes; #just don't replace $punching_row
+                    // $punching_row['early_going_minutes'] = $early_going_minutes; #just don't replace $punching_row
+
+
+
+
                     $punching_row['late_coming_plus_early_going_minutes'] = (string)($late_coming_minutes + $early_going_minutes + $deduction_minutes);
 
                     $punching_data_sorted[$index] = $punching_row;
@@ -571,6 +512,7 @@ class RecalculateForHeuer
             // }
         }
         $data['punching_data'] = $punching_data_sorted;
+
         return $next($data);
     }
 }

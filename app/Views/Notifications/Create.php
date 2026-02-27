@@ -109,7 +109,7 @@
                                             </label>
                                         </div>
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="notification_type" value="reminder" id="type_reminder" required checked>
+                                            <input class="form-check-input" type="radio" name="notification_type" value="reminder" id="type_reminder" checked required>
                                             <label class="form-check-label" for="type_reminder">
                                                 ⏰ Reminder
                                             </label>

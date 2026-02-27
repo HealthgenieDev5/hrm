@@ -17,7 +17,6 @@ if (! function_exists('first_date_of_year')) {
     }
 }
 
-
 if (! function_exists('first_date_of_month')) {
     function first_date_of_month()
     {
@@ -39,7 +38,7 @@ if (! function_exists('current_date_of_month')) {
 if (! function_exists('yesterday_date')) {
     function yesterday_date()
     {
-        return date('Y-m-d', strtotime("-1 days"));
+        return date('Y-m-d', strtotime('-1 days'));
     }
 }
 if (! function_exists('first_day_of_month')) {
@@ -96,12 +95,10 @@ if (! function_exists('first_date_2_months_ago')) {
     }
 }
 
-
-
 if (! function_exists('date_range_between')) {
     function date_range_between($date1, $date2, $format = 'Y-m-d')
     {
-        $dates = array();
+        $dates = [];
         $current = strtotime($date1);
         $date2 = strtotime($date2);
         $stepVal = '+1 day';
@@ -109,6 +106,7 @@ if (! function_exists('date_range_between')) {
             $dates[] = date($format, $current);
             $current = strtotime($stepVal, $current);
         }
+
         return $dates;
     }
 }
@@ -116,13 +114,15 @@ if (! function_exists('date_range_between')) {
 if (! function_exists('number_of_days_between')) {
     function number_of_days_between($start_date, $end_date)
     {
-        if (!empty($start_date) && !empty($end_date)) {
+        if (! empty($start_date) && ! empty($end_date)) {
             $start_datetime = new DateTime($start_date);
             $end_datetime = new DateTime($end_date);
             $interval = $start_datetime->diff($end_datetime);
             $days_between = $interval->days + 1;
+
             return $days_between;
         }
+
         return false;
     }
 }
@@ -130,13 +130,13 @@ if (! function_exists('number_of_days_between')) {
 if (! function_exists('getDateWithSuffix')) {
     function getDateWithSuffix($date)
     {
-        #Convert the date to a timestamp
+        // Convert the date to a timestamp
         $timestamp = strtotime($date);
 
-        #Get the day of the month
+        // Get the day of the month
         $day = date('d', $timestamp);
 
-        #Add the appropriate suffix for the day
+        // Add the appropriate suffix for the day
         if ($day == '01' || $day == '21' || $day == '31') {
             $day .= '<sup>st</sup>';
         } elseif ($day == '02' || $day == '22') {
@@ -146,8 +146,9 @@ if (! function_exists('getDateWithSuffix')) {
         } else {
             $day .= '<sup>th</sup>';
         }
-        #Format the date with the custom day format
-        return $day . date(' F Y', $timestamp);
+
+        // Format the date with the custom day format
+        return $day.date(' F Y', $timestamp);
     }
 }
 
@@ -156,6 +157,7 @@ if (! function_exists('formatToIndianCurrency')) {
     {
         $fmt = new NumberFormatter('en_IN', NumberFormatter::DECIMAL);
         $fmt->setAttribute(NumberFormatter::FRACTION_DIGITS, 0);
+
         return $fmt->format($datavalue);
     }
 }
@@ -163,7 +165,7 @@ if (! function_exists('formatToIndianCurrency')) {
 if (! function_exists('save_raw_punching_data')) {
     function save_raw_punching_data($employee_id = 'ALL', $from_date = '', $to_date = '', $return = false)
     {
-        //set_time_limit(60);
+        // return true;
         if (empty($from_date)) {
             $from_date = date('Y-m-d', strtotime(first_date_of_month()));
         }
@@ -172,13 +174,13 @@ if (! function_exists('save_raw_punching_data')) {
         }
         $RawPunchingData = json_decode(get_raw_punching_data($employee_id, $from_date, $to_date), true)['InOutPunchData'];
 
-        if (!empty($RawPunchingData)) {
+        if (! empty($RawPunchingData)) {
             foreach ($RawPunchingData as $dataRow) {
                 $Empcode = $dataRow['Empcode'];
                 $DateString_2 = $dataRow['DateString_2'];
                 $RawPunchingDataModel = new \App\Models\RawPunchingDataModel;
                 $existing = $RawPunchingDataModel->where('Empcode =', $dataRow['Empcode'])->where('DateString_2 =', $dataRow['DateString_2'])->first();
-                if (!empty($existing)) {
+                if (! empty($existing)) {
                     $dataRow['id'] = $existing['id'];
                 }
                 $saved = $RawPunchingDataModel->save($dataRow);
@@ -222,10 +224,10 @@ if (! function_exists('get_punching_data')) {
         if ($empCode !== 'ALL') {
             $RawPunchingDataModel->where('Empcode =', $empCode);
         }
-        $RawPunchingDataModel->where('(DateString_2 between "' . $from_date . '" and "' . $to_date . '")');
+        $RawPunchingDataModel->where('(DateString_2 between "'.$from_date.'" and "'.$to_date.'")');
         $RawPunchingData = $RawPunchingDataModel->findAll();
 
-        if (!empty($RawPunchingData)) {
+        if (! empty($RawPunchingData)) {
             return json_encode(['InOutPunchData' => $RawPunchingData]);
         } else {
             return json_encode(['InOutPunchData' => complete_raw_data($employeeData, $from_date, $to_date)]);
@@ -252,10 +254,10 @@ if (! function_exists('get_punching_data_with_override')) {
         }
         $RawPunchingDataModel = new \App\Models\RawPunchingDataModel;
         $RawPunchingDataModel->where('Empcode =', $empCode);
-        $RawPunchingDataModel->where('(DateString_2 between "' . $from_date . '" and "' . $to_date . '")');
+        $RawPunchingDataModel->where('(DateString_2 between "'.$from_date.'" and "'.$to_date.'")');
         // $RawPunchingData = $RawPunchingDataModel->findAll() ?? complete_raw_data($employeeData, $from_date, $to_date);
         $RawPunchingData = $RawPunchingDataModel->findAll() ?? [];
-        $RawPunchingData = !empty($RawPunchingData) ? $RawPunchingData : complete_raw_data($employeeData, $from_date, $to_date);
+        $RawPunchingData = ! empty($RawPunchingData) ? $RawPunchingData : complete_raw_data($employeeData, $from_date, $to_date);
 
         // if ($from_date == '2025-04-01') {
         //     dd($RawPunchingData);
@@ -263,10 +265,10 @@ if (! function_exists('get_punching_data_with_override')) {
 
         foreach ($RawPunchingData as $key => $val) {
             $date = $val['DateString_2'];
-            $ManualPunchModel = new \App\Models\ManualPunchModel();
+            $ManualPunchModel = new \App\Models\ManualPunchModel;
             $manualPunchData = $ManualPunchModel->where('employee_id =', $employee_id)->where('punch_date =', $date)->first();
 
-            if (!empty($manualPunchData)) {
+            if (! empty($manualPunchData)) {
                 $RawPunchingData[$key]['INTime'] = $manualPunchData['punch_in'];
                 $RawPunchingData[$key]['OUTTime'] = $manualPunchData['punch_out'];
                 $RawPunchingData[$key]['machine'] = $val['machine'] ?? $employeeData['machine'];
@@ -277,7 +279,7 @@ if (! function_exists('get_punching_data_with_override')) {
     }
 }
 
-if (!function_exists('complete_raw_data')) {
+if (! function_exists('complete_raw_data')) {
     function complete_raw_data($employeeData, $from_date, $to_date)
     {
         $RawPunchingData = [];
@@ -300,10 +302,10 @@ if (!function_exists('complete_raw_data')) {
             $RawPunchingData[] = $row;
             $dateCursor = strtotime('+1 day', $dateCursor);
         }
+
         return $RawPunchingData;
     }
 }
-
 
 if (! function_exists('get_raw_punching_data')) {
     function get_raw_punching_data($employee_id = 'ALL', $from_date = '', $to_date = '')
@@ -314,7 +316,7 @@ if (! function_exists('get_raw_punching_data')) {
         if (empty($to_date)) {
             $to_date = date('Y-m-d', strtotime(current_date_of_month()));
         }
-        #######Find overridden Machines#######
+        // ######Find overridden Machines#######
         $MachineOverrideModel = new \App\Models\MachineOverrideModel;
         $MachineOverrideModel->select('machine_override.*');
         $MachineOverrideModel->select('machine_override.machine as override_machine');
@@ -322,14 +324,14 @@ if (! function_exists('get_raw_punching_data')) {
         $MachineOverrideModel->select('employees.machine as default_machine');
         $MachineOverrideModel->join('employees', 'employees.id=machine_override.employee_id', 'left');
         $MachineOverrideModel->groupStart();
-        $MachineOverrideModel->where("machine_override.from_date between '" . $from_date . "' and '" . $to_date . "'");
-        $MachineOverrideModel->orWhere("machine_override.to_date between '" . $from_date . "' and '" . $to_date . "'");
-        $MachineOverrideModel->orWhere("'" . $from_date . "' between machine_override.from_date and machine_override.to_date");
-        $MachineOverrideModel->orWhere("'" . $to_date . "' between machine_override.from_date and machine_override.to_date");
+        $MachineOverrideModel->where("machine_override.from_date between '".$from_date."' and '".$to_date."'");
+        $MachineOverrideModel->orWhere("machine_override.to_date between '".$from_date."' and '".$to_date."'");
+        $MachineOverrideModel->orWhere("'".$from_date."' between machine_override.from_date and machine_override.to_date");
+        $MachineOverrideModel->orWhere("'".$to_date."' between machine_override.from_date and machine_override.to_date");
         $MachineOverrideModel->groupEnd();
         $ExistingMachineOverrideEntries = $MachineOverrideModel->findAll();
 
-        #######Find default Machines#######
+        // ######Find default Machines#######
         $EmployeeModel = new \App\Models\EmployeeModel;
         $EmployeeModel->select('employees.internal_employee_id as internal_employee_id');
         $EmployeeModel->select('employees.machine as default_machine');
@@ -339,7 +341,7 @@ if (! function_exists('get_raw_punching_data')) {
         }
         $DefaultMachineEntries_raw = $EmployeeModel->findAll();
 
-        $DefaultMachineEntries = array();
+        $DefaultMachineEntries = [];
         foreach ($DefaultMachineEntries_raw as $key => $machinerow) {
             $i = $machinerow['internal_employee_id'];
             $m = $machinerow['default_machine'];
@@ -354,15 +356,14 @@ if (! function_exists('get_raw_punching_data')) {
             $EmployeeModel->where('employees.internal_employee_id =', $employee_id);
         }
         $JoiningDates_raw = $EmployeeModel->findAll();
-        $JoiningDates = array();
-        $DateOfLeavings = array();
+        $JoiningDates = [];
+        $DateOfLeavings = [];
         foreach ($JoiningDates_raw as $key => $joiningdaterow) {
             $JoiningDates[$joiningdaterow['internal_employee_id']] = $joiningdaterow['joining_date'];
             $DateOfLeavings[$joiningdaterow['internal_employee_id']] = $joiningdaterow['date_of_leaving'];
         }
 
         $date_range_between_from_date_and_to_date = date_range_between($from_date, $to_date);
-
 
         $PunchingDataDel = json_decode(get_punching_data_del($employee_id, $from_date, $to_date), true)['InOutPunchData'];
         // echo '<pre>';
@@ -373,27 +374,25 @@ if (! function_exists('get_raw_punching_data')) {
         $PunchingDataNOIDA = json_decode(get_punching_data_noida($employee_id, $from_date, $to_date), true)['InOutPunchData'];
         $PunchingDataSKBD = json_decode(get_punching_data_skbd($employee_id, $from_date, $to_date), true)['InOutPunchData'];
 
-
-
-        #Removed on 2024-08-02
+        // Removed on 2024-08-02
         // $InOutPunchData__Del__GGN = ( !empty($PunchingDataDel) && !empty($PunchingDataGGN) ) ? array_merge($PunchingDataDel, $PunchingDataGGN) : null;
         // $InOutPunchData__Del__GGN_Noida = ( !empty($InOutPunchData__Del__GGN) && !empty($PunchingDataNOIDA) ) ? array_merge($InOutPunchData__Del__GGN, $PunchingDataNOIDA) : null;
 
-        #added on 2024-08-02
+        // added on 2024-08-02
         $InOutPunchData__Del__GGN_Noida = [];
-        #merge del
-        $InOutPunchData__Del__GGN_Noida = !empty($PunchingDataDel) ? array_merge($InOutPunchData__Del__GGN_Noida, $PunchingDataDel) : $InOutPunchData__Del__GGN_Noida;
-        #merge ggn
-        $InOutPunchData__Del__GGN_Noida = !empty($PunchingDataGGN) ? array_merge($InOutPunchData__Del__GGN_Noida, $PunchingDataGGN) : $InOutPunchData__Del__GGN_Noida;
-        #merge hn
-        $InOutPunchData__Del__GGN_Noida = !empty($PunchingDataNOIDA) ? array_merge($InOutPunchData__Del__GGN_Noida, $PunchingDataNOIDA) : $InOutPunchData__Del__GGN_Noida;
-        #merge skbd
-        $InOutPunchData__Del__GGN_Noida = !empty($PunchingDataSKBD) ? array_merge($InOutPunchData__Del__GGN_Noida, $PunchingDataSKBD) : $InOutPunchData__Del__GGN_Noida;
+        // merge del
+        $InOutPunchData__Del__GGN_Noida = ! empty($PunchingDataDel) ? array_merge($InOutPunchData__Del__GGN_Noida, $PunchingDataDel) : $InOutPunchData__Del__GGN_Noida;
+        // merge ggn
+        $InOutPunchData__Del__GGN_Noida = ! empty($PunchingDataGGN) ? array_merge($InOutPunchData__Del__GGN_Noida, $PunchingDataGGN) : $InOutPunchData__Del__GGN_Noida;
+        // merge hn
+        $InOutPunchData__Del__GGN_Noida = ! empty($PunchingDataNOIDA) ? array_merge($InOutPunchData__Del__GGN_Noida, $PunchingDataNOIDA) : $InOutPunchData__Del__GGN_Noida;
+        // merge skbd
+        $InOutPunchData__Del__GGN_Noida = ! empty($PunchingDataSKBD) ? array_merge($InOutPunchData__Del__GGN_Noida, $PunchingDataSKBD) : $InOutPunchData__Del__GGN_Noida;
 
-        if (!empty($InOutPunchData__Del__GGN_Noida)) {
+        if (! empty($InOutPunchData__Del__GGN_Noida)) {
 
             foreach ($InOutPunchData__Del__GGN_Noida as $x => $y) {
-                if (!in_array($y['Empcode'], array_keys($DefaultMachineEntries))) {
+                if (! in_array($y['Empcode'], array_keys($DefaultMachineEntries))) {
                     unset($InOutPunchData__Del__GGN_Noida[$x]);
                 }
             }
@@ -401,7 +400,7 @@ if (! function_exists('get_raw_punching_data')) {
             foreach ($InOutPunchData__Del__GGN_Noida as $i => $d) {
                 $InOutPunchData__Del__GGN_Noida[$i]['DateString'] = str_replace('/', '-', $d['DateString']);
                 $InOutPunchData__Del__GGN_Noida[$i]['DateString_2'] = date('Y-m-d', strtotime($d['DateString']));
-                //$InOutPunchData__Del__GGN_Noida[$i]['default_machine'] = $DefaultMachineEntries[$d['Empcode']];
+                // $InOutPunchData__Del__GGN_Noida[$i]['default_machine'] = $DefaultMachineEntries[$d['Empcode']];
                 $InOutPunchData__Del__GGN_Noida[$i]['default_machine'] = $DefaultMachineEntries[$d['Empcode']] ?? '';
 
                 $InOutPunchData__Del__GGN_Noida[$i]['override_machine'] = '';
@@ -409,14 +408,14 @@ if (! function_exists('get_raw_punching_data')) {
                     // unset($InOutPunchData__Del__GGN_Noida[$i]);
                     $InOutPunchData__Del__GGN_Noida[$i]['INTime'] = '--:--';
                     $InOutPunchData__Del__GGN_Noida[$i]['OUTTime'] = '--:--';
-                } elseif (!empty($DateOfLeavings[$d['Empcode']]) && strtotime($InOutPunchData__Del__GGN_Noida[$i]['DateString_2']) > strtotime($DateOfLeavings[$d['Empcode']])) {
+                } elseif (! empty($DateOfLeavings[$d['Empcode']]) && strtotime($InOutPunchData__Del__GGN_Noida[$i]['DateString_2']) > strtotime($DateOfLeavings[$d['Empcode']])) {
                     // unset($InOutPunchData__Del__GGN_Noida[$i]);
                     $InOutPunchData__Del__GGN_Noida[$i]['INTime'] = '--:--';
                     $InOutPunchData__Del__GGN_Noida[$i]['OUTTime'] = '--:--';
                 }
             }
 
-            #######Remove default machines for overridden date range#######
+            // ######Remove default machines for overridden date range#######
             foreach ($InOutPunchData__Del__GGN_Noida as $punchingDataIndex => $punchingDataRow) {
                 foreach ($ExistingMachineOverrideEntries as $ExistingMachineOverrideIndex => $ExistingMachineOverrideEntry) {
                     if (strtotime($punchingDataRow['DateString_2']) >= strtotime($ExistingMachineOverrideEntry['from_date']) && strtotime($punchingDataRow['DateString_2']) <= strtotime($ExistingMachineOverrideEntry['to_date'])) {
@@ -434,7 +433,7 @@ if (! function_exists('get_raw_punching_data')) {
 
             foreach ($InOutPunchData__Del__GGN_Noida as $punchingDataIndex => $punchingDataRow) {
 
-                if (isset($punchingDataRow['override_machine']) && !empty($punchingDataRow['override_machine'])) {
+                if (isset($punchingDataRow['override_machine']) && ! empty($punchingDataRow['override_machine'])) {
                     if ($punchingDataRow['override_machine'] != $punchingDataRow['machine']) {
                         unset($InOutPunchData__Del__GGN_Noida[$punchingDataIndex]);
                     }
@@ -454,11 +453,9 @@ if (! function_exists('get_raw_punching_data')) {
             // session()->setFlashdata('etime_office_error', 'eTimeOffice Error:: Fresh data was not received from eTimeOffice Server.<br>This is a temporary error, please wait for a while or, can contact developer');
         }
 
+        $data = [];
+        $data['InOutPunchData'] = ! empty($InOutPunchData__Del__GGN_Noida) ? $InOutPunchData__Del__GGN_Noida : [];
 
-
-
-        $data = array();
-        $data['InOutPunchData'] = !empty($InOutPunchData__Del__GGN_Noida) ? $InOutPunchData__Del__GGN_Noida : [];
         return json_encode($data);
     }
 }
@@ -477,19 +474,18 @@ if (! function_exists('get_punching_data_del')) {
             $to_date = date('d/m/Y', strtotime($to_date));
         }
 
-
-        $postData = "Empcode=" . $employee_id . "&FromDate=" . $from_date . "&ToDate=" . $to_date;
+        $postData = 'Empcode='.$employee_id.'&FromDate='.$from_date.'&ToDate='.$to_date;
 
         $url = env('del.API_URL');
         $corporate_id = env('del.CORPORATE_ID');
         $username = env('del.USERNAME');
         $password = env('del.PASSWORD');
 
-        $auth = base64_encode($corporate_id . ":" . $username . ":" . $password . ":true");
-        $headers = array("Authorization: Basic " . $auth,);
+        $auth = base64_encode($corporate_id.':'.$username.':'.$password.':true');
+        $headers = ['Authorization: Basic '.$auth];
 
         $curl = curl_init($url);
-        curl_setopt($curl, CURLOPT_URL, $url . '?' . $postData);
+        curl_setopt($curl, CURLOPT_URL, $url.'?'.$postData);
         curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'GET');
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
@@ -502,7 +498,7 @@ if (! function_exists('get_punching_data_del')) {
         $data = json_decode($resp, true);
         $InOutPunchData = $data['InOutPunchData'] ?? null;
 
-        if (!empty($InOutPunchData)) {
+        if (! empty($InOutPunchData)) {
             foreach ($InOutPunchData as $i => $d) {
                 $InOutPunchData[$i]['DateString'] = str_replace('/', '-', $d['DateString']);
                 $InOutPunchData[$i]['machine'] = 'del';
@@ -511,6 +507,7 @@ if (! function_exists('get_punching_data_del')) {
         } else {
             $data['InOutPunchData'] = $InOutPunchData;
         }
+
         return json_encode($data);
     }
 }
@@ -529,18 +526,18 @@ if (! function_exists('get_punching_data_ggn')) {
             $to_date = date('d/m/Y', strtotime($to_date));
         }
 
-        $postData = "Empcode=" . $employee_id . "&FromDate=" . $from_date . "&ToDate=" . $to_date;
+        $postData = 'Empcode='.$employee_id.'&FromDate='.$from_date.'&ToDate='.$to_date;
 
         $url = env('ggn.API_URL');
         $corporate_id = env('ggn.CORPORATE_ID');
         $username = env('ggn.USERNAME');
         $password = env('ggn.PASSWORD');
 
-        $auth = base64_encode($corporate_id . ":" . $username . ":" . $password . ":true");
-        $headers = array("Authorization: Basic " . $auth,);
+        $auth = base64_encode($corporate_id.':'.$username.':'.$password.':true');
+        $headers = ['Authorization: Basic '.$auth];
 
         $curl = curl_init($url);
-        curl_setopt($curl, CURLOPT_URL, $url . '?' . $postData);
+        curl_setopt($curl, CURLOPT_URL, $url.'?'.$postData);
         curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'GET');
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
@@ -552,7 +549,7 @@ if (! function_exists('get_punching_data_ggn')) {
         curl_close($curl);
         $data = json_decode($resp, true);
         $InOutPunchData = $data['InOutPunchData'] ?? null;
-        if (!empty($InOutPunchData)) {
+        if (! empty($InOutPunchData)) {
             foreach ($InOutPunchData as $i => $d) {
                 $InOutPunchData[$i]['DateString'] = str_replace('/', '-', $d['DateString']);
                 $InOutPunchData[$i]['machine'] = 'ggn';
@@ -586,18 +583,18 @@ if (! function_exists('get_punching_data_noida')) {
             $to_date = date('d/m/Y', strtotime($to_date));
         }
 
-        $postData = "Empcode=" . $employee_id . "&FromDate=" . $from_date . "&ToDate=" . $to_date;
+        $postData = 'Empcode='.$employee_id.'&FromDate='.$from_date.'&ToDate='.$to_date;
 
         $url = env('hn.API_URL');
         $corporate_id = env('hn.CORPORATE_ID');
         $username = env('hn.USERNAME');
         $password = env('hn.PASSWORD');
 
-        $auth = base64_encode($corporate_id . ":" . $username . ":" . $password . ":true");
-        $headers = array("Authorization: Basic " . $auth,);
+        $auth = base64_encode($corporate_id.':'.$username.':'.$password.':true');
+        $headers = ['Authorization: Basic '.$auth];
 
         $curl = curl_init($url);
-        curl_setopt($curl, CURLOPT_URL, $url . '?' . $postData);
+        curl_setopt($curl, CURLOPT_URL, $url.'?'.$postData);
         curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'GET');
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
@@ -609,7 +606,7 @@ if (! function_exists('get_punching_data_noida')) {
         curl_close($curl);
         $data = json_decode($resp, true);
         $InOutPunchData = $data['InOutPunchData'] ?? null;
-        if (!empty($InOutPunchData)) {
+        if (! empty($InOutPunchData)) {
             foreach ($InOutPunchData as $i => $d) {
                 $InOutPunchData[$i]['DateString'] = str_replace('/', '-', $d['DateString']);
                 $InOutPunchData[$i]['machine'] = 'hn';
@@ -643,18 +640,18 @@ if (! function_exists('get_punching_data_skbd')) {
             $to_date = date('d/m/Y', strtotime($to_date));
         }
 
-        $postData = "Empcode=" . $employee_id . "&FromDate=" . $from_date . "&ToDate=" . $to_date;
+        $postData = 'Empcode='.$employee_id.'&FromDate='.$from_date.'&ToDate='.$to_date;
 
         $url = env('skbd.API_URL');
         $corporate_id = env('skbd.CORPORATE_ID');
         $username = env('skbd.USERNAME');
         $password = env('skbd.PASSWORD');
 
-        $auth = base64_encode($corporate_id . ":" . $username . ":" . $password . ":true");
-        $headers = array("Authorization: Basic " . $auth,);
+        $auth = base64_encode($corporate_id.':'.$username.':'.$password.':true');
+        $headers = ['Authorization: Basic '.$auth];
 
         $curl = curl_init($url);
-        curl_setopt($curl, CURLOPT_URL, $url . '?' . $postData);
+        curl_setopt($curl, CURLOPT_URL, $url.'?'.$postData);
         curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'GET');
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
@@ -666,7 +663,7 @@ if (! function_exists('get_punching_data_skbd')) {
         curl_close($curl);
         $data = json_decode($resp, true);
         $InOutPunchData = $data['InOutPunchData'] ?? null;
-        if (!empty($InOutPunchData)) {
+        if (! empty($InOutPunchData)) {
             foreach ($InOutPunchData as $i => $d) {
                 $InOutPunchData[$i]['DateString'] = str_replace('/', '-', $d['DateString']);
                 $InOutPunchData[$i]['machine'] = 'skbd';
@@ -686,12 +683,12 @@ if (! function_exists('get_punching_data_skbd')) {
     }
 }
 
-#Sort array by value using key
+// Sort array by value using key
 if (! function_exists('array_sort_by_key')) {
     function array_sort_by_key($array, $on, $order = SORT_ASC)
     {
-        $new_array = array();
-        $sortable_array = array();
+        $new_array = [];
+        $sortable_array = [];
 
         if (count($array) > 0) {
             foreach ($array as $k => $v) {
@@ -715,7 +712,7 @@ if (! function_exists('array_sort_by_key')) {
                     break;
             }
 
-            $excluded = array();
+            $excluded = [];
             foreach ($sortable_array as $k => $v) {
                 if ($v > 0) {
                     $new_array[$k] = $array[$k];
@@ -739,12 +736,13 @@ if (! function_exists('array_sort_by_key2')) {
     }
 }
 
-function orderResultSet($result_set, $column, $reverse = FALSE)
+function orderResultSet($result_set, $column, $reverse = false)
 {
     $order = $reverse ? -1 : 1;
     usort($result_set, function ($a, $b) use ($column, $order) {
         return $order * ($a[$column] <=> $b[$column]);
     });
+
     return $result_set;
 }
 
@@ -752,9 +750,10 @@ if (! function_exists('getBalanceGrace')) {
     function getBalanceGrace()
     {
         $employee_id = session()->get('current_user')['employee_id'];
-        $GraceBalanceModel = new \App\Models\GraceBalanceModel();
+        $GraceBalanceModel = new \App\Models\GraceBalanceModel;
         $balance_grace_row = $GraceBalanceModel->where('employee_id', $employee_id)->where('year_month', date('Y-m'))->first();
-        $balance_grace = !empty($balance_grace_row) ? $balance_grace_row['minutes'] : 0;
+        $balance_grace = ! empty($balance_grace_row) ? $balance_grace_row['minutes'] : 0;
+
         return $balance_grace;
     }
 }
@@ -768,21 +767,21 @@ if (! function_exists('getLateMinutes')) {
             ->select('pre_final_paid_days.late_coming_minutes')
             ->select('pre_final_paid_days.in_time_between_shift_with_od ')
             ->where('pre_final_paid_days.employee_id =', $employee_id)
-            ->where("(pre_final_paid_days.date between '" . $from . "' and '" . $to . "')")
+            ->where("(pre_final_paid_days.date between '".$from."' and '".$to."')")
             ->orderBy('date', 'desc')
             ->findAll();
 
         // print_r($get_punching_data);
         // die;
 
-
         $late_comings = array_column($get_punching_data, 'late_coming_minutes');
         $in_time_between_shift_with_od_array = array_column($get_punching_data, 'in_time_between_shift_with_od');
-        $in_time_between_shift_with_od_array =  array_filter($in_time_between_shift_with_od_array);
+        $in_time_between_shift_with_od_array = array_filter($in_time_between_shift_with_od_array);
         $total_late_minutes = array_sum($late_comings);
         $total_present_days = count($in_time_between_shift_with_od_array);
         $late_minutes_avg = ($total_present_days > 0) ? round($total_late_minutes / $total_present_days) : '0';
-        return array('total' => $total_late_minutes, 'average' => $late_minutes_avg);
+
+        return ['total' => $total_late_minutes, 'average' => $late_minutes_avg];
     }
 }
 
@@ -863,7 +862,6 @@ if (! function_exists('getLateMinutes')) {
 //                         }
 //                     }
 //                 }
-
 
 //                 // Check leave data from pre_final_paid_days
 //                 $leave_amount = !empty($punching_row['leave_request_amount']) ? $punching_row['leave_request_amount'] : 0;
@@ -955,7 +953,6 @@ if (! function_exists('getLateMinutes')) {
 //                     }
 //                 }
 
-
 //                 $leave_data = App\Pipes\AttendanceProcessor\ProcessorHelper::is_onLeave($punching_row['date_time'], $employee_data['id'], $punching_row['INTime']);
 //                 if (!empty($leave_data)) {
 //                     if ($leave_data['number_of_days'] == '0.5') {
@@ -1029,16 +1026,17 @@ if (! function_exists('getEarlyGoingMinutes')) {
             ->select('pre_final_paid_days.early_going_minutes')
             ->select('pre_final_paid_days.in_time_between_shift_with_od')
             ->where('pre_final_paid_days.employee_id =', $employee_id)
-            ->where("(pre_final_paid_days.date between '" . $from . "' and '" . $to . "')")
+            ->where("(pre_final_paid_days.date between '".$from."' and '".$to."')")
             ->findAll();
 
         $early_going = array_column($get_punching_data, 'early_going_minutes');
         $in_time_between_shift_with_od_array = array_column($get_punching_data, 'in_time_between_shift_with_od');
-        $in_time_between_shift_with_od_array =  array_filter($in_time_between_shift_with_od_array);
+        $in_time_between_shift_with_od_array = array_filter($in_time_between_shift_with_od_array);
         $total_early_going_minutes = array_sum($early_going);
         $total_present_days = count($in_time_between_shift_with_od_array);
         $early_going_minutes_avg = ($total_present_days > 0) ? round($total_early_going_minutes / $total_present_days) : '0';
-        return array('total' => $total_early_going_minutes, 'average' => $early_going_minutes_avg);
+
+        return ['total' => $total_early_going_minutes, 'average' => $early_going_minutes_avg];
     }
 }
 
@@ -1174,7 +1172,6 @@ if (! function_exists('getEarlyGoingMinutes')) {
     }
 }*/
 
-
 /* if (! function_exists('AmountInWords')) {
     function AmountInWords(float $amount)
     {
@@ -1243,30 +1240,29 @@ if (! function_exists('AmountInWords')) {
 
 function convertCurrencyToWords($amount)
 {
-    $fmt = new NumberFormatter("en", NumberFormatter::SPELLOUT);
+    $fmt = new NumberFormatter('en', NumberFormatter::SPELLOUT);
 
     $amount = number_format($amount, 2, '.', '');
     $parts = explode('.', $amount);
 
-    $rupees = (int)$parts[0];
-    $paise = (int)$parts[1];
+    $rupees = (int) $parts[0];
+    $paise = (int) $parts[1];
 
     // $words = ucfirst($fmt->format($rupees)) . ' Rupees';
-    $words = ucfirst(str_replace('-', ' ', $fmt->format($rupees))) . ' Rupees';
+    $words = ucfirst(str_replace('-', ' ', $fmt->format($rupees))).' Rupees';
 
     if ($paise > 0) {
-        $words .= ' and ' . $fmt->format($paise) . ' Paise';
+        $words .= ' and '.$fmt->format($paise).' Paise';
     }
 
     return $words;
 }
 
-
-if (!function_exists('get_pending_leaves_count')) {
+if (! function_exists('get_pending_leaves_count')) {
     function get_pending_leaves_count()
     {
         $current_user = session()->get('current_user');
-        $superuser = ["admin", "superuser"];
+        $superuser = ['admin', 'superuser'];
         $current_user_role = $current_user['role'];
         $LeaveRequestsModel = new \App\Models\LeaveRequestsModel;
         $LeaveRequestsModel
@@ -1279,17 +1275,17 @@ if (!function_exists('get_pending_leaves_count')) {
             ->groupStart()
             ->where('e.reporting_manager_id =', $current_user['employee_id'])
             ->orWhere('d.hod_employee_id =', $current_user['employee_id'])
-            ->orWhereIn("'" . $current_user_role . "'", ['admin', 'superuser'])
+            ->orWhereIn("'".$current_user_role."'", ['admin', 'superuser'])
             ->groupEnd()
             ->where('e.id !=', $current_user['employee_id']);
 
-        if (!in_array($current_user_role, ['hr', 'HR'])) {
+        if (! in_array($current_user_role, ['hr', 'HR'])) {
             $LeaveRequestsModel->where('leave_requests.type_of_leave !=', 'COMP OFF');
         }
 
         $leave_requests = $LeaveRequestsModel->first();
 
-        if (!empty($leave_requests)) {
+        if (! empty($leave_requests)) {
             return $leave_requests['count'];
         } else {
             return null;
@@ -1297,11 +1293,11 @@ if (!function_exists('get_pending_leaves_count')) {
     }
 }
 
-if (!function_exists('get_pending_ods_count')) {
+if (! function_exists('get_pending_ods_count')) {
     function get_pending_ods_count()
     {
         $current_user = session()->get('current_user');
-        $superuser = ["admin", "superuser"];
+        $superuser = ['admin', 'superuser'];
         $current_user_role = $current_user['role'];
         // echo $current_user_role;
         $OdRequestsModel = new \App\Models\OdRequestsModel;
@@ -1315,11 +1311,11 @@ if (!function_exists('get_pending_ods_count')) {
             ->groupStart()
             ->where('e.reporting_manager_id =', $current_user['employee_id'])
             ->orWhere('d.hod_employee_id =', $current_user['employee_id'])
-            ->orWhereIn("'" . $current_user_role . "'", ['admin', 'superuser'])
+            ->orWhereIn("'".$current_user_role."'", ['admin', 'superuser'])
             ->groupEnd()
             ->where('e.id !=', $current_user['employee_id']);
         $od_requests = $OdRequestsModel->first();
-        if (!empty($od_requests)) {
+        if (! empty($od_requests)) {
             return $od_requests['count'];
         } else {
             return null;
@@ -1327,11 +1323,11 @@ if (!function_exists('get_pending_ods_count')) {
     }
 }
 
-if (!function_exists('get_pending_loans_count')) {
+if (! function_exists('get_pending_loans_count')) {
     function get_pending_loans_count()
     {
         $current_user = session()->get('current_user');
-        $superuser = ["admin", "superuser"];
+        $superuser = ['admin', 'superuser'];
         $current_user_role = $current_user['role'];
         $UserLoanModel = new \App\Models\UserLoanModel;
         $UserLoanModel
@@ -1344,11 +1340,11 @@ if (!function_exists('get_pending_loans_count')) {
             ->groupStart()
             ->where('e.reporting_manager_id =', $current_user['employee_id'])
             ->orWhere('d.hod_employee_id =', $current_user['employee_id'])
-            ->orWhereIn("'" . $current_user_role . "'", ['admin', 'superuser'])
+            ->orWhereIn("'".$current_user_role."'", ['admin', 'superuser'])
             ->groupEnd()
             ->where('e.id !=', $current_user['employee_id']);
         $loan_requests = $UserLoanModel->first();
-        if (!empty($loan_requests)) {
+        if (! empty($loan_requests)) {
             return $loan_requests['count'];
         } else {
             return null;
@@ -1356,11 +1352,11 @@ if (!function_exists('get_pending_loans_count')) {
     }
 }
 
-if (!function_exists('get_pending_advance_salary_count')) {
+if (! function_exists('get_pending_advance_salary_count')) {
     function get_pending_advance_salary_count()
     {
         $current_user = session()->get('current_user');
-        $superuser = ["admin", "superuser"];
+        $superuser = ['admin', 'superuser'];
         $current_user_role = $current_user['role'];
         $AdvanceSalaryModel = new \App\Models\AdvanceSalaryModel;
         $AdvanceSalaryModel
@@ -1373,11 +1369,11 @@ if (!function_exists('get_pending_advance_salary_count')) {
             ->groupStart()
             ->where('e.reporting_manager_id =', $current_user['employee_id'])
             ->orWhere('d.hod_employee_id =', $current_user['employee_id'])
-            ->orWhereIn("'" . $current_user_role . "'", ['admin', 'superuser'])
+            ->orWhereIn("'".$current_user_role."'", ['admin', 'superuser'])
             ->groupEnd()
             ->where('e.id !=', $current_user['employee_id']);
         $advance_salary_requests = $AdvanceSalaryModel->first();
-        if (!empty($advance_salary_requests)) {
+        if (! empty($advance_salary_requests)) {
             return $advance_salary_requests['count'];
         } else {
             return null;
@@ -1385,7 +1381,7 @@ if (!function_exists('get_pending_advance_salary_count')) {
     }
 }
 
-if (!function_exists('get_pending_gate_pass_count')) {
+if (! function_exists('get_pending_gate_pass_count')) {
     function get_pending_gate_pass_count()
     {
         $current_user = session()->get('current_user');
@@ -1403,19 +1399,17 @@ if (!function_exists('get_pending_gate_pass_count')) {
             ->groupStart()
             ->where('e.reporting_manager_id =', $current_user['employee_id'])
             ->orWhere('d.hod_employee_id =', $current_user['employee_id'])
-            ->orWhereIn("'" . $current_user_role . "'", ['admin', 'superuser', 'hr'])
+            ->orWhereIn("'".$current_user_role."'", ['admin', 'superuser', 'hr'])
             ->groupEnd()
             ->where('e.id !=', $current_user['employee_id']);
         $pending_gate_pass_requests = $GatePassRequestsModel->first();
-        if (!empty($pending_gate_pass_requests)) {
+        if (! empty($pending_gate_pass_requests)) {
             return $pending_gate_pass_requests['count'];
         } else {
             return null;
         }
     }
 }
-
-
 
 // if (!function_exists('get_pending_comp_off_credit_request_count')) {
 //     function get_pending_comp_off_credit_request_count()
@@ -1453,7 +1447,6 @@ if (!function_exists('get_pending_gate_pass_count')) {
 //             $CompOffCreditModel->groupEnd();
 //         }*/
 
-
 //         $pending_comp_off_credit_request = $CompOffCreditModel->first();
 //         if (!empty($pending_comp_off_credit_request)) {
 //             return $pending_comp_off_credit_request['count'];
@@ -1463,13 +1456,13 @@ if (!function_exists('get_pending_gate_pass_count')) {
 //     }
 // }
 
-if (!function_exists('get_pending_comp_off_credit_request_count')) {
+if (! function_exists('get_pending_comp_off_credit_request_count')) {
     function get_pending_comp_off_credit_request_count()
     {
         $current_user = session()->get('current_user');
         $current_user_role = $current_user['role'];
         $current_user_employee_id = $current_user['employee_id'];
-        $ninty_days_ago = date('Y-m-d', strtotime("-90 days"));
+        $ninty_days_ago = date('Y-m-d', strtotime('-90 days'));
         $CompOffCreditModel = new \App\Models\CompOffCreditModel;
         $CompOffCreditModel
             ->select('comp_off_credit_requests.*')
@@ -1481,14 +1474,14 @@ if (!function_exists('get_pending_comp_off_credit_request_count')) {
             ->join('employees as e3', 'e3.id = d.hod_employee_id', 'left')
             ->join('companies as c', 'c.id = e.company_id', 'left')
             ->whereIn('comp_off_credit_requests.status', ['pending', 'stage_1'])
-            ->where("comp_off_credit_requests.working_date between '" . $ninty_days_ago . "' and '" . date('Y-m-d') . "'");
+            ->where("comp_off_credit_requests.working_date between '".$ninty_days_ago."' and '".date('Y-m-d')."'");
 
         // Apply filtering based on user role and employee ID
         $CompOffCreditModel->groupStart();
         $CompOffCreditModel->where('e.reporting_manager_id =', $current_user_employee_id);
         $CompOffCreditModel->orWhere('d.hod_employee_id =', $current_user_employee_id);
-        $CompOffCreditModel->orWhereIn("'" . $current_user_role . "'", ['admin', 'superuser', 'hr']);
-        $CompOffCreditModel->orWhereIn("'" . $current_user_employee_id . "'", ['54']);
+        $CompOffCreditModel->orWhereIn("'".$current_user_role."'", ['admin', 'superuser', 'hr']);
+        $CompOffCreditModel->orWhereIn("'".$current_user_employee_id."'", ['54']);
         $CompOffCreditModel->groupEnd();
 
         if ($current_user_employee_id != '40') {
@@ -1520,13 +1513,12 @@ if (!function_exists('get_pending_comp_off_credit_request_count')) {
     }
 }
 
-
-if (!function_exists('get_pending_deduction_request_count')) {
+if (! function_exists('get_pending_deduction_request_count')) {
     function get_pending_deduction_request_count()
     {
         $current_user = session()->get('current_user');
         $current_user_role = $current_user['role'];
-        $ninty_days_ago = date('Y-m-d', strtotime("-90 days"));
+        $ninty_days_ago = date('Y-m-d', strtotime('-90 days'));
         $DeductionModel = new \App\Models\DeductionModel;
         $DeductionModel
             ->select('count(deduction_minutes.id) as count')
@@ -1546,7 +1538,7 @@ if (!function_exists('get_pending_deduction_request_count')) {
         }
 
         $pending_deduction_request = $DeductionModel->first();
-        if (!empty($pending_deduction_request)) {
+        if (! empty($pending_deduction_request)) {
             return $pending_deduction_request['count'];
         } else {
             return null;
@@ -1554,16 +1546,7 @@ if (!function_exists('get_pending_deduction_request_count')) {
     }
 }
 
-if (!function_exists('get_active_resignation_count')) {
-    function get_active_resignation_count()
-    {
-        $ResignationModel = new \App\Models\ResignationModel;
-        $count = $ResignationModel->where('status', 'active')->countAllResults();
-        return $count > 0 ? $count : null;
-    }
-}
-
-if (!function_exists('getAllPunchData')) {
+if (! function_exists('getAllPunchData')) {
     function getAllPunchData($empcode, $fromDateTime, $toDateTime, $machine)
     {
         if (empty($empcode) || empty($fromDateTime) || empty($toDateTime) || empty($machine)) {
@@ -1596,18 +1579,18 @@ if (!function_exists('getAllPunchData')) {
                 break;
 
             default:
-                $corporate_id = "";
-                $username = "";
-                $password = "";
+                $corporate_id = '';
+                $username = '';
+                $password = '';
                 break;
         }
-        if (!empty($corporate_id)) {
-            $url = "https://api.etimeoffice.com/api/DownloadPunchData";
-            $postData = "Empcode=" . $empcode . "&FromDate=" . $fromDateTime . "&ToDate=" . $toDateTime;
-            $auth = base64_encode($corporate_id . ":" . $username . ":" . $password . ":true");
-            $headers = array("Authorization: Basic " . $auth);
+        if (! empty($corporate_id)) {
+            $url = 'https://api.etimeoffice.com/api/DownloadPunchData';
+            $postData = 'Empcode='.$empcode.'&FromDate='.$fromDateTime.'&ToDate='.$toDateTime;
+            $auth = base64_encode($corporate_id.':'.$username.':'.$password.':true');
+            $headers = ['Authorization: Basic '.$auth];
             $curl = curl_init($url);
-            curl_setopt($curl, CURLOPT_URL, $url . '?' . $postData);
+            curl_setopt($curl, CURLOPT_URL, $url.'?'.$postData);
             curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'GET');
             curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
@@ -1617,20 +1600,22 @@ if (!function_exists('getAllPunchData')) {
             curl_close($curl);
             $data = json_decode($resp, true);
             $punchData = $data['PunchData'] ?? [];
+
             return $punchData;
         }
+
         return null;
     }
 }
 
-if (!function_exists('getPendingApprovalCounts')) {
+if (! function_exists('getPendingApprovalCounts')) {
     function getPendingApprovalCounts()
     {
         $current_user = session()->get('current_user');
         $current_user_id = $current_user['employee_id'];
         $total_pending = 0;
 
-        $jobListingModel = new \App\Models\Recruitment\RcJobListingModel();
+        $jobListingModel = new \App\Models\Recruitment\RcJobListingModel;
         $baseQuery = function () use ($jobListingModel) {
             return $jobListingModel->whereNotIn('rc_job_listing.status', ['closed', 'rejected', 'draft']);
         };
@@ -1662,5 +1647,15 @@ if (!function_exists('getPendingApprovalCounts')) {
         }
 
         return null;
+    }
+}
+
+if (! function_exists('get_active_resignation_count')) {
+    function get_active_resignation_count()
+    {
+        $ResignationModel = new \App\Models\ResignationModel;
+        $count = $ResignationModel->where('status', 'active')->countAllResults();
+
+        return $count > 0 ? $count : null;
     }
 }

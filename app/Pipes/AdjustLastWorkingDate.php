@@ -13,13 +13,13 @@ class AdjustLastWorkingDate
     {
         $attendance_override_done = $data['punching_data'];
 
-        
-        
+
+
         $lastWorkingDate = $data['current_user_data']['date_of_leaving'];
         $joiningDate = $data['current_user_data']['joining_date'];
         $employee_id = $data['employee_id'];
         $month = null;
-        if( isset($attendance_override_done[0]['DateString_2']) && !empty($attendance_override_done[0]['DateString_2']) ){
+        if (isset($attendance_override_done[0]['DateString_2']) && !empty($attendance_override_done[0]['DateString_2'])) {
             $month = date('Y-m', strtotime($attendance_override_done[0]['DateString_2']));
         }
 
@@ -36,14 +36,14 @@ class AdjustLastWorkingDate
 
         // Remove excess processed punchign data which is post last working date
         // Added by Nazrul on 10 January 2026
-        if($month == date('Y-m', strtotime($lastWorkingDate))){
+        if ($month == date('Y-m', strtotime($lastWorkingDate))) {
             $this->removeAfterLastWorkingDate($lastWorkingDate, $employee_id);
         }
 
-        if($month == date('Y-m', strtotime($joiningDate))){
+        if ($month == date('Y-m', strtotime($joiningDate))) {
             $this->removeBeforeJoiningDate($joiningDate, $employee_id);
         }
-        
+
 
         if (!empty($attendance_override_done) && !empty($lastWorkingDate)) {
             foreach ($attendance_override_done as $i => $itemRow) {
@@ -60,11 +60,14 @@ class AdjustLastWorkingDate
         }
         $data['punching_data'] = $attendance_override_done;
 
+
+
         return $next($data);
     }
 
-    private function removeAfterLastWorkingDate($lastWorkingDate, $employee_id){
-        if(!empty($lastWorkingDate) && !empty($employee_id) ){
+    private function removeAfterLastWorkingDate($lastWorkingDate, $employee_id)
+    {
+        if (!empty($lastWorkingDate) && !empty($employee_id)) {
 
             try {
                 $PreFinalPaidDaysModel = new PreFinalPaidDaysModel();
@@ -75,12 +78,12 @@ class AdjustLastWorkingDate
             } catch (\Throwable $th) {
                 throw $th;
             }
-            
         }
     }
 
-    private function removeBeforeJoiningDate($joiningDate, $employee_id){
-        if(!empty($joiningDate) && !empty($employee_id) ){
+    private function removeBeforeJoiningDate($joiningDate, $employee_id)
+    {
+        if (!empty($joiningDate) && !empty($employee_id)) {
 
             try {
                 $PreFinalPaidDaysModel = new PreFinalPaidDaysModel();
@@ -91,9 +94,6 @@ class AdjustLastWorkingDate
             } catch (\Throwable $th) {
                 throw $th;
             }
-            
         }
     }
-
-   
 }

@@ -90,6 +90,7 @@
 					<th class="text-center"><strong>Desk Loc</strong></th>
 					<th class="text-center"><strong>Shift</strong></th>
 					<th class="text-center"><strong>D.O.J</strong></th>
+					<th class="text-center"><strong>Min-Wage-Cat</strong></th>
 					<th class="text-center"><strong>Notice Period</strong></th>
 					<th class="text-center"><strong>Status</strong></th>
 
@@ -146,6 +147,7 @@
 					<th class="text-center"><strong>Desk Loc</strong></th>
 					<th class="text-center"><strong>Shift</strong></th>
 					<th class="text-center"><strong>D.O.J</strong></th>
+					<th class="text-center"><strong>Min-Wage-Cat</strong></th>
 					<th class="text-center"><strong>Notice Period</strong></th>
 					<th class="text-center"><strong>Status</strong></th>
 					<th class="text-center"><strong>Pan</strong></th>
@@ -363,6 +365,12 @@
 						data: {
 							_: 'joining_date.formatted',
 							sort: 'joining_date.ordering',
+						}
+					},
+					{
+						data: "minimum_wages_category_name",
+						render: function(data, type, row, meta) {
+							return `${row.minimum_wages_category_name} - ${row.minimum_wages_category_state} <br>Min Wages: ${row.minimum_wages_category_value}`;
 						}
 					},
 					{

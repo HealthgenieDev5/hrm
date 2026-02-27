@@ -52,11 +52,11 @@ class FinalPaidDays extends BaseController
 
         $where_company = ' ';
         if (isset($_REQUEST['company']) && ! empty($_REQUEST['company']) && ! in_array('all_companies', $_REQUEST['company'])) {
-            $where_company .= " and d.company_id in ('" . implode("', '", $_REQUEST['company']) . "')";
+            $where_company .= " and d.company_id in ('".implode("', '", $_REQUEST['company'])."')";
         } else {
             $where_company .= ' ';
         }
-        $sql = 'select d.*, c.company_short_name from departments d left join companies c on c.id = d.company_id where d.company_id is not null ' . $where_company . ' order by c.company_short_name ASC';
+        $sql = 'select d.*, c.company_short_name from departments d left join companies c on c.id = d.company_id where d.company_id is not null '.$where_company.' order by c.company_short_name ASC';
         $CustomModel = new CustomModel;
         $query = $CustomModel->CustomQuery($sql);
         if (! $query) {
@@ -67,13 +67,13 @@ class FinalPaidDays extends BaseController
 
         $where_department = ' ';
         if (isset($_REQUEST['company']) && ! empty($_REQUEST['company']) && ! in_array('all_companies', $_REQUEST['company'])) {
-            $where_department .= " and e.company_id in ('" . implode("', '", $_REQUEST['company']) . "')";
+            $where_department .= " and e.company_id in ('".implode("', '", $_REQUEST['company'])."')";
         } else {
             $where_department .= ' ';
         }
 
         if (isset($_REQUEST['department']) && ! empty($_REQUEST['department']) && ! in_array('all_departments', $_REQUEST['department'])) {
-            $where_department .= " and e.department_id in ('" . implode("', '", $_REQUEST['department']) . "')";
+            $where_department .= " and e.department_id in ('".implode("', '", $_REQUEST['department'])."')";
         } else {
             $where_department .= ' ';
         }
@@ -89,7 +89,7 @@ class FinalPaidDays extends BaseController
             from employees e
             left join departments d on d.id = e.department_id
             left join companies c on c.id = e.company_id
-            where e.id is not null " . $where_department . '
+            where e.id is not null ".$where_department.'
 
             and
             (
@@ -140,7 +140,7 @@ class FinalPaidDays extends BaseController
         if (! empty($range_from) && ! empty($range_to)) {
             $date_from = date('Y-m-01', strtotime($range_from));
             $date_to = date('Y-m-t', strtotime($range_to));
-            $FinalPaidDaysModel->where("( final_paid_days.date between '" . $date_from . "' and '" . $date_to . "' )");
+            $FinalPaidDaysModel->where("( final_paid_days.date between '".$date_from."' and '".$date_to."' )");
         }
 
         if (! empty($company_id) && ! in_array('all_companies', $company_id)) {
@@ -172,7 +172,7 @@ class FinalPaidDays extends BaseController
                     $FinalPaidDaysRow[$FieldIndex] = round($FieldValue, 2);
                 }
                 if ($FieldIndex == 'month') {
-                    $FinalPaidDaysRow[$FieldIndex] = date('F', strtotime(date('Y-' . $FieldValue . '-01')));
+                    $FinalPaidDaysRow[$FieldIndex] = date('F', strtotime(date('Y-'.$FieldValue.'-01')));
                 }
             }
             $FinalPaidDays[$index] = $FinalPaidDaysRow;
@@ -254,7 +254,7 @@ class FinalPaidDays extends BaseController
                 ->join('employees e', 'e.id = final_paid_days.employee_id', 'left')
                 ->join('employees e2', 'e2.id = final_paid_days.settled_by', 'left')
                 ->where('final_paid_days.employee_id =', $employee_id)
-                ->where("(final_paid_days.date between '" . $from . "' and '" . $to . "')")
+                ->where("(final_paid_days.date between '".$from."' and '".$to."')")
                 ->findAll();
             foreach ($paid_days_data as $index => $salary_row) {
                 $salary_row['date'] = date('d M Y', strtotime($salary_row['date']));
@@ -272,7 +272,7 @@ class FinalPaidDays extends BaseController
                 $salary_row['settled_by_name'] = ! empty($salary_row['settled_by_name']) ? $salary_row['settled_by_name'] : '-';
 
                 if (! empty($salary_row['settlement_type'])) {
-                    $salary_row['status'] = $salary_row['settlement_type'] . '<br><small class="text-danger">Orginally <strong>' . $salary_row['status'] . '</strong></small>';
+                    $salary_row['status'] = $salary_row['settlement_type'].'<br><small class="text-danger">Orginally <strong>'.$salary_row['status'].'</strong></small>';
                     $salary_row['status_remarks'] = $salary_row['settlement_remarks'];
                 }
 
@@ -332,7 +332,7 @@ class FinalPaidDays extends BaseController
 
         $EmployeeModel->groupStart();
         $EmployeeModel->where('employees.date_of_leaving is null');
-        $EmployeeModel->orWhere("employees.date_of_leaving >= ('" . $from . "')");
+        $EmployeeModel->orWhere("employees.date_of_leaving >= ('".$from."')");
         $EmployeeModel->groupEnd();
 
         // $EmployeeModel->whereIn('employees.company_id', [1, 3, 5]);
@@ -377,7 +377,7 @@ class FinalPaidDays extends BaseController
                     $FinalSalary = $PreFinalSalaryModel->first();
 
                     if (! empty($FinalSalary) && ! in_array($FinalSalary['status'], ['generated', 're-generated', 'unhold'])) {
-                        $message = 'Salary not updatable of ' . trim($employee_row['first_name'] . ' ' . $employee_row['last_name']) . ' (' . $employee_row['internal_employee_id'] . ')';
+                        $message = 'Salary not updatable of '.trim($employee_row['first_name'].' '.$employee_row['last_name']).' ('.$employee_row['internal_employee_id'].')';
                         if (! empty($employee)) {
                             return ['regenerated' => 'no', 'message' => $message];
                         }
@@ -461,21 +461,21 @@ class FinalPaidDays extends BaseController
                             $PreFinalPaidDaysModel = new PreFinalPaidDaysModel;
                             $query = $PreFinalPaidDaysModel->update($id, $salary_row);
                             if (! $query) {
-                                echo trim($employee_row['first_name'] . ' ' . $employee_row['last_name']) . ' (' . $employee_row['internal_employee_id'] . ') :::: ' . $salary_row['date'] . ' => failed update <br>';
+                                echo trim($employee_row['first_name'].' '.$employee_row['last_name']).' ('.$employee_row['internal_employee_id'].') :::: '.$salary_row['date'].' => failed update <br>';
                                 echo $PreFinalPaidDaysModel->getLastQuery()->getQuery();
                                 exit();
                             } else {
-                                echo trim($employee_row['first_name'] . ' ' . $employee_row['last_name']) . ' (' . $employee_row['internal_employee_id'] . ') :::: ' . $salary_row['date'] . ' => success update <br>';
+                                echo trim($employee_row['first_name'].' '.$employee_row['last_name']).' ('.$employee_row['internal_employee_id'].') :::: '.$salary_row['date'].' => success update <br>';
                             }
                         } else {
                             $PreFinalPaidDaysModel = new PreFinalPaidDaysModel;
                             $query = $PreFinalPaidDaysModel->insert($salary_row);
                             if (! $query) {
-                                echo trim($employee_row['first_name'] . ' ' . $employee_row['last_name']) . ' (' . $employee_row['internal_employee_id'] . ') :::: ' . $salary_row['date'] . ' => failed insert <br>';
+                                echo trim($employee_row['first_name'].' '.$employee_row['last_name']).' ('.$employee_row['internal_employee_id'].') :::: '.$salary_row['date'].' => failed insert <br>';
                                 echo $PreFinalPaidDaysModel->getLastQuery()->getQuery();
                                 exit();
                             } else {
-                                echo trim($employee_row['first_name'] . ' ' . $employee_row['last_name']) . ' (' . $employee_row['internal_employee_id'] . ') :::: ' . $salary_row['date'] . ' => success insert <br>';
+                                echo trim($employee_row['first_name'].' '.$employee_row['last_name']).' ('.$employee_row['internal_employee_id'].') :::: '.$salary_row['date'].' => success insert <br>';
                             }
                         }
                     }
@@ -530,24 +530,24 @@ class FinalPaidDays extends BaseController
         if (isset($_REQUEST['page_url'])) {
             $return_url = $_REQUEST['page_url'];
         } else {
-            $return_url = base_url('/backend/reports/final-paid-days/final-paid-days-sheet?regenerated=') . $return_data['regenerated'];
+            $return_url = base_url('/backend/reports/final-paid-days/final-paid-days-sheet?regenerated=').$return_data['regenerated'];
             if (! empty($_REQUEST['company'])) {
                 foreach ($_REQUEST['company'] as $c) {
-                    $return_url .= '&company[]=' . $c;
+                    $return_url .= '&company[]='.$c;
                 }
             }
             if (! empty($_REQUEST['department'])) {
                 foreach ($_REQUEST['department'] as $d) {
-                    $return_url .= '&department[]=' . $d;
+                    $return_url .= '&department[]='.$d;
                 }
             }
             if (! empty($_REQUEST['employee'])) {
                 foreach ($_REQUEST['employee'] as $e) {
-                    $return_url .= '&employee[]=' . $e;
+                    $return_url .= '&employee[]='.$e;
                 }
             }
             if (! empty($_REQUEST['month'])) {
-                $return_url .= '&month=' . $_REQUEST['month'];
+                $return_url .= '&month='.$_REQUEST['month'];
             }
         }
 
@@ -556,7 +556,7 @@ class FinalPaidDays extends BaseController
         $this->session->setFlashdata('regenerated', $return_data['regenerated']);
         $this->session->setFlashdata('regenerated_message', $return_data['message']);
 
-        header('location: ' . $return_url);
+        header('location: '.$return_url);
         exit(); // Added this line on 2024-12-02 because the redirect was not working.
     }
 
@@ -624,7 +624,7 @@ class FinalPaidDays extends BaseController
         // removed on Santu's request to get all employee
         $EmployeeModel->groupStart();
         $EmployeeModel->where('employees.date_of_leaving is null');
-        $EmployeeModel->orWhere("employees.date_of_leaving >= ('" . $firstDate . "')");
+        $EmployeeModel->orWhere("employees.date_of_leaving >= ('".$firstDate."')");
         $EmployeeModel->groupEnd();
 
         // $EmployeeModel->where('employees.internal_employee_id=', 'HN114');
@@ -642,7 +642,7 @@ class FinalPaidDays extends BaseController
 
         // #####for filter######
         $data = [
-            'page_title' => 'Final Paid Days - ' . date('F Y', strtotime($month)),
+            'page_title' => 'Final Paid Days - '.date('F Y', strtotime($month)),
             'current_controller' => $this->request->getUri()->getSegment(2),
             'current_method' => $this->request->getUri()->getSegment(4),
             'month' => date('Y-m', strtotime($month)),
@@ -658,13 +658,13 @@ class FinalPaidDays extends BaseController
 
                     $employeeData['PreFinalPaidDays_Data'] = array_filter(
                         $employeeData['PreFinalPaidDays_Data'] ?? [],
-                        static fn($date) => $date <= $today,
+                        static fn ($date) => $date <= $today,
                         ARRAY_FILTER_USE_KEY
                     );
 
                     $employeeData['dates'] = array_values(array_filter(
                         $employeeData['dates'] ?? [],
-                        static fn($date) => $date <= $today
+                        static fn ($date) => $date <= $today
                     ));
 
                     return $employeeData;
@@ -674,12 +674,12 @@ class FinalPaidDays extends BaseController
         }
         $where_company = '';
         if (isset($_REQUEST['company']) && ! empty($_REQUEST['company']) && ! in_array('all_companies', $_REQUEST['company'])) {
-            $where_company .= " and d.company_id in ('" . implode("', '", $_REQUEST['company']) . "')";
+            $where_company .= " and d.company_id in ('".implode("', '", $_REQUEST['company'])."')";
         } else {
             $where_company .= ' ';
         }
 
-        $sql = 'select d.*, c.company_short_name from departments d left join companies c on c.id = d.company_id where d.company_id is not null ' . $where_company . ' order by c.company_short_name ASC';
+        $sql = 'select d.*, c.company_short_name from departments d left join companies c on c.id = d.company_id where d.company_id is not null '.$where_company.' order by c.company_short_name ASC';
         $CustomModel = new CustomModel;
         $query = $CustomModel->CustomQuery($sql);
         if (! $query) {
@@ -690,13 +690,13 @@ class FinalPaidDays extends BaseController
 
         $where_department = ' ';
         if (isset($_REQUEST['company']) && ! empty($_REQUEST['company']) && ! in_array('all_companies', $_REQUEST['company'])) {
-            $where_department .= " and e.company_id in ('" . implode("', '", $_REQUEST['company']) . "')";
+            $where_department .= " and e.company_id in ('".implode("', '", $_REQUEST['company'])."')";
         } else {
             $where_department .= ' ';
         }
 
         if (isset($_REQUEST['department']) && ! empty($_REQUEST['department']) && ! in_array('all_departments', $_REQUEST['department'])) {
-            $where_department .= " and e.department_id in ('" . implode("', '", $_REQUEST['department']) . "')";
+            $where_department .= " and e.department_id in ('".implode("', '", $_REQUEST['department'])."')";
         } else {
             $where_department .= ' ';
         }
@@ -711,7 +711,7 @@ class FinalPaidDays extends BaseController
             from employees e
             left join departments d on d.id = e.department_id
             left join companies c on c.id = e.company_id
-            where e.id is not null " . $where_department;
+            where e.id is not null ".$where_department;
 
         // and
         // (
@@ -740,16 +740,16 @@ class FinalPaidDays extends BaseController
         $FinalPaidDaysData = [];
         foreach ($Employees as $Employee) {
             $employeeData = [];
-            $employeeData['employee_name'] = trim($Employee['first_name'] . ' ' . $Employee['last_name']);
+            $employeeData['employee_name'] = trim($Employee['first_name'].' '.$Employee['last_name']);
             $employeeData['employee_code'] = $Employee['internal_employee_id'];
             $employeeData['company_short_name'] = $Employee['company_short_name'];
             $employee_joining_date = $Employee['joining_date'] ?? null;
 
-            if (! empty($employee_joining_date)) {
-                if ($employee_joining_date > $range_from) {
-                    $range_from = $employee_joining_date;
-                }
-            }
+            // if (! empty($employee_joining_date)) {
+            //     if ($employee_joining_date > $range_from) {
+            //         $range_from = $employee_joining_date;
+            //     }
+            // }
 
             $PreFinalPaidDaysModel = new PreFinalPaidDaysModel;
             $PreFinalPaidDaysModel->select('pre_final_paid_days.*');
@@ -767,7 +767,7 @@ class FinalPaidDays extends BaseController
             //     $PreFinalPaidDaysModel->where('pre_final_paid_days.employee_id =', session()->get('current_user')['employee_id']);
             // }
 
-            $PreFinalPaidDaysModel->where("(pre_final_paid_days.date between '" . $range_from . "' and '" . $range_to . "')");
+            $PreFinalPaidDaysModel->where("(pre_final_paid_days.date between '".$range_from."' and '".$range_to."')");
             $PreFinalPaidDays = $PreFinalPaidDaysModel->orderBy('pre_final_paid_days.date', 'ASC');
             $PreFinalPaidDays = $PreFinalPaidDaysModel->findAll();
             $PreFinalPaidDays_Data = [];
@@ -820,7 +820,7 @@ class FinalPaidDays extends BaseController
         $date_45_days_before = date('Y-m-d', strtotime('-45 days'));
         $EmployeeModel->groupStart();
         $EmployeeModel->where('employees.date_of_leaving is null');
-        $EmployeeModel->orWhere("employees.date_of_leaving >= ('" . $date_45_days_before . "')");
+        $EmployeeModel->orWhere("employees.date_of_leaving >= ('".$date_45_days_before."')");
         $EmployeeModel->groupEnd();
 
         $Employees = $EmployeeModel->findAll();
@@ -843,12 +843,12 @@ class FinalPaidDays extends BaseController
 
         $where_company = '';
         if (isset($_REQUEST['company']) && ! empty($_REQUEST['company']) && ! in_array('all_companies', $_REQUEST['company'])) {
-            $where_company .= " and d.company_id in ('" . implode("', '", $_REQUEST['company']) . "')";
+            $where_company .= " and d.company_id in ('".implode("', '", $_REQUEST['company'])."')";
         } else {
             $where_company .= ' ';
         }
 
-        $sql = 'select d.*, c.company_short_name from departments d left join companies c on c.id = d.company_id where d.company_id is not null ' . $where_company . ' order by c.company_short_name ASC';
+        $sql = 'select d.*, c.company_short_name from departments d left join companies c on c.id = d.company_id where d.company_id is not null '.$where_company.' order by c.company_short_name ASC';
         $CustomModel = new CustomModel;
         $query = $CustomModel->CustomQuery($sql);
         if (! $query) {
@@ -859,13 +859,13 @@ class FinalPaidDays extends BaseController
 
         $where_department = ' ';
         if (isset($_REQUEST['company']) && ! empty($_REQUEST['company']) && ! in_array('all_companies', $_REQUEST['company'])) {
-            $where_department .= " and e.company_id in ('" . implode("', '", $_REQUEST['company']) . "')";
+            $where_department .= " and e.company_id in ('".implode("', '", $_REQUEST['company'])."')";
         } else {
             $where_department .= ' ';
         }
 
         if (isset($_REQUEST['department']) && ! empty($_REQUEST['department']) && ! in_array('all_departments', $_REQUEST['department'])) {
-            $where_department .= " and e.department_id in ('" . implode("', '", $_REQUEST['department']) . "')";
+            $where_department .= " and e.department_id in ('".implode("', '", $_REQUEST['department'])."')";
         } else {
             $where_department .= ' ';
         }
@@ -879,12 +879,12 @@ class FinalPaidDays extends BaseController
             from employees e
             left join departments d on d.id = e.department_id
             left join companies c on c.id = e.company_id
-            where e.id is not null " . $where_department . "
+            where e.id is not null ".$where_department."
             and
             (
                 e.date_of_leaving is null
                 or
-                e.date_of_leaving >= '" . $date_45_days_before . "'
+                e.date_of_leaving >= '".$date_45_days_before."'
             )
             order by c.company_short_name ASC, d.department_name ASC, e.first_name ASC";
         $CustomModel = new CustomModel;
@@ -910,7 +910,7 @@ class FinalPaidDays extends BaseController
         $FinalPaidDaysData = [];
         foreach ($Employees as $Employee) {
             $employeeData = [];
-            $employeeData['employee_name'] = trim($Employee['first_name'] . ' ' . $Employee['last_name']);
+            $employeeData['employee_name'] = trim($Employee['first_name'].' '.$Employee['last_name']);
             $employeeData['employee_code'] = $Employee['internal_employee_id'];
             $employeeData['company_short_name'] = $Employee['company_short_name'];
             $employee_joining_date = $Employee['joining_date'] ?? null;
@@ -926,7 +926,7 @@ class FinalPaidDays extends BaseController
                 ->select('trim(concat(settler.first_name, " ", settler.last_name)) as settled_by_name')
                 ->join('employees as settler', 'settler.id = pre_final_paid_days.settled_by', 'left')
                 ->where('pre_final_paid_days.employee_id =', $Employee['id'])
-                ->where("(pre_final_paid_days.date between '" . $range_from . "' and '" . $range_to . "')")
+                ->where("(pre_final_paid_days.date between '".$range_from."' and '".$range_to."')")
                 ->orderBy('pre_final_paid_days.date', 'ASC')
                 ->findAll();
             $PreFinalPaidDays_Data = [];
@@ -1042,40 +1042,41 @@ class FinalPaidDays extends BaseController
         $late_coming_minutes = array_sum(array_column($PreFinalPaidDays, 'late_coming_minutes'));
         $early_going_minutes = array_sum(array_column($PreFinalPaidDays, 'early_going_minutes'));
         $deduction_minutes = array_sum(array_column($PreFinalPaidDays, 'deduction_minutes'));
-        ob_start(); ?>
+        ob_start();
+        ?>
         <span class="d-block w-100 border-bottom">
             <?php echo $late_coming_minutes + $early_going_minutes + $deduction_minutes + $total_inc_minutes; ?>
         </span>
         <small>
-            <?php echo $late_coming_minutes . '+' . $early_going_minutes . '+' . $deduction_minutes; ?>
-            <?php echo ($total_inc_minutes > 0) ? '+' . $total_inc_minutes . " <small style='font-size: 0.75rem'>(INC)</small>" : ''; ?>
+            <?php echo $late_coming_minutes.'+'.$early_going_minutes.'+'.$deduction_minutes; ?>
+            <?php echo ($total_inc_minutes > 0) ? '+'.$total_inc_minutes." <small style='font-size: 0.75rem'>(INC)</small>" : ''; ?>
         </small>
     <?php
-        return ob_get_clean();
+                return ob_get_clean();
     }
 
     protected function getTotalLateMinutesAllowed($PreFinalPaidDays)
     {
         ob_start();
-    ?>
+        ?>
         <span class="d-block w-100 border-bottom">
             <?php
-            echo array_sum(array_column($PreFinalPaidDays, 'late_coming_grace'))
-                + array_sum(array_column($PreFinalPaidDays, 'LateSittingMinutes'))
-                + array_sum(array_column($PreFinalPaidDays, 'OverTimeMinutes'))
-                + array_sum(array_column($PreFinalPaidDays, 'comp_off_minutes'))
-                + array_sum(array_column($PreFinalPaidDays, 'wave_off_minutes'));
-            ?>
+                echo array_sum(array_column($PreFinalPaidDays, 'late_coming_grace'))
+                    + array_sum(array_column($PreFinalPaidDays, 'LateSittingMinutes'))
+                    + array_sum(array_column($PreFinalPaidDays, 'OverTimeMinutes'))
+                    + array_sum(array_column($PreFinalPaidDays, 'comp_off_minutes'))
+                    + array_sum(array_column($PreFinalPaidDays, 'wave_off_minutes'));
+        ?>
         </span>
         <small>
             (
             <?php
-            echo array_sum(array_column($PreFinalPaidDays, 'late_coming_grace'))
-                . '+' . array_sum(array_column($PreFinalPaidDays, 'LateSittingMinutes'))
-                . '+' . array_sum(array_column($PreFinalPaidDays, 'OverTimeMinutes'))
-                . '+' . array_sum(array_column($PreFinalPaidDays, 'comp_off_minutes'))
-                . '+' . array_sum(array_column($PreFinalPaidDays, 'wave_off_minutes'));
-            ?>
+        echo array_sum(array_column($PreFinalPaidDays, 'late_coming_grace'))
+            .'+'.array_sum(array_column($PreFinalPaidDays, 'LateSittingMinutes'))
+            .'+'.array_sum(array_column($PreFinalPaidDays, 'OverTimeMinutes'))
+            .'+'.array_sum(array_column($PreFinalPaidDays, 'comp_off_minutes'))
+            .'+'.array_sum(array_column($PreFinalPaidDays, 'wave_off_minutes'));
+        ?>
             )
         </small>
 <?php
@@ -1120,16 +1121,16 @@ class FinalPaidDays extends BaseController
 
         // dd($current_user, $data);
 
-        $data['page_title'] = 'Attendance Summary ' . date('M Y', strtotime($data['from'])) . ' - ' . date('M Y', strtotime($data['to']));
+        $data['page_title'] = 'Attendance Summary '.date('M Y', strtotime($data['from'])).' - '.date('M Y', strtotime($data['to']));
 
         $where_company = '';
         if (isset($_REQUEST['company']) && ! empty($_REQUEST['company']) && ! in_array('all_companies', $_REQUEST['company'])) {
-            $where_company .= " and d.company_id in ('" . implode("', '", $_REQUEST['company']) . "')";
+            $where_company .= " and d.company_id in ('".implode("', '", $_REQUEST['company'])."')";
         } else {
             $where_company .= ' ';
         }
 
-        $sql = 'select d.*, c.company_short_name from departments d left join companies c on c.id = d.company_id where d.company_id is not null ' . $where_company . ' order by c.company_short_name ASC';
+        $sql = 'select d.*, c.company_short_name from departments d left join companies c on c.id = d.company_id where d.company_id is not null '.$where_company.' order by c.company_short_name ASC';
         $CustomModel = new CustomModel;
         $query = $CustomModel->CustomQuery($sql);
         if (! $query) {
@@ -1140,13 +1141,13 @@ class FinalPaidDays extends BaseController
 
         $where_department = ' ';
         if (isset($_REQUEST['company']) && ! empty($_REQUEST['company']) && ! in_array('all_companies', $_REQUEST['company'])) {
-            $where_department .= " and e.company_id in ('" . implode("', '", $_REQUEST['company']) . "')";
+            $where_department .= " and e.company_id in ('".implode("', '", $_REQUEST['company'])."')";
         } else {
             $where_department .= ' ';
         }
 
         if (isset($_REQUEST['department']) && ! empty($_REQUEST['department']) && ! in_array('all_departments', $_REQUEST['department'])) {
-            $where_department .= " and e.department_id in ('" . implode("', '", $_REQUEST['department']) . "')";
+            $where_department .= " and e.department_id in ('".implode("', '", $_REQUEST['department'])."')";
         } else {
             $where_department .= ' ';
         }
@@ -1179,7 +1180,7 @@ class FinalPaidDays extends BaseController
         from employees e
         left join departments d on d.id = e.department_id
         left join companies c on c.id = e.company_id
-        where e.id is not null " . $where_department . '
+        where e.id is not null ".$where_department.'
         order by c.company_short_name ASC, d.department_name ASC, e.first_name ASC';
 
         $CustomModel = new CustomModel;
@@ -1332,103 +1333,5 @@ class FinalPaidDays extends BaseController
         }
 
         return false;
-    }
-
-
-    public function downloadRegister()
-    {
-        if (! in_array($this->session->get('current_user')['role'], ['superuser', 'admin', 'hr', 'hod', 'manager', 'tl'])) {
-            return redirect()->to(base_url('/unauthorised'));
-        }
-
-        $register_type = $this->request->getGet('register_type');
-        $company = $this->request->getGet('company') ?? [];
-        $department = $this->request->getGet('department') ?? [];
-        $employee = $this->request->getGet('employee') ?? [];
-        $from = $this->request->getGet('from');
-        $to = $this->request->getGet('to');
-
-        if (empty($register_type) || empty($from) || empty($to)) {
-            return $this->response->setJSON([
-                'status' => 'error',
-                'message' => 'Missing required parameters'
-            ]);
-        }
-
-        $employee_ids = $this->getFilteredEmployeeIds($company, $department, $employee);
-
-        if (empty($employee_ids)) {
-            return $this->response->setJSON([
-                'status' => 'error',
-                'message' => 'No employees found for the given filters'
-            ]);
-        }
-
-        $register_titles = [
-            'attendance_register' => 'Attendance Register',
-            'wages_register' => 'Wages Register',
-            'wage_slip' => 'Wage Slip',
-            'overtime_register' => 'Overtime Register',
-            'muster_roll' => 'Muster Roll',
-            'leave_register' => 'Leave Register'
-        ];
-
-        if (!isset($register_titles[$register_type])) {
-            return $this->response->setJSON([
-                'status' => 'error',
-                'message' => 'Invalid register type'
-            ]);
-        }
-
-        $range_from = date('Y-m-01', strtotime($from));
-        $range_to = date('Y-m-t', strtotime($to));
-        $data = $this->getRegisterData($register_type, $employee_ids, $range_from, $range_to);
-
-        $data['page_title'] = $register_titles[$register_type] . ' - ' . date('M Y', strtotime($from)) . ' to ' . date('M Y', strtotime($to));
-        $data['register_type'] = $register_type;
-        $data['from'] = $from;
-        $data['to'] = $to;
-        $data['range_from'] = $range_from;
-        $data['range_to'] = $range_to;
-
-        $view_map = [
-            'attendance_register' => 'AttendanceRegister',
-            'wages_register' => 'WagesRegister',
-            'wage_slip' => 'WageSlip',
-            'overtime_register' => 'OvertimeRegister',
-            'muster_roll' => 'MusterRoll',
-            'leave_register' => 'LeaveRegister'
-        ];
-
-        return view('Pdf/' . $view_map[$register_type], $data);
-    }
-
-    private function getFilteredEmployeeIds($company, $department, $employee)
-    {
-        $CustomModel = new CustomModel();
-        $where_company = '';
-        if (!empty($company) && !in_array('all_companies', $company)) {
-            $where_company = " AND e.company_id IN ('" . implode("', '", $company) . "')";
-        }
-        $where_department = '';
-        if (!empty($department) && !in_array('all_departments', $department)) {
-            $where_department = " AND e.department_id IN ('" . implode("', '", $department) . "')";
-        }
-        $where_employee = '';
-        if (!empty($employee) && !in_array('all_employees', $employee)) {
-            $where_employee = " AND e.id IN ('" . implode("', '", $employee) . "')";
-        }
-        $sql = "SELECT e.id FROM employees e
-                WHERE e.id IS NOT NULL
-                {$where_company}
-                {$where_department}
-                {$where_employee}
-                ORDER BY e.first_name ASC";
-
-        $results = $CustomModel->CustomQuery($sql);
-        if ($results) {
-            return array_column($results->getResultArray(), 'id');
-        }
-        return [];
     }
 }

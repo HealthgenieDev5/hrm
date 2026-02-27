@@ -44,8 +44,6 @@ class FinalSalary extends BaseController
 			->where('month(pre_final_paid_days.date) =', date('m', strtotime($salary_month)))
 			->where('year(pre_final_paid_days.date) =', date('Y', strtotime($salary_month)))
 			->findAll();
-
-
 		// print_r($get_final_paid_days[0]['designation_id']);
 		// 	die();
 		if (!empty($get_final_paid_days)) {
@@ -56,8 +54,6 @@ class FinalSalary extends BaseController
 			$final_salary['month'] = date('m', strtotime($salary_month));
 			$SalaryModel = new SalaryModel();
 			$salary = $SalaryModel->where("employee_id =", $employee_id)->first();
-
-
 			if (!empty($salary)) {
 
 

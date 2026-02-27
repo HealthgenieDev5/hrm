@@ -23,7 +23,7 @@ class ApplyAttendanceOverride
                 $status = $attendance;
                 $status_remarks = "Override Remarks:<br>" . $attendance_remarks;
 
-                if (in_array($attendance, ['P', 'CL', 'COMP OFF', 'ML', 'H/D+CL/2', 'H/D+COMP OFF/2'])) {
+                if (in_array($attendance, ['P', 'CL', 'COMP OFF', 'ML', 'H/D+CL/2', 'H/D+COMP OFF/2', 'INC'])) {
                     $paid = '1';
                 } elseif (in_array($attendance, ['H/D', 'CL/2', 'COMP OFF/2'])) {
                     $paid = '0.5';
@@ -53,10 +53,19 @@ class ApplyAttendanceOverride
 
                         //end code added by sunny 2025-03-29
                     }
+
+                    // if ($punching_data_sorted[$index]['employee_id'] == '252' && $punching_data_sorted[$index]['DateString_2'] == '2026-02-01') {
+                    //     echo '<pre>-----#####---punching_data_sorted---######';
+                    //     // $d = array_column($punching_data_sorted, 'hn_late_coming_minutes', 'date_time');
+                    //     print_r($punching_data_sorted[$index]);
+                    //     die();
+                    // }
                 }
             }
         }
         $data['punching_data'] = $punching_data_sorted;
+
+
         return $next($data);
     }
 }

@@ -70,7 +70,7 @@ class ProcessAttendance extends BaseCommand
         }
         // dd($options);
         $first_date_of_current_month = date('Y-m-01');
-        $first_date_of_last_month = date('Y-m-01', strtotime($first_date_of_current_month.'-1 days'));
+        $first_date_of_last_month = date('Y-m-01', strtotime($first_date_of_current_month . '-1 days'));
 
         // print_r($first_date_of_last_month);
         // die();
@@ -88,7 +88,7 @@ class ProcessAttendance extends BaseCommand
         CLI::write('Starting employee processing', 'yellow');
         CLI::write("Chunk Size : {$chunkSize}", 'light_gray');
         CLI::write("Month      : {$month}", 'light_gray');
-        CLI::write('Employee ID: '.($employeeId ?? 'All'), 'light_gray');
+        CLI::write('Employee ID: ' . ($employeeId ?? 'All'), 'light_gray');
 
         $processor = new AttendanceProcessor;
         $processor->processAll((int) $chunkSize, $month, $employeeIds);

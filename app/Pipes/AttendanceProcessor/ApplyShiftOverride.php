@@ -44,6 +44,8 @@ class ApplyShiftOverride
             $punching_row['half_day_for_work_hours_minutes']        = $half_day_for_work_hours_minutes_current_user_data;
         }
 
+
+
         return $next($punching_row);
     }
 }

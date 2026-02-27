@@ -9,8 +9,11 @@ use CodeIgniter\CLI\CLI;
 class ProcessAttendanceParallel extends BaseCommand
 {
     protected $group = 'App';
+
     protected $name = 'attendance:parallel';
+
     protected $description = 'Spawns multiple workers to process attendance in parallel';
+
     protected $usage = 'attendance:parallel [options]';
 
     protected $options = [
@@ -25,14 +28,14 @@ class ProcessAttendanceParallel extends BaseCommand
         helper(['url', 'form', 'Form_helper', 'Config_defaults_helper']);
         $options = $this->parseOptions($params);
 
-        $numWorkers = (int)($options['workers'] ?? 10);
+        $numWorkers = (int) ($options['workers'] ?? 10);
         $month = $options['month'] ?? date('Y-m', strtotime(date('Y-m-01') . ' -1 month'));
         $employeeFilter = isset($options['employee']) ? explode(',', $options['employee']) : null;
 
-        CLI::write("=== Parallel Attendance Processing ===", 'yellow');
+        CLI::write('=== Parallel Attendance Processing ===', 'yellow');
         CLI::write("Workers: {$numWorkers}", 'light_gray');
         CLI::write("Month: {$month}", 'light_gray');
-        CLI::write("Starting at: " . date('Y-m-d H:i:s'), 'light_gray');
+        CLI::write('Starting at: ' . date('Y-m-d H:i:s'), 'light_gray');
         CLI::newLine();
 
         // Get employee list
@@ -40,7 +43,8 @@ class ProcessAttendanceParallel extends BaseCommand
         $totalEmployees = count($employees);
 
         if ($totalEmployees === 0) {
-            CLI::error("No employees found to process");
+            CLI::error('No employees found to process');
+
             return;
         }
 
@@ -61,42 +65,44 @@ class ProcessAttendanceParallel extends BaseCommand
         // Spawn workers
         $processes = [];
         foreach ($batches as $workerId => $batch) {
-            if (empty($batch)) continue;
+            if (empty($batch)) {
+                continue;
+            }
 
             $employeeIds = implode(',', array_column($batch, 'id'));
             $logFile = WRITEPATH . "logs/worker_{$workerId}_{$month}.log";
 
             $command = $this->buildWorkerCommand($workerId, $month, $employeeIds, $logFile);
 
-            CLI::write("Worker #{$workerId}: Processing " . count($batch) . " employees", 'green');
+            CLI::write("Worker #{$workerId}: Processing " . count($batch) . ' employees', 'green');
 
             // Spawn process in background
             $process = $this->spawnWorker($command);
             $processes[$workerId] = [
                 'process' => $process,
                 'logFile' => $logFile,
-                'count' => count($batch)
+                'count' => count($batch),
             ];
         }
 
         CLI::newLine();
-        CLI::write("All workers spawned. Waiting for completion...", 'yellow');
-        CLI::write("You can monitor progress in: " . WRITEPATH . "logs/worker_*.log", 'light_gray');
+        CLI::write('All workers spawned. Waiting for completion...', 'yellow');
+        CLI::write('You can monitor progress in: ' . WRITEPATH . 'logs/worker_*.log', 'light_gray');
         CLI::newLine();
 
         // Wait for all processes to complete
         $this->waitForWorkers($processes);
 
         CLI::newLine();
-        CLI::write("=== Processing Complete ===", 'green');
-        CLI::write("Finished at: " . date('Y-m-d H:i:s'), 'light_gray');
+        CLI::write('=== Processing Complete ===', 'green');
+        CLI::write('Finished at: ' . date('Y-m-d H:i:s'), 'light_gray');
     }
 
     private function getEmployeeList(string $month, ?array $employeeFilter): array
     {
         $from = date('Y-m-01', strtotime($month));
 
-        $EmployeeModel = new EmployeeModel();
+        $EmployeeModel = new EmployeeModel;
         $EmployeeModel->select('employees.id, employees.first_name, employees.last_name, employees.internal_employee_id');
 
         $EmployeeModel->groupStart();
@@ -104,7 +110,7 @@ class ProcessAttendanceParallel extends BaseCommand
         $EmployeeModel->orWhere("employees.date_of_leaving >= ('{$from}')");
         $EmployeeModel->groupEnd();
 
-        if (!empty($employeeFilter) && !in_array('all', array_map('strtolower', $employeeFilter))) {
+        if (! empty($employeeFilter) && ! in_array('all', array_map('strtolower', $employeeFilter))) {
             $EmployeeModel->whereIn('employees.id', $employeeFilter);
         }
 
@@ -144,10 +150,12 @@ class ProcessAttendanceParallel extends BaseCommand
         if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
             // Windows
             pclose(popen($command, 'r'));
+
             return true;
         } else {
             // Linux/Mac
             exec($command);
+
             return true;
         }
     }
@@ -186,6 +194,7 @@ class ProcessAttendanceParallel extends BaseCommand
                 $options[$key] = $value;
             }
         }
+
         return $options;
     }
 }
