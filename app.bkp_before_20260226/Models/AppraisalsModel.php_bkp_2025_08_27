@@ -1,0 +1,189 @@
+<?php
+
+namespace App\Models;
+
+use CodeIgniter\Model;
+
+class AppraisalsModel extends Model
+{
+    protected $table            = 'appraisals';
+    protected $primaryKey       = 'id';
+    protected $useAutoIncrement = true;
+    protected $returnType       = 'array';
+    protected $useSoftDeletes   = false;
+    protected $protectFields    = true;
+    protected $allowedFields = [
+        'employee_id',
+        'ctc',
+        'gross_salary',
+        'basic_salary',
+        'house_rent_allowance',
+        'conveyance',
+        'medical_allowance',
+        'special_allowance',
+        'fuel_allowance',
+        'vacation_allowance',
+        'other_allowance',
+        'other_benefits',
+        'gratuity',
+        'enable_bonus',
+        'bonus',
+        'non_compete_loan',
+        'non_compete_loan_from',
+        'non_compete_loan_to',
+        'non_compete_loan_amount_per_month',
+        'non_compete_loan_remarks',
+        'loyalty_incentive',
+        'loyalty_incentive_from',
+        'loyalty_incentive_to',
+        'loyalty_incentive_amount_per_month',
+        'loyalty_incentive_mature_after_month',
+        'loyalty_incentive_pay_after_month',
+        'loyalty_incentive_remarks',
+        'pf',
+        'pf_number',
+        'pf_employee_contribution',
+        'pf_employer_contribution',
+        'esi',
+        'esi_number',
+        'esi_employee_contribution',
+        'esi_employer_contribution',
+        'lwf',
+        'lwf_number',
+        'lwf_employee_contribution',
+        'lwf_employer_contribution',
+        'lwf_deduction_on_every_n_month',
+        'salary_details',
+        'appraisal_remarks',
+        'appraisal_date',
+        'created_by',
+        'created_at',
+        'updated_at',
+    ];
+
+    protected bool $allowEmptyInserts = false;
+    protected bool $updateOnlyChanged = true;
+
+    protected array $casts = [];
+    protected array $castHandlers = [];
+
+    // Dates
+    protected $useTimestamps = true;
+    protected $dateFormat    = 'datetime';
+    protected $createdField  = 'created_at';
+    protected $updatedField  = 'updated_at';
+    protected $deletedField  = 'deleted_at';
+
+    // Validation
+    protected $validationRules = [
+        'employee_id' => 'required|integer',
+        //'basic_salary' => 'required|integer',
+        'appraisal_date' => 'required|valid_date',
+        'appraisal_remarks' => 'required|string',
+    ];
+
+    protected $validationMessages = [
+        'employee_id' => [
+            'required' => 'Employee ID is required.',
+            'integer' => 'Employee ID must be an integer.',
+        ],
+        'basic_salary' => [
+            'required' => 'Basic Salary is required.',
+            'integer' => 'Basic Salary must be an integer.',
+        ],
+        'appraisal_date' => [
+            'required' => 'Appraisal date is required.',
+            'valid_date' => 'Appraisal date must be a valid date.',
+        ],
+        'appraisal_remarks' => [
+            'required' => 'appraisal remarks is required.',
+            'valid_date' => 'appraisal remarks must be a valid date.',
+        ],
+    ];
+    protected $skipValidation       = false;
+    protected $cleanValidationRules = true;
+
+    // Callbacks
+    protected $allowCallbacks = true;
+    protected $beforeInsert   = [];
+    protected $afterInsert    = [];
+    protected $beforeUpdate   = [];
+    protected $afterUpdate    = [];
+    protected $beforeFind     = [];
+    protected $afterFind      = [];
+    protected $beforeDelete   = [];
+    protected $afterDelete    = [];
+
+    public function getFilteredAllAppraisalsData($arrCompanyId = [], $arrDepartmentId = [], $arrEmployeeId = [])
+    {
+        $this->select('appraisals.*, employees.first_name, employees.last_name, employees.internal_employee_id, employees.designation_id, employees.department_id, employees.company_id, designations.designation_name, departments.department_name, companies.company_name, companies.company_short_name');
+        $this->join('employees', 'employees.id = appraisals.employee_id', 'left');
+        $this->join('designations', 'designations.id = employees.designation_id', 'left');
+        $this->join('departments', 'departments.id = employees.department_id', 'left');
+        $this->join('companies', 'companies.id = employees.company_id', 'left');
+        $this->where('employees.status', 'Active');
+        // $this->orderBy('companies.company_name', 'ASC');
+        // $this->orderBy('departments.department_name', 'ASC');
+        // $this->orderBy('employees.id', 'ASC');
+        $this->orderBy('appraisals.appraisal_date', 'DESC');
+
+        if (!empty($arrCompanyId) && !in_array('all_companies', $arrCompanyId)) {
+            $this->whereIn('employees.company_id', $arrCompanyId);
+        }
+        if (!empty($arrDepartmentId && !in_array('all_departments', $arrDepartmentId))) {
+            $this->whereIn('employees.department_id', $arrDepartmentId);
+        }
+        if (!empty($arrEmployeeId && !in_array('all_employees', $arrEmployeeId))) {
+            $this->whereIn('employees.id', $arrEmployeeId);
+        }
+        return $this->get()->getResultArray();
+
+
+        // $formattedAppraisals = [];
+        // foreach ($data as $row) {
+        //     $companyName = $row['company_name'];
+        //     $departmentName = $row['department_name'];
+        //     $employeeName = $row['first_name'] . ' ' . $row['last_name'];
+        //     $employeeId = $row['employee_id'];
+        //     $appraisalId = $row['id'];
+
+
+        //     $formattedAppraisals[$companyName][$departmentName][$employeeName][$appraisalId] = $row;
+        // }
+        // print_r($formattedAppraisals);
+        //$this->db->getLastQuery();
+        // return $this->get()->getResult();
+
+
+
+
+
+    }
+
+
+    public function getFilteredEmployeesAppraisals($arrCompanyId = [], $arrDepartmentId = [], $arrEmployeeId = [])
+    {
+        $this->select('appraisals.*, employees.first_name, employees.last_name, employees.internal_employee_id, employees.designation_id, employees.department_id, employees.company_id');
+        $this->join('employees', 'employees.id = appraisals.employee_id', 'left');
+        $this->where('employees.status', 'Active');
+        if (!empty($arrCompanyId) && !in_array('all_companies', $arrCompanyId)) {
+            $this->whereIn('employees.company_id', $arrCompanyId);
+        }
+        if (!empty($arrDepartmentId && !in_array('all_departments', $arrDepartmentId))) {
+            $this->whereIn('employees.department_id', $arrDepartmentId);
+        }
+        if (!empty($arrEmployeeId && !in_array('all_employees', $arrEmployeeId))) {
+            $this->whereIn('employees.id', $arrEmployeeId);
+        }
+        //$this->db->getLastQuery();
+        return $this->get()->getResult();
+    }
+
+    public function getAppraisalWithEmployee($id)
+    {
+        return $this->select('appraisals.*, employees.first_name, employees.last_name, employees.internal_employee_id')
+            ->join('employees', 'employees.id = appraisals.employee_id', 'left')
+            ->where('appraisals.id', $id)
+            ->first(); // Use first() to get a single result
+    }
+}

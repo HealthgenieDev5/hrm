@@ -74,7 +74,7 @@
 
         <!--begin::Job Listing Notifications-->
         <div class="mb-5">
-            <div class="card shadow-sm d-none" id="job-notifications-card">
+            <div class="card shadow-sm" id="job-notifications-card">
                 <div class="card-header">
                     <div class="card-title d-flex align-items-center">
                         <i class="fa fa-bell text-primary me-2"></i>
@@ -89,7 +89,7 @@
                 </div>
                 <div class="card-body" id="notifications-container">
                     <!--begin::Loading state-->
-                    <div class="d-flex justify-content-center py-5 d-none" id="notifications-loading">
+                    <div class="d-flex justify-content-center py-5" id="notifications-loading">
                         <div class="spinner-border spinner-border-sm text-primary" role="status">
                             <span class="visually-hidden">Loading...</span>
                         </div>
@@ -5648,12 +5648,13 @@ if (!empty($resignationHodAcknowledgments)) {
 
 
     $(document).ready(function() {
+        var badgeRequest;
         loadJobNotifications();
         updateNotificationBadge();
 
         setInterval(function() {
             updateNotificationBadge();
-        }, 60000);
+        }, 30000);
 
 
         $('#refresh-notifications').on('click', function() {
@@ -5663,8 +5664,8 @@ if (!empty($resignationHodAcknowledgments)) {
 
         $(document).on('click', '.notification-item', function() {
             const jobId = $(this).data('job-id');
-            markNotificationAsRead(jobId);
-            window.location.href = '<?= base_url('/recruitment/job-listing/view/') ?>' + jobId;
+            const redirectUrl = '<?= base_url('/recruitment/job-listing/view/') ?>' + jobId;
+            markNotificationAsRead(jobId, redirectUrl);
         });
 
         function loadJobNotifications() {
@@ -5677,27 +5678,21 @@ if (!empty($resignationHodAcknowledgments)) {
                 url: '<?= base_url('/recruitment/job-listing/comments/get-notifications') ?>',
                 type: 'GET',
                 dataType: 'json',
-                timeout: 10000, // 10 second timeout
                 success: function(response) {
+                    console.log(response);
                     $('#notifications-loading').addClass('d-none');
 
                     if (response && response.status === 'success') {
                         displayJobNotifications(response.notifications);
                         updateNotificationCount(response.total_unread);
-
-                        if (response.notifications && response.notifications.length > 0) {
-                            $('#job-notifications-card').removeClass('d-none');
-                        } else {
-                            $('#job-notifications-card').addClass('d-none');
-                        }
                     } else {
                         console.error('Response success but wrong format:', response);
-                        $('#job-notifications-card').addClass('d-none');
+                        $('#notifications-list').html('<div class="text-center text-muted py-3">Could not load notifications.</div>');
                     }
                 },
                 error: function(xhr, status, error) {
                     $('#notifications-loading').addClass('d-none');
-                    $('#job-notifications-card').addClass('d-none');
+                    $('#notifications-list').html('<div class="text-center text-muted py-3"><i class="fa fa-exclamation-circle me-1"></i>Failed to load notifications. <a href="#" onclick="loadJobNotifications();return false;">Retry</a></div>');
                 },
                 complete: function() {
                     $('#notifications-loading').hide();
@@ -5752,28 +5747,7 @@ if (!empty($resignationHodAcknowledgments)) {
             });
         }
 
-        // function updateNotificationBadge() {
-        //     $.ajax({
-        //         url: '<?= base_url('/recruitment/job-listing/comments/unread-count') ?>',
-        //         type: 'GET',
-        //         dataType: 'json',
-        //         success: function(response) {
-        //             if (response.status === 'success') {
-        //                 const count = response.unread_count;
-        //                 const badge = $('#notification-badge');
 
-        //                 if (count > 0) {
-        //                     badge.text(count).show();
-        //                 } else {
-        //                     badge.hide();
-        //                 }
-        //             }
-        //         },
-        //         error: function(xhr, status, error) {
-        //             console.error('Error updating notification badge:', error);
-        //         }
-        //     });
-        // }
 
         function updateNotificationBadge() {
             // Abort any pending badge request before starting a new one
@@ -5815,7 +5789,7 @@ if (!empty($resignationHodAcknowledgments)) {
             }
         }
 
-        function markNotificationAsRead(jobId) {
+        function markNotificationAsRead(jobId, redirectUrl) {
             $.ajax({
                 url: '<?= base_url('/recruitment/job-listing/comments/mark-as-read') ?>',
                 type: 'POST',
@@ -5823,294 +5797,10 @@ if (!empty($resignationHodAcknowledgments)) {
                     job_id: jobId
                 },
                 dataType: 'json',
-                success: function(response) {
-                    if (response.status === 'success') {
-                        updateNotificationBadge();
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.error('Error marking as read:', error);
-                }
-            });
-        }
-
-        function showEmptyState() {
-            $('#notifications-empty').removeClass('d-none');
-        }
-
-        function getTypeIcon(type) {
-            switch (type) {
-                case 'question':
-                    return 'fa fa-question-circle';
-                case 'answer':
-                    return 'fa fa-check-circle';
-                case 'issue':
-                    return 'fa fa-exclamation-triangle';
-                case 'resolution':
-                    return 'fa fa-check-square';
-                case 'concern':
-                    return 'fa fa-exclamation-circle';
-                case 'suggestion':
-                    return 'fa fa-lightbulb';
-                case 'feedback':
-                    return 'fa fa-comment';
-                default:
-                    return 'fa fa-comment';
-            }
-        }
-
-        function getTypeBadgeColor(type) {
-            switch (type) {
-                case 'question':
-                    return 'warning';
-                case 'answer':
-                    return 'success';
-                case 'issue':
-                    return 'danger';
-                case 'resolution':
-                    return 'primary';
-                case 'concern':
-                    return 'danger';
-                case 'suggestion':
-                    return 'info';
-                case 'feedback':
-                    return 'secondary';
-                default:
-                    return 'secondary';
-            }
-        }
-
-        function formatTimeAgo(dateString) {
-            const now = new Date();
-            const date = new Date(dateString);
-            const diffInSeconds = Math.floor((now - date) / 1000);
-
-            if (diffInSeconds < 60) return 'just now';
-            if (diffInSeconds < 3600) return Math.floor(diffInSeconds / 60) + ' min ago';
-            if (diffInSeconds < 86400) return Math.floor(diffInSeconds / 3600) + ' hr ago';
-            if (diffInSeconds < 2592000) return Math.floor(diffInSeconds / 86400) + ' day ago';
-            return Math.floor(diffInSeconds / 2592000) + ' month ago';
-        }
-
-        function checkJobListingNotifications() {
-            if ($('#jobListingNotificationModal').is(':visible') || $('body').hasClass('modal-open') || $('.swal2-container').is(':visible')) {
-                return;
-            }
-
-            $.ajax({
-                url: "<?= base_url('/recruitment/job-listing/pending-notifications') ?>",
-                type: 'GET',
-                dataType: 'json',
-                success: function(response) {
-                    if (response.status === 'show_modal' && response.jobs?.length > 0) {
-                        const pendingList = $('#pending-jobs-list').empty();
-
-                        response.jobs.forEach(job => {
-                            const jobUrl = `<?= base_url('/recruitment/job-listing/view/') ?>${job.id}`;
-                            pendingList.append(`
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <div>
-                                    <strong>${job.job_title}</strong>
-                                    <small class="d-block text-muted">
-                                        For ${job.department_name || 'N/A'} | By: ${job.created_by_name || 'N/A'}
-                                    </small>
-                                </div>
-                                <a href="${jobUrl}" class="btn btn-sm btn-outline-primary mark-job-as-read" data-job-id="${job.id}">Mark As Read</a>
-                            </li>
-                        `);
-                        });
-
-                        $('#jobListingNotificationModal').modal('show');
-                    }
-                }
-            });
-        }
-
-        setTimeout(checkJobListingNotifications, 5000);
-
-        $(document).on('click', '.mark-job-as-read', function(e) {
-
-            e.preventDefault();
-
-            const jobId = $(this).data('job-id');
-            const redirectUrl = $(this).attr('href');
-
-            if (jobId) {
-                $.ajax({
-                    url: "<?= base_url('/recruitment/job-listing/mark-as-read') ?>",
-                    type: 'POST',
-                    data: {
-                        job_id: [jobId],
-                        '<?= csrf_token() ?>': '<?= csrf_hash() ?>'
-                    },
-                    dataType: 'json',
-                    success: function(response) {
-                        window.location.href = redirectUrl;
-                    }
-                });
-            }
-        });
-
-    });
-<<<<<<< HEAD
-=======
-    $(document).ready(function() {
-
-        let notificationRequest = null;
-        let badgeRequest = null;
-
-
-        loadJobNotifications();
-        updateNotificationBadge();
-
-        setInterval(function() {
-            updateNotificationBadge();
-        }, 60000);
-
-
-        $('#refresh-notifications').on('click', function() {
-            loadJobNotifications();
-            updateNotificationBadge();
-        });
-
-        $(document).on('click', '.notification-item', function() {
-            const jobId = $(this).data('job-id');
-            markNotificationAsRead(jobId);
-            window.location.href = '<?= base_url('/recruitment/job-listing/view/') ?>' + jobId;
-        });
-
-        function loadJobNotifications() {
-
-            $('#notifications-loading').removeClass('d-none');
-            $('#notifications-empty').addClass('d-none');
-            $('#notifications-list').empty();
-
-            $.ajax({
-                url: '<?= base_url('/recruitment/job-listing/comments/get-notifications') ?>',
-                type: 'GET',
-                dataType: 'json',
-                timeout: 10000, // 10 second timeout
-                success: function(response) {
-                    $('#notifications-loading').addClass('d-none');
-
-                    if (response && response.status === 'success') {
-                        displayJobNotifications(response.notifications);
-                        updateNotificationCount(response.total_unread);
-
-                        if (response.notifications && response.notifications.length > 0) {
-                            $('#job-notifications-card').removeClass('d-none');
-                        } else {
-                            $('#job-notifications-card').addClass('d-none');
-                        }
-                    } else {
-                        console.error('Response success but wrong format:', response);
-                        $('#job-notifications-card').addClass('d-none');
-                    }
-                },
-                error: function(xhr, status, error) {
-                    $('#notifications-loading').addClass('d-none');
-                    $('#job-notifications-card').addClass('d-none');
-                },
                 complete: function() {
-                    $('#notifications-loading').hide();
-                }
-            });
-        }
-
-        function displayJobNotifications(notifications) {
-            const container = $('#notifications-list');
-
-            if (notifications.length === 0) {
-                $('#notifications-empty').removeClass('d-none');
-                return;
-            }
-
-            notifications.forEach(function(notification) {
-                const timeAgo = formatTimeAgo(notification.latest_time);
-                const typeIcon = getTypeIcon(notification.latest_type);
-                const companyName = notification.company_name ? ` - ${notification.company_name}` : '';
-
-                const notificationHtml = `
-                    <div class="col-md-6 col-lg-4">
-                        <div class="card border border-hover-primary notification-item cursor-pointer" data-job-id="${notification.job_id}">
-                            <div class="card-body p-4">
-                                <div class="d-flex align-items-center mb-3">
-                                    <div class="symbol symbol-45px me-3">
-                                        <div class="symbol-label bg-light-primary">
-                                            <i class="${typeIcon} text-primary fs-3"></i>
-                                        </div>
-                                    </div>
-                                    <div class="flex-grow-1">
-                                        <div class="fw-bold text-gray-800 fs-6">${notification.job_title}</div>
-                                        <div class="text-muted fs-7">${companyName}</div>
-                                    </div>
-                                    <span class="badge badge-light-danger">${notification.unread_count}</span>
-                                </div>
-                                <div class="mb-3">
-                                    <div class="text-muted fs-7 mb-1">Latest from ${notification.latest_sender}:</div>
-                                    <div class="text-gray-800 fs-7 text-truncate" style="max-height: 40px; overflow: hidden;">
-                                        ${notification.latest_message}
-                                    </div>
-                                </div>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <span class="badge badge-light-${getTypeBadgeColor(notification.latest_type)}">${notification.latest_type.replace('_', ' ').toUpperCase()}</span>
-                                    <span class="text-muted fs-8">${timeAgo}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                container.append(notificationHtml);
-            });
-        }
-
-        function updateNotificationBadge() {
-            $.ajax({
-                url: '<?= base_url('/recruitment/job-listing/comments/unread-count') ?>',
-                type: 'GET',
-                dataType: 'json',
-                success: function(response) {
-                    if (response.status === 'success') {
-                        const count = response.unread_count;
-                        const badge = $('#notification-badge');
-
-                        if (count > 0) {
-                            badge.text(count).show();
-                        } else {
-                            badge.hide();
-                        }
+                    if (redirectUrl) {
+                        window.location.href = redirectUrl;
                     }
-                },
-                error: function(xhr, status, error) {
-                    console.error('Error updating notification badge:', error);
-                }
-            });
-        }
-
-        function updateNotificationCount(count) {
-            const badge = $('#notification-badge');
-            if (count > 0) {
-                badge.text(count).show();
-            } else {
-                badge.hide();
-            }
-        }
-
-        function markNotificationAsRead(jobId) {
-            $.ajax({
-                url: '<?= base_url('/recruitment/job-listing/comments/mark-as-read') ?>',
-                type: 'POST',
-                data: {
-                    job_id: jobId
-                },
-                dataType: 'json',
-                success: function(response) {
-                    if (response.status === 'success') {
-                        updateNotificationBadge();
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.error('Error marking as read:', error);
                 }
             });
         }
@@ -6196,7 +5886,7 @@ if (!empty($resignationHodAcknowledgments)) {
                                         For ${job.department_name || 'N/A'} | By: ${job.created_by_name || 'N/A'}
                                     </small>
                                 </div>
-                                <a href="${jobUrl}" class="btn btn-sm btn-outline-primary mark-job-as-read" data-job-id="${job.id}">Mark As Read</a>
+                                <a href="${jobUrl}" class="btn btn-sm btn-outline-primary mark-job-as-read" data-job-id="${job.id}">Viewed</a>
                             </li>
                         `);
                         });
@@ -6231,68 +5921,8 @@ if (!empty($resignationHodAcknowledgments)) {
                 });
             }
         });
+
     });
-
-
-    var employee_holidays_table = $("#employee_holidays_table").DataTable({
-        "dom": '<"card"<"card-header"<"card-title"><"card-toolbar"<"datatable-buttons-container me-1"B><"toolbar-buttons">>><"card-body pt-1 pb-1"rt><"card-footer">>',
-        "buttons": [],
-        "ajax": {
-            url: "<?= base_url('ajax/profile/get-holidays-on-profile-page') ?>",
-            error: function(jqXHR, ajaxOptions, thrownError) {
-                console.error('Error loading holidays:', thrownError);
-            },
-            dataSrc: function(receivedData) {
-                return receivedData;
-            },
-        },
-        "deferRender": true,
-        "processing": true,
-        "language": {
-            processing: '<div class="d-flex align-items-center justify-content-between h-100 m-auto" style="max-width:max-content"><i class="fa fa-spinner fa-spin fa-2x fa-fw"></i><span class="ms-3 fs-1">Loading Holidays...</span></div>',
-            emptyTable: '<div class="bg-white w-100 empty-table-message d-flex align-items-center justify-content-center h-100 position-absolute" style="top:0; left:0; z-index: 1;"><span class="ms-3 fs-1">No Holidays Found</span></div>',
-        },
-        "columns": [{
-                data: "date",
-                orderable: true,
-                type: "date",
-                className: 'text-nowrap'
-            },
-            {
-                data: "name",
-                orderable: false
-            },
-            {
-                data: "code",
-                orderable: false,
-                className: 'text-center',
-                render: function(data, type, row) {
-                    var badgeClass = 'badge-light-primary';
-                    if (data == 'NH') badgeClass = 'badge-light-success';
-                    else if (data == 'RH') badgeClass = 'badge-light-info';
-                    else if (data == 'SPL HL') badgeClass = 'badge-light-warning';
-
-                    return '<span class="badge ' + badgeClass + '">' + data + '</span>';
-                }
-            },
-            {
-                data: "day",
-                orderable: false,
-                className: 'text-center text-muted'
-            },
-        ],
-        "scrollX": false,
-        "paging": false,
-        "ordering": true,
-        "order": [
-            [0, 'asc']
-        ], // Sort by date ascending
-        "columnDefs": [],
-    });
-
-    $('#employee_holidays_table_wrapper > .card > .card-header > .card-title').replaceWith('<h3 class="card-title"><i class="fa fa-calendar-alt me-2"></i>Holidays ' + new Date().getFullYear() + '</h3>');
-    $('#employee_holidays_table_wrapper > .card > .card-footer').html('<small class="text-muted d-block"><i class="fa fa-info-circle me-1"></i>Showing general holidays and special holidays assigned to you</small>');
->>>>>>> 773f9f901768d9bc25e96d677c242376e9812e37
 </script>
 
 

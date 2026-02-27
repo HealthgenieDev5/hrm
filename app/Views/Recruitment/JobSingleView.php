@@ -252,11 +252,15 @@
                     ? date('d M, Y', strtotime($job->created_at))
                     : 'Not Set';
                 $currentEmployeeId = session()->get('current_user')['employee_id'] ?? null;
-                $canEditJob = $currentEmployeeId !== null &&
-                    empty($job->approved_by_hr_manager) && (
-                        (isset($job->created_by) && (int) $job->created_by === (int) $currentEmployeeId)
-                        || (!empty($job->department_hod_id) && (int) $job->department_hod_id === (int) $currentEmployeeId)
-                    );
+                $isCreator = isset($job->created_by) && $job->created_by === $currentEmployeeId;
+                $isHod     = !empty($job->department_hod_id) && $job->department_hod_id === $currentEmployeeId;
+
+                $canEditJob = $currentEmployeeId !== null && (
+                    ($isCreator && empty($job->approved_by_hr_executive)) ||
+                    ($isHod     && empty($job->approved_by_hr_manager))
+                );
+
+
                 ?>
 
 
@@ -553,7 +557,7 @@
                                     </p>
                                     <p>
                                         <i class="bi bi-person text-muted me-1" data-bs-toggle="tooltip" title="Created By"></i>
-                                        <strong>Created By:</strong> <?= esc($job->created_by_name ?? 'N/A') ?>
+                                        <strong>Job Posted By:</strong> <?= esc($job->created_by_name ?? 'N/A') ?>
                                     </p>
 
                                 </div>
@@ -721,11 +725,11 @@
                         <div class="mb-5">
                             <div class="issue-button-container">
                                 <div class="issue-button-text">
-                                    Encountered a problem? Let us know so we can resolve it quickly!
+                                    If you notice incorrect job details, misaligned requirements, or any concerns with this posting, please raise an issue for review and correction.
                                 </div>
                                 <div class="text-center">
                                     <button type="button" class="btn submit-issue-btn" id="submit-issue-btn" data-bs-toggle="modal" data-bs-target="#commentModal">
-                                        <i class="fas fa-exclamation-triangle"></i>Report an Issue
+                                        <i class="fas fa-exclamation-triangle"></i>Report a Job Posting Issue
                                     </button>
                                 </div>
                             </div>

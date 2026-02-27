@@ -1151,4 +1151,67 @@ class ResignationController extends BaseController
 
     // ==================== END REPORTING MANAGER NOTIFICATION METHODS ====================
 
+    // ==================== HR MANAGER NOTIFICATION METHODS ====================
+
+    public function getHrManagerResignationNotifications()
+    {
+        $currentUserId = $this->session->get('current_user')['employee_id'];
+
+        $ResignationHodResponseModel = new ResignationHodResponseModel();
+        $notifications = $ResignationHodResponseModel->getPendingHrManagerNotifications($currentUserId);
+
+        foreach ($notifications as &$notification) {
+            $notification['employee_name'] = trim($notification['first_name'] . ' ' . $notification['last_name']);
+            $notification['hod_name'] = trim(($notification['hod_first_name'] ?? '') . ' ' . ($notification['hod_last_name'] ?? ''));
+            $notification['resignation_date_formatted'] = date('d/m/Y', strtotime($notification['resignation_date']));
+            $notification['last_working_date_formatted'] = !empty($notification['last_working_date']) ? date('d/m/Y', strtotime($notification['last_working_date'])) : 'N/A';
+            $notification['hod_response_date'] = !empty($notification['hod_response_date']) ? date('d/m/Y H:i', strtotime($notification['hod_response_date'])) : 'N/A';
+        }
+
+        return $this->response->setJSON([
+            'success' => true,
+            'notifications' => $notifications
+        ]);
+    }
+
+    public function handleHrManagerResignationNotificationAction()
+    {
+        $recordId = $this->request->getPost('record_id');
+        $action = $this->request->getPost('action');
+        $currentUserId = $this->session->get('current_user')['employee_id'];
+
+        $ResignationHodResponseModel = new ResignationHodResponseModel();
+        $record = $ResignationHodResponseModel->find($recordId);
+
+        if (!$record) {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Record not found'
+            ]);
+        }
+
+        if ($record['hr_manager_id'] != $currentUserId) {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Not authorized for this record'
+            ]);
+        }
+
+        if ($action === 'viewed') {
+            $success = $ResignationHodResponseModel->markHrManagerViewed($recordId);
+
+            return $this->response->setJSON([
+                'success' => $success,
+                'message' => $success ? 'Notification acknowledged' : 'Failed to update'
+            ]);
+        }
+
+        return $this->response->setJSON([
+            'success' => false,
+            'message' => 'Invalid action'
+        ]);
+    }
+
+    // ==================== END HR MANAGER NOTIFICATION METHODS ====================
+
 }

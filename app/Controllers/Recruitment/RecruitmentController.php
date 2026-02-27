@@ -373,9 +373,22 @@ class RecruitmentController extends BaseController
             ->join('employees as review_schedule_6m', 'review_schedule_6m.id = rc_job_listing.review_schedule_6m', 'left')
             ->join('designations as review_6m_designation', 'review_6m_designation.id = review_schedule_6m.designation_id', 'left')
             ->join('employees as review_schedule_12m', 'review_schedule_12m.id = rc_job_listing.review_schedule_12m', 'left')
-            ->join('designations as review_12m_designation', 'review_12m_designation.id = review_schedule_12m.designation_id', 'left')
-            ->asObject()
-            ->findAll();
+            ->join('designations as review_12m_designation', 'review_12m_designation.id = review_schedule_12m.designation_id', 'left');
+
+        $currentUser       = $this->session->get('current_user');
+        $currentEmployeeId = $currentUser['employee_id'] ?? null;
+        $role              = strtolower($currentUser['role'] ?? '');
+        $isPrivileged      = in_array($role, ['superuser', 'admin', 'hr']) || (int) $currentEmployeeId === 40;
+
+        if (!$isPrivileged) {
+            if ($role === 'hod') {
+                $this->jobListingModel->where('rc_job_listing.department_hod_id', $currentEmployeeId);
+            } else {
+                $this->jobListingModel->where('rc_job_listing.created_by', $currentEmployeeId);
+            }
+        }
+
+        $job_listings = $this->jobListingModel->asObject()->findAll();
 
 
 
@@ -1059,6 +1072,18 @@ class RecruitmentController extends BaseController
             ->join('employees', 'employees.id = rc_job_listing.created_by', 'left')
             ->join('employees as reporting_to', 'reporting_to.id = rc_job_listing.reporting_to', 'left')
             ->join('employees as hod', 'hod.id = departments.hod_employee_id', 'left');
+
+        $role              = strtolower($current_user['role'] ?? '');
+        $currentEmployeeId = $current_user['employee_id'] ?? null;
+        $isPrivileged      = in_array($role, ['superuser', 'admin', 'hr']) || (int) $currentEmployeeId === 40;
+
+        if (!$isPrivileged) {
+            if ($role === 'hod') {
+                $jobListingModel->where('rc_job_listing.department_hod_id', $currentEmployeeId);
+            } else {
+                $jobListingModel->where('rc_job_listing.created_by', $currentEmployeeId);
+            }
+        }
 
         if (!empty($company_id) && is_array($company_id)) {
             if (!in_array('all_companies', $company_id)) {

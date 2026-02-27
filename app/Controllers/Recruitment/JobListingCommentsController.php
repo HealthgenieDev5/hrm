@@ -26,7 +26,7 @@ class JobListingCommentsController extends BaseController
         $this->commentsModel = new RcJobListingCommentModel();
         $this->jobListingModel = new RcJobListingModel();
         $this->userModel = new UserModel();
-        $this->currentUserId = session()->get('current_user')['employee_id'];
+        $this->currentUserId = session()->get('current_user')['employee_id'] ?? null;
     }
 
     public function addComment($jobId = null)
@@ -327,68 +327,80 @@ class JobListingCommentsController extends BaseController
 
     public function getNotifications()
     {
-        $currentUserId = $this->currentUserId;
+        try {
+            $currentUserId = $this->currentUserId;
 
-        $allComments = $this->commentsModel
-            ->select('rc_job_listing_comments.*, rc_job_listing_comments.created_at as comment_created_at')
-            ->select('rc_job_listing.*, rc_job_listing.id as job_id')
-            ->select('CONCAT(sender.first_name, " ", sender.last_name) as sender_name')
-            ->select('companies.company_short_name')
-            ->select('departments.hod_employee_id')
-            ->join('rc_job_listing', 'rc_job_listing.id = rc_job_listing_comments.listing_id', 'left')
-            ->join('companies', 'companies.id = rc_job_listing.company_id', 'left')
-            ->join('departments', 'departments.id = rc_job_listing.department_id', 'left')
-            ->join('employees as sender', 'sender.id = rc_job_listing_comments.sender_id', 'left')
-            ->where('rc_job_listing_comments.status', 'active')
-            ->where('rc_job_listing_comments.sender_id !=', $currentUserId)
-            ->orderBy('rc_job_listing_comments.created_at', 'DESC')
-            ->findAll();
-
-        $userNotifications = [];
-        foreach ($allComments as $comment) {
-            $receiverId = $this->determineNotificationReceiver($comment, $comment['sender_id']);
-            if ($receiverId == $currentUserId) {
-                $userNotifications[] = $comment;
+            if (!$currentUserId) {
+                return $this->response->setStatusCode(401)->setJSON(['status' => 'error', 'message' => 'Unauthorized']);
             }
+
+            $allComments = $this->commentsModel
+                ->select('rc_job_listing_comments.*, rc_job_listing_comments.created_at as comment_created_at')
+                ->select('rc_job_listing.*, rc_job_listing.id as job_id')
+                ->select('CONCAT(sender.first_name, " ", sender.last_name) as sender_name')
+                ->select('companies.company_short_name')
+                ->select('departments.hod_employee_id')
+                ->join('rc_job_listing', 'rc_job_listing.id = rc_job_listing_comments.listing_id', 'left')
+                ->join('companies', 'companies.id = rc_job_listing.company_id', 'left')
+                ->join('departments', 'departments.id = rc_job_listing.department_id', 'left')
+                ->join('employees as sender', 'sender.id = rc_job_listing_comments.sender_id', 'left')
+                ->where('rc_job_listing_comments.status', 'active')
+                ->where('rc_job_listing_comments.sender_id !=', $currentUserId)
+                ->orderBy('rc_job_listing_comments.created_at', 'DESC')
+                ->findAll();
+
+            $userNotifications = [];
+            foreach ($allComments as $comment) {
+                $receiverId = $this->determineNotificationReceiver($comment, $comment['sender_id']);
+                if ($receiverId == $currentUserId) {
+                    $userNotifications[] = $comment;
+                }
+            }
+
+            $groupedNotifications = [];
+            $totalUnread = 0;
+
+            foreach ($userNotifications as $notification) {
+                $jobId = $notification['job_id'];
+
+                if (!isset($groupedNotifications[$jobId])) {
+                    $groupedNotifications[$jobId] = [
+                        'job_id' => $jobId,
+                        'job_title' => $notification['job_title'],
+                        'company_name' => $notification['company_short_name'],
+                        'unread_count' => 0,
+                        'latest_message' => null,
+                        'latest_sender' => null,
+                        'latest_time' => null
+                    ];
+                }
+
+                $groupedNotifications[$jobId]['unread_count']++;
+                $totalUnread++;
+
+                if (
+                    !$groupedNotifications[$jobId]['latest_time'] ||
+                    strtotime($notification['comment_created_at']) > strtotime($groupedNotifications[$jobId]['latest_time'])
+                ) {
+                    $groupedNotifications[$jobId]['latest_message'] = strip_tags($notification['content']);
+                    $groupedNotifications[$jobId]['latest_sender'] = $notification['sender_name'];
+                    $groupedNotifications[$jobId]['latest_time'] = $notification['comment_created_at'];
+                    $groupedNotifications[$jobId]['latest_type'] = $notification['type'];
+                }
+            }
+
+            return $this->response->setJSON([
+                'status' => 'success',
+                'notifications' => array_values($groupedNotifications),
+                'total_unread' => $totalUnread
+            ]);
+        } catch (\Throwable $e) {
+            log_message('error', 'getNotifications error: ' . $e->getMessage());
+            return $this->response->setStatusCode(500)->setJSON([
+                'status' => 'error',
+                'message' => 'Failed to load notifications'
+            ]);
         }
-
-        $groupedNotifications = [];
-        $totalUnread = 0;
-
-        foreach ($userNotifications as $notification) {
-            $jobId = $notification['job_id'];
-
-            if (!isset($groupedNotifications[$jobId])) {
-                $groupedNotifications[$jobId] = [
-                    'job_id' => $jobId,
-                    'job_title' => $notification['job_title'],
-                    'company_name' => $notification['company_short_name'],
-                    'unread_count' => 0,
-                    'latest_message' => null,
-                    'latest_sender' => null,
-                    'latest_time' => null
-                ];
-            }
-
-            $groupedNotifications[$jobId]['unread_count']++;
-            $totalUnread++;
-
-            if (
-                !$groupedNotifications[$jobId]['latest_time'] ||
-                strtotime($notification['comment_created_at']) > strtotime($groupedNotifications[$jobId]['latest_time'])
-            ) {
-                $groupedNotifications[$jobId]['latest_message'] = strip_tags($notification['content']);
-                $groupedNotifications[$jobId]['latest_sender'] = $notification['sender_name'];
-                $groupedNotifications[$jobId]['latest_time'] = $notification['comment_created_at'];
-                $groupedNotifications[$jobId]['latest_type'] = $notification['type'];
-            }
-        }
-
-        return $this->response->setJSON([
-            'status' => 'success',
-            'notifications' => array_values($groupedNotifications),
-            'total_unread' => $totalUnread
-        ]);
     }
 
     public function markAsRead()

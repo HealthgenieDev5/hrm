@@ -217,7 +217,7 @@
             <div class="col-6 col-md-4 col-lg-3 col-xl-3">
                 <div class="form-floating mb-3">
                     <div class="input-group">
-                        <input type="number" class="form-control" id="min_budget" name="min_budget" placeholder=" " min="0" required>
+                        <input type="number" class="form-control" id="min_budget" name="min_budget" placeholder=" " min="0" step="1" oninput="this.value=this.value.replace(/[^0-9]/g,'')" required>
                         <span class="input-group-text">INR</span>
                         <label for="min_budget">Min Budget <span class="text-danger">* </span></label>
                     </div>
@@ -227,7 +227,7 @@
             <div class="col-6 col-md-4 col-lg-3 col-xl-3">
                 <div class="form-floating mb-3">
                     <div class="input-group">
-                        <input type="number" class="form-control" id="max_budget" name="max_budget" placeholder=" " min="0" required>
+                        <input type="number" class="form-control" id="max_budget" name="max_budget" placeholder=" " min="0" step="1" oninput="this.value=this.value.replace(/[^0-9]/g,'')" required>
                         <span class="input-group-text">INR</span>
                         <label for="max_budget">Max Budget <span class="text-danger">* </span></label>
                     </div>
@@ -260,7 +260,7 @@
             <div class="col-6 col-md-4 col-lg-3 col-xl-3">
                 <div class="form-floating mb-3">
                     <div class="input-group">
-                        <input type="number" class="form-control" id="min_experience" name="min_experience" placeholder=" " min="0" required>
+                        <input type="number" class="form-control" id="min_experience" name="min_experience" placeholder=" " min="0" step="1" oninput="this.value=this.value.replace(/[^0-9]/g,'')" required>
                         <span class="input-group-text">year</span>
                         <label for="min_experience">Min Experience <span class="text-danger">* </span></label>
                     </div>
@@ -270,7 +270,7 @@
             <div class="col-6 col-md-4 col-lg-3 col-xl-3">
                 <div class="form-floating mb-3">
                     <div class="input-group">
-                        <input type="number" class="form-control" id="max_experience" name="max_experience" placeholder=" " min="0" required>
+                        <input type="number" class="form-control" id="max_experience" name="max_experience" placeholder=" " min="0" step="1" oninput="this.value=this.value.replace(/[^0-9]/g,'')" required>
                         <span class="input-group-text">year</span>
                         <label for="max_experience">Max Experience <span class="text-danger">* </span></label>
                     </div>
@@ -323,7 +323,7 @@
                         foreach ($employees as $employee_row) {
                         ?>
                             <option value="<?php echo $employee_row['id']; ?>">
-                                <?php echo $employee_row['employee_name'] . ' [ ' . $employee_row['internal_employee_id'] . ' ] ' . $employee_row['department_name'] . ' - ' . $employee_row['company_short_name'] . ''; ?>
+                                <?php echo $employee_row['employee_name']  . ' [ ' . $employee_row['department_name'] . ' ] ' . ' - ' . $employee_row['company_short_name'] . ''; ?>
                             </option>
                         <?php
                         }
@@ -594,7 +594,7 @@
                     <select class="form-select" id="review_schedule_3m" name="review_schedule_3m" data-control="select2" data-placeholder="Select Review Schedule 3 Months" required>
                         <option value="" disabled selected>Select Review Schedule 3 Months</option>
                         <?php foreach ($employees as $employee): ?>
-                            <option value="<?= esc($employee['id']) ?>"><?= esc($employee['employee_name']) ?> (<?= esc($employee['department_name']) ?>)</option>
+                            <option value="<?= esc($employee['id']) ?>"><?= esc($employee['employee_name'] . ' [ ' . $employee['department_name'] . ' ] ' . ' - ' . $employee['company_short_name']) ?> </option>
                         <?php endforeach; ?>
                     </select>
                     <label for="review_schedule_3m">Candidate Review Schedule 3 Months With <span class="text-danger">* </span></label>
@@ -609,7 +609,7 @@
                     <select class="form-select" id="review_schedule_6m" name="review_schedule_6m" data-control="select2" data-placeholder="Select Review Schedule 6 Months" required>
                         <option value="" disabled selected>Select Review Schedule 6 Months</option>
                         <?php foreach ($employees as $employee): ?>
-                            <option value="<?= esc($employee['id']) ?>"><?= esc($employee['employee_name']) ?> (<?= esc($employee['department_name']) ?>)</option>
+                            <option value="<?= esc($employee['id']) ?>"><?= esc($employee['employee_name'] . ' [ ' . $employee['department_name'] . ' ] ' . ' - ' . $employee['company_short_name']) ?> </option>
                         <?php endforeach; ?>
                     </select>
                     <label for="review_schedule_6m">Candidate Review Schedule 6 Months With <span class="text-danger">* </span></label>
@@ -623,7 +623,7 @@
                     <select class="form-select" id="review_schedule_12m" name="review_schedule_12m" data-control="select2" data-placeholder="Select Review Schedule 12 Months" required>
                         <option value="" disabled selected>Select Review Schedule 12 Months</option>
                         <?php foreach ($employees as $employee): ?>
-                            <option value="<?= esc($employee['id']) ?>"><?= esc($employee['employee_name']) ?> (<?= esc($employee['department_name']) ?>)</option>
+                            <option value="<?= esc($employee['id']) ?>"><?= esc($employee['employee_name'] . ' [ ' . $employee['department_name'] . ' ] ' . ' - ' . $employee['company_short_name']) ?> </option>
                         <?php endforeach; ?>
                     </select>
                     <label for="review_schedule_12m">Candidate Review Schedule 12 Months With <span class="text-danger">* </span></label>
