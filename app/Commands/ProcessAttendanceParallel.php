@@ -30,6 +30,10 @@ class ProcessAttendanceParallel extends BaseCommand
 
         $numWorkers = (int) ($options['workers'] ?? 10);
         $month = $options['month'] ?? date('Y-m', strtotime(date('Y-m-01') . ' -1 month'));
+
+        // print_r($month);
+        // die();
+
         $employeeFilter = isset($options['employee']) ? explode(',', $options['employee']) : null;
 
         CLI::write('=== Parallel Attendance Processing ===', 'yellow');

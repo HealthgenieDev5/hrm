@@ -1040,7 +1040,7 @@
             "fixedColumns": {
                 left: 1,
                 right: 2,
-                top: 1
+                // top: 1
             },
         });
         $('#final_paid_days_report_wrapper > .card > .card-header > .card-title').replaceWith('<h3 class="card-title">Final Paid Days</h3>');

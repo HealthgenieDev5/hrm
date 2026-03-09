@@ -88,12 +88,12 @@ if (!in_array(session()->get('current_user')['role'], array('admin', 'superuser'
 
 <!-- Statistics Cards -->
 <div class="row gy-5 g-xl-8 mb-5">
-    <div class="col-xl-3 col-md-6">
+    <div class="col-xl-2 col-md-6">
         <div class="card bg-primary bg-opacity-10">
             <div class="card-body">
                 <div class="d-flex align-items-center">
                     <div class="flex-grow-1">
-                        <span class="text-muted d-block">Total Employees On Resignations</span>
+                        <span class="text-muted d-block">Total Resignations</span>
                         <h2 class="mb-0" id="stat_total_active">-</h2>
                     </div>
                     <div class="flex-shrink-0">
@@ -152,7 +152,7 @@ if (!in_array(session()->get('current_user')['role'], array('admin', 'superuser'
         </div>
     </div>
 
-    <div class="col-xl-3 col-md-6">
+    <div class="col-xl-2 col-md-6">
         <div class="card bg-success bg-opacity-10">
             <div class="card-body">
                 <div class="d-flex align-items-center">
@@ -162,6 +162,22 @@ if (!in_array(session()->get('current_user')['role'], array('admin', 'superuser'
                     </div>
                     <div class="flex-shrink-0">
                         <i class="fa-solid fa-check-circle fa-2x text-success"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-2 col-md-6">
+        <div class="card bg-success bg-opacity-25">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="flex-grow-1">
+                        <span class="text-muted d-block">Retained</span>
+                        <h2 class="mb-0 text-success" id="stat_total_retained">-</h2>
+                    </div>
+                    <div class="flex-shrink-0">
+                        <i class="fa-solid fa-user-check fa-2x text-success"></i>
                     </div>
                 </div>
             </div>
@@ -196,6 +212,12 @@ if (!in_array(session()->get('current_user')['role'], array('admin', 'superuser'
                         <span class="badge badge-light-dark ms-2" id="abscond_count_badge">0</span>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#retained_tab">
+                        Retained
+                        <span class="badge badge-light-success ms-2" id="retained_count_badge">0</span>
+                    </a>
+                </li>
             </ul>
         </div>
     </div>
@@ -217,6 +239,7 @@ if (!in_array(session()->get('current_user')['role'], array('admin', 'superuser'
                             <th class="text-center"><strong>Days Remaining</strong></th>
                             <th class="text-center"><strong>HOD Acknowledgment</strong></th>
                             <th class="text-center"><strong>Manager Acknowledgment</strong></th>
+                            <th class="text-center"><strong>Retention</strong></th>
                             <th class="text-center"><strong>Reason</strong></th>
                             <th class="text-center"><strong>Actions</strong></th>
                         </tr>
@@ -234,6 +257,7 @@ if (!in_array(session()->get('current_user')['role'], array('admin', 'superuser'
                             <th class="text-center"><strong>Days Remaining</strong></th>
                             <th class="text-center"><strong>HOD Acknowledgment</strong></th>
                             <th class="text-center"><strong>Manager Acknowledgment</strong></th>
+                            <th class="text-center"><strong>Retention</strong></th>
                             <th class="text-center"><strong>Reason</strong></th>
                             <th class="text-center"><strong>Actions</strong></th>
                         </tr>
@@ -259,6 +283,7 @@ if (!in_array(session()->get('current_user')['role'], array('admin', 'superuser'
                             <th class="text-center"><strong>Days Remaining</strong></th>
                             <th class="text-center"><strong>HOD Acknowledgment</strong></th>
                             <th class="text-center"><strong>Manager Acknowledgment</strong></th>
+                            <th class="text-center"><strong>Retention</strong></th>
                             <th class="text-center"><strong>Reason</strong></th>
                             <th class="text-center"><strong>Actions</strong></th>
                         </tr>
@@ -276,6 +301,7 @@ if (!in_array(session()->get('current_user')['role'], array('admin', 'superuser'
                             <th class="text-center"><strong>Days Remaining</strong></th>
                             <th class="text-center"><strong>HOD Acknowledgment</strong></th>
                             <th class="text-center"><strong>Manager Acknowledgment</strong></th>
+                            <th class="text-center"><strong>Retention</strong></th>
                             <th class="text-center"><strong>Reason</strong></th>
                             <th class="text-center"><strong>Actions</strong></th>
                         </tr>
@@ -360,6 +386,41 @@ if (!in_array(session()->get('current_user')['role'], array('admin', 'superuser'
                     </tbody>
                 </table>
             </div>
+            <!-- Retained Resignations Tab -->
+            <div class="tab-pane fade" id="retained_tab" role="tabpanel">
+                <table id="retained_resignations_table" class="table table-striped nowrap" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th class="text-center"><strong>Emp Code</strong></th>
+                            <th class="text-center"><strong>Name</strong></th>
+                            <th class="text-center"><strong>Department</strong></th>
+                            <th class="text-center"><strong>Company</strong></th>
+                            <th class="text-center"><strong>Resignation Date</strong></th>
+                            <th class="text-center"><strong>Retained On</strong></th>
+                            <th class="text-center"><strong>HOD Acknowledgment</strong></th>
+                            <th class="text-center"><strong>Manager Acknowledgment</strong></th>
+                            <th class="text-center"><strong>Remarks</strong></th>
+                            <th class="text-center"><strong>Actions</strong></th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th class="text-center"><strong>Emp Code</strong></th>
+                            <th class="text-center"><strong>Name</strong></th>
+                            <th class="text-center"><strong>Department</strong></th>
+                            <th class="text-center"><strong>Company</strong></th>
+                            <th class="text-center"><strong>Resignation Date</strong></th>
+                            <th class="text-center"><strong>Retained On</strong></th>
+                            <th class="text-center"><strong>HOD Acknowledgment</strong></th>
+                            <th class="text-center"><strong>Manager Acknowledgment</strong></th>
+                            <th class="text-center"><strong>Remarks</strong></th>
+                            <th class="text-center"><strong>Actions</strong></th>
+                        </tr>
+                    </tfoot>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
@@ -403,14 +464,17 @@ if (!in_array(session()->get('current_user')['role'], array('admin', 'superuser'
                     const monthNew = response.month_new || 0;
                     const monthCompleted = response.month_completed || 0;
                     const totalAbscond = response.total_abscond || 0;
+                    const totalRetained = response.total_retained || 0;
 
                     $('#stat_total_active').text(totalActive);
                     $('#stat_overdue').text(overdue);
                     $('#stat_urgent_alerts').text(urgentAlerts);
                     $('#stat_month_new').text(monthNew);
                     $('#stat_month_completed').text(monthCompleted);
+                    $('#stat_total_retained').text(totalRetained);
                     $('#urgent_alerts_count_badge').text(urgentAlerts);
                     $('#abscond_count_badge').text(totalAbscond);
+                    $('#retained_count_badge').text(totalRetained);
                 },
                 error: function() {
                     console.error('Failed to load statistics');
@@ -518,6 +582,9 @@ if (!in_array(session()->get('current_user')['role'], array('admin', 'superuser'
                     }
                 },
                 {
+                    data: "retention_outcome_display"
+                },
+                {
                     data: "resignation_reason"
                 },
                 {
@@ -529,12 +596,16 @@ if (!in_array(session()->get('current_user')['role'], array('admin', 'superuser'
 
                         // Only show dropdown for employee_id 52
                         if (currentUserId === 52) {
-                            actions += '<select class="form-select form-select-sm status-change-select" data-id="' + row.resignation_id + '" style="width: 120px;">';
+                            const hasRetentionAttempt = (row.hod_response === 'try_to_retain' || row.manager_response === 'try_to_retain');
+                            actions += '<select class="form-select form-select-sm status-change-select" data-id="' + row.resignation_id + '" data-hod-response="' + (row.hod_response || '') + '" data-manager-response="' + (row.manager_response || '') + '" style="width: 140px;">';
                             actions += '<option value="active"' + (row.resignation_status === 'active' ? ' selected' : '') + '>On Resignation</option>';
                             actions += '<option value="withdrawn"' + (row.resignation_status === 'withdrawn' ? ' selected' : '') + '>Withdrawn</option>';
                             actions += '<option value="completed"' + (row.resignation_status === 'completed' ? ' selected' : '') + '>Completed</option>';
                             actions += '<option value="abscond"' + (row.resignation_status === 'abscond' ? ' selected' : '') + '>Abscond</option>';
-                            // actions += '<option value="left"' + (row.resignation_status === 'left' ? ' selected' : '') + '>Left</option>';
+                            if (hasRetentionAttempt) {
+                                actions += '<option value="retention_failed"' + (row.resignation_status === 'retention_failed' ? ' selected' : '') + '>Retention Failed</option>';
+                                actions += '<option value="retained"' + (row.resignation_status === 'retained' ? ' selected' : '') + '>Retention Successful</option>';
+                            }
                             actions += '</select>';
                         } else {
                             // Show status as text only for other users
@@ -555,15 +626,22 @@ if (!in_array(session()->get('current_user')['role'], array('admin', 'superuser'
                                 case 'left':
                                     statusText = 'Left';
                                     break;
+                                case 'retained':
+                                    statusText = 'Retained';
+                                    break;
+                                case 'retention_failed':
+                                    statusText = 'Retention Failed';
+                                    break;
                                 default:
                                     statusText = row.resignation_status;
                             }
-                            actions += '<span class="badge bg-primary" style="width: 120px;">' + statusText + '</span>';
+                            actions += '<span class="badge bg-primary" style="min-width: 100px;">' + statusText + '</span>';
                         }
                         if (currentUserId === 52) {
                             if (row.resignation_status === 'active') {
                                 actions += '<a href="<?= base_url('resignation/edit') ?>/' + row.resignation_id + '" class="btn btn-sm btn-primary p-3" title="Edit"><i class="fa-solid fa-edit"></i></a>';
                             }
+                            actions += '<button type="button" class="btn btn-sm btn-danger delete-resignation-btn p-3" data-id="' + row.resignation_id + '" title="Delete"><i class="fa-solid fa-trash"></i></button>';
                         }
                         actions += '<button type="button" class="btn btn-sm btn-info view-history-btn p-3" data-id="' + row.resignation_id + '" title="View History"><i class="fa-solid fa-history"></i></button>';
                         actions += '</div>';
@@ -599,6 +677,7 @@ if (!in_array(session()->get('current_user')['role'], array('admin', 'superuser'
         var resignation_alerts_table = null;
         var completed_resignations_table = null;
         var abscond_resignations_table = null;
+        var retained_resignations_table = null;
 
         function initAlertsTable() {
             if (resignation_alerts_table) return;
@@ -702,6 +781,9 @@ if (!in_array(session()->get('current_user')['role'], array('admin', 'superuser'
                         }
                     },
                     {
+                        data: "retention_outcome_display"
+                    },
+                    {
                         data: "resignation_reason"
                     },
                     {
@@ -714,12 +796,16 @@ if (!in_array(session()->get('current_user')['role'], array('admin', 'superuser'
 
                             // Only show dropdown for employee_id 52
                             if (currentUserId === 52) {
-                                actions += '<select class="form-select form-select-sm status-change-select" data-id="' + row.resignation_id + '" style="width: 120px;">';
+                                const hasRetentionAttempt = (row.hod_response === 'try_to_retain' || row.manager_response === 'try_to_retain');
+                                actions += '<select class="form-select form-select-sm status-change-select" data-id="' + row.resignation_id + '" data-hod-response="' + (row.hod_response || '') + '" data-manager-response="' + (row.manager_response || '') + '" style="width: 140px;">';
                                 actions += '<option value="active"' + (row.resignation_status === 'active' ? ' selected' : '') + '>On Resignation</option>';
+                                actions += '<option value="retention_failed"' + (row.resignation_status === 'retention_failed' ? ' selected' : '') + '>Retention Failed</option>';
                                 actions += '<option value="withdrawn"' + (row.resignation_status === 'withdrawn' ? ' selected' : '') + '>Withdrawn</option>';
                                 actions += '<option value="completed"' + (row.resignation_status === 'completed' ? ' selected' : '') + '>Completed</option>';
                                 actions += '<option value="abscond"' + (row.resignation_status === 'abscond' ? ' selected' : '') + '>Abscond</option>';
-                                //actions += '<option value="left"' + (row.resignation_status === 'left' ? ' selected' : '') + '>Left</option>';
+                                if (hasRetentionAttempt) {
+                                    actions += '<option value="retained"' + (row.resignation_status === 'retained' ? ' selected' : '') + '>Retention Successful</option>';
+                                }
                                 actions += '</select>';
                             } else {
                                 // Show status as text only for other users
@@ -740,15 +826,22 @@ if (!in_array(session()->get('current_user')['role'], array('admin', 'superuser'
                                     case 'left':
                                         statusText = 'Left';
                                         break;
+                                    case 'retained':
+                                        statusText = 'Retained';
+                                        break;
+                                    case 'retention_failed':
+                                        statusText = 'Retention Failed';
+                                        break;
                                     default:
                                         statusText = row.resignation_status;
                                 }
-                                actions += '<span class="badge bg-primary" style="width: 120px;">' + statusText + '</span>';
+                                actions += '<span class="badge bg-primary" style="min-width: 100px;">' + statusText + '</span>';
                             }
                             if (currentUserId === 52) {
                                 if (row.resignation_status === 'active') {
                                     actions += '<a href="<?= base_url('resignation/edit') ?>/' + row.resignation_id + '" class="btn btn-sm btn-primary p-3" title="Edit"><i class="fa-solid fa-edit"></i></a>';
                                 }
+                                actions += '<button type="button" class="btn btn-sm btn-danger delete-resignation-btn p-3" data-id="' + row.resignation_id + '" title="Delete"><i class="fa-solid fa-trash"></i></button>';
                             }
                             actions += '<button class="btn btn-sm btn-info view-history-btn p-3" data-id="' + row.resignation_id + '" title="View History"><i class="fa-solid fa-history"></i></button>';
                             actions += '</div>';
@@ -1001,6 +1094,107 @@ if (!in_array(session()->get('current_user')['role'], array('admin', 'superuser'
             $('#abscond_resignations_table_wrapper > .card > .card-header > .card-title').replaceWith('<h3 class="card-title text-dark"><i class="fa-solid fa-user-slash"></i> Abscond Resignations</h3>');
         }
 
+        function initRetainedTable() {
+            if (retained_resignations_table) return;
+            retained_resignations_table = $("#retained_resignations_table").DataTable({
+                "dom": '<"card"<"card-header bg-success bg-opacity-10"<"card-title text-success"><"card-toolbar"<"datatable-buttons-container me-1"B>f<"toolbar-buttons">>><"card-body pt-1 pb-1"rt><"card-footer pt-5 pb-3"<"row"<"col-sm-12 col-md-5 d-flex align-items-center justify-content-start mb-3"li><"col-sm-12 col-md-7 d-flex align-items-center justify-content-start justify-content-md-end"p>>>>',
+                "buttons": [{
+                    extend: 'excelHtml5',
+                    title: 'Retained_Resignations_' + new Date().toISOString().slice(0, 10),
+                    text: '<i class="fa-solid fa-file-excel"></i>Excel',
+                    className: 'btn btn-sm btn-light',
+                }],
+                "lengthMenu": [
+                    [10, 25, 50, 100, -1],
+                    [10, 25, 50, 100, 'All'],
+                ],
+                "ajax": {
+                    url: "<?= base_url('ajax/resignation/retained') ?>",
+                    type: "POST",
+                    data: {
+                        company_id: function() {
+                            return $('#company_id_for_filter').val();
+                        }
+                    },
+                    error: function(jqXHR, ajaxOptions, thrownError) {
+                        alert(thrownError + "\r\n" + jqXHR.statusText + "\r\n" + jqXHR.responseText);
+                    },
+                    dataSrc: "",
+                },
+                "deferRender": true,
+                "processing": true,
+                "language": {
+                    processing: '<div class="d-flex align-items-center justify-content-between h-100 m-auto" style="max-width:max-content"><i class="fa fa-spinner fa-spin fa-2x fa-fw"></i><span class="ms-3 fs-1">Processing...</span></div>',
+                    emptyTable: '<div class="bg-white w-100 empty-table-message d-flex align-items-center justify-content-center h-100 position-absolute" style="top:0; left:0; z-index: 1;"><span class="ms-3 fs-1">No Retained Resignations</span></div>',
+                },
+                "oLanguage": {
+                    "sSearch": ""
+                },
+                "columns": [{
+                        data: "internal_employee_id"
+                    },
+                    {
+                        data: "employee_name"
+                    },
+                    {
+                        data: "department_name"
+                    },
+                    {
+                        data: "company_short_name"
+                    },
+                    {
+                        data: "resignation_date"
+                    },
+                    {
+                        data: "retained_on"
+                    },
+                    {
+                        data: "hod_response_display",
+                        render: function(data, type, row) {
+                            let html = data;
+                            if (row.hod_name) html += '<br><small class="text-muted">' + row.hod_name + '</small>';
+                            if (row.hod_response_date) html += '<br><small class="text-muted">' + row.hod_response_date + '</small>';
+                            return html;
+                        }
+                    },
+                    {
+                        data: "manager_response_display",
+                        render: function(data, type, row) {
+                            let html = data;
+                            if (row.manager_name) html += '<br><small class="text-muted">' + row.manager_name + '</small>';
+                            if (row.manager_response_date) html += '<br><small class="text-muted">' + row.manager_response_date + '</small>';
+                            return html;
+                        }
+                    },
+                    {
+                        data: "remarks"
+                    },
+                    {
+                        data: null,
+                        orderable: false,
+                        render: function(data, type, row) {
+                            return '<button class="btn btn-sm btn-info view-history-btn" data-id="' + row.resignation_id + '" title="View History"><i class="fa-solid fa-history"></i></button>';
+                        }
+                    },
+                ],
+                "order": [
+                    [5, 'desc']
+                ],
+                "scrollX": true,
+                "scrollY": '500px',
+                "paging": true,
+                "fixedColumns": {
+                    "left": 2,
+                    "right": 1
+                },
+                "columnDefs": [{
+                    "className": 'text-center',
+                    "targets": '_all'
+                }]
+            });
+            $('#retained_resignations_table_wrapper > .card > .card-header > .card-title').replaceWith('<h3 class="card-title text-success"><i class="fa-solid fa-user-check"></i> Retained Resignations</h3>');
+        }
+
         $('#company_id_for_filter').on('change.select2', function() {
             var company_id = $(this).val();
             window.location.href = "<?= base_url('resignation') ?>/" + company_id;
@@ -1015,6 +1209,8 @@ if (!in_array(session()->get('current_user')['role'], array('admin', 'superuser'
                 initCompletedTable();
             } else if (target === '#abscond_resignations_tab') {
                 initAbscondTable();
+            } else if (target === '#retained_tab') {
+                initRetainedTable();
             }
         });
 
@@ -1023,95 +1219,119 @@ if (!in_array(session()->get('current_user')['role'], array('admin', 'superuser'
             const selectEl = $(this);
             const id = selectEl.data('id');
             const newStatus = selectEl.val();
-            const statusLabels = {
-                'active': 'Active',
-                'withdrawn': 'Withdrawn',
-                'completed': 'Completed',
-                'abscond': 'Abscond',
-                'left': 'Left'
+
+            const statusConfig = {
+                'active': {
+                    title: 'Revert to On Resignation',
+                    placeholder: 'Reason for reverting'
+                },
+                'withdrawn': {
+                    title: 'Mark as Withdrawn',
+                    placeholder: 'Reason for withdrawal'
+                },
+                'completed': {
+                    title: 'Mark as Completed',
+                    placeholder: 'Completion remarks'
+                },
+                'abscond': {
+                    title: 'Mark as Abscond',
+                    placeholder: 'Abscond remarks'
+                },
+                'left': {
+                    title: 'Mark as Left',
+                    placeholder: 'Remarks'
+                },
+                'retained': {
+                    title: 'Retention Successful',
+                    placeholder: 'Why was employee retained?'
+                },
+                'retention_failed': {
+                    title: 'Retention Failed',
+                    placeholder: 'Why did retention fail?'
+                },
+            };
+            const cfg = statusConfig[newStatus] || {
+                title: 'Change Status',
+                placeholder: 'Remarks'
             };
 
             // Statuses that require last working date
             const statusesRequiringDate = ['completed', 'abscond', 'left'];
+            const needsDate = statusesRequiringDate.includes(newStatus);
 
-            if (statusesRequiringDate.includes(newStatus)) {
-                // Show date picker for statuses that require last working date
-                Swal.fire({
-                    title: 'Enter Last Working Date',
-                    html: `
-                        <p class="text-muted mb-3">Changing status to <strong>${statusLabels[newStatus]}</strong></p>
-                        <input type="text" id="swal_last_working_date" class="form-control" placeholder="Select last working date">
-                    `,
-                    icon: 'question',
-                    showCancelButton: true,
-                    confirmButtonText: 'Confirm',
-                    cancelButtonText: 'Cancel',
-                    customClass: {
-                        confirmButton: "btn btn-sm btn-primary",
-                        cancelButton: "btn btn-sm btn-secondary"
-                    },
-                    didOpen: () => {
+            const dateHtml = needsDate ?
+                `<div class="mb-3">
+                       <label class="form-label text-start d-block">Last Working Date</label>
+                       <input type="text" id="swal_last_working_date" class="form-control" placeholder="Select last working date">
+                   </div>` :
+                '';
+
+            Swal.fire({
+                title: cfg.title,
+                html: `
+                    ${dateHtml}
+                    <div class="mb-1">
+                        <label class="form-label text-start d-block">Remarks <span class="text-danger">*</span></label>
+                        <textarea id="swal_remarks" class="form-control" rows="3" placeholder="${cfg.placeholder}"></textarea>
+                    </div>
+                `,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Confirm',
+                cancelButtonText: 'Cancel',
+                customClass: {
+                    confirmButton: "btn btn-sm btn-primary",
+                    cancelButton: "btn btn-sm btn-secondary"
+                },
+                didOpen: () => {
+                    if (needsDate) {
                         flatpickr('#swal_last_working_date', {
                             dateFormat: 'Y-m-d',
                             defaultDate: new Date(),
                             allowInput: true
                         });
-                    },
-                    preConfirm: () => {
+                    }
+                    // Focus remarks textarea
+                    setTimeout(() => document.getElementById('swal_remarks').focus(), 100);
+                },
+                preConfirm: () => {
+                    const remarks = document.getElementById('swal_remarks').value.trim();
+                    if (!remarks) {
+                        Swal.showValidationMessage('Remarks are required.');
+                        return false;
+                    }
+                    if (needsDate) {
                         const lastWorkingDate = document.getElementById('swal_last_working_date').value;
                         if (!lastWorkingDate) {
-                            Swal.showValidationMessage('Please select a last working date');
+                            Swal.showValidationMessage('Please select a last working date.');
                             return false;
                         }
-                        return lastWorkingDate;
+                        return {
+                            remarks,
+                            lastWorkingDate
+                        };
                     }
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        const lastWorkingDate = result.value;
-                        updateResignationStatus(id, newStatus, lastWorkingDate);
-                    } else {
-                        // Revert to previous value if cancelled
-                        resignation_reports_table.ajax.reload();
-                        if (resignation_alerts_table) resignation_alerts_table.ajax.reload();
-                    }
-                });
-            } else {
-                // For active/withdrawn, just confirm without date
-                Swal.fire({
-                    title: 'Are you sure?',
-                    text: "You want to change the status to " + statusLabels[newStatus] + "?",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonText: 'Yes, Change it!',
-                    cancelButtonText: 'No, Go Back!',
-                    customClass: {
-                        confirmButton: "btn btn-sm btn-primary",
-                        cancelButton: "btn btn-sm btn-secondary"
-                    },
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        updateResignationStatus(id, newStatus, null);
-                    } else {
-                        // Revert to previous value if cancelled
-                        resignation_reports_table.ajax.reload();
-                        if (resignation_alerts_table) resignation_alerts_table.ajax.reload();
-                    }
-                });
-            }
+                    return {
+                        remarks,
+                        lastWorkingDate: null
+                    };
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    updateResignationStatus(id, newStatus, result.value.lastWorkingDate, result.value.remarks);
+                } else {
+                    // Revert to previous value if cancelled
+                    resignation_reports_table.ajax.reload();
+                    if (resignation_alerts_table) resignation_alerts_table.ajax.reload();
+                }
+            });
         });
 
         // Function to update resignation status via AJAX
-        function updateResignationStatus(id, newStatus, lastWorkingDate) {
-            const statusLabels = {
-                'active': 'Active',
-                'withdrawn': 'Withdrawn',
-                'completed': 'Completed',
-                'abscond': 'Abscond',
-                'left': 'Left'
-            };
-
+        function updateResignationStatus(id, newStatus, lastWorkingDate, remarks) {
             let postData = {
                 status: newStatus,
+                remarks: remarks || '',
                 <?= csrf_token() ?>: '<?= csrf_hash() ?>'
             };
 
@@ -1129,6 +1349,7 @@ if (!in_array(session()->get('current_user')['role'], array('admin', 'superuser'
                     if (resignation_alerts_table) resignation_alerts_table.ajax.reload();
                     if (completed_resignations_table) completed_resignations_table.ajax.reload();
                     if (abscond_resignations_table) abscond_resignations_table.ajax.reload();
+                    if (retained_resignations_table) retained_resignations_table.ajax.reload();
                     loadStatistics();
                     Swal.fire('Success', response.success || 'Status updated successfully', 'success');
                 },
@@ -1148,6 +1369,39 @@ if (!in_array(session()->get('current_user')['role'], array('admin', 'superuser'
                 }
             });
         }
+
+        // Delete resignation (only for employee_id 52)
+        $(document).on('click', '.delete-resignation-btn', function() {
+            const resignationId = $(this).data('id');
+            Swal.fire({
+                title: 'Delete Resignation?',
+                text: 'This will permanently delete the resignation record and all related history. This action cannot be undone.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, delete it',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.post('<?= base_url('resignation/delete') ?>/' + resignationId, {
+                            <?= csrf_token() ?>: '<?= csrf_hash() ?>'
+                        })
+                        .done(function(response) {
+                            if (response.response_type === 'success') {
+                                Swal.fire('Deleted!', response.response_description, 'success').then(() => {
+                                    location.reload();
+                                });
+                            } else {
+                                Swal.fire('Error', response.response_description, 'error');
+                            }
+                        })
+                        .fail(function() {
+                            Swal.fire('Error', 'An unexpected error occurred.', 'error');
+                        });
+                }
+            });
+        });
 
         // View revision history - works for all tables
         $(document).on('click', '.view-history-btn', function() {

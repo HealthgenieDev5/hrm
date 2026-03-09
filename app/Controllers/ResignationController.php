@@ -110,28 +110,42 @@ class ResignationController extends BaseController
                 $hodResponseFormatted = '<span class="badge bg-success">Accepted</span>';
             } elseif ($hodResponse === 'rejected') {
                 $hodResponseFormatted = '<span class="badge bg-danger">Rejected</span>';
+            } elseif ($hodResponse === 'try_to_retain') {
+                $hodResponseFormatted = '<span class="badge bg-info">Try to Retain</span>';
             } elseif ($hodResponse === 'pending') {
                 $hodResponseFormatted = '<span class="badge bg-warning text-dark">Pending</span>';
             } elseif ($hodResponse === 'too_early') {
                 $hodResponseFormatted = '<span class="badge bg-secondary">Remind Later</span>';
             }
             $hodName = trim($row['hod_name'] ?? '');
-            $hodDate = !empty($row['hod_response_date']) && in_array($hodResponse, ['accept', 'rejected'])
+            $hodDate = !empty($row['hod_response_date']) && in_array($hodResponse, ['accept', 'rejected', 'try_to_retain'])
                 ? date('d M Y H:i', strtotime($row['hod_response_date']))
                 : '';
 
             // Format Manager response
-            $managerViewed = $row['manager_viewed'] ?? null;
-            $managerResponseFormatted = 'N/A';
-            if ($managerViewed === 'viewed') {
-                $managerResponseFormatted = '<span class="badge bg-success">Acknowledged</span>';
-            } elseif ($managerViewed === 'pending') {
-                $managerResponseFormatted = '<span class="badge bg-warning text-dark">Pending</span>';
-            }
+            $managerResponse = $row['manager_response'] ?? null;
+            $managerResponseFormatted = match ($managerResponse) {
+                'accept'        => '<span class="badge bg-success">Accepted</span>',
+                'rejected'      => '<span class="badge bg-danger">Rejected</span>',
+                'try_to_retain' => '<span class="badge bg-info">Try to Retain</span>',
+                'too_early'     => '<span class="badge bg-secondary">Remind Later</span>',
+                default         => '<span class="badge bg-warning text-dark">Pending</span>',
+            };
             $managerName = trim($row['manager_name'] ?? '');
-            $managerDate = ($managerViewed === 'viewed' && !empty($row['manager_viewed_date']))
-                ? date('d M Y H:i', strtotime($row['manager_viewed_date']))
+            $managerDate = in_array($managerResponse, ['accept', 'rejected', 'try_to_retain']) && !empty($row['manager_response_date'])
+                ? date('d M Y H:i', strtotime($row['manager_response_date']))
                 : '';
+
+            // Determine retention outcome display
+            $retentionOutcomeDisplay = '';
+            $resignationStatus = $row['resignation_status'];
+            if ($resignationStatus === 'retained') {
+                $retentionOutcomeDisplay = '<span class="badge bg-success">Retained</span>';
+            } elseif ($resignationStatus === 'retention_failed') {
+                $retentionOutcomeDisplay = '<span class="badge bg-danger">Retention Failed</span>';
+            } elseif ($hodResponse === 'try_to_retain' || $managerResponse === 'try_to_retain') {
+                $retentionOutcomeDisplay = '<span class="badge bg-info">Trying to Retain</span>';
+            }
 
             $data[] = [
                 'resignation_id' => $row['resignation_id'],
@@ -154,9 +168,12 @@ class ResignationController extends BaseController
                 'hod_response_display' => $hodResponseFormatted,
                 'hod_name' => $hodName,
                 'hod_response_date' => $hodDate,
+                'hod_response' => $hodResponse,
                 'manager_response_display' => $managerResponseFormatted,
                 'manager_name' => $managerName,
                 'manager_response_date' => $managerDate,
+                'manager_response' => $managerResponse,
+                'retention_outcome_display' => $retentionOutcomeDisplay,
             ];
         }
 
@@ -187,27 +204,30 @@ class ResignationController extends BaseController
                 $hodResponseFormatted = '<span class="badge bg-success">Accepted</span>';
             } elseif ($hodResponse === 'rejected') {
                 $hodResponseFormatted = '<span class="badge bg-danger">Rejected</span>';
+            } elseif ($hodResponse === 'try_to_retain') {
+                $hodResponseFormatted = '<span class="badge bg-info">Try to Retain</span>';
             } elseif ($hodResponse === 'pending') {
                 $hodResponseFormatted = '<span class="badge bg-warning text-dark">Pending</span>';
             } elseif ($hodResponse === 'too_early') {
                 $hodResponseFormatted = '<span class="badge bg-secondary">Remind Later</span>';
             }
             $hodName = trim($row['hod_name'] ?? '');
-            $hodDate = !empty($row['hod_response_date']) && in_array($hodResponse, ['accept', 'rejected'])
+            $hodDate = !empty($row['hod_response_date']) && in_array($hodResponse, ['accept', 'rejected', 'try_to_retain'])
                 ? date('d M Y H:i', strtotime($row['hod_response_date']))
                 : '';
 
             // Format Manager response
-            $managerViewed = $row['manager_viewed'] ?? null;
-            $managerResponseFormatted = 'N/A';
-            if ($managerViewed === 'viewed') {
-                $managerResponseFormatted = '<span class="badge bg-success">Acknowledged</span>';
-            } elseif ($managerViewed === 'pending') {
-                $managerResponseFormatted = '<span class="badge bg-warning text-dark">Pending</span>';
-            }
+            $managerResponse = $row['manager_response'] ?? null;
+            $managerResponseFormatted = match ($managerResponse) {
+                'accept'        => '<span class="badge bg-success">Accepted</span>',
+                'rejected'      => '<span class="badge bg-danger">Rejected</span>',
+                'try_to_retain' => '<span class="badge bg-info">Try to Retain</span>',
+                'too_early'     => '<span class="badge bg-secondary">Remind Later</span>',
+                default         => '<span class="badge bg-warning text-dark">Pending</span>',
+            };
             $managerName = trim($row['manager_name'] ?? '');
-            $managerDate = ($managerViewed === 'viewed' && !empty($row['manager_viewed_date']))
-                ? date('d M Y H:i', strtotime($row['manager_viewed_date']))
+            $managerDate = in_array($managerResponse, ['accept', 'rejected', 'try_to_retain']) && !empty($row['manager_response_date'])
+                ? date('d M Y H:i', strtotime($row['manager_response_date']))
                 : '';
 
             $data[] = [
@@ -220,6 +240,71 @@ class ResignationController extends BaseController
                 'last_working_day' => date('d M Y', strtotime($row['calculated_last_working_day'])),
                 'completed_on' => date('d M Y', strtotime($row['updated_at'])),
                 'resignation_reason' => $row['resignation_reason'] ?? '',
+                'hod_response_display' => $hodResponseFormatted,
+                'hod_name' => $hodName,
+                'hod_response_date' => $hodDate,
+                'manager_response_display' => $managerResponseFormatted,
+                'manager_name' => $managerName,
+                'manager_response_date' => $managerDate,
+            ];
+        }
+
+        return $this->response->setJSON($data);
+    }
+
+    /**
+     * Get retained resignations (AJAX)
+     */
+    public function getRetainedResignations()
+    {
+        $current_user = $this->session->get('current_user');
+        $company_id = $this->request->getPost('company_id');
+
+        $ResignationModel = new ResignationModel();
+        $resignations = $ResignationModel->getRetainedResignations(
+            $company_id,
+            $current_user['employee_id'],
+            $current_user['role']
+        );
+
+        $data = [];
+        foreach ($resignations as $row) {
+            $hodResponse = $row['hod_response'] ?? null;
+            $hodResponseFormatted = match ($hodResponse) {
+                'accept'        => '<span class="badge bg-success">Accepted</span>',
+                'rejected'      => '<span class="badge bg-danger">Rejected</span>',
+                'try_to_retain' => '<span class="badge bg-info">Try to Retain</span>',
+                'too_early'     => '<span class="badge bg-secondary">Remind Later</span>',
+                default         => '<span class="badge bg-warning text-dark">Pending</span>',
+            };
+            $hodName = trim($row['hod_name'] ?? '');
+            $hodDate = !empty($row['hod_response_date']) && in_array($hodResponse, ['accept', 'rejected', 'try_to_retain'])
+                ? date('d M Y H:i', strtotime($row['hod_response_date']))
+                : '';
+
+            $managerResponse = $row['manager_response'] ?? null;
+            $managerResponseFormatted = match ($managerResponse) {
+                'accept'        => '<span class="badge bg-success">Accepted</span>',
+                'rejected'      => '<span class="badge bg-danger">Rejected</span>',
+                'try_to_retain' => '<span class="badge bg-info">Try to Retain</span>',
+                'too_early'     => '<span class="badge bg-secondary">Remind Later</span>',
+                default         => '<span class="badge bg-warning text-dark">Pending</span>',
+            };
+            $managerName = trim($row['manager_name'] ?? '');
+            $managerDate = in_array($managerResponse, ['accept', 'rejected', 'try_to_retain']) && !empty($row['manager_response_date'])
+                ? date('d M Y H:i', strtotime($row['manager_response_date']))
+                : '';
+
+            $data[] = [
+                'resignation_id' => $row['resignation_id'],
+                'internal_employee_id' => $row['internal_employee_id'],
+                'employee_name' => $row['employee_name'],
+                'department_name' => $row['department_name'] ?? 'N/A',
+                'company_short_name' => $row['company_short_name'] ?? 'N/A',
+                'resignation_date' => date('d M Y', strtotime($row['resignation_date'])),
+                'retained_on' => date('d M Y', strtotime($row['updated_at'])),
+                'resignation_reason' => $row['resignation_reason'] ?? '',
+                'remarks' => $row['remarks'] ?? '',
                 'hod_response_display' => $hodResponseFormatted,
                 'hod_name' => $hodName,
                 'hod_response_date' => $hodDate,
@@ -264,27 +349,30 @@ class ResignationController extends BaseController
                 $hodResponseFormatted = '<span class="badge bg-success">Accepted</span>';
             } elseif ($hodResponse === 'rejected') {
                 $hodResponseFormatted = '<span class="badge bg-danger">Rejected</span>';
+            } elseif ($hodResponse === 'try_to_retain') {
+                $hodResponseFormatted = '<span class="badge bg-info">Try to Retain</span>';
             } elseif ($hodResponse === 'pending') {
                 $hodResponseFormatted = '<span class="badge bg-warning text-dark">Pending</span>';
             } elseif ($hodResponse === 'too_early') {
                 $hodResponseFormatted = '<span class="badge bg-secondary">Remind Later</span>';
             }
             $hodName = trim($row['hod_name'] ?? '');
-            $hodDate = !empty($row['hod_response_date']) && in_array($hodResponse, ['accept', 'rejected'])
+            $hodDate = !empty($row['hod_response_date']) && in_array($hodResponse, ['accept', 'rejected', 'try_to_retain'])
                 ? date('d M Y H:i', strtotime($row['hod_response_date']))
                 : '';
 
             // Format Manager response
-            $managerViewed = $row['manager_viewed'] ?? null;
-            $managerResponseFormatted = 'N/A';
-            if ($managerViewed === 'viewed') {
-                $managerResponseFormatted = '<span class="badge bg-success">Acknowledged</span>';
-            } elseif ($managerViewed === 'pending') {
-                $managerResponseFormatted = '<span class="badge bg-warning text-dark">Pending</span>';
-            }
+            $managerResponse = $row['manager_response'] ?? null;
+            $managerResponseFormatted = match ($managerResponse) {
+                'accept'        => '<span class="badge bg-success">Accepted</span>',
+                'rejected'      => '<span class="badge bg-danger">Rejected</span>',
+                'try_to_retain' => '<span class="badge bg-info">Try to Retain</span>',
+                'too_early'     => '<span class="badge bg-secondary">Remind Later</span>',
+                default         => '<span class="badge bg-warning text-dark">Pending</span>',
+            };
             $managerName = trim($row['manager_name'] ?? '');
-            $managerDate = ($managerViewed === 'viewed' && !empty($row['manager_viewed_date']))
-                ? date('d M Y H:i', strtotime($row['manager_viewed_date']))
+            $managerDate = in_array($managerResponse, ['accept', 'rejected', 'try_to_retain']) && !empty($row['manager_response_date'])
+                ? date('d M Y H:i', strtotime($row['manager_response_date']))
                 : '';
 
             $data[] = [
@@ -388,27 +476,36 @@ class ResignationController extends BaseController
                 $current_user['employee_id'],
                 'Initial resignation record created'
             );
-            // Create HOD response record if employee has HOD
+            // Notify reporting manager first; HOD is notified after manager gives a terminal response
             $employee = $EmployeeModel->select('employees.*, departments.hod_employee_id')
                 ->join('departments', 'departments.id = employees.department_id', 'left')
                 ->find($data['employee_id']);
 
-            if ($employee && !empty($employee['hod_employee_id'])) {
+            if ($employee && !empty($employee['reporting_manager_id'])) {
                 $ResignationHodResponseModel->insert([
                     'resignation_id' => $resignation_id,
-                    'employee_id' => $data['employee_id'],
-                    'hod_id' => $employee['hod_employee_id'],
-                    'manager_id' => $employee['reporting_manager_id'],
-                    'manager_viewed' => 'pending',
-                    'hod_response' => 'pending'
+                    'employee_id'    => $employee['reporting_manager_id'],
+                    'role'           => 'manager',
+                    'response'       => 'pending',
                 ]);
-
-                return redirect()->to(base_url('resignation'))
-                    ->with('success', 'Resignation recorded successfully. HOD and Manager will be notified.');
             }
 
+            // Notify HR manager (293 — last ID from config) immediately on resignation creation
+            $resignationHrManagerIds = array_map('intval', explode(',', env('app.resignationHrManagerIds')));
+            $hrManagerId = $resignationHrManagerIds[3];
+            // if ($hrManagerId > 0 && $hrManagerId !== (int) $data['employee_id']) {
+            $ResignationHodResponseModel->insert([
+                'resignation_id' => $resignation_id,
+                'employee_id'    => $hrManagerId,
+                'role'           => 'hr',
+                'response'       => 'pending',
+            ]);
+            //}
+
+            $msg = 'Resignation recorded successfully. Reporting manager will be notified.';
+
             return redirect()->to(base_url('resignation'))
-                ->with('success', 'Resignation recorded successfully');
+                ->with('success', $msg);
         } else {
             return redirect()->back()
                 ->withInput()
@@ -518,7 +615,7 @@ class ResignationController extends BaseController
     /**
      * Mark resignation as withdrawn
      */
-    public function withdraw($id)
+    public function withdrawn($id)
     {
         $ResignationModel = new ResignationModel();
         $EmployeeModel = new EmployeeModel();
@@ -555,6 +652,42 @@ class ResignationController extends BaseController
     }
 
 
+
+    public function delete($id)
+    {
+        $current_user = $this->session->get('current_user');
+        if ($current_user['employee_id'] != 52) {
+            return $this->response->setJSON([
+                'response_type' => 'error',
+                'response_description' => 'You are not authorized to delete resignations.'
+            ]);
+        }
+
+        $ResignationModel = new ResignationModel();
+        $resignation = $ResignationModel->find($id);
+
+        if (!$resignation) {
+            return $this->response->setJSON([
+                'response_type' => 'error',
+                'response_description' => 'Resignation record not found.'
+            ]);
+        }
+        $ResignationHodResponseModel = new ResignationHodResponseModel();
+        $ResignationHodResponseModel->where('resignation_id', $id)->delete();
+        if ($ResignationModel->delete($id)) {
+            return $this->response->setJSON([
+                'response_type' => 'success',
+                'response_description' => 'Resignation deleted successfully.'
+            ]);
+        } else {
+            return $this->response->setJSON([
+                'response_type' => 'error',
+                'response_description' => 'Failed to delete resignation. Please try again.'
+            ]);
+        }
+    }
+
+
     /**
      * Change resignation status (AJAX)
      * Handles all status changes: active, withdrawn, completed, abscond, left
@@ -572,7 +705,7 @@ class ResignationController extends BaseController
         }
 
         $newStatus = $this->request->getPost('status');
-        $validStatuses = ['active', 'withdrawn', 'completed', 'abscond', 'left'];
+        $validStatuses = ['active', 'withdrawn', 'completed', 'abscond', 'left', 'retained', 'retention_failed'];
 
         if (!in_array($newStatus, $validStatuses)) {
             return $this->response->setStatusCode(400)->setJSON(['error' => 'Invalid status']);
@@ -588,6 +721,8 @@ class ResignationController extends BaseController
             return $this->response->setStatusCode(404)->setJSON(['error' => 'Employee not found']);
         }
 
+        $remarks = trim($this->request->getPost('remarks') ?? '');
+
         $db = db_connect();
         $db->transStart();
 
@@ -597,10 +732,15 @@ class ResignationController extends BaseController
             'withdrawn' => 'Withdrawn',
             'completed' => 'Completed',
             'abscond' => 'Abscond',
-            'left' => 'Left'
+            'left' => 'Left',
+            'retained' => 'Retention Successful',
+            'retention_failed' => 'Retention Failed',
         ];
 
         $actionNote = "Status changed from {$statusLabels[$oldStatus]} to {$statusLabels[$newStatus]}";
+        if ($remarks !== '') {
+            $actionNote .= ". Remarks: {$remarks}";
+        }
 
         if (in_array($newStatus, ['completed', 'abscond', 'left'])) {
             // Use provided last working date or calculate it
@@ -617,7 +757,8 @@ class ResignationController extends BaseController
             // Update resignation status and last_working_date
             $ResignationModel->update($id, [
                 'status' => $newStatus,
-                'last_working_date' => $last_working_day
+                'last_working_date' => $last_working_day,
+                'remarks' => $remarks ?: null,
             ]);
 
             // Update employee's date_of_leaving
@@ -627,15 +768,43 @@ class ResignationController extends BaseController
             // Update resignation status and clear last_working_date
             $ResignationModel->update($id, [
                 'status' => $newStatus,
-                'last_working_date' => null
+                'last_working_date' => null,
+                'remarks' => $remarks ?: null,
             ]);
 
             // Clear employee's date_of_leaving
             $EmployeeModel->update($resignation['employee_id'], ['date_of_leaving' => null]);
             $actionNote .= ". Date of leaving cleared";
+        } elseif ($newStatus === 'retained') {
+            // Employee stays — clear date_of_leaving
+            $ResignationModel->update($id, [
+                'status' => 'retained',
+                'remarks' => $remarks ?: null,
+            ]);
+            $EmployeeModel->update($resignation['employee_id'], ['date_of_leaving' => null]);
+        } elseif ($newStatus === 'retention_failed') {
+            // Stays in active list, just record the outcome
+            $ResignationModel->update($id, [
+                'status' => 'retention_failed',
+                'remarks' => $remarks ?: null,
+            ]);
         } else {
             // Just update status
-            $ResignationModel->update($id, ['status' => $newStatus]);
+            $ResignationModel->update($id, [
+                'status' => $newStatus,
+                'remarks' => $remarks ?: null,
+            ]);
+        }
+
+        // Notify reporting manager of HR retention decision
+        if (in_array($newStatus, ['retained', 'retention_failed']) && !empty($employee['reporting_manager_id'])) {
+            $ResignationHodResponseModel = new ResignationHodResponseModel();
+            $ResignationHodResponseModel->insert([
+                'resignation_id' => $id,
+                'employee_id'    => $employee['reporting_manager_id'],
+                'role'           => 'manager',
+                'response'       => 'pending',
+            ]);
         }
 
         // Save revision
@@ -849,6 +1018,15 @@ class ResignationController extends BaseController
                 $resignation['last_working_date_formatted'] = date('d/m/Y', strtotime($resignation['last_working_date']));
                 $resignation['employee_name'] = trim($resignation['first_name'] . ' ' . $resignation['last_name']);
                 $resignation['manager_name'] = trim(($resignation['manager_first_name'] ?? '') . ' ' . ($resignation['manager_last_name'] ?? ''));
+
+                $resignation['employee_image'] = null;
+                if (!empty($resignation['attachment'])) {
+                    $att = json_decode($resignation['attachment'], true);
+                    if (!empty($att['avatar']['file'])) {
+                        $resignation['employee_image'] = base_url($att['avatar']['file']);
+                    }
+                }
+                unset($resignation['attachment']);
             }
         }
 
@@ -871,61 +1049,49 @@ class ResignationController extends BaseController
         }
 
         $ResignationHodResponseModel = new ResignationHodResponseModel();
-        $EmployeeModel = new EmployeeModel();
         $currentUserId = $this->session->get('current_user')['employee_id'];
 
         foreach ($responses as $recordId => $responseData) {
             $action = $responseData['action'];
             $rejectionReason = $responseData['rejection_reason'] ?? null;
 
-            // Get the record
+            // Get the record and verify the caller is the HOD for this row
             $record = $ResignationHodResponseModel->find($recordId);
-            if (!$record || $record['hod_id'] != $currentUserId) {
+            if (!$record || $record['employee_id'] != $currentUserId || $record['role'] !== 'hod') {
                 continue; // Skip unauthorized records
             }
 
-            // Update based on action
-            $updateData = [
-                'hod_response_date' => date('Y-m-d H:i:s')
-            ];
-
             if ($action === 'too_early') {
-                $updateData['hod_response'] = 'too_early';
-            } elseif ($action === 'accept') {
-                $updateData['hod_response'] = 'accept';
-                // If HOD and Manager are the same person, auto-update manager_viewed
-                if ($record['hod_id'] == $record['manager_id']) {
-                    $updateData['manager_viewed'] = 'viewed';
-                    $updateData['manager_viewed_date'] = date('Y-m-d H:i:s');
-                }
+                $ResignationHodResponseModel->markResponse($recordId, 'too_early');
+            } elseif (in_array($action, ['accept', 'reject', 'try_to_retain', 'acknowledge'])) {
+                $response = ($action === 'reject') ? 'rejected' : $action;
+                $remarks  = $rejectionReason ?: null;
+                $ResignationHodResponseModel->markResponse($recordId, $response, $remarks);
 
-                // Set HR pending notification (first HR manager from config)
-                $resignationHrManagerIds = array_map('intval', explode(',', env('app.resignationHrManagerIds', '52,40,93')));
+                // Notify HR (first HR manager from config)
+                $resignationHrManagerIds = array_map('intval', explode(',', env('app.resignationHrManagerIds')));
                 $hrId = $resignationHrManagerIds[0];
-                $ResignationHodResponseModel->setHrPending($recordId, $hrId);
+                $ResignationHodResponseModel->setHrPending($record['resignation_id'], $hrId);
+
+                // When HOD wants to retain — re-notify the reporting manager via a new pending row
+                if ($action === 'try_to_retain') {
+                    $resignation = (new ResignationModel())->find($record['resignation_id']);
+                    if ($resignation) {
+                        $employee = (new EmployeeModel())->find($resignation['employee_id']);
+                        if ($employee && !empty($employee['reporting_manager_id'])) {
+                            $ResignationHodResponseModel->insert([
+                                'resignation_id' => $record['resignation_id'],
+                                'employee_id'    => (int) $employee['reporting_manager_id'],
+                                'role'           => 'manager',
+                                'response'       => 'pending',
+                            ]);
+                        }
+                    }
+                }
 
                 // Send email notification
-                $this->sendResignationHodResponseEmail($record, 'accept');
-            } elseif ($action === 'reject') {
-                $updateData['hod_response'] = 'rejected';
-                $updateData['hod_rejection_reason'] = $rejectionReason;
-
-                // If HOD and Manager are the same person, auto-update manager_viewed
-                if ($record['hod_id'] == $record['manager_id']) {
-                    $updateData['manager_viewed'] = 'viewed';
-                    $updateData['manager_viewed_date'] = date('Y-m-d H:i:s');
-                }
-
-                // Set HR pending notification (first HR manager from config)
-                $resignationHrManagerIds = array_map('intval', explode(',', env('app.resignationHrManagerIds', '52,40,93')));
-                $hrId = $resignationHrManagerIds[0];
-                $ResignationHodResponseModel->setHrPending($recordId, $hrId);
-
-                // Send email notification with rejection reason
-                $this->sendResignationHodResponseEmail($record, 'reject', $rejectionReason);
+                $this->sendResignationResponseEmail($record, $action, $remarks, 'HOD');
             }
-
-            $ResignationHodResponseModel->update($recordId, $updateData);
         }
 
         return $this->response->setJSON([
@@ -948,10 +1114,19 @@ class ResignationController extends BaseController
         // Format data for frontend
         foreach ($notifications as &$notification) {
             $notification['employee_name'] = trim($notification['first_name'] . ' ' . $notification['last_name']);
-            $notification['hod_name'] = trim($notification['hod_first_name'] . ' ' . $notification['hod_last_name']);
-            $notification['resignation_date_formatted'] = date('d/m/Y', strtotime($notification['resignation_date']));
+            $notification['hod_name']      = trim($notification['hod_first_name'] . ' ' . $notification['hod_last_name']);
+            $notification['manager_name']  = trim(($notification['manager_first_name'] ?? '') . ' ' . ($notification['manager_last_name'] ?? ''));
+            $notification['resignation_date_formatted']  = date('d/m/Y', strtotime($notification['resignation_date']));
             $notification['last_working_date_formatted'] = !empty($notification['last_working_date']) ? date('d/m/Y', strtotime($notification['last_working_date'])) : 'N/A';
-            $notification['hod_response_date_formatted'] = date('d/m/Y H:i', strtotime($notification['hod_response_date']));
+
+            $notification['employee_image'] = null;
+            if (!empty($notification['attachment'])) {
+                $att = json_decode($notification['attachment'], true);
+                if (!empty($att['avatar']['file'])) {
+                    $notification['employee_image'] = base_url($att['avatar']['file']);
+                }
+            }
+            unset($notification['attachment']);
         }
 
         return $this->response->setJSON([
@@ -969,7 +1144,7 @@ class ResignationController extends BaseController
         $action = $this->request->getPost('action');
 
         $currentUserId = $this->session->get('current_user')['employee_id'];
-        $resignationHrManagerIds = array_map('intval', explode(',', env('app.resignationHrManagerIds', '52,40,93')));
+        $resignationHrManagerIds = array_map('intval', explode(',', env('app.resignationHrManagerIds')));
 
         if (!in_array($currentUserId, $resignationHrManagerIds)) {
             return $this->response->setJSON([
@@ -988,19 +1163,19 @@ class ResignationController extends BaseController
             ]);
         }
 
-        if ($record['hr_id'] != $currentUserId) {
+        if ($record['employee_id'] != $currentUserId || $record['role'] !== 'hr') {
             return $this->response->setJSON([
                 'success' => false,
                 'message' => 'Not authorized for this record'
             ]);
         }
 
-        if ($action === 'viewed') {
-            $success = $ResignationHodResponseModel->markHrViewed($recordId);
+        if ($action === 'acknowledge') {
+            $success = $ResignationHodResponseModel->markResponse($recordId, 'acknowledge');
 
             return $this->response->setJSON([
                 'success' => $success,
-                'message' => $success ? 'Notification marked as viewed' : 'Failed to update'
+                'message' => $success ? 'Resignation acknowledged' : 'Failed to update'
             ]);
         }
 
@@ -1011,34 +1186,45 @@ class ResignationController extends BaseController
     }
 
     /**
-     * Send email notification for HOD resignation response
+     * Send email notification when HOD or Manager responds to a resignation
      */
-    private function sendResignationHodResponseEmail($record, $action, $rejectionReason = null)
+    private function sendResignationResponseEmail($record, $action, $remarks = null, string $responderRole = 'HOD')
     {
         $EmployeeModel = new EmployeeModel();
+        $ResignationModel = new ResignationModel();
         $currentUserId = $this->session->get('current_user')['employee_id'];
 
-        $hodData = $EmployeeModel->find($currentUserId);
-        $employeeData = $EmployeeModel->find($record['employee_id']);
+        $responderData = $EmployeeModel->find($currentUserId);
 
-        if (!$hodData || !$employeeData) {
+        // employee_id on the response row is the responder; get the resigning employee via the resignation record.
+        $resignation  = $ResignationModel->find($record['resignation_id']);
+        $employeeData = $resignation ? $EmployeeModel->find($resignation['employee_id']) : null;
+
+        if (!$responderData || !$employeeData) {
             return false;
         }
 
-        $hodName = trim($hodData['first_name'] . ' ' . $hodData['last_name']);
-        $employeeName = trim($employeeData['first_name'] . ' ' . $employeeData['last_name']);
+        $responderName = trim($responderData['first_name'] . ' ' . $responderData['last_name']);
+        $employeeName  = trim($employeeData['first_name'] . ' ' . $employeeData['last_name']);
 
         $email = \Config\Services::email();
         $email->setFrom('app.hrm@healthgenie.in', 'HRM');
-        $toEmails = ['developer3@healthgenie.in', 'hrd@gstc.com', 'careers@gstc.com'];
+        $toEmails = ['developer3@healthgenie.in', 'hrd@gstc.com', 'careers@gstc.com', 'developer2@healthgenie.in'];
+        //$toEmails = ['developer2@healthgenie.in'];
         $email->setTo($toEmails);
 
-        $responseText = $action === 'accept' ? 'accepted' : 'rejected';
-        $email->setSubject('Resignation Response - ' . $employeeName . ' (' . ucfirst($responseText) . ')');
+        $responseText = match ($action) {
+            'accept'                => 'Accepted',
+            'reject', 'rejected'   => 'Rejected',
+            'try_to_retain'        => 'Try to Retain',
+            'acknowledge'          => 'Acknowledged',
+            default                => ucfirst($action),
+        };
+        $email->setSubject('Resignation Response - ' . $employeeName . ' (' . $responseText . ')');
 
-        $rejectionSection = '';
-        if ($action === 'reject' && $rejectionReason) {
-            $rejectionSection = '<div style="padding-bottom: 10px; color: #d9534f;"><strong>Rejection Reason:</strong> ' . htmlspecialchars($rejectionReason) . '</div>';
+        $remarksSection = '';
+        if ($remarks) {
+            $remarksSection = '<div style="padding-bottom: 10px; color: #555;"><strong>Remarks:</strong> ' . htmlspecialchars($remarks) . '</div>';
         }
 
         $emailMessage = '
@@ -1056,10 +1242,10 @@ class ResignationController extends BaseController
                             <td align="left" valign="center">
                                 <div style="text-align:left; margin: 0 20px; padding: 40px; background-color:#ffffff; border-radius: 6px">
                                     <div style="padding-bottom: 30px; font-size: 17px;">
-                                        <strong>' . $hodName . ' has responded to ' . $employeeName . '\'s resignation</strong>
+                                        <strong>' . $responderName . ' (' . $responderRole . ') has responded to ' . $employeeName . '\'s resignation</strong>
                                     </div>
-                                    <div style="padding-bottom: 10px"><strong>Response:</strong> ' . ucfirst($responseText) . '</div>
-                                    ' . $rejectionSection . '
+                                    <div style="padding-bottom: 10px"><strong>Response:</strong> ' . $responseText . '</div>
+                                    ' . $remarksSection . '
                                     <div style="padding-bottom: 10px">Kind regards,
                                     <br>HRM Team.
                                     <tr>
@@ -1096,10 +1282,41 @@ class ResignationController extends BaseController
         $notifications = $ResignationHodResponseModel->getPendingManagerNotifications($currentUserId);
 
         foreach ($notifications as &$notification) {
-            $notification['employee_name'] = trim($notification['first_name'] . ' ' . $notification['last_name']);
-            $notification['hod_name'] = trim(($notification['hod_first_name'] ?? '') . ' ' . ($notification['hod_last_name'] ?? ''));
-            $notification['resignation_date_formatted'] = date('d/m/Y', strtotime($notification['resignation_date']));
+            $notification['employee_name']       = trim($notification['first_name'] . ' ' . $notification['last_name']);
+            $notification['employee_first_name'] = $notification['first_name'] ?? '';
+            $notification['hod_name']            = trim(($notification['hod_first_name'] ?? '') . ' ' . ($notification['hod_last_name'] ?? ''));
+            $notification['resignation_date_formatted']  = date('d/m/Y', strtotime($notification['resignation_date']));
             $notification['last_working_date_formatted'] = !empty($notification['last_working_date']) ? date('d/m/Y', strtotime($notification['last_working_date'])) : 'N/A';
+
+            $notification['employee_image'] = null;
+            if (!empty($notification['attachment'])) {
+                $att = json_decode($notification['attachment'], true);
+                if (!empty($att['avatar']['file'])) {
+                    $notification['employee_image'] = base_url($att['avatar']['file']);
+                }
+            }
+            unset($notification['attachment']);
+        }
+
+        // Append HR-decision rows (retained / retention_failed) for this manager
+        $hrDecisionRows = $ResignationHodResponseModel->getPendingHrDecisionNotifications($currentUserId);
+        foreach ($hrDecisionRows as $row) {
+            $att = json_decode($row['attachment'] ?? '{}', true);
+            $notifications[] = [
+                'id'                          => $row['id'],
+                'employee_name'               => trim($row['first_name'] . ' ' . $row['last_name']),
+                'employee_first_name'         => $row['first_name'] ?? '',
+                'internal_employee_id'        => $row['internal_employee_id'] ?? '',
+                'designation_name'            => $row['designation_name'] ?? '',
+                'department_name'             => $row['department_name'] ?? '',
+                'company_name'                => $row['company_name'] ?? '',
+                'resignation_date_formatted'  => date('d M Y', strtotime($row['resignation_date'])),
+                'last_working_date_formatted' => !empty($row['last_working_date']) ? date('d M Y', strtotime($row['last_working_date'])) : 'N/A',
+                'resignation_reason'          => $row['resignation_reason'] ?? '',
+                'employee_image'              => !empty($att['avatar']['file']) ? base_url($att['avatar']['file']) : null,
+                'notification_type'           => 'hr_decision',
+                'hr_decision'                 => $row['hr_decision'],
+            ];
         }
 
         return $this->response->setJSON([
@@ -1109,43 +1326,70 @@ class ResignationController extends BaseController
     }
 
     /**
-     * Handle reporting manager notification action (mark as viewed)
+     * Handle reporting manager notification action
+     * Supports: too_early (remind tomorrow), accept, rejected, try_to_retain
      */
     public function handleReportingManagerNotificationAction()
     {
-        $recordId = $this->request->getPost('record_id');
-        $action = $this->request->getPost('action');
-        $currentUserId = $this->session->get('current_user')['employee_id'];
+        $recordId        = $this->request->getPost('record_id');
+        $action          = $this->request->getPost('action');
+        $rejectionReason = $this->request->getPost('rejection_reason');
+        $currentUserId   = $this->session->get('current_user')['employee_id'];
 
         $ResignationHodResponseModel = new ResignationHodResponseModel();
+
+        // HR decision acknowledgment — just stamp response_date, no cascade
+        if ($this->request->getPost('notification_type') === 'hr_decision') {
+            $record = $ResignationHodResponseModel->find($recordId);
+            if (!$record || $record['employee_id'] != $currentUserId) {
+                return $this->response->setJSON(['success' => false, 'message' => 'Not authorized']);
+            }
+            $ResignationHodResponseModel->update($recordId, ['response_date' => date('Y-m-d H:i:s')]);
+            return $this->response->setJSON(['success' => true]);
+        }
+
         $record = $ResignationHodResponseModel->find($recordId);
 
         if (!$record) {
-            return $this->response->setJSON([
-                'success' => false,
-                'message' => 'Record not found'
-            ]);
+            return $this->response->setJSON(['success' => false, 'message' => 'Record not found']);
         }
 
-        if ($record['manager_id'] != $currentUserId) {
-            return $this->response->setJSON([
-                'success' => false,
-                'message' => 'Not authorized for this record'
-            ]);
+        if ($record['employee_id'] != $currentUserId || $record['role'] !== 'manager') {
+            return $this->response->setJSON(['success' => false, 'message' => 'Not authorized for this record']);
         }
 
-        if ($action === 'viewed') {
-            $success = $ResignationHodResponseModel->markManagerViewed($recordId);
+        $validActions = ['too_early', 'accept', 'rejected', 'try_to_retain', 'acknowledge'];
+        if (!in_array($action, $validActions)) {
+            return $this->response->setJSON(['success' => false, 'message' => 'Invalid action']);
+        }
 
-            return $this->response->setJSON([
-                'success' => $success,
-                'message' => $success ? 'Notification acknowledged' : 'Failed to update'
-            ]);
+        $remarks = ($action !== 'too_early' && $action !== 'acknowledge') ? ($rejectionReason ?: null) : null;
+        $success = $ResignationHodResponseModel->markResponse($recordId, $action, $remarks);
+
+        // After a terminal response, notify the HOD
+        if ($success && !in_array($action, ['too_early', 'acknowledge'])) {
+            $resignation = (new ResignationModel())->find($record['resignation_id']);
+            if ($resignation) {
+                $employee = (new EmployeeModel())
+                    ->select('employees.*, departments.hod_employee_id')
+                    ->join('departments', 'departments.id = employees.department_id', 'left')
+                    ->find($resignation['employee_id']);
+
+                if ($employee && !empty($employee['hod_employee_id'])) {
+                    $ResignationHodResponseModel->setHodPending(
+                        (int) $record['resignation_id'],
+                        (int) $employee['hod_employee_id']
+                    );
+                }
+            }
+
+            // Send email notification for manager response
+            $this->sendResignationResponseEmail($record, $action, $rejectionReason, 'Manager');
         }
 
         return $this->response->setJSON([
-            'success' => false,
-            'message' => 'Invalid action'
+            'success' => $success,
+            'message' => $success ? 'Response saved successfully' : 'Failed to update'
         ]);
     }
 
@@ -1190,7 +1434,7 @@ class ResignationController extends BaseController
             ]);
         }
 
-        if ($record['hr_manager_id'] != $currentUserId) {
+        if ($record['employee_id'] != $currentUserId || $record['role'] !== 'hr_manager') {
             return $this->response->setJSON([
                 'success' => false,
                 'message' => 'Not authorized for this record'
@@ -1198,7 +1442,7 @@ class ResignationController extends BaseController
         }
 
         if ($action === 'viewed') {
-            $success = $ResignationHodResponseModel->markHrManagerViewed($recordId);
+            $success = $ResignationHodResponseModel->markResponse($recordId, 'accept');
 
             return $this->response->setJSON([
                 'success' => $success,

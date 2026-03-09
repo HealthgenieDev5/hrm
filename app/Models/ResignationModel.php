@@ -21,6 +21,7 @@ class ResignationModel extends Model
         'buyout_days',
         'last_working_date',
         'status',
+        'remarks',
         'created_at',
         'updated_at'
     ];
@@ -34,7 +35,7 @@ class ResignationModel extends Model
         'employee_id' => 'required|integer',
         'resignation_date' => 'required|valid_date',
         'submitted_by_hr' => 'required|integer',
-        'status' => 'in_list[active,withdrawn,completed,abscond,left]'
+        'status' => 'in_list[active,withdrawn,completed,abscond,left,retained,retention_failed]'
     ];
 
     protected $validationMessages = [
@@ -68,6 +69,7 @@ class ResignationModel extends Model
             r.resignation_reason,
             r.buyout_days,
             r.status as resignation_status,
+            r.remarks,
             e.internal_employee_id,
             TRIM(CONCAT(e.first_name, ' ', e.last_name)) as employee_name,
             e.notice_period,
@@ -78,21 +80,23 @@ class ResignationModel extends Model
             COALESCE(r.last_working_date, DATE_ADD(r.resignation_date, INTERVAL (e.notice_period - COALESCE(r.buyout_days, 0)) DAY)) as calculated_last_working_day,
             DATEDIFF(COALESCE(r.last_working_date, DATE_ADD(r.resignation_date, INTERVAL (e.notice_period - COALESCE(r.buyout_days, 0)) DAY)), CURDATE()) as remaining_days,
             DATEDIFF(CURDATE(), r.resignation_date) as days_since_resignation,
-            rhr.hod_response,
-            rhr.hod_response_date,
+            hod_row.response AS hod_response,
+            hod_row.response_date AS hod_response_date,
+            hod_row.remarks AS hod_rejection_reason,
             TRIM(CONCAT(COALESCE(hod_emp.first_name, ''), ' ', COALESCE(hod_emp.last_name, ''))) as hod_name,
-            rhr.manager_viewed,
-            rhr.manager_viewed_date,
+            manager_row.response AS manager_response,
+            manager_row.response_date AS manager_response_date,
             TRIM(CONCAT(COALESCE(mgr_emp.first_name, ''), ' ', COALESCE(mgr_emp.last_name, ''))) as manager_name
         ");
         $builder->join('employees e', 'e.id = r.employee_id', 'left');
         $builder->join('employees hr', 'hr.id = r.submitted_by_hr', 'left');
         $builder->join('departments d', 'd.id = e.department_id', 'left');
         $builder->join('companies c', 'c.id = e.company_id', 'left');
-        $builder->join('resignation_hod_response rhr', 'rhr.resignation_id = r.id', 'left');
-        $builder->join('employees hod_emp', 'hod_emp.id = rhr.hod_id', 'left');
-        $builder->join('employees mgr_emp', 'mgr_emp.id = rhr.manager_id', 'left');
-        $builder->where('r.status', 'active');
+        $builder->join('resignation_response hod_row', "hod_row.resignation_id = r.id AND hod_row.role = 'hod'", 'left');
+        $builder->join('resignation_response manager_row', "manager_row.id = (SELECT id FROM resignation_response WHERE resignation_id = r.id AND role = 'manager' ORDER BY id DESC LIMIT 1)", 'left');
+        $builder->join('employees hod_emp', 'hod_emp.id = hod_row.employee_id', 'left');
+        $builder->join('employees mgr_emp', 'mgr_emp.id = manager_row.employee_id', 'left');
+        $builder->whereIn('r.status', ['active', 'retention_failed']);
         // $builder->where('DATE_ADD(r.resignation_date, INTERVAL (e.notice_period - COALESCE(r.buyout_days, 0)) DAY) >=', date('Y-m-d')); // Commented to include overdue resignations
 
         // Apply role-based access control
@@ -136,19 +140,21 @@ class ResignationModel extends Model
             c.company_short_name,
             COALESCE(r.last_working_date, DATE_ADD(r.resignation_date, INTERVAL (e.notice_period - COALESCE(r.buyout_days, 0)) DAY)) as calculated_last_working_day,
             DATEDIFF(COALESCE(r.last_working_date, DATE_ADD(r.resignation_date, INTERVAL (e.notice_period - COALESCE(r.buyout_days, 0)) DAY)), CURDATE()) as remaining_days,
-            rhr.hod_response,
-            rhr.hod_response_date,
+            hod_row.response AS hod_response,
+            hod_row.response_date AS hod_response_date,
+            hod_row.remarks AS hod_rejection_reason,
             TRIM(CONCAT(COALESCE(hod_emp.first_name, ''), ' ', COALESCE(hod_emp.last_name, ''))) as hod_name,
-            rhr.manager_viewed,
-            rhr.manager_viewed_date,
+            manager_row.response AS manager_response,
+            manager_row.response_date AS manager_response_date,
             TRIM(CONCAT(COALESCE(mgr_emp.first_name, ''), ' ', COALESCE(mgr_emp.last_name, ''))) as manager_name
         ");
         $builder->join('employees e', 'e.id = r.employee_id', 'left');
         $builder->join('departments d', 'd.id = e.department_id', 'left');
         $builder->join('companies c', 'c.id = e.company_id', 'left');
-        $builder->join('resignation_hod_response rhr', 'rhr.resignation_id = r.id', 'left');
-        $builder->join('employees hod_emp', 'hod_emp.id = rhr.hod_id', 'left');
-        $builder->join('employees mgr_emp', 'mgr_emp.id = rhr.manager_id', 'left');
+        $builder->join('resignation_response hod_row', "hod_row.resignation_id = r.id AND hod_row.role = 'hod'", 'left');
+        $builder->join('resignation_response manager_row', "manager_row.id = (SELECT id FROM resignation_response WHERE resignation_id = r.id AND role = 'manager' ORDER BY id DESC LIMIT 1)", 'left');
+        $builder->join('employees hod_emp', 'hod_emp.id = hod_row.employee_id', 'left');
+        $builder->join('employees mgr_emp', 'mgr_emp.id = manager_row.employee_id', 'left');
         $builder->where('r.status', 'active');
         $builder->where('DATEDIFF(COALESCE(r.last_working_date, DATE_ADD(r.resignation_date, INTERVAL (e.notice_period - COALESCE(r.buyout_days, 0)) DAY)), CURDATE()) <=', 7);
         $builder->where('COALESCE(r.last_working_date, DATE_ADD(r.resignation_date, INTERVAL (e.notice_period - COALESCE(r.buyout_days, 0)) DAY)) >=', date('Y-m-d'));
@@ -192,19 +198,21 @@ class ResignationModel extends Model
             d.department_name,
             c.company_short_name,
             COALESCE(r.last_working_date, DATE_ADD(r.resignation_date, INTERVAL (e.notice_period - COALESCE(r.buyout_days, 0)) DAY)) as calculated_last_working_day,
-            rhr.hod_response,
-            rhr.hod_response_date,
+            hod_row.response AS hod_response,
+            hod_row.response_date AS hod_response_date,
+            hod_row.remarks AS hod_rejection_reason,
             TRIM(CONCAT(COALESCE(hod_emp.first_name, ''), ' ', COALESCE(hod_emp.last_name, ''))) as hod_name,
-            rhr.manager_viewed,
-            rhr.manager_viewed_date,
+            manager_row.response AS manager_response,
+            manager_row.response_date AS manager_response_date,
             TRIM(CONCAT(COALESCE(mgr_emp.first_name, ''), ' ', COALESCE(mgr_emp.last_name, ''))) as manager_name
         ");
         $builder->join('employees e', 'e.id = r.employee_id', 'left');
         $builder->join('departments d', 'd.id = e.department_id', 'left');
         $builder->join('companies c', 'c.id = e.company_id', 'left');
-        $builder->join('resignation_hod_response rhr', 'rhr.resignation_id = r.id', 'left');
-        $builder->join('employees hod_emp', 'hod_emp.id = rhr.hod_id', 'left');
-        $builder->join('employees mgr_emp', 'mgr_emp.id = rhr.manager_id', 'left');
+        $builder->join('resignation_response hod_row', "hod_row.resignation_id = r.id AND hod_row.role = 'hod'", 'left');
+        $builder->join('resignation_response manager_row', "manager_row.id = (SELECT id FROM resignation_response WHERE resignation_id = r.id AND role = 'manager' ORDER BY id DESC LIMIT 1)", 'left');
+        $builder->join('employees hod_emp', 'hod_emp.id = hod_row.employee_id', 'left');
+        $builder->join('employees mgr_emp', 'mgr_emp.id = manager_row.employee_id', 'left');
         $builder->where('r.status', 'completed');
 
         // Apply role-based access control
@@ -248,19 +256,21 @@ class ResignationModel extends Model
             d.department_name,
             c.company_short_name,
             COALESCE(r.last_working_date, DATE_ADD(r.resignation_date, INTERVAL (e.notice_period - COALESCE(r.buyout_days, 0)) DAY)) as calculated_last_working_day,
-            rhr.hod_response,
-            rhr.hod_response_date,
+            hod_row.response AS hod_response,
+            hod_row.response_date AS hod_response_date,
+            hod_row.remarks AS hod_rejection_reason,
             TRIM(CONCAT(COALESCE(hod_emp.first_name, ''), ' ', COALESCE(hod_emp.last_name, ''))) as hod_name,
-            rhr.manager_viewed,
-            rhr.manager_viewed_date,
+            manager_row.response AS manager_response,
+            manager_row.response_date AS manager_response_date,
             TRIM(CONCAT(COALESCE(mgr_emp.first_name, ''), ' ', COALESCE(mgr_emp.last_name, ''))) as manager_name
         ");
         $builder->join('employees e', 'e.id = r.employee_id', 'left');
         $builder->join('departments d', 'd.id = e.department_id', 'left');
         $builder->join('companies c', 'c.id = e.company_id', 'left');
-        $builder->join('resignation_hod_response rhr', 'rhr.resignation_id = r.id', 'left');
-        $builder->join('employees hod_emp', 'hod_emp.id = rhr.hod_id', 'left');
-        $builder->join('employees mgr_emp', 'mgr_emp.id = rhr.manager_id', 'left');
+        $builder->join('resignation_response hod_row', "hod_row.resignation_id = r.id AND hod_row.role = 'hod'", 'left');
+        $builder->join('resignation_response manager_row', "manager_row.id = (SELECT id FROM resignation_response WHERE resignation_id = r.id AND role = 'manager' ORDER BY id DESC LIMIT 1)", 'left');
+        $builder->join('employees hod_emp', 'hod_emp.id = hod_row.employee_id', 'left');
+        $builder->join('employees mgr_emp', 'mgr_emp.id = manager_row.employee_id', 'left');
         $builder->where('r.status', 'abscond');
 
         // Apply role-based access control
@@ -273,6 +283,63 @@ class ResignationModel extends Model
         }
 
         // Apply company filter
+        if ($company_id && $company_id !== 'all_companies' && $company_id !== '') {
+            $builder->where('e.company_id', $company_id);
+        }
+
+        $builder->orderBy('r.updated_at', 'DESC');
+        $builder->orderBy('c.company_short_name', 'ASC');
+        $builder->orderBy('e.first_name', 'ASC');
+
+        return $builder->get()->getResultArray();
+    }
+
+    /**
+     * Get retained resignations with employee details
+     */
+    public function getRetainedResignations($company_id = null, $current_employee_id = null, $user_role = null)
+    {
+        $builder = $this->db->table('resignations r');
+        $builder->select("
+            r.id as resignation_id,
+            r.employee_id,
+            r.resignation_date,
+            r.resignation_reason,
+            r.buyout_days,
+            r.status as resignation_status,
+            r.remarks,
+            r.updated_at,
+            e.internal_employee_id,
+            TRIM(CONCAT(e.first_name, ' ', e.last_name)) as employee_name,
+            e.notice_period,
+            d.department_name,
+            c.company_short_name,
+            COALESCE(r.last_working_date, DATE_ADD(r.resignation_date, INTERVAL (e.notice_period - COALESCE(r.buyout_days, 0)) DAY)) as calculated_last_working_day,
+            hod_row.response AS hod_response,
+            hod_row.response_date AS hod_response_date,
+            hod_row.remarks AS hod_rejection_reason,
+            TRIM(CONCAT(COALESCE(hod_emp.first_name, ''), ' ', COALESCE(hod_emp.last_name, ''))) as hod_name,
+            manager_row.response AS manager_response,
+            manager_row.response_date AS manager_response_date,
+            TRIM(CONCAT(COALESCE(mgr_emp.first_name, ''), ' ', COALESCE(mgr_emp.last_name, ''))) as manager_name
+        ");
+        $builder->join('employees e', 'e.id = r.employee_id', 'left');
+        $builder->join('departments d', 'd.id = e.department_id', 'left');
+        $builder->join('companies c', 'c.id = e.company_id', 'left');
+        $builder->join('resignation_response hod_row', "hod_row.resignation_id = r.id AND hod_row.role = 'hod'", 'left');
+        $builder->join('resignation_response manager_row', "manager_row.id = (SELECT id FROM resignation_response WHERE resignation_id = r.id AND role = 'manager' ORDER BY id DESC LIMIT 1)", 'left');
+        $builder->join('employees hod_emp', 'hod_emp.id = hod_row.employee_id', 'left');
+        $builder->join('employees mgr_emp', 'mgr_emp.id = manager_row.employee_id', 'left');
+        $builder->where('r.status', 'retained');
+
+        if ($user_role && !in_array($user_role, ['admin', 'superuser', 'hr'])) {
+            $builder->groupStart();
+            $builder->where('e.id', $current_employee_id);
+            $builder->orWhere('e.reporting_manager_id', $current_employee_id);
+            $builder->orWhere('d.hod_employee_id', $current_employee_id);
+            $builder->groupEnd();
+        }
+
         if ($company_id && $company_id !== 'all_companies' && $company_id !== '') {
             $builder->where('e.company_id', $company_id);
         }
@@ -351,6 +418,15 @@ class ResignationModel extends Model
             $builder->where('e.company_id', $company_id);
         }
         $stats['total_abscond'] = $builder->countAllResults();
+
+        // Total retained resignations
+        $builder = $this->db->table('resignations r');
+        $builder->join('employees e', 'e.id = r.employee_id');
+        $builder->where('r.status', 'retained');
+        if ($company_id && $company_id !== 'all_companies') {
+            $builder->where('e.company_id', $company_id);
+        }
+        $stats['total_retained'] = $builder->countAllResults();
 
         return $stats;
     }

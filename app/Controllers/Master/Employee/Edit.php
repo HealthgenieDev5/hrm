@@ -56,12 +56,12 @@ class Edit extends BaseController
             // ->select('users.role as role')
             ->select("(select fixed_rh.rh_id from fixed_rh where fixed_rh.employee_id = " . $id . " and fixed_rh.year = '" . date('Y') . "' order by fixed_rh.id asc limit 0,1) as rh_id_1")
             ->select("(select fixed_rh.rh_id from fixed_rh where fixed_rh.employee_id = " . $id . " and fixed_rh.year = '" . date('Y') . "' order by fixed_rh.id asc limit 1,1) as rh_id_2")
-            ->select('(select balance from leave_balance where employee_id = ' . $id . ' and year=YEAR(CURDATE()) and month=MONTH(CURDATE()) and leave_code = "CL") as cl_balance')
-            ->select('(select id from leave_balance where employee_id = ' . $id . ' and year=YEAR(CURDATE()) and month=MONTH(CURDATE()) and leave_code = "CL" order by id desc) as cl_balance_id')
-            ->select('(select balance from leave_balance where employee_id = ' . $id . ' and year=YEAR(CURDATE()) and month=MONTH(CURDATE()) and leave_code = "EL") as el_balance')
-            ->select('(select id from leave_balance where employee_id = ' . $id . ' and year=YEAR(CURDATE()) and month=MONTH(CURDATE()) and leave_code = "EL" order by id desc) as el_balance_id')
-            ->select('(select balance from leave_balance where employee_id = ' . $id . ' and year=YEAR(CURDATE()) and month=MONTH(CURDATE()) and leave_code = "RH") as rh_balance')
-            ->select('(select id from leave_balance where employee_id = ' . $id . ' and year=YEAR(CURDATE()) and month=MONTH(CURDATE()) and leave_code = "RH" order by id desc) as rh_balance_id')
+            ->select('(select balance from leave_balance where employee_id = ' . $id . ' and year=YEAR(CURDATE()) and month=MONTH(CURDATE()) and leave_code = "CL" limit 1) as cl_balance')
+            ->select('(select id from leave_balance where employee_id = ' . $id . ' and year=YEAR(CURDATE()) and month=MONTH(CURDATE()) and leave_code = "CL" order by id desc limit 1) as cl_balance_id')
+            ->select('(select balance from leave_balance where employee_id = ' . $id . ' and year=YEAR(CURDATE()) and month=MONTH(CURDATE()) and leave_code = "EL" limit 1) as el_balance')
+            ->select('(select id from leave_balance where employee_id = ' . $id . ' and year=YEAR(CURDATE()) and month=MONTH(CURDATE()) and leave_code = "EL" order by id desc limit 1) as el_balance_id')
+            ->select('(select balance from leave_balance where employee_id = ' . $id . ' and year=YEAR(CURDATE()) and month=MONTH(CURDATE()) and leave_code = "RH" limit 1) as rh_balance')
+            ->select('(select id from leave_balance where employee_id = ' . $id . ' and year=YEAR(CURDATE()) and month=MONTH(CURDATE()) and leave_code = "RH" order by id desc limit 1) as rh_balance_id')
             ->join('companies', 'companies.id=employees.company_id', 'left')
             ->join('departments', 'departments.id=employees.department_id', 'left')
             ->join('designations', 'designations.id=employees.designation_id', 'left')
@@ -97,7 +97,7 @@ class Edit extends BaseController
             'can_override_leave_balance' => in_array($this->session->get('current_user')['employee_id'], ['40', '52', '93']) ? true : false,
             'can_override_special_holiday' => in_array($this->session->get('current_user')['employee_id'], ['40', '52', '93']) ? true : false,
             'can_update_salary' => in_array($this->session->get('current_user')['employee_id'], ['40', '52', '93', '223']) ? true : false,
-            'can_view_salary' => in_array($this->session->get('current_user')['employee_id'], ['40', '52', '93', '223', '279', '471', '521']) ? true : false,
+            'can_view_salary' => in_array($this->session->get('current_user')['employee_id'], ['40', '52', '93', '223', '279', '471', '521', '461']) ? true : false,
         ];
 
         foreach ($GetEmployeeData as $key => $val) {

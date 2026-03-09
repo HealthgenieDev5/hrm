@@ -1,0 +1,276 @@
+<?php
+
+namespace App\Models;
+
+use CodeIgniter\Model;
+use CodeIgniter\Database\BaseBuilder;
+
+class ResignationHodResponseModel extends Model
+{
+	protected $table      = 'resignation_response';
+	protected $primaryKey = 'id';
+	protected $returnType = 'array';
+
+	protected $allowedFields = [
+		'resignation_id',
+		'employee_id',
+		'role',
+		'response',
+		'response_date',
+		'remarks',
+	];
+
+	protected $useTimestamps = true;
+	protected $createdField  = 'created_at';
+	protected $updatedField  = 'updated_at';
+
+	// ── Private query builder helpers ───────────────────────────────────────
+
+	/**
+	 * Base builder shared by all notification queries.
+	 * Applies the 5 standard JOINs and selects the resigning employee's
+	 * info plus resignation details.
+	 */
+	private function baseBuilder(): BaseBuilder
+	{
+		return $this->db->table('resignation_response rhr')
+			->select('rhr.id, rhr.resignation_id')
+			->select('r.resignation_date, r.last_working_date, r.resignation_reason, r.buyout_days, r.created_at')
+			->select('e.first_name, e.last_name, e.internal_employee_id, e.attachment')
+			->select('d.department_name, deg.designation_name, c.company_name')
+			->join('resignations r',   'r.id = rhr.resignation_id', 'left')
+			->join('employees e',      'e.id = r.employee_id',      'left')
+			->join('departments d',    'd.id = e.department_id',    'left')
+			->join('designations deg', 'deg.id = e.designation_id', 'left')
+			->join('companies c',      'c.id = e.company_id',       'left');
+	}
+
+	/**
+	 * Add HOD peer self-join columns and JOINs to an existing builder.
+	 * Used by manager, HR, and HR-manager notification queries.
+	 */
+	private function withHodPeer(BaseBuilder $builder): BaseBuilder
+	{
+		return $builder
+			->select('hod_row.response AS hod_response, hod_row.response_date AS hod_response_date, hod_row.remarks AS hod_rejection_reason')
+			->select('hod_emp.first_name AS hod_first_name, hod_emp.last_name AS hod_last_name')
+			->join(
+				'resignation_response hod_row',
+				"hod_row.resignation_id = rhr.resignation_id AND hod_row.role = 'hod'",
+				'left'
+			)
+			->join('employees hod_emp', 'hod_emp.id = hod_row.employee_id', 'left');
+	}
+
+	/**
+	 * Add manager peer self-join columns and JOINs.
+	 * Used by HR notification query.
+	 */
+	private function withManagerPeer(BaseBuilder $builder): BaseBuilder
+	{
+		return $builder
+			->select('manager_row.response AS manager_response, manager_row.remarks AS manager_remarks')
+			->select('mgr_emp.first_name AS manager_first_name, mgr_emp.last_name AS manager_last_name')
+			->join(
+				'resignation_response manager_row',
+				"manager_row.resignation_id = rhr.resignation_id AND manager_row.role = 'manager'",
+				'left'
+			)
+			->join('employees mgr_emp', 'mgr_emp.id = manager_row.employee_id', 'left');
+	}
+
+	/**
+	 * Add the shared "response is actionable today" WHERE group:
+	 * pending  OR  (too_early AND date < today)
+	 */
+	private function withPendingCondition(BaseBuilder $builder): BaseBuilder
+	{
+		return $builder
+			->groupStart()
+			->where('rhr.response', 'pending')
+			->orGroupStart()
+			->where('rhr.response', 'too_early')
+			->where('DATE(rhr.response_date) < CURDATE()', null, false)
+			->groupEnd()
+			->groupEnd();
+	}
+
+	// ── HOD notifications ───────────────────────────────────────────────────
+
+	/**
+	 * Get resignations requiring HOD acknowledgment.
+	 * Returns rows where employee_id = $hodId, role = 'hod', response is
+	 * actionable (pending or too_early from a previous day).
+	 */
+	public function getPendingHodNotifications(int $hodId): array
+	{
+		$builder = $this->baseBuilder()
+			->select('rhr.response, rhr.response_date, rhr.remarks')
+			->select('mgr_emp.first_name AS manager_first_name, mgr_emp.last_name AS manager_last_name')
+			->select('manager_row.response AS manager_response, manager_row.remarks AS manager_remarks')
+			->join(
+				'resignation_response manager_row',
+				"manager_row.resignation_id = rhr.resignation_id AND manager_row.role = 'manager'",
+				'left'
+			)
+			->join('employees mgr_emp', 'mgr_emp.id = manager_row.employee_id', 'left')
+			->where('rhr.employee_id', $hodId)
+			->where('rhr.role', 'hod')
+			->where('r.status', 'active');
+
+		$builder = $this->withPendingCondition($builder);
+
+		return $builder
+			->orderBy('r.resignation_date', 'ASC')
+			->get()
+			->getResultArray();
+	}
+
+	// ── Manager notifications ───────────────────────────────────────────────
+
+	/**
+	 * Get resignations pending reporting-manager review.
+	 * Includes the HOD's current response via self-join.
+	 */
+	public function getPendingManagerNotifications(int $managerId): array
+	{
+		$builder = $this->withHodPeer($this->baseBuilder())
+			->select('rhr.response AS manager_response, rhr.response_date AS manager_response_date, rhr.remarks AS manager_rejection_reason')
+			->where('rhr.employee_id', $managerId)
+			->where('rhr.role', 'manager')
+			->where('r.status', 'active');
+
+		$builder = $this->withPendingCondition($builder);
+
+		return $builder
+			->orderBy('r.resignation_date', 'ASC')
+			->get()
+			->getResultArray();
+	}
+
+	// ── HR notifications ────────────────────────────────────────────────────
+
+	/**
+	 * Get HOD responses pending HR acknowledgment.
+	 * Includes HOD info via self-join.
+	 */
+	public function getPendingHrNotifications(int $hrId): array
+	{
+		return $this->withManagerPeer($this->withHodPeer($this->baseBuilder()))
+			->select('rhr.response AS hr_response, rhr.response_date AS hr_response_date')
+			->where('rhr.employee_id', $hrId)
+			->where('rhr.role', 'hr')
+			->where('rhr.response', 'pending')
+			->orderBy('rhr.created_at', 'ASC')
+			->get()
+			->getResultArray();
+	}
+
+	// ── HR Manager notifications ────────────────────────────────────────────
+
+	/**
+	 * Get resignations pending HR-manager acknowledgment.
+	 * Includes HOD info via self-join.
+	 */
+	public function getPendingHrManagerNotifications(int $hrManagerId): array
+	{
+		return $this->withHodPeer($this->baseBuilder())
+			->select('rhr.response AS hr_manager_response, rhr.response_date AS hr_manager_response_date')
+			->where('rhr.employee_id', $hrManagerId)
+			->where('rhr.role', 'hr_manager')
+			->where('rhr.response', 'pending')
+			->where('r.status', 'active')
+			->orderBy('rhr.created_at', 'ASC')
+			->get()
+			->getResultArray();
+	}
+
+	// ── HR retention decision notifications (for reporting manager) ─────────
+
+	/**
+	 * Get pending HR-decision rows for the given manager.
+	 * Shown after HR marks a resignation as retained/retention_failed.
+	 * Only rows with response='pending' and no response_date yet.
+	 */
+	public function getPendingHrDecisionNotifications(int $managerId): array
+	{
+		return $this->baseBuilder()
+			->select('r.status AS hr_decision')
+			->where('rhr.employee_id', $managerId)
+			->where('rhr.role', 'manager')
+			->where('rhr.response', 'pending')
+			->where('rhr.response_date IS NULL', null, false)
+			->whereIn('r.status', ['retained', 'retention_failed'])
+			->orderBy('rhr.created_at', 'ASC')
+			->get()->getResultArray();
+	}
+
+	// ── Write methods ───────────────────────────────────────────────────────
+
+	/**
+	 * Generic response update — replaces all role-specific mark* methods.
+	 */
+	public function markResponse(int $recordId, string $response, ?string $remarks = null): bool
+	{
+		$data = [
+			'response'      => $response,
+			'response_date' => date('Y-m-d H:i:s'),
+		];
+		if ($remarks !== null) {
+			$data['remarks'] = $remarks;
+		}
+		return $this->update($recordId, $data);
+	}
+
+	/**
+	 * Insert or reset an HR row for the given resignation.
+	 * Called after HOD gives a terminal response (accept / rejected / try_to_retain).
+	 */
+	public function setHrPending(int $resignationId, int $hrEmployeeId): void
+	{
+		$existing = $this->where('resignation_id', $resignationId)
+			->where('employee_id', $hrEmployeeId)
+			->where('role', 'hr')
+			->first();
+
+		if ($existing === null) {
+			$this->insert([
+				'resignation_id' => $resignationId,
+				'employee_id'    => $hrEmployeeId,
+				'role'           => 'hr',
+				'response'       => 'pending',
+			]);
+		} else {
+			$this->update($existing['id'], [
+				'response'      => 'pending',
+				'response_date' => null,
+			]);
+		}
+	}
+
+	/**
+	 * Insert or reset the HOD row for the given resignation.
+	 * Called after the reporting manager gives a terminal response.
+	 */
+	public function setHodPending(int $resignationId, int $hodEmployeeId): void
+	{
+		$existing = $this->where('resignation_id', $resignationId)
+			->where('employee_id', $hodEmployeeId)
+			->where('role', 'hod')
+			->first();
+
+		if ($existing === null) {
+			$this->insert([
+				'resignation_id' => $resignationId,
+				'employee_id'    => $hodEmployeeId,
+				'role'           => 'hod',
+				'response'       => 'pending',
+			]);
+		} else {
+			$this->update($existing['id'], [
+				'response'      => 'pending',
+				'response_date' => null,
+			]);
+		}
+	}
+}

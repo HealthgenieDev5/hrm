@@ -210,6 +210,11 @@
                 const resDate = new Date(resignationDate);
                 resDate.setDate(resDate.getDate() + effectiveNoticePeriod);
 
+                // If Last Working Day falls on Sunday (0), push to Monday
+                if (resDate.getDay() === 0) {
+                    resDate.setDate(resDate.getDate() + 1);
+                }
+
                 const yyyy = resDate.getFullYear();
                 const mm = String(resDate.getMonth() + 1).padStart(2, '0');
                 const dd = String(resDate.getDate()).padStart(2, '0');

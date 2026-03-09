@@ -12,6 +12,7 @@ $routes->match(['get', 'post'], '/ajax/resignation/reports', [ResignationControl
 $routes->match(['get', 'post'], '/ajax/resignation/alerts', [ResignationController::class, 'getResignationAlerts']);
 $routes->match(['get', 'post'], '/ajax/resignation/completed', [ResignationController::class, 'getCompletedResignations']);
 $routes->match(['get', 'post'], '/ajax/resignation/abscond', [ResignationController::class, 'getAbscondResignations']);
+$routes->match(['get', 'post'], '/ajax/resignation/retained', [ResignationController::class, 'getRetainedResignations']);
 $routes->match(['get', 'post'], '/ajax/resignation/history/(:num)', [ResignationController::class, 'getRevisionHistory/$1']);
 // Resignation HOD acknowledgment routes
 $routes->match(['get', 'post'], '/ajax/resignation/save-hod-response', [ResignationController::class, 'saveResignationResponseOfHod']);
@@ -32,9 +33,10 @@ $routes->group('resignation', ['filter' => 'authfilter'], function ($routes) {
     $routes->post('store', [ResignationController::class, 'store']);
     $routes->get('edit/(:num)', [ResignationController::class, 'edit/$1']);
     $routes->post('update/(:num)', [ResignationController::class, 'update/$1']);
-    $routes->post('withdraw/(:num)', [ResignationController::class, 'withdraw/$1']);
+    $routes->post('withdrawn/(:num)', [ResignationController::class, 'withdrawn/$1']);
     $routes->post('complete/(:num)', [ResignationController::class, 'complete/$1']);
     $routes->post('change-status/(:num)', [ResignationController::class, 'changeStatus/$1']);
+    $routes->post('delete/(:num)', [ResignationController::class, 'delete/$1']);
     $routes->post('calculate-date', [ResignationController::class, 'calculateLastWorkingDay']);
     $routes->get('employees/(:num)', [ResignationController::class, 'getEmployeesByCompany/$1']);
     $routes->get('export', [ResignationController::class, 'exportResignations']);

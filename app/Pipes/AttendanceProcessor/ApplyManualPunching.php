@@ -19,15 +19,9 @@ class ApplyManualPunching
             $punching_row['OUTTime'] = $manualPunchData['punch_out'] ?? '--:--';
         }
 
-        if ($employee_id == 40 && $date == '2026-02-04') {
+        if ($employee_id == 40 && $date == '2026-03-02') {
             // print_r($punching_row['INTime']);
-            #$punching_row['OUTTime'] = '19:12';
-            // die();
-        }
-
-        if ($employee_id == 40 && $date == '2026-02-20') {
-            // $punching_row['INTime'] = '10:02';
-            #$punching_row['OUTTime'] = '17:10';
+            #$punching_row['OUTTime'] = '17:45';
             // die();
         }
 

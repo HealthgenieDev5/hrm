@@ -3,6 +3,7 @@
 namespace App\Controllers\Requests;
 
 use App\Models\CompOffCreditModel;
+use App\Models\EmployeeModel;
 use App\Controllers\BaseController;
 
 class CompOffCredit extends BaseController
@@ -78,6 +79,20 @@ class CompOffCredit extends BaseController
                 return $this->response->setJSON($response_array);
                 die();
             }
+
+            #Begin:: HN machine attachment requirement
+            $EmployeeModel = new EmployeeModel();
+            $currentEmployee = $EmployeeModel->find($this->session->get('current_user')['employee_id']);
+            if (!empty($currentEmployee['machine']) && $currentEmployee['machine'] === 'hn') {
+                $hnAttachment = $this->request->getFile('compoff_attachment');
+                if (empty($hnAttachment) || !$hnAttachment->isValid() || $hnAttachment->getError() === UPLOAD_ERR_NO_FILE) {
+                    $response_array['response_type'] = 'error';
+                    $response_array['response_description'] = 'Sorry, looks like there are some errors,<br>Click ok to view errors';
+                    $response_array['response_data']['validation'] = ['compoff_attachment' => 'Attachment is required for HN machine employees'];
+                    return $this->response->setJSON($response_array);
+                }
+            }
+            #End:: HN machine attachment requirement
 
             #Begin:: Attachment
             $attachment = $this->request->getFile('compoff_attachment');
