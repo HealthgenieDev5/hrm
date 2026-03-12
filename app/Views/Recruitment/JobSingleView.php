@@ -853,7 +853,7 @@
                                                 <th>Task Type</th>
                                                 <th>Remarks</th>
                                                 <th>Assigned Date</th>
-                                                <th>Due Date</th>
+                                                <th>Target Date</th>
                                                 <th>Assignees &amp; Status</th>
                                                 <th class="rounded-end">Actions</th>
                                             </tr>

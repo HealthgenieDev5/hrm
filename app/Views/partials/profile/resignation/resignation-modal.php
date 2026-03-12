@@ -4,6 +4,31 @@
 if (!empty($resignationHodAcknowledgments)) {
 ?>
     <script type="text/javascript">
+        // ── Modal queue — prevents multiple Bootstrap modals stacking ──
+        window._modalQueue = window._modalQueue || [];
+        window._modalQueueRunning = window._modalQueueRunning || false;
+
+        function enqueueModal(showFn) {
+            window._modalQueue.push(showFn);
+            if (!window._modalQueueRunning) _processModalQueue();
+        }
+
+        function _processModalQueue() {
+            if (window._modalQueue.length === 0) {
+                window._modalQueueRunning = false;
+                return;
+            }
+            window._modalQueueRunning = true;
+            if ($('body').hasClass('modal-open')) {
+                $(document).one('hidden.bs.modal', function() {
+                    setTimeout(_processModalQueue, 400);
+                });
+            } else {
+                var fn = window._modalQueue.shift();
+                fn();
+            }
+        }
+
         $(document).ready(function() {
             const resignations = JSON.parse('<?php echo json_encode($resignationHodAcknowledgments); ?>');
             let currentIndex = 0;
@@ -102,7 +127,9 @@ if (!empty($resignationHodAcknowledgments)) {
             }
 
             // Show first resignation
-            showHodResignationModal(0);
+            enqueueModal(function() {
+                showHodResignationModal(0);
+            });
 
             // Dynamic placeholder + show/hide remarks based on action
             $('#hod-action-select').on('change', function() {
@@ -375,7 +402,9 @@ if (!empty($resignationHodAcknowledgments)) {
                 dataType: 'json',
                 success: function(response) {
                     if (response.success && response.notifications.length > 0) {
-                        showReportingManagerResignationModal(response.notifications[0]);
+                        enqueueModal(function() {
+                            showReportingManagerResignationModal(response.notifications[0]);
+                        });
                     }
                 },
                 error: function(xhr, status, error) {
@@ -710,7 +739,9 @@ if (!empty($resignationHodAcknowledgments)) {
                 dataType: 'json',
                 success: function(response) {
                     if (response.success && response.notifications.length > 0) {
-                        showHrResignationModal(response.notifications[0]);
+                        enqueueModal(function() {
+                            showHrResignationModal(response.notifications[0]);
+                        });
                     }
                 },
                 error: function(xhr, status, error) {
@@ -964,3 +995,135 @@ if (!empty($resignationHodAcknowledgments)) {
     </div>
 </div>
 <!-- ==================== END HR MANAGER RESIGNATION NOTIFICATION ==================== -->
+
+
+
+<div class="modal fade" id="hrManagerResignationNotificationModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header text-white">
+                <h5 class="modal-title">Resignation Notification</h5>
+
+            </div>
+            <div class="modal-body" id="hrManagerResignationNotificationContent">
+                <!-- Content populated by JavaScript -->
+            </div>
+            <div class="modal-footer">
+                <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> -->
+                <button type="button" class="btn btn-primary" id="markHrManagerNotificationViewedBtn">Acknowledge</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== END HR MANAGER RESIGNATION NOTIFICATION ==================== -->
+<script>
+    $(document).ready(function() {
+        checkForHrManagerNotifications();
+    });
+
+    function checkForHrManagerNotifications() {
+        $.ajax({
+            url: '<?php echo base_url('ajax/resignation/hr-manager-notifications'); ?>',
+            method: 'GET',
+            dataType: 'json',
+            success: function(response) {
+                // if (response.success && response.data && response.data.length > 0) {
+                //     displayHrManagerNotifications(response.data);
+                // }
+                if (response.success && response.notifications && response.notifications.length > 0) {
+                    displayHrManagerNotifications(response.notifications);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching HR Manager notifications:', error);
+            }
+        });
+    }
+
+    function displayHrManagerNotifications(notifications) {
+        if (notifications.length === 0) return;
+
+        let html = '<div class="container-fluid">';
+        html += '<div class="alert alert-info mb-3">';
+        html += '<strong>You have ' + notifications.length + ' resignation(s) to review as HR Manager</strong>';
+        html += '</div>';
+
+        notifications.forEach((notification, index) => {
+            let hodResponseBadge = '';
+            switch (notification.hod_response) {
+                case 'accept':
+                    hodResponseBadge = '<span class="badge badge-success">Accepted</span>';
+                    break;
+                case 'reject':
+                    hodResponseBadge = '<span class="badge badge-danger">Rejected</span>';
+                    break;
+                case 'pending':
+                    hodResponseBadge = '<span class="badge badge-warning">Pending</span>';
+                    break;
+                case 'too_early':
+                    hodResponseBadge = '<span class="badge badge-info">Too Early</span>';
+                    break;
+                default:
+                    hodResponseBadge = '<span class="badge badge-secondary">Unknown</span>';
+            }
+
+            html += '<div class="card mb-3">';
+            html += '<div class="card-header bg-light"><strong>Resignation ' + (index + 1) + ' of ' + notifications.length + '</strong></div>';
+            html += '<div class="card-body">';
+            html += '<div class="row">';
+            html += '<div class="col-md-6">';
+            html += '<p><strong>Employee:</strong> ' + notification.first_name + ' ' + notification.last_name + ' (' + notification.internal_employee_id + ')</p>';
+            html += '<p><strong>Department:</strong> ' + (notification.department_name || 'N/A') + '</p>';
+            html += '<p><strong>Company:</strong> ' + (notification.company_name || 'N/A') + '</p>';
+            html += '<p><strong>Resignation Date:</strong> ' + notification.resignation_date + '</p>';
+            html += '</div>';
+            html += '<div class="col-md-6">';
+            html += '<p><strong>HOD Response:</strong> ' + hodResponseBadge + '</p>';
+            html += '<p><strong>HOD:</strong> ' + (notification.hod_first_name || '') + ' ' + (notification.hod_last_name || '') + '</p>';
+            html += '<p><strong>Response Date:</strong> ' + (notification.hod_response_date || 'N/A') + '</p>';
+            html += '<p><strong>Reason:</strong> ' + (notification.resignation_reason || 'N/A') + '</p>';
+            html += '</div>';
+            html += '</div>';
+            html += '</div>';
+            html += '</div>';
+        });
+
+        html += '</div>';
+
+        $('#hrManagerResignationNotificationContent').html(html);
+        $('#hrManagerResignationNotificationModal').modal('show');
+
+        // Store notification IDs for marking as viewed
+        $('#markHrManagerNotificationViewedBtn').data('record-ids', notifications.map(n => n.id));
+    }
+
+    $(document).ready(function() {
+        $('#markHrManagerNotificationViewedBtn').on('click', function() {
+            const recordIds = $(this).data('record-ids');
+
+            if (!recordIds || recordIds.length === 0) return;
+
+            // Mark all notifications as viewed
+            const promises = recordIds.map(recordId => {
+                return $.ajax({
+                    url: '<?php echo base_url('ajax/resignation/hr-manager-notification-action'); ?>',
+                    method: 'POST',
+                    data: {
+                        record_id: recordId,
+                        action: 'viewed'
+                    },
+
+                });
+            });
+
+            Promise.all(promises).then(() => {
+                $('#hrManagerResignationNotificationModal').modal('hide');
+                toastr.success('Notifications marked as viewed');
+            }).catch(() => {
+                toastr.error('Failed to mark some notifications as viewed');
+            });
+        });
+    });
+</script>
+<!-- ==================== END RESIGNATION HOD ACKNOWLEDGMENT MODALS ==================== -->

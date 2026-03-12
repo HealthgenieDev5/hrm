@@ -322,10 +322,6 @@ class RecruitmentController extends BaseController
     public function jobListView()
     {
         $job_listings = $this->getJobListData();
-        if ($job_listings === null || empty($job_listings)) {
-            //return redirect()->back()->with('error', 'No job listings found.');
-            return redirect()->to(base_url('recruitment/job-listing'))->with('error', 'No job listings found.');
-        }
         $companyModel = new CompanyModel();
         $departmentModel = new DepartmentModel();
         $companies = $companyModel->getAllCompanies();
@@ -364,6 +360,7 @@ class RecruitmentController extends BaseController
             ->select("CONCAT(review_schedule_12m.first_name, ' ', review_schedule_12m.last_name) as review_schedule_12m_name")
             ->select('review_12m_designation.designation_name as review_schedule_12m_designation')
             ->join('companies', 'companies.id = rc_job_listing.company_id', 'left')
+            ->join('departments', 'departments.id = rc_job_listing.department_id', 'left')
             ->join('employees', 'employees.id = rc_job_listing.created_by', 'left')
             ->join('designations as created_by_designation', 'created_by_designation.id = employees.designation_id', 'left')
             ->join('employees as reporting_to', 'reporting_to.id = rc_job_listing.reporting_to', 'left')
@@ -376,17 +373,10 @@ class RecruitmentController extends BaseController
             ->join('designations as review_12m_designation', 'review_12m_designation.id = review_schedule_12m.designation_id', 'left');
 
         $currentUser       = $this->session->get('current_user');
-        $currentEmployeeId = $currentUser['employee_id'] ?? null;
+        $currentEmployeeId = (int) ($currentUser['employee_id'] ?? 0);
         $role              = strtolower($currentUser['role'] ?? '');
-        $isPrivileged      = in_array($role, ['superuser', 'admin', 'hr']) || (int) $currentEmployeeId === 40;
 
-        if (!$isPrivileged) {
-            if ($role === 'hod') {
-                $this->jobListingModel->where('rc_job_listing.department_hod_id', $currentEmployeeId);
-            } else {
-                $this->jobListingModel->where('rc_job_listing.created_by', $currentEmployeeId);
-            }
-        }
+        $this->applyJobListingAccessScope($this->jobListingModel, $currentEmployeeId, $role);
 
         $job_listings = $this->jobListingModel->asObject()->findAll();
 
@@ -396,6 +386,26 @@ class RecruitmentController extends BaseController
         return $job_listings;
     }
 
+    /**
+     * Applies role-based access scope to a job listing query.
+     * - Privileged (hr/admin/superuser/id=40): no filter
+     * - HOD: only listings in departments they lead
+     * - Others: only listings they created
+     */
+    private function applyJobListingAccessScope($model, int $employeeId, string $role): void
+    {
+        $isPrivileged = in_array($role, ['superuser', 'admin', 'hr']) || $employeeId === 40;
+        if ($isPrivileged) {
+            return;
+        }
+
+        $isHod = (new DepartmentModel())->where('hod_employee_id', $employeeId)->countAllResults() > 0;
+        if ($isHod) {
+            $model->where('departments.hod_employee_id', $employeeId);
+        } else {
+            $model->where('rc_job_listing.created_by', $employeeId);
+        }
+    }
 
     public function edit($id)
     {
@@ -1074,16 +1084,9 @@ class RecruitmentController extends BaseController
             ->join('employees as hod', 'hod.id = departments.hod_employee_id', 'left');
 
         $role              = strtolower($current_user['role'] ?? '');
-        $currentEmployeeId = $current_user['employee_id'] ?? null;
-        $isPrivileged      = in_array($role, ['superuser', 'admin', 'hr']) || (int) $currentEmployeeId === 40;
+        $currentEmployeeId = (int) ($current_user['employee_id'] ?? 0);
 
-        if (!$isPrivileged) {
-            if ($role === 'hod') {
-                $jobListingModel->where('rc_job_listing.department_hod_id', $currentEmployeeId);
-            } else {
-                $jobListingModel->where('rc_job_listing.created_by', $currentEmployeeId);
-            }
-        }
+        $this->applyJobListingAccessScope($jobListingModel, $currentEmployeeId, $role);
 
         if (!empty($company_id) && is_array($company_id)) {
             if (!in_array('all_companies', $company_id)) {
@@ -1668,7 +1671,6 @@ class RecruitmentController extends BaseController
         $employees = $employeeModel
             ->select("employees.id, TRIM(CONCAT(employees.first_name, ' ', employees.last_name)) as employee_name")
             ->where('employees.role', 'hr')
-            ->where('employees.id !=', $this->hrExecutive)
             ->groupStart()
             ->where('employees.date_of_leaving IS NULL')
             ->orWhere("employees.date_of_leaving >=", $date45)

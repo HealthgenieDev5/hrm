@@ -198,19 +198,30 @@ class JobListingCommentsController extends BaseController
         $approvedHod  = $jobListing['approved_by_hod'] ?? null;
         $approvedMgr  = $jobListing['approved_by_hr_manager'];
 
+        // Stage 1: waiting for HR Executive approval
         if (empty($approvedExec)) {
             return $senderId == $hrExecutive ? $createdBy : $hrExecutive;
         }
 
+        // Stage 2: waiting for HOD approval
         if (empty($approvedHod)) {
             return $senderId == $hrExecutive ? $hodId : $hrExecutive;
         }
 
+        // Stage 3: waiting for HR Manager approval — route to HR Manager
         if (empty($approvedMgr)) {
-            return $senderId == $hrExecutive ? $hodId : $hrExecutive;
+            $hrManagerId = $this->getDefaultHrManagerId();
+            return $senderId == $hrExecutive ? $hrManagerId : $hrExecutive;
         }
 
+        // Stage 4: fully approved — HR Exec ↔ HOD
         return $senderId == $hrExecutive ? $hodId : $hrExecutive;
+    }
+
+    private function getDefaultHrManagerId(): ?int
+    {
+        $ids = array_filter(array_map('intval', explode(',', env('app.resignationHrManagerIds', ''))));
+        return !empty($ids) ? (int) reset($ids) : null;
     }
 
 
@@ -335,8 +346,8 @@ class JobListingCommentsController extends BaseController
             }
 
             $allComments = $this->commentsModel
-                ->select('rc_job_listing_comments.*, rc_job_listing_comments.created_at as comment_created_at')
-                ->select('rc_job_listing.*, rc_job_listing.id as job_id')
+                ->select('rc_job_listing_comments.id as comment_id, rc_job_listing_comments.listing_id, rc_job_listing_comments.sender_id, rc_job_listing_comments.content, rc_job_listing_comments.type, rc_job_listing_comments.status as comment_status, rc_job_listing_comments.created_at as comment_created_at')
+                ->select('rc_job_listing.id as job_id, rc_job_listing.job_title, rc_job_listing.company_id, rc_job_listing.department_id, rc_job_listing.created_by, rc_job_listing.approved_by_hr_executive, rc_job_listing.approved_by_hod, rc_job_listing.approved_by_hr_manager')
                 ->select('CONCAT(sender.first_name, " ", sender.last_name) as sender_name')
                 ->select('companies.company_short_name')
                 ->select('departments.hod_employee_id')
@@ -349,10 +360,13 @@ class JobListingCommentsController extends BaseController
                 ->orderBy('rc_job_listing_comments.created_at', 'DESC')
                 ->findAll();
 
+            $readIds = $this->session->get('read_job_comment_ids') ?? [];
+            session_write_close(); // release session file lock so concurrent requests are not blocked
+
             $userNotifications = [];
             foreach ($allComments as $comment) {
                 $receiverId = $this->determineNotificationReceiver($comment, $comment['sender_id']);
-                if ($receiverId == $currentUserId) {
+                if ($receiverId == $currentUserId && !isset($readIds[(int)$comment['job_id']])) {
                     $userNotifications[] = $comment;
                 }
             }
@@ -406,7 +420,6 @@ class JobListingCommentsController extends BaseController
     public function markAsRead()
     {
         $jobId = $this->request->getPost('job_id');
-        $currentUserId = $this->currentUserId;
 
         if (!$jobId) {
             return $this->response->setJSON([
@@ -415,8 +428,10 @@ class JobListingCommentsController extends BaseController
             ]);
         }
 
-        // For now, we'll just return success since we're not using a reads tracking table
-        // This can be implemented with session storage or other mechanisms if needed
+        $readIds = $this->session->get('read_job_comment_ids') ?? [];
+        $readIds[(int)$jobId] = true;
+        $this->session->set('read_job_comment_ids', $readIds);
+
         return $this->response->setJSON([
             'status' => 'success',
             'message' => 'Notifications marked as read'
@@ -428,7 +443,8 @@ class JobListingCommentsController extends BaseController
         $currentUserId = $this->currentUserId;
 
         $allComments = $this->commentsModel
-            ->select('rc_job_listing_comments.*, rc_job_listing.*')
+            ->select('rc_job_listing_comments.sender_id')
+            ->select('rc_job_listing.created_by, rc_job_listing.approved_by_hr_executive, rc_job_listing.approved_by_hod, rc_job_listing.approved_by_hr_manager')
             ->select('departments.hod_employee_id')
             ->join('rc_job_listing', 'rc_job_listing.id = rc_job_listing_comments.listing_id', 'left')
             ->join('departments', 'departments.id = rc_job_listing.department_id', 'left')

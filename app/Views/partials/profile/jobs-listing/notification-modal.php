@@ -54,7 +54,6 @@
                 url: '<?= base_url('/recruitment/job-listing/comments/get-notifications') ?>',
                 type: 'GET',
                 dataType: 'json',
-                timeout: 10000, // 10 second timeout
                 success: function(response) {
                     $('#notifications-loading').addClass('d-none');
 
@@ -261,7 +260,7 @@
                                         For ${job.department_name || 'N/A'} | By: ${job.created_by_name || 'N/A'}
                                     </small>
                                 </div>
-                                <a href="${jobUrl}" class="btn btn-sm btn-outline-primary mark-job-as-read" data-job-id="${job.id}">Mark As Read</a>
+                                <a href="${jobUrl}" class="btn btn-sm btn-outline-primary mark-job-as-read" data-job-id="${job.id}"><View/a>
                             </li>
                         `);
                         });

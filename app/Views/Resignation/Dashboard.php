@@ -242,6 +242,9 @@ if (!in_array(session()->get('current_user')['role'], array('admin', 'superuser'
                             <th class="text-center"><strong>Retention</strong></th>
                             <th class="text-center"><strong>Reason</strong></th>
                             <th class="text-center"><strong>Actions</strong></th>
+                            <th style="display:none">Last Working Day As Per Resignation</th>
+                            <th style="display:none">Current Status</th>
+                            <th style="display:none">Remarks</th>
                         </tr>
                     </thead>
                     <tfoot>
@@ -487,8 +490,46 @@ if (!in_array(session()->get('current_user')['role'], array('admin', 'superuser'
             "buttons": [{
                 extend: 'excelHtml5',
                 title: 'Resignation_Reports_' + new Date().toISOString().slice(0, 10),
-                text: '<i class="fa-solid fa-file-excel"></i>Download Excel',
+                text: '<i class="fa-solid fa-file-excel me-1"></i>Download Excel',
                 className: 'btn btn-sm btn-light',
+                exportOptions: {
+                    // 0:EmpCode 1:Name 2:Dept 3:Company 4:ResignDate
+                    // 14:LastWorkingDate(hidden) 15:CurrentStatus(hidden) 16:Remarks(hidden)
+                    // 9:HOD 10:Manager 12:Reason
+                    columns: [0, 1, 2, 3, 4, 14, 15, 16, 9, 10, 12],
+                    orthogonal: 'export',
+                },
+                customize: function(xlsx) {
+                    var sheet = xlsx.xl.worksheets['sheet1.xml'];
+                    // Only rename headers that differ from the <th> text.
+                    // Hidden <th> elements now have text so DataTables generates cells F2/G2/H2.
+                    // Visible columns I2=HOD Acknowledgment, J2=Manager Acknowledgment, K2=Reason need renaming.
+                    var renames = {
+                        'I2': 'HOD Acceptance',
+                        'J2': 'Reporting Manager Acceptance',
+                        'K2': 'Resignation Reason'
+                    };
+                    Object.keys(renames).forEach(function(ref) {
+                        var $cell = $('c[r="' + ref + '"]', sheet);
+                        if ($cell.length) {
+                            $cell.find('v, is').remove();
+                            $cell.attr('t', 'inlineStr').removeAttr('s');
+                            $cell.append('<is><t>' + renames[ref] + '</t></is>');
+                        }
+                    });
+                    // Set column widths to prevent "########" in date columns
+                    var colWidths = [6, 14, 26, 14, 14, 18, 22, 30, 30, 32, 25];
+                    var colsXml = '<cols>';
+                    colWidths.forEach(function(w, i) {
+                        colsXml += '<col min="' + (i + 1) + '" max="' + (i + 1) + '" width="' + w + '" customWidth="1"/>';
+                    });
+                    colsXml += '</cols>';
+                    if ($('cols', sheet).length) {
+                        $('cols', sheet).replaceWith(colsXml);
+                    } else {
+                        $('sheetData', sheet).before(colsXml);
+                    }
+                },
             }],
             "lengthMenu": [
                 [10, 25, 50, 100, -1],
@@ -558,6 +599,17 @@ if (!in_array(session()->get('current_user')['role'], array('admin', 'superuser'
                 {
                     data: "hod_response_display",
                     render: function(data, type, row) {
+                        if (type === 'export') {
+                            var statusMap = {
+                                'accept': 'Accepted',
+                                'rejected': 'Rejected',
+                                'try_to_retain': 'Try to Retain',
+                                'too_early': 'Too Early',
+                                'pending': 'Pending'
+                            };
+                            var status = statusMap[row.hod_response] || 'Pending';
+                            return status + (row.hod_name ? ' By ' + row.hod_name : '');
+                        }
                         let html = data;
                         if (row.hod_name) {
                             html += '<br><small class="text-muted">' + row.hod_name + '</small>';
@@ -571,6 +623,17 @@ if (!in_array(session()->get('current_user')['role'], array('admin', 'superuser'
                 {
                     data: "manager_response_display",
                     render: function(data, type, row) {
+                        if (type === 'export') {
+                            var statusMap = {
+                                'accept': 'Accepted',
+                                'rejected': 'Rejected',
+                                'try_to_retain': 'Try to Retain',
+                                'too_early': 'Too Early',
+                                'pending': 'Pending'
+                            };
+                            var status = statusMap[row.manager_response] || 'Pending';
+                            return status + (row.manager_name ? ' By ' + row.manager_name : '');
+                        }
                         let html = data;
                         if (row.manager_name) {
                             html += '<br><small class="text-muted">' + row.manager_name + '</small>';
@@ -647,6 +710,25 @@ if (!in_array(session()->get('current_user')['role'], array('admin', 'superuser'
                         actions += '</div>';
                         return actions;
                     }
+                },
+                // Hidden columns for Excel export — must be AFTER Actions to land at indices 14, 15, 16
+                {
+                    data: 'last_working_date',
+                    visible: false,
+                    searchable: false,
+                    defaultContent: '',
+                },
+                {
+                    data: 'current_status_text',
+                    visible: false,
+                    searchable: false,
+                    defaultContent: '',
+                },
+                {
+                    data: 'remarks',
+                    visible: false,
+                    searchable: false,
+                    defaultContent: '',
                 },
             ],
             "order": [

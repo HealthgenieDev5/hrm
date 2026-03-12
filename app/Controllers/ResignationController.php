@@ -174,6 +174,16 @@ class ResignationController extends BaseController
                 'manager_response_date' => $managerDate,
                 'manager_response' => $managerResponse,
                 'retention_outcome_display' => $retentionOutcomeDisplay,
+                'last_working_date' => $row['last_working_date'] ?? '',
+                'remarks' => $row['remarks'] ?? '',
+                'current_status_text' => match($row['resignation_status']) {
+                    'active'           => 'Serving Notice Period',
+                    'completed'        => 'Completed',
+                    'abscond'          => 'Abscond',
+                    'retained'         => 'Retained',
+                    'retention_failed' => 'Retention Failed',
+                    default            => $row['resignation_status'] ?? '',
+                },
             ];
         }
 
@@ -490,9 +500,9 @@ class ResignationController extends BaseController
                 ]);
             }
 
-            // Notify HR manager (293 — last ID from config) immediately on resignation creation
-            $resignationHrManagerIds = array_map('intval', explode(',', env('app.resignationHrManagerIds')));
-            $hrManagerId = $resignationHrManagerIds[3];
+            // Notify HR manager (last ID from config) immediately on resignation creation
+            $resignationHrManagerIds = array_map('intval', explode(',', env('app.resignationHrManagerIds', '')));
+            $hrManagerId = (int) end($resignationHrManagerIds);
             // if ($hrManagerId > 0 && $hrManagerId !== (int) $data['employee_id']) {
             $ResignationHodResponseModel->insert([
                 'resignation_id' => $resignation_id,

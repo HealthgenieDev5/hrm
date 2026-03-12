@@ -66,6 +66,7 @@ class ResignationModel extends Model
             r.id as resignation_id,
             r.employee_id,
             r.resignation_date,
+            r.last_working_date,
             r.resignation_reason,
             r.buyout_days,
             r.status as resignation_status,
