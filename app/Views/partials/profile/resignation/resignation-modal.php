@@ -131,6 +131,7 @@ if (!empty($resignationHodAcknowledgments)) {
                 showHodResignationModal(0);
             });
 
+
             // Dynamic placeholder + show/hide remarks based on action
             $('#hod-action-select').on('change', function() {
                 if ($(this).val() && $(this).val() !== 'too_early') {

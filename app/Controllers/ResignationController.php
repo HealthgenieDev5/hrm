@@ -176,7 +176,7 @@ class ResignationController extends BaseController
                 'retention_outcome_display' => $retentionOutcomeDisplay,
                 'last_working_date' => $row['last_working_date'] ?? '',
                 'remarks' => $row['remarks'] ?? '',
-                'current_status_text' => match($row['resignation_status']) {
+                'current_status_text' => match ($row['resignation_status']) {
                     'active'           => 'Serving Notice Period',
                     'completed'        => 'Completed',
                     'abscond'          => 'Abscond',
@@ -500,9 +500,9 @@ class ResignationController extends BaseController
                 ]);
             }
 
-            // Notify HR manager (last ID from config) immediately on resignation creation
-            $resignationHrManagerIds = array_map('intval', explode(',', env('app.resignationHrManagerIds', '')));
-            $hrManagerId = (int) end($resignationHrManagerIds);
+            // Notify HR manager (293 — last ID from config) immediately on resignation creation
+            $resignationHrManagerIds = array_map('intval', explode(',', env('app.resignationHrManagerIds')));
+            $hrManagerId = $resignationHrManagerIds[3];
             // if ($hrManagerId > 0 && $hrManagerId !== (int) $data['employee_id']) {
             $ResignationHodResponseModel->insert([
                 'resignation_id' => $resignation_id,
@@ -1005,14 +1005,12 @@ class ResignationController extends BaseController
     {
         $ResignationHodResponseModel = new ResignationHodResponseModel();
         $currentUserId = $this->session->get('current_user')['employee_id'];
-
         $resignations = $ResignationHodResponseModel->getPendingHodNotifications($currentUserId);
 
         if (!empty($resignations)) {
             foreach ($resignations as &$resignation) {
-                // Calculate last working date if not set
                 if (empty($resignation['last_working_date']) && !empty($resignation['resignation_date'])) {
-                    $noticePeriod = 90; // Default notice period
+                    $noticePeriod = 90;
                     $resignation['last_working_date'] = date('Y-m-d', strtotime($resignation['resignation_date'] . ' +' . $noticePeriod . ' days'));
                 }
 
@@ -1309,7 +1307,7 @@ class ResignationController extends BaseController
         }
 
         // Append HR-decision rows (retained / retention_failed) for this manager
-        $hrDecisionRows = $ResignationHodResponseModel->getPendingHrDecisionNotifications($currentUserId);
+        $hrDecisionRows = array(); //$ResignationHodResponseModel->getPendingHrDecisionNotifications($currentUserId);
         foreach ($hrDecisionRows as $row) {
             $att = json_decode($row['attachment'] ?? '{}', true);
             $notifications[] = [
@@ -1413,6 +1411,7 @@ class ResignationController extends BaseController
 
         $ResignationHodResponseModel = new ResignationHodResponseModel();
         $notifications = $ResignationHodResponseModel->getPendingHrManagerNotifications($currentUserId);
+
 
         foreach ($notifications as &$notification) {
             $notification['employee_name'] = trim($notification['first_name'] . ' ' . $notification['last_name']);

@@ -351,21 +351,12 @@
 
 		<h3>LETTER OF APPOINTMENT</h3>
 		<ol class="extended-counter">
-			<li><strong>Probation.</strong>
-				<?php
-				if ($probation == '45 Days Probation') {
-				?>
-					<p>In the first instance the employee will be on probation for a period of 45 days from the date of your joining. Where-after, the probation period may be either extended upto further 45 days at the discretion of the management or may be dispensed with either earlier or on completion or thereafter till confirmation. Unless confirmed in writing, the employee will be deemed as probationer after the expiry of the initial or extended period of probation. Employment services are liable to be terminated without any notice or wages in lieu thereof during the initial or extended period of probation.
-					</p>
-				<?php
-				} elseif ($probation == '90 Days Probation') {
-				?>
-					<p>In the first instance the employee will be on probation for a period of 90 days from the date of your joining. Unless confirmed in writing, the employee will be deemed as probationer after the expiry of the initial or extended period of probation. Employment services are liable to be terminated without any notice or wages in lieu thereof during the initial or extended period of probation.
-					</p>
-				<?php
-				}
-				?>
-
+			<li><strong>Confirmation.</strong>
+				<ol class="extended-counter">
+					<li>
+						You are confirmed employee from the date of joining the company itself and there is no probation period.
+					</li>
+				</ol>
 			</li>
 			<li>
 				<strong>General Term and Condition :-</strong>

@@ -1,0 +1,23 @@
+<?php
+/*begin::Job Recruitment  Master*/
+
+use App\Controllers\Recruitment\RecruitmentController;
+use App\Controllers\Recruitment\JobListingCommentsController;
+
+$routes->match(['get', 'post'], '/recruitment/job-listing', [RecruitmentController::class, 'index']);
+$routes->match(['get', 'post'], '/recruitment/job-listing/store', [RecruitmentController::class, 'store']);
+$routes->get('/recruitment/job-listing/all', [RecruitmentController::class, 'jobListView']);
+$routes->match(['get', 'post'], '/recruitment/job-listing/ajax', [RecruitmentController::class, 'getJobListAjax']);
+$routes->match(['get', 'post'], '/recruitment/job-listing/edit/(:num)', [RecruitmentController::class, 'edit/$1']);
+$routes->get('/recruitment/job-listing/view/(:num)', [RecruitmentController::class, 'view/$1']);
+$routes->match(['get', 'post'], '/recruitment/job-listing/update/(:num)', [RecruitmentController::class, 'update/$1']);
+$routes->match(['get', 'post'], '/recruitment/job-listing/download/(:num)',  [RecruitmentController::class, 'downloadJobOpeningPdf/$1']);
+$routes->get('/recruitment/job-listing/download-attachment/(:num)', [RecruitmentController::class, 'downloadAttachment/$1']);
+$routes->get('/recruitment/job-listing/close/(:num)', [RecruitmentController::class, 'close/$1']);
+//$routes->post('/recruitment/job-listing/add-comment/(:num)', [JobListingCommentsController::class, 'addComment/$1']);
+$routes->match(['get', 'post'], '/recruitment/job-listing/comments/add-comment/(:num)', [JobListingCommentsController::class, 'addComment/$1']);
+$routes->get('/recruitment/job-listing/comments/get-comments/(:num)', [JobListingCommentsController::class, 'getComments/$1']);
+$routes->post('/recruitment/job-listing/approve', [RecruitmentController::class, 'approve']);
+
+
+/*end::Job Recruitment Master*/

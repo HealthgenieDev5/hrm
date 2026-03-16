@@ -97,7 +97,7 @@ class Edit extends BaseController
             'can_override_leave_balance' => in_array($this->session->get('current_user')['employee_id'], ['40', '52', '93']) ? true : false,
             'can_override_special_holiday' => in_array($this->session->get('current_user')['employee_id'], ['40', '52', '93']) ? true : false,
             'can_update_salary' => in_array($this->session->get('current_user')['employee_id'], ['40', '52', '93', '223']) ? true : false,
-            'can_view_salary' => in_array($this->session->get('current_user')['employee_id'], ['40', '52', '93', '223', '279', '471', '521', '461']) ? true : false,
+            'can_view_salary' => in_array($this->session->get('current_user')['employee_id'], ['40', '52', '93', '223', '279', '471', '521', '461', '592']) ? true : false,
         ];
 
         foreach ($GetEmployeeData as $key => $val) {

@@ -138,7 +138,6 @@
                             <!--end::Card header-->
                             <!--begin::Card body-->
                             <div class="card-body pt-2">
-
                                 <!--begin::Notice-->
                                 <a id="kt_drawer_example_basic_button" href="#" class="notice d-flex bg-light-primary rounded border-primary border border-dashed mb-9 px-6 py-3">View Revisions (<?= count($revisions) ?>)</a>
                                 <div id="kt_drawer_example_basic" class="bg-white" data-kt-drawer="true" data-kt-drawer-activate="true" data-kt-drawer-toggle="#kt_drawer_example_basic_button" data-kt-drawer-close="#kt_drawer_example_basic_close" data-kt-drawer-width="1200px">
@@ -208,7 +207,8 @@
                                                                                                                             </strong>
 
                                                                                                                             <small class="ms-2 badge badge-secondary text-decoration-line-through text-muted text-wrap text-start">&nbsp;&nbsp;
-                                                                                                                                <?php if (!empty($l2['old_value'])) {
+                                                                                                                                <?php
+                                                                                                                                if (!empty($l2['old_value'])) {
                                                                                                                                     if (strpos($l2['old_value'], 'uploads/') !== false) {
                                                                                                                                         $url = base_url() . $l2['old_value'];
                                                                                                                                         echo '<a class="text-muted" href="' . $url . '" target="_blank">' . basename($l2['old_value']) . '</a>';
@@ -397,14 +397,20 @@
 
                                 <?php
                                 } else {
-                                ?><span class="notice d-flex bg-light-primary rounded border-primary border border-dashed mb-9 px-6 py-3">Please update salary to download LOA</span><?php
-                                                                                                                                                                                    }
-                                                                                                                                                                                        ?>
+                                ?>
+                                    <span class="notice d-flex bg-light-primary rounded border-primary border border-dashed mb-9 px-6 py-3">Please update salary to download LOA</span>
+                                <?php
+                                }
+                                ?>
 
                                 <!--end::Notice-->
 
                                 <!--begin::Notice-->
-                                <a target="_blank" href="<?= base_url('/backend/master/employee/probation-confirmation-letter/' . $id) ?>" class="notice d-flex bg-light-primary rounded border-primary border border-dashed mb-9 px-6 py-3">Confirmation Letter</a>
+                                <!-- <a target="_blank" href="
+                                    <?php
+                                    #echo base_url('/backend/master/employee/probation-confirmation-letter/' . $id); 
+                                    ?>" 
+                                    class="notice d-flex bg-light-primary rounded border-primary border border-dashed mb-9 px-6 py-3">Confirmation Letter</a> -->
                                 <!--end::Notice-->
 
                                 <!--begin::Notice for Termination Letter -->
@@ -434,7 +440,12 @@
                                 <!--begin::Probation_extended-->
 
 
-                                <a id="probation_extended_letter_link" target="_blank" href="<?= base_url('/backend/master/employee/probation-extended-letter/' . $id) ?>" class="notice d-flex bg-light-danger rounded border-danger border border-dashed mb-9 px-6 py-3 d-none">Probation Extended Letter</a>
+                                <!-- <a id="probation_extended_letter_link"
+                                    target="_blank" href="
+                                    <?php
+                                    #echo base_url('/backend/master/employee/probation-extended-letter/' . $id);
+                                    ?>"
+                                    class="notice d-flex bg-light-danger rounded border-danger border border-dashed mb-9 px-6 py-3 d-none">Probation Extended Letter</a> -->
 
 
 
@@ -507,7 +518,12 @@
                                         <div class="row mb-6">
                                             <!--begin::Col-->
                                             <div class="col-lg-6">
-                                                <input type="hidden" id="probation_response" value="<?= @$probation_response ?>">
+                                                <!-- 
+                                                <input type="hidden" id="probation_response" value="
+                                                <?php
+                                                #echo @$probation_response 
+                                                ?>"> 
+                                                -->
                                                 <label class="form-label form-label-sm required fw-bold fs-6">First Name</label>
                                                 <input type="text" id="first_name" name="first_name" class="form-control form-control-sm mb-3 mb-lg-0" placeholder="First name" value="<?php echo @$first_name; ?>" required />
                                                 <small class="text-danger error-text" id="first_name_error"><?= isset($validation) ? display_error($validation, 'first_name') : '' ?></small>
@@ -1097,19 +1113,41 @@
                                                     <option value="abscond" <?= edit_set_select('status', 'abscond', $status) ?>>Abscond</option>
                                                     <option value="left" <?= edit_set_select('status', 'left', $status) ?>>Left</option>
                                                     <option value="retired" <?= edit_set_select('status', 'retired', $status) ?>>Retired</option>
-                                                    <option value="left in probation" <?= edit_set_select('status', 'left in probation', $status) ?>>Left in Probation</option>
+                                                    <!-- <option value="left in probation"
+                                                        <?php
+                                                        #echo edit_set_select('status', 'left in probation', $status); 
+                                                        ?>>Left in Probation</option> -->
                                                 </select>
                                                 <small class="text-danger error-text" id="status_error"><?= isset($validation) ? display_error($validation, 'status') : '' ?></small>
                                             </div>
                                             <div class="col-lg-6">
                                                 <label class="form-label form-label-sm required fw-bold fs-6">Probation Status</label>
-                                                <p class="d-none" id="old_probation"><?= $probation ?></p>
+                                                <!-- probation set to confirmed by default  -->
+                                                <span class="form-control form-control-sm" style="background-color: rgba(0,0,0,0.1)">
+                                                    <span id="probation_label">Confirmed</span>
+                                                    <input type="hidden" id="probation" name="probation" value="confirmed" />
+                                                </span>
+                                                <small class="text-muted" style="font-size: 0.65rem;">Read only, Employees are confirmed from day 1</small>
+                                                <!-- probation set to confirmed by default  -->
+                                                <!-- <p class="d-none" id="old_probation">
+                                                    <?php
+                                                    #echo $probation; 
+                                                    ?></p>
                                                 <select class="form-control form-control-sm" id="probation" name="probation" data-control="select2" data-placeholder="Select Probation" data-allow-clear="true">
                                                     <option></option>
-                                                    <option value="45 Days Probation" <?= edit_set_select('probation', '45 Days Probation', $probation) ?>>45 Days Probation</option>
-                                                    <option value="90 Days Probation" <?= edit_set_select('probation', '90 Days Probation', $probation) ?>>90 Days Probation</option>
-                                                    <option value="confirmed" <?= edit_set_select('probation', 'confirmed', $probation) ?>>Confirmed</option>
-                                                </select>
+                                                    <option value="45 Days Probation" 
+                                                    <?php
+                                                    #echo edit_set_select('probation', '45 Days Probation', $probation);                                                     
+                                                    ?>>45 Days Probation</option>
+                                                    <option value="90 Days Probation" 
+                                                    <?php
+                                                    #echo edit_set_select('probation', '90 Days Probation', $probation); 
+                                                    ?>>90 Days Probation</option>
+                                                    <option value="confirmed" 
+                                                    <?php
+                                                    #echo edit_set_select('probation', 'confirmed', $probation); 
+                                                    ?>>Confirmed</option>
+                                                </select> -->
                                                 <small class="text-danger error-text" id="probation_error"><?= isset($validation) ? display_error($validation, 'probation') : '' ?></small>
                                             </div>
                                         </div>
@@ -3316,29 +3354,32 @@
             }
 
 
-            var old_probation = $("#old_probation").text();
-            var new_probation = $("#probation").val();
+            // var old_probation = $("#old_probation").text();
+            // var new_probation = $("#probation").val();
 
-            console.log("old_probation", old_probation);
-            console.log("new_probation", new_probation);
+            // console.log("old_probation", old_probation);
+            // console.log("new_probation", new_probation);
 
-            if (old_probation == 'confirmed' && new_probation != 'confirmed') {
-                Swal.fire({
-                    html: "You want to change the probation from CONFIRMED to " + new_probation,
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonText: "Yes Change",
-                    denyButtonText: `Don't Change`
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        do_submit_form();
-                    } else {
-                        Swal.fire("Then change the probation status to CONFIRMED", "", "info");
-                    }
-                });
-            } else {
-                do_submit_form();
-            }
+            // if (old_probation == 'confirmed' && new_probation != 'confirmed') {
+            //     Swal.fire({
+            //         html: "You want to change the probation from CONFIRMED to " + new_probation,
+            //         icon: "warning",
+            //         showCancelButton: true,
+            //         confirmButtonText: "Yes Change",
+            //         denyButtonText: `Don't Change`
+            //     }).then((result) => {
+            //         if (result.isConfirmed) {
+            //             do_submit_form();
+            //         } else {
+            //             Swal.fire("Then change the probation status to CONFIRMED", "", "info");
+            //         }
+            //     });
+            // } else {
+            //     do_submit_form();
+            // }
+
+            // Submit at the last no checks for probation is done anymore from 11 March 2026 as per Rahul's instruction to remove all probation related functionality and mark the employee confirmed from day 1
+            do_submit_form();
 
         })
 
@@ -4826,31 +4867,26 @@ if ($can_override_rh) {
             }
         }
 
-        function checkProbationResponseStatus() {
-            if ($('#probation').val() == '90 Days Probation') {
-                $('#probation_extended_letter_link').removeClass('d-none');
-                console.log($('#probation_response').val());
-            } else {
-                $('#probation_extended_letter_link').addClass('d-none');
-                console.log($('#probation_response').val());
-            }
-            // if ($('#probation_response').val() === 'To be Extended' || $('#status').val() != 'left') {
-            //     $('#probation_extended_letter_link').removeClass('d-none');
-            // } else {
-            //     $('#probation_extended_letter_link').addClass('d-none');
-            // }
-        }
+        // function checkProbationResponseStatus() {
+        //     if ($('#probation').val() == '90 Days Probation') {
+        //         $('#probation_extended_letter_link').removeClass('d-none');
+        //         console.log($('#probation_response').val());
+        //     } else {
+        //         $('#probation_extended_letter_link').addClass('d-none');
+        //         console.log($('#probation_response').val());
+        //     }
+        // }
 
         $(document).on('change', '#status', function(e) {
             checkTerminationStatus();
         });
-        $(document).on('change', '#probation', function(e) {
-            checkProbationResponseStatus();
-        });
+        // $(document).on('change', '#probation', function(e) {
+        //     checkProbationResponseStatus();
+        // });
 
         jQuery(document).ready(function($) {
             checkTerminationStatus();
-            checkProbationResponseStatus();
+            // checkProbationResponseStatus();
             $(document).on('submit', '#override_rh_form', function(e) {
                 e.preventDefault();
                 var form = $(this);
@@ -5719,6 +5755,16 @@ if ($can_override_special_holiday) {
     </div>
     <script type="text/javascript">
         jQuery(document).ready(function($) {
+
+            $(document).on('change', '#designation_id', function() {
+                if ($(this).val() == '75') {
+                    $('#probation').val('n/a');
+                    $('#probation_label').text('N/A');
+                } else {
+                    $('#probation').val('confirmed');
+                    $('#probation_label').text('Confirmed');
+                }
+            })
 
             var special_holidays_view_html = `<div class="d-flex gap-4">`;
             $("input[name='special_holiday[]']:checked").each(function(index) {

@@ -59,11 +59,11 @@
         <?php
         if (in_array(session()->get('current_user')['role'], ['superuser', 'hr'])) {
             // begin::Probation confirmation-pending
-            echo $this->include('partials/profile/right-sidebar/probation-confirmation-pending');
+            // echo $this->include('partials/profile/right-sidebar/probation-confirmation-pending');
             // End::Probation confirmation-pending
 
             // begin::Recently joined
-            echo $this->include('partials/profile/right-sidebar/welcome-email-pending');
+            // echo $this->include('partials/profile/right-sidebar/welcome-email-pending');
             // End::Recently joined
         }
         ?>
@@ -76,14 +76,15 @@
 </div>
 
 <!--begin::Probation Notification Modal-->
-<?php echo $this->include('partials/profile/probation/propbation-notification-modal'); ?>
+<?php #echo $this->include('partials/profile/probation/propbation-notification-modal'); 
+?>
 <!--End::Probation Notification Modal-->
 
 <!--begin::Probation Confirmation Modal-->
 <?php
-if (in_array(session()->get('current_user')['employee_id'], array_map('intval', explode(',', env('app.recruitmentManagerIds'))))):
-    echo $this->include('partials/profile/probation/hr-propbation-confirmation-modal');
-endif;
+// if (in_array(session()->get('current_user')['employee_id'], array_map('intval', explode(',', env('app.recruitmentManagerIds'))))):
+//     echo $this->include('partials/profile/probation/hr-propbation-confirmation-modal');
+// endif;
 ?>
 <!--End::Probation Confirmation Modal-->
 
@@ -94,9 +95,9 @@ endif;
 
 <!--begin::Birthday/Anniversary/Reminder Notification Modal-->
 <?php
-if (!in_array(session()->get('current_user')['employee_id'], ['40'])) {
-    echo $this->include('partials/profile/footer/employee-notification-modal');
-}
+// if (!in_array(session()->get('current_user')['employee_id'], ['40'])) {
+echo $this->include('partials/profile/footer/employee-notification-modal');
+// }
 ?>
 <!--End::Birthday/Anniversary/Reminder Notification Modal-->
 
@@ -301,7 +302,7 @@ if (!in_array(session()->get('current_user')['employee_id'], ['40'])) {
 </script>
 <?php
 if (!empty($probationPopUpEmployees)) {
-    echo $this->include('partials/profile/probation/manager-probation-popup');
+    #echo $this->include('partials/profile/probation/manager-probation-popup');
 }
 ?>
 

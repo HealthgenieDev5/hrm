@@ -343,9 +343,14 @@
 						<span class="menu-section text-muted text-uppercase fs-8 ls-1">Override Panel</span>
 					</div>
 				</div>
-				<div data-kt-menu-trigger="click" class="menu-item <?php if (isset($current_controller) && in_array($current_controller, ['overrides', 'hr'])) {
-																		echo 'here show';
-																	} ?> menu-accordion">
+				<div
+					data-kt-menu-trigger="click"
+					class="menu-item 
+				<?php
+				if (isset($current_controller) && in_array($current_controller, ['overrides', 'hr'])) {
+					echo 'here show';
+				}
+				?> menu-accordion">
 					<span class="menu-link">
 						<span class="menu-icon">
 							<i class="bi bi-grid fs-3"></i>
@@ -419,7 +424,7 @@
 							</div>
 						<?php } ?>
 
-						<?php if (in_array(session()->get('current_user')['employee_id'], ['40', '95', '52', '93', '461'])) { ?>
+						<?php if (in_array(session()->get('current_user')['employee_id'], ['40', '95', '52', '93', '461', '592'])) { ?>
 							<div class="menu-item">
 								<a class="menu-link
 								<?php
@@ -469,7 +474,7 @@
 							</div>
 						<?php } ?>
 
-						<?php if (in_array(session()->get('current_user')['employee_id'], ['40', '93', '461'])) { ?>
+						<?php if (in_array(session()->get('current_user')['employee_id'], ['40', '93', '461', '592'])) { ?>
 							<div class="menu-item">
 								<a class="menu-link
 									<?php

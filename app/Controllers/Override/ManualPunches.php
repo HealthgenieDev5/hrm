@@ -23,7 +23,7 @@ class ManualPunches extends BaseController
     {
         $current_user = $this->session->get('current_user');
 
-        if (!in_array($current_user['employee_id'], ['40', '52', '93', '461'])) {
+        if (!in_array($current_user['employee_id'], ['40', '52', '93', '461', '592'])) {
             return redirect()->to(base_url('/unauthorised'));
         }
 

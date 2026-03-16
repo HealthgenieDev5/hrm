@@ -260,7 +260,7 @@
                                         For ${job.department_name || 'N/A'} | By: ${job.created_by_name || 'N/A'}
                                     </small>
                                 </div>
-                                <a href="${jobUrl}" class="btn btn-sm btn-outline-primary mark-job-as-read" data-job-id="${job.id}"><View/a>
+                                <a href="${jobUrl}" class="btn btn-sm btn-outline-primary mark-job-as-read" data-job-id="${job.id}">View</a>
                             </li>
                         `);
                         });
